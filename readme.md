@@ -23,3 +23,6 @@ in settings.py:
 import os
 from dotenv import load_dotenv
 load_dotenv()
+
+requirements install:
+pip install -r requirements.txt
