@@ -18,7 +18,7 @@ class Brand(models.Model):
 class Product(models.Model):
     name = models.CharField(max_length=4000, verbose_name='Товар')
     description = models.TextField(max_length=4000, blank=True, null=True, verbose_name='Описание')
-    brand_id = models.ForeignKey('Brand', on_delete=models.CASCADE, verbose_name='ID бренда, к которому относится товар')
+    brand = models.ForeignKey('Brand', on_delete=models.CASCADE, verbose_name='ID бренда, к которому относится товар')
 
     class Meta:
         verbose_name = 'Товар'
@@ -30,7 +30,7 @@ class Product(models.Model):
 
 class Category(models.Model):
     name = models.CharField(max_length=4000, verbose_name='Категория')
-    parent_id = models.ForeignKey('Category', on_delete=models.CASCADE, null=True, blank=True, verbose_name='ID родительской категории')
+    parent = models.ForeignKey('Category', on_delete=models.CASCADE, null=True, blank=True, verbose_name='ID родительской категории')
 
     class Meta:
         verbose_name = 'Категория'
@@ -41,8 +41,8 @@ class Category(models.Model):
 
 
 class ProductCategory(models.Model):
-    product_id = models.ForeignKey('Product', on_delete=models.CASCADE, verbose_name='ID товара')
-    category_id = models.ForeignKey('Category', on_delete=models.CASCADE, verbose_name='ID категории')
+    product = models.ForeignKey('Product', on_delete=models.CASCADE, verbose_name='ID товара')
+    category = models.ForeignKey('Category', on_delete=models.CASCADE, verbose_name='ID категории')
 
     class Meta:
         verbose_name = 'Связь товара и категории'
