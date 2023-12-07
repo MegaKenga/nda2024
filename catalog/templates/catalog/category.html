@@ -1,11 +1,11 @@
 {% extends 'catalog/base.html' %}
-
+{%  block title %}<title>{{ category_name }}</title>{% endblock %}
 {% block content %}
 <body>
 <div class="box">
-      {% for category in categories %}
+      {% for cat in category %}
 	<div class="selection">
-        <a href='/category/{{ category.id }}'>{{ category.name }}</a>
+        <a href='/category/{{ cat.id }}'>{{ cat.name }}</a>
     </div>
 	{% endfor %}
 </div>
