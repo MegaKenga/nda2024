@@ -10,8 +10,18 @@ def index(request):
 
 
 def get_brand(request, brand_id):
+    # todo: query brand by id
+    # todo: query all products with current brand
+    # todo: query all categories with products above
     pass
 
 
 def get_category(request, category_id):
-    pass
+    category = Category.objects.get(pk=category_id)
+    parent = None
+    if category.parent is not None:
+        parent = Category.objects.get(pk=category.parent)
+    children = Category.objects.filter(parent=category.pk)
+    # todo: query all products, related to current category
+    context = {'category': category, 'parent': parent, 'children': children}
+    return render(request, 'catalog/category.html', context=context)
