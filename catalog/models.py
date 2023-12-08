@@ -13,7 +13,6 @@ class NotHidden(models.Manager):
 class Brand(models.Model):
     name = models.CharField(max_length=256, unique=True, verbose_name='Бренд')
     description = models.TextField(default='', verbose_name='Описание')
-    slug = models.SlugField(max_length=255, db_index=True, blank=True, unique=True, default='')
     hide = models.BooleanField(default=False, verbose_name='Скрыть')
 
     objects = models.Manager()
@@ -25,9 +24,6 @@ class Brand(models.Model):
 
     def __str__(self):
         return self.name
-
-    def get_absolute_url(self):
-        return reverse('brand', kwargs={'brand_slug': self.slug})
 
 
 class Product(models.Model):
@@ -51,7 +47,6 @@ class Product(models.Model):
 class Category(models.Model):
     name = models.CharField(max_length=512, verbose_name='Категория')
     parent = models.ForeignKey('self', default='', on_delete=models.SET_DEFAULT, null=True, blank=True, verbose_name='ID родительской категории')
-    slug = models.SlugField(max_length=255, db_index=True, blank=True, unique=True, default='')
     hide = models.BooleanField(default=False, verbose_name='Скрыть')
 
     objects = models.Manager()
@@ -63,6 +58,3 @@ class Category(models.Model):
 
     def __str__(self):
         return self.name
-
-    def get_absolute_url(self):
-        return reverse('category', kwargs={'category_slug': self.slug})

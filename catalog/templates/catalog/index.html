@@ -17,7 +17,7 @@
             <img src="{{ brand.brand_image.url }}" alt="{{ brand.name }}" />
         </p>
         {% endif %}
-        <a href='{{ brand.get_absolute_url }}'>{{ brand.name }}</a>
+        <a href='brands/{{ brand.id }}'>{{ brand.name }}</a>
     </div>
 	{% endfor %}
 </div>
