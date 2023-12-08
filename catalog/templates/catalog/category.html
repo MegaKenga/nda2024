@@ -1,15 +1,23 @@
 {% extends 'catalog/base.html' %}
-{%  block title %}<title>{{ category_name }}</title>{% endblock %}
+{%  block title %}<title>{{ category.name }}</title>{% endblock %}
 {% block content %}
 <body>
 <div class="box">
-      {% for cat in category %}
-	<div class="selection">
-        <a href='/category/{{ cat.id }}'>{{ cat.name }}</a>
-    </div>
-	{% endfor %}
+    <p>Name: {{ category.name }}</p>
+    <p>Description: {{ category.description }}</p>
+    {% if parent %}
+      <p>Parent: <a href="{% url 'category' category_id=parent.id%}">{{ parent.name }}</a></p>
+    {% else %}
+      <p>No parent</p>
+    {% endif %}
+      <p>Children:</p>
+      <ul>
+      {% for kid in children %}
+          <li>{{ forloop.counter }}: {{ kid.name }}</li>
+      {% empty %}
+          <li>No children</li>
+      {% endfor %}
+      </ul>
 </div>
-
 </body>
-
 {% endblock %}

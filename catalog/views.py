@@ -1,20 +1,27 @@
 from django.shortcuts import render
-from catalog.models import Category, ProductCategory, Product
+from catalog.models import Category, Brand
 
 
 def index(request):
-    categories = Category.objects.filter(parent=None)
-    context = {'categories': categories}
+    brands = Brand.visible.all().order_by('name')
+    categories = Category.visible.filter(parent=None).order_by('name')
+    context = {'brands': brands, 'categories': categories}
     return render(request, 'catalog/index.html', context=context)
 
 
-def get_category_or_product(request, category_id):
-    if ProductCategory.category == category_id:
-        product_id = ProductCategory.objects.filter(category=category_id)
-        product = Product.objects.filter(id=product_id)
-        context = {'product': product}
-        return render(request, 'catalog/product.html', context=context)
-    else:
-        category = Category.objects.filter(parent=category_id)
-        context = {'category': category}
-        return render(request, 'catalog/category.html', context=context)
+def get_brand(request, brand_id):
+    # todo: query brand by id
+    # todo: query all products with current brand
+    # todo: query all categories with products above
+    pass
+
+
+def get_category(request, category_id):
+    category = Category.objects.get(pk=category_id)
+    parent = None
+    if category.parent is not None:
+        parent = Category.objects.get(pk=category.parent)
+    children = Category.objects.filter(parent=category.pk)
+    # todo: query all products, related to current category
+    context = {'category': category, 'parent': parent, 'children': children}
+    return render(request, 'catalog/category.html', context=context)
