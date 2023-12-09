@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from catalog.models import Category, Brand
+from catalog.models import Category, Brand, Product
 
 
 def index(request):
@@ -23,5 +23,6 @@ def get_category(request, category_id):
         parent = Category.objects.get(pk=category.parent)
     children = Category.objects.filter(parent=category.pk)
     # todo: query all products, related to current category
-    context = {'category': category, 'parent': parent, 'children': children}
+    products = Product.objects.filter(category=category)
+    context = {'category': category, 'parent': parent, 'children': children, 'products': products}
     return render(request, 'catalog/category.html', context=context)
