@@ -1,8 +1,4 @@
 from django.db import models
-from django.urls import reverse
-
-
-# Create your models here.
 
 
 class NotHidden(models.Manager):
@@ -28,10 +24,10 @@ class Brand(models.Model):
 
 class Product(models.Model):
     name = models.CharField(max_length=512, unique=True, verbose_name='Товар')
-    description = models.TextField(default='', null=True, blank=True, verbose_name='Описание')
-    brand = models.ForeignKey(Brand, default='', on_delete=models.SET_DEFAULT, verbose_name='ID бренда, к которому относится товар')
+    description = models.TextField(default='', null=False, blank=True, verbose_name='Описание')
+    brand = models.ForeignKey(Brand, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='ID бренда, к которому относится товар')
     category = models.ManyToManyField('Category', verbose_name='ID категории, к которой относится товар')
-    hide = models.BooleanField(default=False, verbose_name='Скрыть')
+    is_hidden = models.BooleanField(default=False, verbose_name='Скрыть')
 
     objects = models.Manager()
     visible = NotHidden()
