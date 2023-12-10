@@ -1,7 +1,6 @@
 .env
 /venv
 .idea
-collabtraining_localhost-2023_12_07_22_06_20-dump.sql
+/dumps
 
 **/**/__pycache__
-static

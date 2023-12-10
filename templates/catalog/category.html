@@ -2,7 +2,7 @@
 {%  block title %}<title>{{ category.name }}</title>{% endblock %}
 {% block content %}
 <body>
-<div class="box">
+<div>
     <p>Name: {{ category.name }}</p>
     <p>Description: {{ category.description }}</p>
     {% if parent %}
@@ -18,7 +18,11 @@
           <li>No children</li>
       {% endfor %}
       </ul>
-      <p>{{ products }}</p>
+    {% if products %}
+        {% for product in products %}
+     <p>{{ product.name }}</p>
+        {% endfor %}
+    {% endif %}
 </div>
 </body>
 {% endblock %}

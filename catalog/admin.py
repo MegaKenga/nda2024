@@ -5,7 +5,7 @@ from catalog.models import Brand, Product, Category
 
 
 class BrandAdmin(admin.ModelAdmin):
-    list_display = ('name', 'description', 'hide')
+    list_display = ('name', 'description', 'is_active')
     list_filter = ('name',)
     actions_on_bottom = True
     list_per_page = 25
@@ -13,7 +13,7 @@ class BrandAdmin(admin.ModelAdmin):
 
 
 class CategoryAdmin(admin.ModelAdmin):
-    list_display = ('name', 'parent', 'hide')
+    list_display = ('name', 'parent', 'is_active')
     list_filter = ('name',)
     actions_on_bottom = True
     list_per_page = 25
@@ -21,7 +21,7 @@ class CategoryAdmin(admin.ModelAdmin):
 
 
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ('name', 'description', 'brand', 'hide')
+    list_display = ('name', 'description', 'brand', 'is_active')
     list_filter = (('brand', RelatedOnlyFieldListFilter),)
     actions_on_bottom = True
     list_per_page = 25

@@ -1,0 +1,22 @@
+{% extends 'catalog/base.html' %}
+{%  block title %}<title>{{ brand.name }}</title>{% endblock %}
+{% block content %}
+<body>
+<div>
+    <p>Name: {{ brand.name }}</p>
+    <p>Description: {{ brand.description }}</p>
+        <ul>
+      {% for category in categories %}
+          <li>{{ forloop.counter }}: {{ category.name }}</li>
+      {% empty %}
+          <li>No category</li>
+      {% endfor %}
+      </ul>
+    {% if products %}
+        {% for product in products %}
+     <p>{{ product.name }}</p>
+        {% endfor %}
+    {% endif %}
+</div>
+</body>
+{% endblock %}
