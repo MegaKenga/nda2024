@@ -1,0 +1,23 @@
+{% extends 'catalog/base.html' %}
+
+{% block content %}
+<body>
+<div>
+  <ul>
+    <li>Каталог по производителям</li>
+          {% for brand in brands %}
+	<div>
+        <a href='{%  url 'brand' brand_id=brand.id %}'>{{ brand.name }}</a>
+            </div>
+	{% endfor %}
+    <li>Каталог по категориям</li>
+          {% for category in categories %}
+	<div>
+        <a href='{% url 'category' category_id=category.id%}'>{{ category.name }}</a>
+    </div>
+	{% endfor %}
+	</ul>
+</div>
+</body>
+
+{% endblock %}

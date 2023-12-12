@@ -1,7 +1,7 @@
 {% load static %}
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/html">
 <head>
 	<meta charset="UTF-8">
 	{%  block title %}<title>НДА Деловая медицинская компания</title>{% endblock %}
@@ -9,16 +9,16 @@
 </head>
 <header>
 	<div>
-		<div><a href='/' class="menu">Вернуться на главную</a></div>
+		<div><a href='/catalog/static' class="menu">Вернуться на главную</a></div>
 	</div>
 </header>
 {% block content %}
 {% endblock %}
 <footer class="footer">
-	<p class="footer-text-left">
+	<div class="footer-text-left">
 		<div><a href='/contacts' class="menu">Связаться с нами</div>
   		<div><a href='/news' class="menu">Новости</div>
 		<div><a href='/authorisation' class="menu">Авторизация</div>
-	</p>
+    </div>
 </footer>
 </html>
