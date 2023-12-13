@@ -1,19 +1,11 @@
 from django.db import models
 from mptt.models import MPTTModel, TreeForeignKey
 
-
-class NotHidden(models.Manager):
-    def get_queryset(self):
-        return super().get_queryset().filter(is_active=True)
+from utils import DataModelsMixin
 
 
-class Brand(models.Model):
+class Brand(DataModelsMixin):
     name = models.CharField(max_length=256, unique=True, verbose_name='Бренд')
-    description = models.TextField(default='', verbose_name='Описание')
-    is_active = models.BooleanField(default=True, verbose_name='Активная категория')
-
-    objects = models.Manager()
-    visible = NotHidden()
 
     class Meta:
         verbose_name = 'Бренд'
@@ -23,7 +15,7 @@ class Brand(models.Model):
         return self.name
 
 
-class Category(MPTTModel):
+class Category(DataModelsMixin, MPTTModel):
     name = models.CharField(max_length=512, verbose_name='Категория')
     parent = TreeForeignKey(
         'self',
@@ -33,10 +25,6 @@ class Category(MPTTModel):
         blank=True,
         verbose_name='ID родительской категории'
     )
-    is_active = models.BooleanField(default=True, verbose_name='Активная категория')
-
-    objects = models.Manager()
-    visible = NotHidden()
 
     class MPTTMeta:
         order_insertion_by = ['name']
@@ -49,9 +37,8 @@ class Category(MPTTModel):
         return self.name
 
 
-class Product(models.Model):
+class Product(DataModelsMixin):
     name = models.CharField(max_length=512, unique=True, verbose_name='Товар')
-    description = models.TextField(default='', null=False, blank=True, verbose_name='Описание')
     brand = models.ForeignKey(
         Brand,
         on_delete=models.SET_NULL,
@@ -64,10 +51,6 @@ class Product(models.Model):
         null=True,
         verbose_name='ID категории, к которой относится товар'
     )
-    is_active = models.BooleanField(default=True, verbose_name='Активная категория')
-
-    objects = models.Manager()
-    visible = NotHidden()
 
     class Meta:
         verbose_name = 'Товар'

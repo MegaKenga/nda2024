@@ -12,8 +12,11 @@ def index(request):
 def get_brand(request, brand_id):
     brand = Brand.objects.get(pk=brand_id)
     products = Product.objects.filter(brand=brand)
-    #categories = Category.objects.filter(pk=products.category)
-    context = {"""'categories': categories,""" 'brand': brand, 'products': products}
+    category_ids = set()
+    for product in products:
+        category_ids.add(product.category.id)
+    categories = Category.objects.filter(pk__in = list(category_ids))
+    context = {'categories': categories, 'brand': brand, 'products': products}
     return render(request, 'catalog/brand.html', context=context)
 
 
