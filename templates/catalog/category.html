@@ -12,15 +12,15 @@
     {% endif %}
       <p>Children:</p>
       <ul>
-      {% for kid in children %}
-          <li>{{ forloop.counter }}: {{ kid.name }}</li>
+      {% for category in children %}
+          <li>{{ forloop.counter }}: <a href='{% url 'category' category_id=category.id%}'> {{ category.name }} </a></li>
       {% empty %}
           <li>No children</li>
       {% endfor %}
       </ul>
     {% if products %}
         {% for product in products %}
-     <p>{{ product.name }}</p>
+     <p><a href="{% url 'product' product_id=product.id%}">{{ product.name }}</a></p>
         {% endfor %}
     {% endif %}
 </div>

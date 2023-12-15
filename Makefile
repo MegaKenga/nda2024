@@ -1,11 +1,14 @@
 start:
-		python manage.py runserver
+		python3 manage.py runserver
 
 migrations:
-		python manage.py makemigrations
+		python3 manage.py makemigrations
 
 migrate:
-		python manage.py migrate
+		python3 manage.py migrate
 
 shell:
-		python manage.py shell
+		python3 manage.py shell
+
+admin:
+		python3 manage.py createsuperuser
