@@ -26,7 +26,7 @@ def get_brand(request, brand_id):
     category_ids = set()
     for product in products:
         category_ids.add(product.category.id)
-    product_categories = Category.objects.filter(pk__in=list(category_ids))
+    product_categories = Category.objects.filter(pk__in=category_ids)
     root_categories = set()
     for category in product_categories:
         root_categories.add(find_root(all_categories, category.id))
@@ -45,13 +45,16 @@ def get_category(request, category_id):
     return render(request, 'catalog/category.html', context=context)
 
 
-def get_product(request, product_id):
-    products = Product.objects.filter(pk=product_id)
-    category_id_for_title = None
-    if len(products) > 1:
-        for product in products:
-            category_id_for_title = Category.objects.get(id=product.category_id)
-    else:
-        category_id_for_title = Product.objects.get(id=product_id)
-    context = {'products': products, 'title': category_id_for_title}
-    return render(request, 'catalog/product.html', context=context)
+def get_category_by_brand(request, brand_id, category_id):
+    category = Category.objects.get(pk=category_id)
+    parent = None
+    if category.parent is not None:
+        parent = category.parent
+    #children = Category.objects.filter(parent=category_id)
+    products = Product.objects.filter(category=category)
+    children_ids = set()
+    for product in products:
+        children_ids.add(product.category.id)
+    children = Category.objects.filter(parent__in=children_ids)
+    context = {'category': category, 'parent': parent, 'brand_id': brand_id, 'children': children, 'products': products}
+    return render(request, 'catalog/category.html', context=context)
