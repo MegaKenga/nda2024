@@ -3,9 +3,9 @@
 {% block content %}
 <body>
 <div>
-    {% for product in products %}
-    <p>Name: {{ product.name }}</p>
-    <p>Description: {{ product.description }}</p>
+    {% for item in items %}
+    <p>Name: {{ item.name }}</p>
+    <p>Description: {{ item.description }}</p>
     {% endfor %}
 </div>
 </body>
