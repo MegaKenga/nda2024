@@ -7,17 +7,17 @@
     <li>Каталог по производителям</li>
           {% for brand in brands %}
 	<div>
-        <a href='{%  url 'brand' brand_id=brand.id %}'>{{ brand.name }}</a>
+        <p><a href="{% url 'brand' brand_id=brand.id %}">{{ brand.name }}</a></p> 
             </div>
 	{% endfor %}
     <li>Каталог по категориям</li>
           {% for category in categories %}
 	<div>
-        <a href='{% url 'category' category_id=category.id%}'>{{ category.name }}</a>
+        <p><a href="{% url 'category' category_id=category.id %}">{{ category.name }}</a></p>
     </div>
 	{% endfor %}
 	</ul>
 </div>
 </body>
 
-{% endblock %}
+{% endblock %}      
