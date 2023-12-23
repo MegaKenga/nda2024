@@ -83,6 +83,7 @@ make_inactive.short_description = "Изменить статус на 'Неак�
 class BrandAdmin(admin.ModelAdmin):
     list_display = ('name', 'place', 'is_active')
     list_filter = ('name', IsActiveStatusFilter)
+    fields = ['name', 'description', 'place', 'is_active']
     actions_on_bottom = True
     list_per_page = 25
     search_fields = ['name']
@@ -90,8 +91,9 @@ class BrandAdmin(admin.ModelAdmin):
 
 
 class CategoryAdmin(admin.ModelAdmin):
-    list_display = ('name', 'parent', 'place', 'is_active')
+    list_display = ('name', 'brand', 'parent', 'place', 'is_active')
     list_filter = ('name', ('brand', RelatedOnlyFieldListFilter), ('parent', RelatedOnlyFieldListFilter), IsActiveStatusFilter)
+    fields = ['name', 'description', 'brand', 'parent', 'place', 'is_active']
     actions_on_bottom = True
     list_per_page = 25
     search_fields = ('name', 'parent')
@@ -101,6 +103,7 @@ class CategoryAdmin(admin.ModelAdmin):
 class ProductAdmin(admin.ModelAdmin):
     list_display = ('name', 'brand', 'place', 'is_active')
     list_filter = (('brand', RelatedOnlyFieldListFilter), ('categories', RelatedOnlyFieldListFilter), IsActiveStatusFilter)
+    fields = ['name', 'description', 'brand', 'categories', 'place', 'is_active']
     actions_on_bottom = True
     list_per_page = 25
     search_fields = ('name', 'group', 'category')
@@ -110,6 +113,7 @@ class ProductAdmin(admin.ModelAdmin):
 class OfferAdmin(admin.ModelAdmin):
     list_display = ('name', 'brand', 'product', 'place', 'is_active')
     list_filter = (('brand', RelatedOnlyFieldListFilter), ('product', RelatedOnlyFieldListFilter), IsActiveStatusFilter)
+    fields = ['name', 'description', 'brand', 'product', 'place', 'is_active']
     actions_on_bottom = True
     list_per_page = 25
     search_fields = ('name', 'group', 'product')

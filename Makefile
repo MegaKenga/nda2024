@@ -12,3 +12,6 @@ shell:
 
 admin:
 		python3 manage.py createsuperuser
+
+squashcatalog:
+		python3 manage.py squashmigrations catalog
