@@ -4,16 +4,17 @@
 <body>
 <div>
     <p>Name: {{ category.name }}</p>
+    <p>Brand: {{ brand.name }}</p>
     <p>Description: {{ category.description }}</p>
     {% if parent %}
-      <p>Parent: <a href="{% url 'category' category_id=parent.id%}">{{ parent.name }}</a></p>
+      <p>Parent: {{ parent.name }}</p>
     {% else %}
       <p>No parent</p>
     {% endif %}
       <p>Children:</p>
       <ul>
       {% for category in children %}
-          <li>{{ forloop.counter }}: <a href="{% url 'category' category_id=category.id%}">{{ category.name }}</a></li>
+          <li>{{ forloop.counter }}: <a href="{% url 'category_by_brand' brand_id=brand.id category_id=category.id %}">{{ category.name }}</a></li>
       {% empty %}
           <li>No children</li>
       {% endfor %}
@@ -22,7 +23,7 @@
         <p>Products:</p>
         <ul>
         {% for product in products %}
-            <li>{{ forloop.counter }}: <a href="{% url 'offer_by_category' category_id=category.id product_id=product.id%}">{{ product.name }}</a></li>
+            <li>{{ forloop.counter }}: <a href="{% url 'offer_by_brand' brand_id=brand.id category_id=category.id product_id=product.id%}">{{ product.name }}</a></li>
       {% empty %}
           <li>No products</li>
         {% endfor %}

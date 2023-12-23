@@ -8,7 +8,7 @@
     <p>Description: {{ brand.description }}</p>
         <ul>
         {% for category in categories %}
-          <li>{{ forloop.counter }}: {{ category.name }}</li>
+            <li>{{ forloop.counter }}: <a href="{% url 'category_by_brand' brand_id=brand.id category_id=category.id %}">{{ category.name }}</a></li>
         {% empty %}
           <li>No category</li>
         {% endfor %}
