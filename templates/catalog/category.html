@@ -1,8 +1,13 @@
 {% extends 'catalog/base.html' %}
-{%  block title %}<title>{{ category.name }}</title>{% endblock %}
+{%  block title %}<title>{{ product.name }}</title>{% endblock %}
 {% block content %}
 <body>
 <div>
+    {% if brand %}
+      <p>Brand: {{ brand.name }}</p>
+    {% else %}
+      <p>No Brand</p>
+    {% endif %}
     <p>Name: {{ category.name }}</p>
     <p>Description: {{ category.description }}</p>
     {% if parent %}
@@ -22,7 +27,7 @@
         <p>Products:</p>
         <ul>
         {% for product in products %}
-            <li>{{ forloop.counter }}: <a href="{% url 'offer_by_category' category_id=category.id product_id=product.id%}">{{ product.name }}</a></li>
+            <li>{{ forloop.counter }}: <a href="{% url 'offer' brand_id=product.brand_id product_id=product.id%}">{{ product.name }}</a></li>
       {% empty %}
           <li>No products</li>
         {% endfor %}
