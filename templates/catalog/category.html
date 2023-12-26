@@ -27,7 +27,7 @@
         <p>Products:</p>
         <ul>
         {% for product in products %}
-            <li>{{ forloop.counter }}: <a href="{% url 'offer' brand_id=brand.id product_id=product.id%}">{{ product.name }}</a></li>
+            <li>{{ forloop.counter }}: <a href="{% url 'offer' brand_id=product.brand_id product_id=product.id%}">{{ product.name }}</a></li>
       {% empty %}
           <li>No products</li>
         {% endfor %}
