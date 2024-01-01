@@ -1,4 +1,4 @@
-{% extends 'catalog/base.html' %}
+{% extends 'base.html' %}
 {%  block title %}<title>{{ brand.name }}</title>{% endblock %}
 {% block content %}
 <body>
@@ -13,9 +13,9 @@
           <li>No category</li>
         {% endfor %}
       </ul>
-    {% if products %}
-        {% for product in products %}
-            <p>{{ product.name }}</p>
+    {% if products_groups %}
+        {% for product_group in products_groups %}
+            <p>{{ product_group.name }}</p>
         {% endfor %}
     {% endif %}
 </div>

@@ -5,9 +5,19 @@ from django.db import models
 
 
 class BaseFieldsMixin(models.Model):
-    description = models.TextField(default='', verbose_name='Описание')
-    place = models.IntegerField(blank=True, null=True, verbose_name='Место в списке')
-    is_active = models.BooleanField(default=True, verbose_name='Статус показа на страницах')
+    description = models.TextField(
+        default='',
+        verbose_name='Описание'
+    )
+    place = models.IntegerField(
+        blank=True,
+        null=True,
+        verbose_name='Место в списке'
+    )
+    is_active = models.BooleanField(
+        default=True,
+        verbose_name='Статус показа на страницах'
+    )
 
     class Meta:
         abstract = True
@@ -17,7 +27,10 @@ class BaseFieldsMixin(models.Model):
 
 
 class Brand(BaseFieldsMixin):
-    name = models.CharField(max_length=128, unique=True, verbose_name='Бренд')
+    name = models.CharField(
+        max_length=128,
+        unique=True,
+        verbose_name='Бренд')
 
     class Meta:
         ordering = ['place']
@@ -29,7 +42,11 @@ class Brand(BaseFieldsMixin):
 
 
 class Category(BaseFieldsMixin):
-    name = models.CharField(max_length=128, unique=True, verbose_name='Название категории')
+    name = models.CharField(
+        max_length=128,
+        unique=True,
+        verbose_name='Название категории'
+    )
     brand = models.ForeignKey(
         Brand,
         on_delete=models.SET_NULL,
@@ -55,8 +72,11 @@ class Category(BaseFieldsMixin):
         return self.name
 
 
-class Product(BaseFieldsMixin):
-    name = models.CharField(max_length=128, unique=True, verbose_name='Название группы товаров')
+class ProductGroup(BaseFieldsMixin):
+    name = models.CharField(
+        max_length=128,
+        unique=True,
+        verbose_name='Название группы товаров')
     brand = models.ForeignKey(
         Brand,
         on_delete=models.SET_NULL,
@@ -79,15 +99,13 @@ class Product(BaseFieldsMixin):
 
 
 class Offer(BaseFieldsMixin):
-    name = models.CharField(max_length=128, unique=True, verbose_name='Артикул')
-    brand = models.ForeignKey(
-        Brand,
-        on_delete=models.SET_NULL,
-        null=True,
-        verbose_name='Бренд, к которому относится товар'
+    name = models.CharField(
+        max_length=128,
+        unique=True,
+        verbose_name='Артикул'
     )
-    product = models.ForeignKey(
-        Product,
+    product_group = models.ForeignKey(
+        ProductGroup,
         on_delete=models.SET_NULL,
         null=True,
         related_name='product',

@@ -1,4 +1,4 @@
-{% extends 'catalog/base.html' %}
+{% extends 'base.html' %}
 {%  block title %}<title>{{ product.name }}</title>{% endblock %}
 {% block content %}
 <body>
@@ -23,11 +23,11 @@
           <li>No children</li>
       {% endfor %}
       </ul>
-    {% if products %}
-        <p>Products:</p>
+    {% if products_groups %}
+        <p>products_groups:</p>
         <ul>
-        {% for product in products %}
-            <li>{{ forloop.counter }}: <a href="{% url 'offer' brand_id=product.brand_id product_id=product.id%}">{{ product.name }}</a></li>
+        {% for product_group in products_groups %}
+            <li>{{ forloop.counter }}: <a href="{% url 'offer' brand_id=product_group.brand_id product_group_id=product_group.id%}">{{ product_group.name }}</a></li>
       {% empty %}
           <li>No products</li>
         {% endfor %}

@@ -5,7 +5,7 @@ from django.contrib.admin import SimpleListFilter, AdminSite
 from django.contrib.auth.models import Group, User
 from django.contrib.auth.admin import GroupAdmin, UserAdmin
 
-from catalog.models import Brand, Product, Category, Offer
+from catalog.models import Brand, ProductGroup, Category, Offer
 
 
 """Общие методы админки"""
@@ -81,9 +81,19 @@ make_inactive.short_description = "Изменить статус на 'Неак�
 
 
 class BrandAdmin(admin.ModelAdmin):
-    list_display = ('name', 'place', 'is_active')
+    list_display = (
+        'name',
+        'place',
+        'is_active'
+    )
+    list_editable = ('place', 'is_active')
     list_filter = ('name', IsActiveStatusFilter)
-    fields = ['name', 'description', 'place', 'is_active']
+    fields = [
+        'name',
+        'description',
+        'place',
+        'is_active'
+    ]
     actions_on_bottom = True
     list_per_page = 25
     search_fields = ['name']
@@ -91,38 +101,104 @@ class BrandAdmin(admin.ModelAdmin):
 
 
 class CategoryAdmin(admin.ModelAdmin):
-    list_display = ('name', 'brand', 'parent', 'place', 'is_active')
-    list_filter = ('name', ('brand', RelatedOnlyFieldListFilter), ('parent', RelatedOnlyFieldListFilter), IsActiveStatusFilter)
-    fields = ['name', 'description', 'brand', 'parent', 'place', 'is_active']
+    list_display = (
+        'name',
+        'brand',
+        'parent',
+        'place',
+        'is_active'
+    )
+    list_editable = ('place', 'is_active')
+    list_filter = (
+        'name',
+        ('brand', RelatedOnlyFieldListFilter),
+        ('parent', RelatedOnlyFieldListFilter),
+        IsActiveStatusFilter
+    )
+    fields = [
+        'name',
+        'description',
+        'brand',
+        'parent',
+        'place',
+        'is_active'
+    ]
     actions_on_bottom = True
     list_per_page = 25
     search_fields = ('name', 'parent')
     actions = [make_active, make_inactive]
 
 
-class ProductAdmin(admin.ModelAdmin):
-    list_display = ('name', 'brand', 'place', 'is_active')
-    list_filter = (('brand', RelatedOnlyFieldListFilter), ('categories', RelatedOnlyFieldListFilter), IsActiveStatusFilter)
-    fields = ['name', 'description', 'brand', 'categories', 'place', 'is_active']
+class ProductGroupAdmin(admin.ModelAdmin):
+    list_display = (
+        'name',
+        'brand',
+        'place',
+        'is_active'
+    )
+    list_editable = ('place', 'is_active')
+    list_filter = (
+        ('brand', RelatedOnlyFieldListFilter),
+        ('categories', RelatedOnlyFieldListFilter),
+        IsActiveStatusFilter
+    )
+    fields = [
+        'name',
+        'description',
+        'brand',
+        'categories',
+        'place',
+        'is_active'
+    ]
     actions_on_bottom = True
     list_per_page = 25
-    search_fields = ('name', 'group', 'category')
+    search_fields = (
+        'name',
+        'group',
+        'category'
+    )
     actions = [make_active, make_inactive]
 
 
 class OfferAdmin(admin.ModelAdmin):
-    list_display = ('name', 'brand', 'product', 'place', 'is_active')
-    list_filter = (('brand', RelatedOnlyFieldListFilter), ('product', RelatedOnlyFieldListFilter), IsActiveStatusFilter)
-    fields = ['name', 'description', 'brand', 'product', 'place', 'is_active']
+    list_display = (
+        'name',
+        'brand_name',
+        'product_group',
+        'place',
+        'is_active'
+    )
+    list_editable = ('place', 'is_active')
+    list_filter = (
+        ('product_group__brand', RelatedOnlyFieldListFilter),
+        ('product_group', RelatedOnlyFieldListFilter),
+        IsActiveStatusFilter
+    )
+    fields = [
+        'name',
+        'description',
+        #'brand',
+        'product_group',
+        'place',
+        'is_active'
+    ]
     actions_on_bottom = True
     list_per_page = 25
-    search_fields = ('name', 'group', 'product')
+    search_fields = (
+        'name',
+        'product_group'
+    )
     actions = [make_active, make_inactive]
+
+    def brand_name(self, obj):
+        return obj.product_group.brand.name
+
+    brand_name.short_description = 'Бренд'
 
 
 admin.site.register(Brand, BrandAdmin)
 admin.site.register(Category, CategoryAdmin)
-admin.site.register(Product, ProductAdmin)
+admin.site.register(ProductGroup, ProductGroupAdmin)
 admin.site.register(Offer, OfferAdmin)
 admin.site.register(Group, GroupAdmin)
 admin.site.register(User, UserAdmin)
