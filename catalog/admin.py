@@ -1,5 +1,5 @@
 from django.contrib import admin
-from django.contrib.admin.filters import RelatedOnlyFieldListFilter  # необходимо для отображения только объектов, имеющих foreign key, с конкретными related_names
+from nda.filters import SimpleDropdownFilter, DropdownFilter, ChoiceDropdownFilter, RelatedDropdownFilter, RelatedOnlyDropdownFilter
 
 from django.contrib.admin import AdminSite
 from django.contrib.auth.models import Group, User
@@ -12,7 +12,7 @@ from catalog.models import Brand, ProductGroup, Category, Offer
 
 
 class MyAdminSite(AdminSite):
-    def get_app_list(self, request):
+    def get_app_list(self, request, app_label=None):
         """Возвращает отсортированный список зарегистрированных приложений"""
         app_dict = self._build_app_dict(request)
         app_list = sorted(app_dict.values(), key=lambda x: x['name'].lower())
@@ -20,6 +20,41 @@ class MyAdminSite(AdminSite):
 
 
 admin.site = MyAdminSite()
+
+admin.site.empty_value_display = '--- ОТСУТСТВУЕТ'
+
+
+class CategoryInline(admin.TabularInline):
+    model = Category
+    can_delete = True
+    extra = 0
+    show_change_link = True
+    classes = ['collapse', 'wide']
+
+
+class ProductGroupInline(admin.TabularInline):
+    model = ProductGroup
+    can_delete = True
+    extra = 0
+    show_change_link = True
+    classes = ['collapse', 'wide']
+
+
+class OfferInline(admin.TabularInline):
+    model = Offer
+    can_delete = True
+    extra = 0
+    show_change_link = True
+    classes = ['collapse', 'wide']
+
+
+class CategoryGroupInline(admin.TabularInline):
+    model = ProductGroup.categories.through
+    can_delete = True
+    extra = 0
+    show_change_link = True
+    verbose_name_plural = 'Связанные категории и группы товаров'
+    classes = ['collapse', 'wide']
 
 """"Классы админки"""
 
@@ -31,19 +66,22 @@ class BrandAdmin(admin.ModelAdmin):
         'is_active'
     )
     list_editable = ('place', 'is_active')
-    list_filter = ('name', 'is_active')
+    list_filter = (('name', DropdownFilter), 'is_active')
     fields = [
         'name',
         'description',
         'place',
         'is_active'
     ]
+    inlines = [CategoryInline, ProductGroupInline]
+    # view_on_site = True  включить после добавления get_absolute_url
     actions_on_bottom = True
     list_per_page = 25
     search_fields = ['name']
 
 
 class CategoryAdmin(admin.ModelAdmin):
+    list_select_related = True
     list_display = (
         'name',
         'brand',
@@ -53,9 +91,9 @@ class CategoryAdmin(admin.ModelAdmin):
     )
     list_editable = ('place', 'is_active')
     list_filter = (
-        'name',
-        ('brand', RelatedOnlyFieldListFilter),
-        ('parent', RelatedOnlyFieldListFilter),
+        ('name', DropdownFilter),
+        ('brand', RelatedOnlyDropdownFilter),
+        ('parent', RelatedOnlyDropdownFilter),
         'is_active'
     )
     fields = [
@@ -66,12 +104,14 @@ class CategoryAdmin(admin.ModelAdmin):
         'place',
         'is_active'
     ]
+    inlines = [CategoryGroupInline]
     actions_on_bottom = True
     list_per_page = 25
-    search_fields = ('name', 'parent')
+    search_fields = ['name']
 
 
 class ProductGroupAdmin(admin.ModelAdmin):
+    list_select_related = True
     list_display = (
         'name',
         'brand',
@@ -81,10 +121,11 @@ class ProductGroupAdmin(admin.ModelAdmin):
     )
     list_editable = ('place', 'is_active')
     list_filter = (
-        ('brand', RelatedOnlyFieldListFilter),
-        ('categories', RelatedOnlyFieldListFilter),
+        ('brand', RelatedOnlyDropdownFilter),
+        ('categories', RelatedOnlyDropdownFilter),
         'is_active'
     )
+    filter_horizontal = ('categories', )
     fields = [
         'name',
         'description',
@@ -93,13 +134,10 @@ class ProductGroupAdmin(admin.ModelAdmin):
         'place',
         'is_active'
     ]
+    inlines = [CategoryGroupInline, OfferInline]
     actions_on_bottom = True
     list_per_page = 25
-    search_fields = (
-        'name',
-        'group',
-        'category'
-    )
+    search_fields = ['name']
 
     @admin.display(description='Категории, к которым принадлежит группа товаров', ordering='name')
     def get_categories(self, obj):
@@ -108,6 +146,7 @@ class ProductGroupAdmin(admin.ModelAdmin):
 
 
 class OfferAdmin(admin.ModelAdmin):
+    list_select_related = True
     list_display = (
         'name',
         'brand_name',
@@ -117,8 +156,8 @@ class OfferAdmin(admin.ModelAdmin):
     )
     list_editable = ('place', 'is_active')
     list_filter = (
-        ('product_group__brand', RelatedOnlyFieldListFilter),
-        ('product_group', RelatedOnlyFieldListFilter),
+        ('product_group__brand', RelatedOnlyDropdownFilter),
+        ('product_group', RelatedOnlyDropdownFilter),
         'is_active'
     )
     fields = [
@@ -130,10 +169,7 @@ class OfferAdmin(admin.ModelAdmin):
     ]
     actions_on_bottom = True
     list_per_page = 25
-    search_fields = (
-        'name',
-        'product_group'
-    )
+    search_fields = ['name']
 
     @admin.display(description='Бренд', ordering='name')
     def brand_name(self, obj):
