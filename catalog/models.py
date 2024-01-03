@@ -4,9 +4,16 @@ from django.db import models
 """Общие классы и миксины"""
 
 
+class NotHidden(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(is_active=True)
+
+
 class BaseFieldsMixin(models.Model):
     description = models.TextField(
         default='',
+        null=True,
+        blank=True,
         verbose_name='Описание'
     )
     place = models.IntegerField(
@@ -18,6 +25,9 @@ class BaseFieldsMixin(models.Model):
         default=True,
         verbose_name='Статус показа на страницах'
     )
+
+    objects = models.Manager()
+    visible = NotHidden()
 
     class Meta:
         abstract = True
@@ -101,13 +111,13 @@ class ProductGroup(BaseFieldsMixin):
 class Offer(BaseFieldsMixin):
     name = models.CharField(
         max_length=128,
-        unique=True,
         verbose_name='Артикул'
     )
     product_group = models.ForeignKey(
         ProductGroup,
         on_delete=models.SET_NULL,
         null=True,
+        blank=True,
         related_name='product',
         verbose_name='Группа, к которой принадлежит товар'
     )

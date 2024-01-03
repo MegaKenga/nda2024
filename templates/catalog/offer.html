@@ -3,6 +3,7 @@
 {% block content %}
 <body>
 <div>
+    <p>Brand: {{ product_group.brand }}</p>
     <p>Name: {{ product_group.name }}</p>
     <p>Description: {{ product_group.description }}</p>
   {% for offer in offers %}

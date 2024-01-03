@@ -1,7 +1,7 @@
 from django.contrib import admin
-from django.contrib.admin.filters import RelatedOnlyFieldListFilter # необходимо для отображения только объектов, имеющих foreign key, с конкретными related_names
-from django.utils.translation import gettext_lazy
-from django.contrib.admin import SimpleListFilter, AdminSite
+from django.contrib.admin.filters import RelatedOnlyFieldListFilter  # необходимо для отображения только объектов, имеющих foreign key, с конкретными related_names
+
+from django.contrib.admin import AdminSite
 from django.contrib.auth.models import Group, User
 from django.contrib.auth.admin import GroupAdmin, UserAdmin
 
@@ -21,62 +21,6 @@ class MyAdminSite(AdminSite):
 
 admin.site = MyAdminSite()
 
-
-class IsActiveStatusFilter(SimpleListFilter):
-    title = gettext_lazy('Статус показа на страницах')
-    parameter_name = 'is_active'
-
-    def lookups(self, request, model_admin):
-        return (
-            (None, gettext_lazy('Активные')),
-            # ('True', gettext_lazy('Активные')),
-            ('False', gettext_lazy('Неактивные')),
-            ('all', gettext_lazy('All')),
-        )
-
-    def choices(self, cl):
-        for lookup, title in self.lookup_choices:
-            yield {
-                'selected': self.value() == lookup,
-                'query_string': cl.get_query_string({
-                    self.parameter_name: lookup,
-                }, []),
-                'display': title,
-            }
-
-    def queryset(self, request, queryset):
-        if self.value() in ('True', 'False'):
-            return queryset.filter(is_active=self.value())
-        elif self.value() is None:
-            return queryset.filter(is_active='True')
-
-
-def make_active(modeladmin, request, queryset):
-    queryset.update(is_active='True')
-    rows_updated = queryset.update(is_active='True')
-    if rows_updated == 1:
-        message_bit = "1 поле"
-    else:
-        message_bit = "%s полей" % rows_updated
-    modeladmin.message_user(request, "%s успешно обновлено." % message_bit)
-
-
-make_active.short_description = "Изменить статус на 'Активный'"
-
-
-def make_inactive(modeladmin, request, queryset):
-    queryset.update(is_active='False')
-    rows_updated = queryset.update(is_active='False')
-    if rows_updated == 1:
-        message_bit = "1 поле"
-    else:
-        message_bit = "%s полей" % rows_updated
-    modeladmin.message_user(request, "%s успешно обновлено." % message_bit)
-
-
-make_inactive.short_description = "Изменить статус на 'Неактивный'"
-
-
 """"Классы админки"""
 
 
@@ -87,7 +31,7 @@ class BrandAdmin(admin.ModelAdmin):
         'is_active'
     )
     list_editable = ('place', 'is_active')
-    list_filter = ('name', IsActiveStatusFilter)
+    list_filter = ('name', 'is_active')
     fields = [
         'name',
         'description',
@@ -97,7 +41,6 @@ class BrandAdmin(admin.ModelAdmin):
     actions_on_bottom = True
     list_per_page = 25
     search_fields = ['name']
-    actions = [make_active, make_inactive]
 
 
 class CategoryAdmin(admin.ModelAdmin):
@@ -113,7 +56,7 @@ class CategoryAdmin(admin.ModelAdmin):
         'name',
         ('brand', RelatedOnlyFieldListFilter),
         ('parent', RelatedOnlyFieldListFilter),
-        IsActiveStatusFilter
+        'is_active'
     )
     fields = [
         'name',
@@ -126,13 +69,13 @@ class CategoryAdmin(admin.ModelAdmin):
     actions_on_bottom = True
     list_per_page = 25
     search_fields = ('name', 'parent')
-    actions = [make_active, make_inactive]
 
 
 class ProductGroupAdmin(admin.ModelAdmin):
     list_display = (
         'name',
         'brand',
+        'get_categories',
         'place',
         'is_active'
     )
@@ -140,7 +83,7 @@ class ProductGroupAdmin(admin.ModelAdmin):
     list_filter = (
         ('brand', RelatedOnlyFieldListFilter),
         ('categories', RelatedOnlyFieldListFilter),
-        IsActiveStatusFilter
+        'is_active'
     )
     fields = [
         'name',
@@ -157,7 +100,11 @@ class ProductGroupAdmin(admin.ModelAdmin):
         'group',
         'category'
     )
-    actions = [make_active, make_inactive]
+
+    @admin.display(description='Категории, к которым принадлежит группа товаров', ordering='name')
+    def get_categories(self, obj):
+        if obj.categories.all():
+            return list(obj.categories.all().values_list('name', flat=True))
 
 
 class OfferAdmin(admin.ModelAdmin):
@@ -172,12 +119,11 @@ class OfferAdmin(admin.ModelAdmin):
     list_filter = (
         ('product_group__brand', RelatedOnlyFieldListFilter),
         ('product_group', RelatedOnlyFieldListFilter),
-        IsActiveStatusFilter
+        'is_active'
     )
     fields = [
         'name',
         'description',
-        #'brand',
         'product_group',
         'place',
         'is_active'
@@ -188,12 +134,10 @@ class OfferAdmin(admin.ModelAdmin):
         'name',
         'product_group'
     )
-    actions = [make_active, make_inactive]
 
+    @admin.display(description='Бренд', ordering='name')
     def brand_name(self, obj):
         return obj.product_group.brand.name
-
-    brand_name.short_description = 'Бренд'
 
 
 admin.site.register(Brand, BrandAdmin)
