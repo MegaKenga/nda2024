@@ -56,6 +56,15 @@ class CategoryGroupInline(admin.TabularInline):
     verbose_name_plural = 'Связанные категории и группы товаров'
     classes = ['collapse', 'wide']
 
+
+class CategoryCategoryInline(admin.TabularInline):
+    model = Category
+    can_delete = True
+    extra = 0
+    show_change_link = True
+    verbose_name_plural = 'Связанные категории'
+    classes = ['collapse', 'wide']
+
 """"Классы админки"""
 
 
@@ -104,7 +113,7 @@ class CategoryAdmin(admin.ModelAdmin):
         'place',
         'is_active'
     ]
-    inlines = [CategoryGroupInline]
+    inlines = [CategoryGroupInline, CategoryCategoryInline]
     actions_on_bottom = True
     list_per_page = 25
     search_fields = ['name']
