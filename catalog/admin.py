@@ -113,6 +113,7 @@ class CategoryAdmin(admin.ModelAdmin):
         'place',
         'is_active'
     ]
+    autocomplete_fields = ['parent']
     inlines = [CategoryGroupInline, CategoryCategoryInline]
     actions_on_bottom = True
     list_per_page = 25

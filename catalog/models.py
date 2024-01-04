@@ -79,6 +79,8 @@ class Category(BaseFieldsMixin):
         verbose_name_plural = 'Категории'
 
     def __str__(self):
+        if self.parent is not None:
+            return self.name + " <" + self.parent.name + ">"
         return self.name
 
 
