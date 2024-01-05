@@ -8,16 +8,12 @@
     <p>Description: {{ brand.description }}</p>
         <ul>
         {% for category in categories %}
-            <li>{{ forloop.counter }}: <a href="{% url 'category' category_id=category.id %}">{{ category.name }}</a></li>
-        {% empty %}
-          <li>No category</li>
+            {% if category.is_final %}
+                <li>{{ forloop.counter }}: <a href="{% url 'offer' brand_id=category.brand_id category_id=category.id%}">{{ category.name }}</a></li>
+            {% else %}
+                <li>{{ forloop.counter }}: <a href="{% url 'category' category_id=category.id%}">{{ category.name }}</a></li>
+            {% endif %}
         {% endfor %}
-      </ul>
-    {% if products_groups %}
-        {% for product_group in products_groups %}
-            <p>{{ product_group.name }}</p>
-        {% endfor %}
-    {% endif %}
 </div>
 </body>
 {% endblock %}

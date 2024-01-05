@@ -51,7 +51,7 @@ class UnitAdmin(admin.ModelAdmin):
         'status'
     )
     list_editable = ('place', 'status')
-    list_filter = (('name', DropdownFilter), 'status')
+    list_filter = (('name', DropdownFilter), ('parent', RelatedOnlyDropdownFilter), 'status')
     fields = [
         'name',
         'description',
@@ -61,6 +61,7 @@ class UnitAdmin(admin.ModelAdmin):
     ]
     inlines = [CategoryInline]
     # view_on_site = True  включить после добавления get_absolute_url
+    autocomplete_fields = ['parent']
     actions_on_bottom = True
     list_per_page = 25
     search_fields = ['name']
@@ -80,7 +81,7 @@ class BrandAdmin(admin.ModelAdmin):
         'place',
         'status'
     ]
-    inlines = [CategoryInline]
+    # inlines = [CategoryInline]   очень долго грузится из за огромного количества категорий, надо еще поразбираться.
     # view_on_site = True  включить после добавления get_absolute_url
     actions_on_bottom = True
     list_per_page = 25
@@ -116,7 +117,8 @@ class CategoryAdmin(admin.ModelAdmin):
         'status',
         'is_final'
     ]
-    inlines = [CategoryInline]
+    inlines = [CategoryInline, OfferInline]
+    autocomplete_fields = ['parent', 'unit']
     actions_on_bottom = True
     list_per_page = 25
     search_fields = ['name']
@@ -144,6 +146,7 @@ class OfferAdmin(admin.ModelAdmin):
         'place',
         'status'
     ]
+    autocomplete_fields = ['category']
     actions_on_bottom = True
     list_per_page = 25
     search_fields = ['name']
