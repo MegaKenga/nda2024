@@ -10,10 +10,10 @@
         <p><a href="{% url 'brand' brand_id=brand.id %}">{{ brand.name }}</a></p> 
             </div>
 	{% endfor %}
-    <li>Каталог по категориям</li>
-          {% for category in categories %}
+    <li>Каталог по направлениям</li>
+          {% for unit in units %}
 	<div>
-        <p><a href="{% url 'category' category_id=category.id %}">{{ category.name }}</a></p>
+        <p><a href="{% url 'unit' unit_id=unit.id %}">{{ unit.name }}</a></p>
     </div>
 	{% endfor %}
 	</ul>
