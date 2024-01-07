@@ -41,9 +41,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
-    'mptt',
-
     'catalog.apps.CatalogConfig',
 ]
 
@@ -91,7 +88,7 @@ WSGI_APPLICATION = 'nda.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('DB_NAME', 'collabtraining'),
+        'NAME': os.getenv('DB_NAME', 'xxxx'),
         'USER': os.getenv('DB_USER', 'postgres'),
         'PASSWORD': os.getenv('DB_USER_PASSWORD'),
         'HOST': os.getenv('DB_HOST', 'localhost'),

@@ -4,10 +4,36 @@ from django.db import models
 """Общие классы и миксины"""
 
 
+class NotHidden(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(status='PUBLISHED')
+
+
 class BaseFieldsMixin(models.Model):
-    description = models.TextField(default='', verbose_name='Описание')
-    place = models.IntegerField(blank=True, null=True, verbose_name='Место в списке')
-    is_active = models.BooleanField(default=True, verbose_name='Статус показа на страницах')
+    class Status(models.TextChoices):
+        DRAFT = 'DRAFT', 'Черновик'
+        PUBLISHED = 'PUBLISHED', 'Активен'
+        ARCHIVED = 'ARCHIVED', 'В архиве'
+
+    description = models.TextField(
+        default='',
+        null=True,
+        blank=True,
+        verbose_name='Описание'
+    )
+    place = models.IntegerField(
+        blank=True,
+        null=True,
+        verbose_name='Место в списке'
+    )
+    status = models.CharField(
+        choices=Status.choices,
+        default=Status.DRAFT,
+        verbose_name='Статус показа на страницах'
+    )
+
+    objects = models.Manager()
+    visible = NotHidden()
 
     class Meta:
         abstract = True
@@ -16,8 +42,33 @@ class BaseFieldsMixin(models.Model):
 """Модели"""
 
 
+class Unit(BaseFieldsMixin):
+    name = models.CharField(
+        max_length=128,
+        unique=True,
+        verbose_name='Направление')
+    parent = models.ForeignKey(
+        'self',
+        related_name='children',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name='Родительское направление')
+
+    class Meta:
+        ordering = ['place']
+        verbose_name = 'Направление'
+        verbose_name_plural = 'Направления'
+
+    def __str__(self):
+        return self.name
+
+
 class Brand(BaseFieldsMixin):
-    name = models.CharField(max_length=128, unique=True, verbose_name='Бренд')
+    name = models.CharField(
+        max_length=128,
+        unique=True,
+        verbose_name='Бренд')
 
     class Meta:
         ordering = ['place']
@@ -29,7 +80,11 @@ class Brand(BaseFieldsMixin):
 
 
 class Category(BaseFieldsMixin):
-    name = models.CharField(max_length=128, unique=True, verbose_name='Название категории')
+    name = models.CharField(
+        max_length=128,
+        unique=True,
+        verbose_name='Название категории'
+    )
     brand = models.ForeignKey(
         Brand,
         on_delete=models.SET_NULL,
@@ -45,6 +100,14 @@ class Category(BaseFieldsMixin):
         blank=True,
         verbose_name='Родительская категория'
     )
+    unit = models.ForeignKey(
+        Unit,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name='Направление, к которому относится категория'
+    )
+    is_final = models.BooleanField(default=False, verbose_name='Отметка о том, что категория является финальной и в ней содержатся товары')
 
     class Meta:
         ordering = ['place']
@@ -55,43 +118,18 @@ class Category(BaseFieldsMixin):
         return self.name
 
 
-class Product(BaseFieldsMixin):
-    name = models.CharField(max_length=128, unique=True, verbose_name='Название группы товаров')
-    brand = models.ForeignKey(
-        Brand,
-        on_delete=models.SET_NULL,
-        null=True,
-        verbose_name='Бренд, к которому относится группа товаров'
-    )
-    categories = models.ManyToManyField(
-        Category,
-        related_name='products',
-        verbose_name='Категории, к которым принадлежит группа товаров'
-    )
-
-    class Meta:
-        ordering = ['place']
-        verbose_name = 'Группа товара'
-        verbose_name_plural = 'Группы товаров'
-
-    def __str__(self):
-        return self.name
-
-
 class Offer(BaseFieldsMixin):
-    name = models.CharField(max_length=128, unique=True, verbose_name='Артикул')
-    brand = models.ForeignKey(
-        Brand,
-        on_delete=models.SET_NULL,
-        null=True,
-        verbose_name='Бренд, к которому относится товар'
+    name = models.CharField(
+        max_length=128,
+        verbose_name='Артикул'
     )
-    product = models.ForeignKey(
-        Product,
+    category = models.ForeignKey(
+        Category,
         on_delete=models.SET_NULL,
         null=True,
-        related_name='product',
-        verbose_name='Группа, к которой принадлежит товар'
+        blank=True,
+        related_name='offer',
+        verbose_name='Категория, к которой принадлежит товар'
     )
 
     class Meta:

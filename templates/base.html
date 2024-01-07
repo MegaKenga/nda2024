@@ -1,0 +1,14 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	{%  block title %}<title>НДА Деловая медицинская компания</title>{% endblock %}
+    <link type="text/css" href="{% static 'catalog/css/styles.css' %}" rel="stylesheet">
+</head>
+{% include 'header.html' %}
+{% block content %}
+{% endblock %}
+{% include 'footer.html' %}
+</html>

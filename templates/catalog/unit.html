@@ -3,17 +3,26 @@
 {% block content %}
 <body>
 <div>
-    <p>Name: {{ brand.name }}</p>
-    <p>ID: {{ brand.id }}</p>
-    <p>Description: {{ brand.description }}</p>
+    <p>Name: {{ unit.name }}</p>
+    <p>ID: {{ unit.id }}</p>
+    <p>Description: {{ unit.description }}</p>
         <ul>
+        {% for sub_unit in sub_units %}
+            <li>{{ forloop.counter }}: <a href="{% url 'unit' unit_id=sub_unit.id %}">{{ sub_unit.name }}</a></li>
+        {% empty %}
+          <li>No sub_unit </li>
+        {% endfor %}
+      </ul>
+    {% if categories %}
         {% for category in categories %}
             {% if category.is_final %}
                 <li>{{ forloop.counter }}: <a href="{% url 'offer' brand_id=category.brand_id category_id=category.id%}">{{ category.name }}</a></li>
             {% else %}
                 <li>{{ forloop.counter }}: <a href="{% url 'category' category_id=category.id%}">{{ category.name }}</a></li>
             {% endif %}
+{#            <li>{{ forloop.counter }}: <a href="{% url 'category' category_id=category.id %}">{{ category.name }}</a></li>#}
         {% endfor %}
+    {% endif %}
 </div>
 </body>
 {% endblock %}
