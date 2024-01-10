@@ -47,20 +47,22 @@ class UnitAdmin(admin.ModelAdmin):
     list_display = (
         'name',
         'parent',
+        'slug',
         'place',
         'status'
     )
-    list_editable = ('place', 'status')
+    list_editable = ('slug', 'place', 'status')
     list_filter = (('name', DropdownFilter), ('parent', RelatedOnlyDropdownFilter), 'status')
     fields = [
         'name',
         'description',
         'parent',
+        'slug',
         'place',
         'status'
     ]
     inlines = [CategoryInline]
-    # view_on_site = True  включить после добавления get_absolute_url
+    view_on_site = True
     autocomplete_fields = ['parent']
     actions_on_bottom = True
     list_per_page = 25
@@ -70,14 +72,16 @@ class UnitAdmin(admin.ModelAdmin):
 class BrandAdmin(admin.ModelAdmin):
     list_display = (
         'name',
+        'slug',
         'place',
         'status'
     )
-    list_editable = ('place', 'status')
+    list_editable = ('place', 'slug', 'status')
     list_filter = (('name', DropdownFilter), 'status')
     fields = [
         'name',
         'description',
+        'slug',
         'place',
         'status'
     ]
@@ -95,11 +99,12 @@ class CategoryAdmin(admin.ModelAdmin):
         'brand',
         'parent',
         'unit',
+        'slug',
         'place',
         'status',
         'is_final'
     )
-    list_editable = ('place', 'status')
+    list_editable = ('place', 'slug', 'status')
     list_filter = (
         ('name', DropdownFilter),
         ('brand', RelatedOnlyDropdownFilter),
@@ -113,11 +118,13 @@ class CategoryAdmin(admin.ModelAdmin):
         'brand',
         'unit',
         'parent',
+        'slug',
         'place',
         'status',
         'is_final'
     ]
     inlines = [CategoryInline, OfferInline]
+    view_on_site = True
     autocomplete_fields = ['parent', 'unit']
     actions_on_bottom = True
     list_per_page = 25
@@ -146,6 +153,7 @@ class OfferAdmin(admin.ModelAdmin):
         'place',
         'status'
     ]
+    exclude = ['slug']
     autocomplete_fields = ['category']
     actions_on_bottom = True
     list_per_page = 25

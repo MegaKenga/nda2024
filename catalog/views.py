@@ -1,35 +1,35 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404, get_list_or_404
 from catalog.models import Category, Brand, Unit, Offer
 
 
 def index(request):
     brands = Brand.visible.all().order_by('name')
-    units = Unit.objects.filter(parent=None)
+    units = Unit.visible.filter(parent=None)
     context = {'brands': brands, 'units': units}
     return render(request, 'index.html', context=context)
 
 
-def get_brand(request, brand_id):
-    brand = Brand.objects.get(pk=brand_id)
-    categories = Category.visible.filter(brand=brand_id).filter(parent=None)
+def get_brand(request, brand_slug):
+    brand = get_object_or_404(Brand.visible, slug=brand_slug)
+    categories = get_list_or_404(Category.visible, brand=brand.id, parent=None)
     context = {'brand': brand, 'categories': categories}
     return render(request, 'catalog/brand.html', context=context)
 
 
-def get_unit(request, unit_id):
-    unit = Unit.objects.get(pk=unit_id)
-    sub_units = Unit.visible.filter(parent=unit_id)
-    categories = Category.visible.filter(unit=unit_id)
-    context = {'unit': unit, 'sub_units': sub_units, 'categories': categories}
+def get_unit(request, unit_slug):
+    unit = get_object_or_404(Unit.visible, slug=unit_slug)
+    parent = unit.parent
+    if parent is None:
+        parent = None
+    sub_units = Unit.visible.filter(parent=unit.id)
+    categories = Category.visible.filter(unit=unit.id)
+    context = {'unit': unit, 'parent': parent, 'sub_units': sub_units, 'categories': categories}
     return render(request, 'catalog/unit.html', context=context)
 
 
-def get_category(request, category_id):
-    category = Category.visible.get(pk=category_id)
-    try:
-        brand = Brand.visible.get(id=category.brand_id)
-    except Brand.DoesNotExist:
-        brand = None
+def get_category(request, category_slug):
+    category = get_object_or_404(Category.visible, slug=category_slug)
+    brand = get_object_or_404(Brand.visible, pk=category.brand_id)
     parent = category.parent
     if parent is None:
         parent = None
@@ -38,8 +38,8 @@ def get_category(request, category_id):
     return render(request, 'catalog/category.html', context=context)
 
 
-def get_product_with_offers(request, brand_id, category_id):
-    offers = Offer.visible.filter(category=category_id)
-    category = Category.visible.get(id=category_id)
+def get_product_with_offers(request, brand_slug, category_slug):
+    category = get_object_or_404(Category.visible, slug=category_slug)
+    offers = Offer.visible.filter(category=category.id)
     context = {'offers': offers, 'category': category}
     return render(request, 'catalog/offer.html', context=context)

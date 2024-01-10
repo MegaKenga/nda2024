@@ -1,12 +1,12 @@
 {% extends 'base.html' %}
-{%  block title %}<title>{{ title.name }}</title>{% endblock %}
+{% block title %}<title>{{ category.name }}</title>{% endblock %}
 {% block content %}
 <body>
 <div>
-    <p>Brand: {{ category.brand }}</p>
+    <p>Brand: <a href="{% url 'brand' brand_slug=category.brand.slug %}">{{ category.brand }}</a></p>
     <p>Name: {{ category.name }}</p>
     <p>Description: {{ category.description }}</p>
-  {% for offer in offers %}
+    {% for offer in offers %}
     <p>Name: {{ offer.name }}</p>
     <p>Description: {{ offer.description }}</p>
     {% endfor %}

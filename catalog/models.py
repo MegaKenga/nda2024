@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.urls import reverse
 
 """Общие классы и миксины"""
 
@@ -31,6 +31,7 @@ class BaseFieldsMixin(models.Model):
         default=Status.DRAFT,
         verbose_name='Статус показа на страницах'
     )
+    slug = models.SlugField(default='None', max_length=128, db_index=True, verbose_name='url-адрес')
 
     objects = models.Manager()
     visible = NotHidden()
@@ -60,6 +61,9 @@ class Unit(BaseFieldsMixin):
         verbose_name = 'Направление'
         verbose_name_plural = 'Направления'
 
+    def get_absolute_url(self):
+        return reverse('unit', kwargs={'unit_slug': self.slug})
+
     def __str__(self):
         return self.name
 
@@ -74,6 +78,9 @@ class Brand(BaseFieldsMixin):
         ordering = ['place']
         verbose_name = 'Бренд'
         verbose_name_plural = 'Бренды'
+
+    def get_absolute_url(self):
+        return reverse('brand', kwargs={'brand_slug': self.slug})
 
     def __str__(self):
         return self.name
@@ -113,6 +120,9 @@ class Category(BaseFieldsMixin):
         ordering = ['place']
         verbose_name = 'Категория'
         verbose_name_plural = 'Категории'
+
+    def get_absolute_url(self):
+        return reverse('category', kwargs={'category_slug': self.slug})
 
     def __str__(self):
         return self.name
