@@ -1,5 +1,6 @@
 from django.db import models
 from django.urls import reverse
+from files.models import NDAImage
 
 """Общие классы и миксины"""
 
@@ -115,6 +116,8 @@ class Category(BaseFieldsMixin):
         verbose_name='Направление, к которому относится категория'
     )
     is_final = models.BooleanField(default=False, verbose_name='Отметка о том, что категория является финальной и в ней содержатся товары')
+
+    image = models.ForeignKey(NDAImage, on_delete=models.SET_NULL, blank=True, null=True)
 
     class Meta:
         ordering = ['place']

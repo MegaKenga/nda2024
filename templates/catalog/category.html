@@ -10,6 +10,9 @@
     {% endif %}
     <p>Name: {{ category.name }}</p>
     <p>Description: {{ category.description }}</p>
+    <p>File: {{ category.image.image.file }}</p>
+    <p>File: {{ category.image.image.url }}</p>
+    <img src="{{ category.image.image.url }}" alt="" /></div>
     {% if parent %}
       <p>Parent: <a href="{% url 'category' category_slug=parent.slug %}">{{ parent.name }}</a></p>
     {% else %}

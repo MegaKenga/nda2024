@@ -121,6 +121,7 @@ class CategoryAdmin(admin.ModelAdmin):
         'slug',
         'place',
         'status',
+        'image',
         'is_final'
     ]
     inlines = [CategoryInline, OfferInline]
