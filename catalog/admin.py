@@ -1,5 +1,5 @@
 from django.contrib import admin
-from nda.filters import SimpleDropdownFilter, DropdownFilter, ChoiceDropdownFilter, RelatedDropdownFilter, RelatedOnlyDropdownFilter
+from nda.filters import DropdownFilter, RelatedOnlyDropdownFilter
 
 from django.contrib.admin import AdminSite
 from django.contrib.auth.models import Group, User
@@ -83,7 +83,8 @@ class BrandAdmin(admin.ModelAdmin):
         'description',
         'slug',
         'place',
-        'status'
+        'status',
+        'logo'
     ]
     # inlines = [CategoryInline]   очень долго грузится из за огромного количества категорий, надо еще поразбираться.
     # view_on_site = True  включить после добавления get_absolute_url
