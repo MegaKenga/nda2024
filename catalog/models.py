@@ -1,5 +1,10 @@
+
+
 from django.db import models
 from django.urls import reverse
+
+from files.models import CatalogImage
+
 
 """Общие классы и миксины"""
 
@@ -31,7 +36,6 @@ class BaseFieldsMixin(models.Model):
         default=Status.DRAFT,
         verbose_name='Статус показа на страницах'
     )
-    slug = models.SlugField(default='None', max_length=128, db_index=True, verbose_name='url-адрес')
 
     objects = models.Manager()
     visible = NotHidden()
@@ -55,6 +59,7 @@ class Unit(BaseFieldsMixin):
         null=True,
         blank=True,
         verbose_name='Родительское направление')
+    slug = models.SlugField(unique=True, max_length=128, db_index=True, verbose_name='url-адрес')
 
     class Meta:
         ordering = ['place']
@@ -73,6 +78,14 @@ class Brand(BaseFieldsMixin):
         max_length=128,
         unique=True,
         verbose_name='Бренд')
+    logo = models.ForeignKey(
+        CatalogImage,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name='Логотип бренда'
+        )
+    slug = models.SlugField(unique=True, max_length=128, db_index=True, verbose_name='url-адрес')
 
     class Meta:
         ordering = ['place']
@@ -114,6 +127,7 @@ class Category(BaseFieldsMixin):
         blank=True,
         verbose_name='Направление, к которому относится категория'
     )
+    slug = models.SlugField(unique=True, max_length=128, db_index=True, verbose_name='url-адрес')
     is_final = models.BooleanField(default=False, verbose_name='Отметка о том, что категория является финальной и в ней содержатся товары')
 
     class Meta:

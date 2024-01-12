@@ -8,7 +8,7 @@ of products with categories and brands. In plans: a cart and mail notifications 
 
 ## Installation:
 ```shell
-python -m virtualenv venv
+python3 -m virtualenv venv
 source venv/bin/activate
 pip install -r requirements.txt
 ```
@@ -17,16 +17,16 @@ pip install -r requirements.txt
 1. Create .env file and populate it with values. Please check .env.example for reference
 2. Run initial database commands: 
     ```shell
-    python manage.py migrate
-    python manage.py createsuperuser
+    python3 manage.py migrate
+    python3 manage.py createsuperuser
     ```
 3. Run collect static command
     ```shell
-    python manage.py collectstatic
+    python3 manage.py collectstatic
     ```
 
 
 ## Run the app
 ```shell
-python manage.py runserver
+python3 manage.py runserver
 ```

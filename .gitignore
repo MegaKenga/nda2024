@@ -2,6 +2,7 @@
 /venv
 .idea
 /dumps
+/media
 
 **/**/__pycache__
 TODO.py

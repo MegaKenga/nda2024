@@ -6,6 +6,7 @@
     <p>Name: {{ brand.name }}</p>
     <p>ID: {{ brand.id }}</p>
     <p>Description: {{ brand.description }}</p>
+    <div><img src="{{ brand.logo.image.url }}"></div>
         <ul>
         {% for category in categories %}
             {% if category.is_final %}
