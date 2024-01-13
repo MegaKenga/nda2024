@@ -7,13 +7,13 @@
     <li>Каталог по производителям</li>
           {% for brand in brands %}
 	<div>
-        <p><img src="media/image/{{ brand.logo }}"/><a href="{% url 'brand' brand_slug=brand.slug %}">{{ brand.name }}</a></p> 
+        <p><img src="{{ brand.logo.image.url }}"/><a href="{% url 'brand' brand_slug=brand.slug %}">{{ brand.name.upper }}</a></p> 
     </div>
 	{% endfor %}
     <li>Каталог по направлениям</li>
           {% for unit in units %}
 	<div>
-        <p><a href="{% url 'unit' unit_slug=unit.slug %}">{{ unit.name }}</a></p>
+        <p><a href="{% url 'unit' unit_slug=unit.slug %}">{{ unit.name.upper }}</a></p>
     </div>
 	{% endfor %}
   </ul>

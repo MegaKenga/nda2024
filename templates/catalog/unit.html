@@ -3,17 +3,17 @@
 {% block content %}
 <body>
 <div>
-    <p>Name: {{ unit.name }}</p>
+    <p>Name: {{ unit.name.upper }}</p>
     <p>ID: {{ unit.id }}</p>
-    <p>Description: {{ unit.description }}</p>
+    <p>Description: {{ unit.description.upper }}</p>
     {% if parent %}
-      <p>Parent: <a href="{% url 'unit' unit_slug=parent.slug %}">{{ parent.name }}</a></p>
+      <p>Parent: <a href="{% url 'unit' unit_slug=parent.slug %}">{{ parent.name.upper }}</a></p>
     {% else %}
       <p>No parent</p>
     {% endif %}
         <ul>
         {% for sub_unit in sub_units %}
-            <li>{{ forloop.counter }}: <a href="{% url 'unit' unit_slug=sub_unit.slug %}">{{ sub_unit.name }}</a></li>
+            <li>{{ forloop.counter }}: <a href="{% url 'unit' unit_slug=sub_unit.slug %}">{{ sub_unit.name.upper }}</a></li>
         {% empty %}
             <li>No sub_unit </li>
         {% endfor %}
@@ -21,11 +21,11 @@
     {% if categories %}
         {% for category in categories %}
             {% if category.is_final %}
-                <li>{{ forloop.counter }}: <a href="{% url 'offer' brand_slug=category.brand.slug category_slug=category.slug %}">{{ category.name }}</a></li>
+                <li>{{ forloop.counter }}: <a href="{% url 'offer' brand_slug=category.brand.slug category_slug=category.slug %}">{{ category.name.upper }}</a></li>
             {% else %}
-                <li>{{ forloop.counter }}: <a href="{% url 'category' category_slug=category.slug %}">{{ category.name }}</a></li>
+                <li>{{ forloop.counter }}: <a href="{% url 'category' category_slug=category.slug %}">{{ category.name.upper }}</a></li>
             {% endif %}
-            <li>{{ forloop.counter }}: <a href="{% url 'category' category_slug=category.slug %}">{{ category.name }}</a></li>
+            <li>{{ forloop.counter }}: <a href="{% url 'category' category_slug=category.slug %}">{{ category.name.upper }}</a></li>
         {% endfor %}
     {% endif %}
 </div>

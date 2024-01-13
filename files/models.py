@@ -7,7 +7,7 @@ from nda import settings
 
 class CatalogImage(models.Model):
     name = models.CharField(default='', max_length=50)
-    image = models.ImageField(upload_to='images')
+    image = models.ImageField(upload_to='images', null=True, blank=True)
 
     class Meta:
         verbose_name_plural = 'Изображения'

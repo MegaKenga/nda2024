@@ -102,7 +102,6 @@ class Brand(BaseFieldsMixin):
 class Category(BaseFieldsMixin):
     name = models.CharField(
         max_length=128,
-        unique=True,
         verbose_name='Название категории'
     )
     brand = models.ForeignKey(
@@ -139,6 +138,8 @@ class Category(BaseFieldsMixin):
         return reverse('category', kwargs={'category_slug': self.slug})
 
     def __str__(self):
+        if self.brand:
+            return str(self.brand) + ' ' + self.name
         return self.name
 
 
