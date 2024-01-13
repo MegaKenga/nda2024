@@ -87,7 +87,7 @@ class BrandAdmin(admin.ModelAdmin):
         'logo'
     ]
     # inlines = [CategoryInline]   очень долго грузится из за огромного количества категорий, надо еще поразбираться.
-    # view_on_site = True  включить после добавления get_absolute_url
+    view_on_site = True
     actions_on_bottom = True
     list_per_page = 25
     search_fields = ['name']

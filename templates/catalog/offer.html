@@ -4,10 +4,10 @@
 <body>
 <div>
     <p>Brand: <a href="{% url 'brand' brand_slug=category.brand.slug %}">{{ category.brand }}</a></p>
-    <p>Name: {{ category.name }}</p>
+    <p>Name: {{ category.name.upper }}</p>
     <p>Description: {{ category.description }}</p>
     {% for offer in offers %}
-    <p>Name: {{ offer.name }}</p>
+    <p>Name: {{ offer.name.upper }}</p>
     <p>Description: {{ offer.description }}</p>
     {% endfor %}
 </div>

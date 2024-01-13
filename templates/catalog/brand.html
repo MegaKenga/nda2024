@@ -3,16 +3,16 @@
 {% block content %}
 <body>
 <div>
-    <p>Name: {{ brand.name }}</p>
+    <p>Name: {{ brand.name.upper }}</p>
     <p>ID: {{ brand.id }}</p>
-    <p>Description: {{ brand.description }}</p>
+    <p>Description: {{ brand.description.upper }}</p>
     <div><img src="{{ brand.logo.image.url }}"></div>
         <ul>
         {% for category in categories %}
             {% if category.is_final %}
-                <li>{{ forloop.counter }}: <a href="{% url 'offer' brand_slug=brand.slug category_slug=category.slug%}">{{ category.name }}</a></li>
+                <li>{{ forloop.counter }}: <a href="{% url 'offer' brand_slug=brand.slug category_slug=category.slug%}">{{ category.name.upper }}</a></li>
             {% else %}
-                <li>{{ forloop.counter }}: <a href="{% url 'category' category_slug=category.slug%}">{{ category.name }}</a></li>
+                <li>{{ forloop.counter }}: <a href="{% url 'category' category_slug=category.slug%}">{{ category.name.upper }}</a></li>
             {% endif %}
         {% endfor %}
         </ul>
