@@ -1,11 +1,18 @@
 from django.contrib import admin
-from files.models import CatalogImage
+from files.models import ModelImage, ModelFile
 
 
-class CatalogImageAdmin(admin.ModelAdmin):
+class ModelImageAdmin(admin.ModelAdmin):
     list_display = ('name', 'image')
     actions_on_bottom = True
     list_per_page = 25
 
 
-admin.site.register(CatalogImage, CatalogImageAdmin)
+class ModelFileAdmin(admin.ModelAdmin):
+    list_display = ('name', 'file')
+    actions_on_bottom = True
+    list_per_page = 25
+
+
+admin.site.register(ModelImage, ModelImageAdmin)
+admin.site.register(ModelFile, ModelFileAdmin)
