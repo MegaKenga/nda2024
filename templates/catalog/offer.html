@@ -6,6 +6,7 @@
     <p>Brand: <a href="{% url 'brand' brand_slug=category.brand.slug %}">{{ category.brand }}</a></p>
     <p>Name: {{ category.name.upper }}</p>
     <p>Description: {{ category.description }}</p>
+    <div>РУ: <a href="{{ category.certificate.file.url }}">Скачать</a></div>
     {% for offer in offers %}
     <p>Name: {{ offer.name.upper }}</p>
     <p>Description: {{ offer.description }}</p>

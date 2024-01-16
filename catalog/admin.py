@@ -116,6 +116,8 @@ class CategoryAdmin(admin.ModelAdmin):
     fields = [
         'name',
         'description',
+        'logo',
+        'certificate',
         'brand',
         'unit',
         'parent',

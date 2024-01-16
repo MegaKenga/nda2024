@@ -23,6 +23,7 @@ from nda.views import custom_404
 
 
 urlpatterns = [
+    path('accounts/', include('django.contrib.auth.urls')),
     path('admin/', admin.site.urls),
     path('', include('catalog.urls')),
     path("__debug__/", include("debug_toolbar.urls")),

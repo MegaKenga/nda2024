@@ -1,9 +1,7 @@
-
-
 from django.db import models
 from django.urls import reverse
 
-from files.models import CatalogImage
+from files.models import ModelImage, ModelFile
 
 
 """Общие классы и миксины"""
@@ -79,7 +77,7 @@ class Brand(BaseFieldsMixin):
         unique=True,
         verbose_name='Бренд')
     logo = models.ForeignKey(
-        CatalogImage,
+        ModelImage,
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
@@ -125,6 +123,20 @@ class Category(BaseFieldsMixin):
         null=True,
         blank=True,
         verbose_name='Направление, к которому относится категория'
+    )
+    logo = models.ForeignKey(
+        ModelImage,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name='Логотип категории'
+    )
+    certificate = models.ForeignKey(
+        ModelFile,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name='Регистрационное удостоверение'
     )
     slug = models.SlugField(unique=True, max_length=128, db_index=True, verbose_name='url-адрес')
     is_final = models.BooleanField(default=False, verbose_name='Отметка о том, что категория является финальной и в ней содержатся товары')
