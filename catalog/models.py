@@ -12,7 +12,7 @@ class NotHidden(models.Manager):
         return super().get_queryset().filter(status='PUBLISHED')
 
 
-class BaseFieldsMixin(models.Model):
+class BaseFields(models.Model):
     class Status(models.TextChoices):
         DRAFT = 'DRAFT', 'Черновик'
         PUBLISHED = 'PUBLISHED', 'Активен'
@@ -45,7 +45,7 @@ class BaseFieldsMixin(models.Model):
 """Модели"""
 
 
-class Unit(BaseFieldsMixin):
+class Unit(BaseFields):
     name = models.CharField(
         max_length=128,
         unique=True,
@@ -68,10 +68,10 @@ class Unit(BaseFieldsMixin):
         return reverse('unit', kwargs={'unit_slug': self.slug})
 
     def __str__(self):
-        return self.name
+        str(self.name).upper()
 
 
-class Brand(BaseFieldsMixin):
+class Brand(BaseFields):
     name = models.CharField(
         max_length=128,
         unique=True,
@@ -97,7 +97,7 @@ class Brand(BaseFieldsMixin):
         return self.name
 
 
-class Category(BaseFieldsMixin):
+class Category(BaseFields):
     name = models.CharField(
         max_length=128,
         verbose_name='Название категории'
@@ -151,11 +151,11 @@ class Category(BaseFieldsMixin):
 
     def __str__(self):
         if self.brand:
-            return str(self.brand) + ' ' + self.name
+            return str(self.brand).upper() + '----' + str(self.name).upper()
         return self.name
 
 
-class Offer(BaseFieldsMixin):
+class Offer(BaseFields):
     name = models.CharField(
         max_length=128,
         verbose_name='Артикул'

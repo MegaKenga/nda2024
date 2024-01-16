@@ -61,7 +61,6 @@ class UnitAdmin(admin.ModelAdmin):
         'place',
         'status'
     ]
-    inlines = [CategoryInline]
     view_on_site = True
     autocomplete_fields = ['parent']
     actions_on_bottom = True
@@ -105,7 +104,7 @@ class CategoryAdmin(admin.ModelAdmin):
         'status',
         'is_final'
     )
-    list_editable = ('place', 'slug', 'status')
+    list_editable = ('place', 'slug', 'unit', 'status')
     list_filter = (
         ('name', DropdownFilter),
         ('brand', RelatedOnlyDropdownFilter),
