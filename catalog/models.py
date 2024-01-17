@@ -99,7 +99,7 @@ class Brand(BaseFields):
 
 class Category(BaseFields):
     name = models.CharField(
-        max_length=128,
+        max_length=256,
         verbose_name='Название категории'
     )
     brand = models.ForeignKey(
