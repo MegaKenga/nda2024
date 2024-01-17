@@ -4,8 +4,10 @@ from catalog.models import Category, Brand, Offer
 
 def index(request):
     brands = Brand.visible.all().order_by('name')
-    units = Unit.visible.filter(parent=None)
-    context = {'brands': brands, 'units': units}
+    # units = Unit.visible.filter(parent=None)
+    context = {'brands': brands,
+               # 'units': units
+               }
     return render(request, 'index.html', context=context)
 
 

@@ -91,6 +91,8 @@ class CategoryAdmin(admin.ModelAdmin):
         'description',
         'logo',
         'certificate',
+        'children',
+        'parents',
         'brand',
         'parent',
         'slug',

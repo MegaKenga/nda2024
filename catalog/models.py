@@ -85,12 +85,17 @@ class Category(BaseFields):
     )
     parent = models.ForeignKey(
         'self',
-        related_name='children',
+        related_name='legacy_children',
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
         verbose_name='Родительская категория'
     )
+
+    parents = models.ManyToManyField('self', blank=True, verbose_name='Родительские категории')
+
+    children = models.ManyToManyField('self', blank=True, verbose_name='Родительские категории')
+
     logo = models.ForeignKey(
         ModelImage,
         on_delete=models.SET_NULL,
