@@ -91,7 +91,7 @@ class CategoryAdmin(admin.ModelAdmin):
         'description',
         'logo',
         'certificate',
-        'children',
+        # 'children',
         'parents',
         'brand',
         'parent',
@@ -100,12 +100,20 @@ class CategoryAdmin(admin.ModelAdmin):
         'status',
         'is_final'
     ]
+    # readonly_fields=('children',)
+
     inlines = [CategoryInline, OfferInline]
     view_on_site = True
     autocomplete_fields = ['parent']
     actions_on_bottom = True
     list_per_page = 25
     search_fields = ['name']
+
+    def save_related(self, request, form, formsets, change):
+        # print(form)
+        super(CategoryAdmin, self).save_related(request, form, formsets, change)
+        return
+
 
 
 class OfferAdmin(admin.ModelAdmin):

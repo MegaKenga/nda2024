@@ -92,9 +92,14 @@ class Category(BaseFields):
         verbose_name='Родительская категория'
     )
 
-    parents = models.ManyToManyField('self', blank=True, verbose_name='Родительские категории')
+    parents = models.ManyToManyField('self', blank=True, verbose_name='Родительские категории',
+                                     related_name='children',
+                                     symmetrical=False
+                                     )
 
-    children = models.ManyToManyField('self', blank=True, verbose_name='Родительские категории')
+    # children = models.ManyToManyField('self', blank=True, verbose_name='Подкатегории',
+                                      # symmetrical=False
+                                      # )
 
     logo = models.ForeignKey(
         ModelImage,
@@ -120,6 +125,11 @@ class Category(BaseFields):
 
     def get_absolute_url(self):
         return reverse('category', kwargs={'category_slug': self.slug})
+
+    def save(self,  *args, **kwargs):
+        # print("Category.parents", self.parents)
+        # print("Category.children", self.children)
+        return super(Category, self).save(*args, **kwargs)
 
     def __str__(self):
         if self.brand:

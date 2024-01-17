@@ -11,6 +11,13 @@ def index(request):
     return render(request, 'index.html', context=context)
 
 
+def category_m2m(request, category_slug):
+    category = get_object_or_404(Category.visible, slug=category_slug)
+    brand = get_object_or_404(Brand.visible, pk=category.brand_id)
+    context = {'category': category, 'brand': brand}
+    return render(request, 'catalog/category_m2m.html', context=context)
+
+
 def get_brand(request, brand_slug):
     brand = get_object_or_404(Brand.visible, slug=brand_slug)
     categories = get_list_or_404(Category.visible, brand=brand.id, parent=None)
