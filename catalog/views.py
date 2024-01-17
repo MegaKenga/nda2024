@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404, get_list_or_404
-from catalog.models import Category, Brand, Unit, Offer
+from catalog.models import Category, Brand, Offer
 
 
 def index(request):
@@ -14,17 +14,6 @@ def get_brand(request, brand_slug):
     categories = get_list_or_404(Category.visible, brand=brand.id, parent=None)
     context = {'brand': brand, 'categories': categories}
     return render(request, 'catalog/brand.html', context=context)
-
-
-def get_unit(request, unit_slug):
-    unit = get_object_or_404(Unit.visible, slug=unit_slug)
-    parent = unit.parent
-    if parent is None:
-        parent = None
-    sub_units = Unit.visible.filter(parent=unit.id)
-    categories = Category.visible.filter(unit=unit.id)
-    context = {'unit': unit, 'parent': parent, 'sub_units': sub_units, 'categories': categories}
-    return render(request, 'catalog/unit.html', context=context)
 
 
 def get_category(request, category_slug):

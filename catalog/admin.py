@@ -5,7 +5,7 @@ from django.contrib.admin import AdminSite
 from django.contrib.auth.models import Group, User
 from django.contrib.auth.admin import GroupAdmin, UserAdmin
 
-from catalog.models import Unit, Brand, Category, Offer
+from catalog.models import Brand, Category, Offer
 
 
 """Общие методы админки"""
@@ -43,31 +43,6 @@ class OfferInline(admin.TabularInline):
 """"Классы админки"""
 
 
-class UnitAdmin(admin.ModelAdmin):
-    list_display = (
-        'name',
-        'parent',
-        'slug',
-        'place',
-        'status'
-    )
-    list_editable = ('slug', 'place', 'status')
-    list_filter = (('name', DropdownFilter), ('parent', RelatedOnlyDropdownFilter), 'status')
-    fields = [
-        'name',
-        'description',
-        'parent',
-        'slug',
-        'place',
-        'status'
-    ]
-    view_on_site = True
-    autocomplete_fields = ['parent']
-    actions_on_bottom = True
-    list_per_page = 25
-    search_fields = ['name']
-
-
 class BrandAdmin(admin.ModelAdmin):
     list_display = (
         'name',
@@ -98,13 +73,12 @@ class CategoryAdmin(admin.ModelAdmin):
         'name',
         'brand',
         'parent',
-        'unit',
         'slug',
         'place',
         'status',
         'is_final'
     )
-    list_editable = ('place', 'slug', 'unit', 'status')
+    list_editable = ('place', 'slug', 'status')
     list_filter = (
         ('name', DropdownFilter),
         ('brand', RelatedOnlyDropdownFilter),
@@ -118,7 +92,6 @@ class CategoryAdmin(admin.ModelAdmin):
         'logo',
         'certificate',
         'brand',
-        'unit',
         'parent',
         'slug',
         'place',
@@ -127,7 +100,7 @@ class CategoryAdmin(admin.ModelAdmin):
     ]
     inlines = [CategoryInline, OfferInline]
     view_on_site = True
-    autocomplete_fields = ['parent', 'unit']
+    autocomplete_fields = ['parent']
     actions_on_bottom = True
     list_per_page = 25
     search_fields = ['name']
@@ -166,7 +139,6 @@ class OfferAdmin(admin.ModelAdmin):
         return obj.category.brand.name
 
 
-admin.site.register(Unit, UnitAdmin)
 admin.site.register(Brand, BrandAdmin)
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(Offer, OfferAdmin)

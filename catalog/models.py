@@ -45,32 +45,6 @@ class BaseFields(models.Model):
 """Модели"""
 
 
-class Unit(BaseFields):
-    name = models.CharField(
-        max_length=128,
-        unique=True,
-        verbose_name='Направление')
-    parent = models.ForeignKey(
-        'self',
-        related_name='children',
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        verbose_name='Родительское направление')
-    slug = models.SlugField(unique=True, max_length=128, db_index=True, verbose_name='url-адрес')
-
-    class Meta:
-        ordering = ['place']
-        verbose_name = 'Направление'
-        verbose_name_plural = 'Направления'
-
-    def get_absolute_url(self):
-        return reverse('unit', kwargs={'unit_slug': self.slug})
-
-    def __str__(self):
-        str(self.name).upper()
-
-
 class Brand(BaseFields):
     name = models.CharField(
         max_length=128,
@@ -116,13 +90,6 @@ class Category(BaseFields):
         null=True,
         blank=True,
         verbose_name='Родительская категория'
-    )
-    unit = models.ForeignKey(
-        Unit,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        verbose_name='Направление, к которому относится категория'
     )
     logo = models.ForeignKey(
         ModelImage,
