@@ -3,8 +3,7 @@
 .idea
 /dumps
 /media
-
+/temporary_unused_code
 **/**/__pycache__
 TODO.py
-temporary unused code.py
 /static

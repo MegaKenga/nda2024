@@ -73,7 +73,7 @@ class Brand(BaseFields):
 
 class Category(BaseFields):
     name = models.CharField(
-        max_length=128,
+        max_length=256,
         verbose_name='Название категории'
     )
     brand = models.ForeignKey(
@@ -83,24 +83,13 @@ class Category(BaseFields):
         blank=True,
         verbose_name='Бренд, к которому относится категория'
     )
-    parent = models.ForeignKey(
+    parents = models.ManyToManyField(
         'self',
-        related_name='legacy_children',
-        on_delete=models.SET_NULL,
-        null=True,
         blank=True,
-        verbose_name='Родительская категория'
+        verbose_name='Родительские категории',
+        related_name='children',
+        symmetrical=False
     )
-
-    parents = models.ManyToManyField('self', blank=True, verbose_name='Родительские категории',
-                                     related_name='children',
-                                     symmetrical=False
-                                     )
-
-    # children = models.ManyToManyField('self', blank=True, verbose_name='Подкатегории',
-                                      # symmetrical=False
-                                      # )
-
     logo = models.ForeignKey(
         ModelImage,
         on_delete=models.SET_NULL,
@@ -127,8 +116,6 @@ class Category(BaseFields):
         return reverse('category', kwargs={'category_slug': self.slug})
 
     def save(self,  *args, **kwargs):
-        # print("Category.parents", self.parents)
-        # print("Category.children", self.children)
         return super(Category, self).save(*args, **kwargs)
 
     def __str__(self):

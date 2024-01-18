@@ -21,15 +21,7 @@ class MyAdminSite(AdminSite):
 
 admin.site = MyAdminSite()
 
-admin.site.empty_value_display = '--- ОТСУТСТВУЕТ'
-
-
-class CategoryInline(admin.TabularInline):
-    model = Category
-    can_delete = True
-    extra = 0
-    show_change_link = True
-    classes = ['collapse', 'wide']
+admin.site.empty_value_display = '---- ОТСУТСТВУЕТ'
 
 
 class OfferInline(admin.TabularInline):
@@ -60,7 +52,6 @@ class BrandAdmin(admin.ModelAdmin):
         'status',
         'logo'
     ]
-    # inlines = [CategoryInline]   очень долго грузится из за огромного количества категорий, надо еще поразбираться.
     view_on_site = True
     actions_on_bottom = True
     list_per_page = 25
@@ -72,7 +63,7 @@ class CategoryAdmin(admin.ModelAdmin):
     list_display = (
         'name',
         'brand',
-        'parent',
+        'get_parents',
         'slug',
         'place',
         'status',
@@ -82,7 +73,7 @@ class CategoryAdmin(admin.ModelAdmin):
     list_filter = (
         ('name', DropdownFilter),
         ('brand', RelatedOnlyDropdownFilter),
-        ('parent', RelatedOnlyDropdownFilter),
+        ('parents', RelatedOnlyDropdownFilter),
         'status',
         'is_final'
     )
@@ -91,29 +82,29 @@ class CategoryAdmin(admin.ModelAdmin):
         'description',
         'logo',
         'certificate',
-        # 'children',
         'parents',
         'brand',
-        'parent',
         'slug',
         'place',
         'status',
         'is_final'
     ]
-    # readonly_fields=('children',)
-
-    inlines = [CategoryInline, OfferInline]
+    filter_horizontal = ('parents', )
+    inlines = [OfferInline]
     view_on_site = True
-    autocomplete_fields = ['parent']
     actions_on_bottom = True
     list_per_page = 25
     search_fields = ['name']
 
+    @admin.display(description='Родительские категории')
+    def get_parents(self, obj):
+        if not obj.parents.all():
+            return admin.site.empty_value_display
+        return f'-----'.join([parent.name for parent in obj.parents.all()])
+
     def save_related(self, request, form, formsets, change):
-        # print(form)
         super(CategoryAdmin, self).save_related(request, form, formsets, change)
         return
-
 
 
 class OfferAdmin(admin.ModelAdmin):

@@ -10,7 +10,7 @@
         <ul>
         {% for category in categories %}
             {% if category.is_final %}
-                <li>{{ forloop.counter }}: <a href="{% url 'offer' brand_slug=brand.slug category_slug=category.slug%}">{{ category.name.upper }}</a></li>
+                <li>{{ forloop.counter }}: <a href="{% url 'offer' brand_slug=category.brand.slug category_slug=category.slug %}">{{ category.name.upper }}</a></li>
             {% else %}
                 <li>{{ forloop.counter }}: <a href="{% url 'category' category_slug=category.slug%}">{{ category.name.upper }}</a></li>
             {% endif %}
