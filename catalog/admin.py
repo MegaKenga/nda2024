@@ -6,6 +6,7 @@ from django.contrib.auth.models import Group, User
 from django.contrib.auth.admin import GroupAdmin, UserAdmin
 
 from catalog.models import Brand, Category, Offer
+from files.admin import OfferImageInline
 
 
 """Общие методы админки"""
@@ -32,6 +33,14 @@ class OfferInline(admin.TabularInline):
     classes = ['collapse', 'wide']
 
 
+class CategoryInline(admin.TabularInline):
+    model = Category
+    can_delete = True
+    extra = 0
+    show_change_link = True
+    classes = ['collapse', 'wide']
+
+
 """"Классы админки"""
 
 
@@ -50,7 +59,8 @@ class BrandAdmin(admin.ModelAdmin):
         'slug',
         'place',
         'status',
-        'logo'
+        'logo',
+        'banner'
     ]
     view_on_site = True
     actions_on_bottom = True
@@ -63,7 +73,6 @@ class CategoryAdmin(admin.ModelAdmin):
     list_display = (
         'name',
         'brand',
-        'get_parents',
         'slug',
         'place',
         'status',
@@ -81,7 +90,9 @@ class CategoryAdmin(admin.ModelAdmin):
         'name',
         'description',
         'logo',
+        'banner',
         'certificate',
+        'instruction',
         'parents',
         'brand',
         'slug',
@@ -95,16 +106,6 @@ class CategoryAdmin(admin.ModelAdmin):
     actions_on_bottom = True
     list_per_page = 25
     search_fields = ['name']
-
-    @admin.display(description='Родительские категории')
-    def get_parents(self, obj):
-        if not obj.parents.all():
-            return admin.site.empty_value_display
-        return f'-----'.join([parent.name for parent in obj.parents.all()])
-
-    def save_related(self, request, form, formsets, change):
-        super(CategoryAdmin, self).save_related(request, form, formsets, change)
-        return
 
 
 class OfferAdmin(admin.ModelAdmin):
@@ -125,12 +126,15 @@ class OfferAdmin(admin.ModelAdmin):
     fields = [
         'name',
         'description',
+        'picture',
+        'tech_info',
+        'ctru',
         'category',
         'place',
         'status'
     ]
-    exclude = ['slug']
     autocomplete_fields = ['category']
+    inlines = [OfferImageInline]
     actions_on_bottom = True
     list_per_page = 25
     search_fields = ['name']

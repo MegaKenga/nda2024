@@ -10,15 +10,11 @@
     {% endif %}
     <p>Name: {{ category.name.upper }}</p>
     <p>Description: {{ category.description.upper }}</p>
-      <p>Parents (breadcrumbs):</p>
-      <ul>
       {% for category in category.parents.all %}
             <li>{{ forloop.counter }}: <a href="{% url 'category' category_slug=category.slug %}">{{ category.name.upper }}</a></li>
       {% empty %}
           <li>No parents</li>
       {% endfor %}
-      </ul>
-
       <p>Children:</p>
       <ul>
       {% for category in category.children.all %}
