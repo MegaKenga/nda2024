@@ -3,30 +3,54 @@
 {% block content %}
 <body>
 <div>
+    {# this can be moved to separate breadcrumbs.html component (template)   #}
+    <p>Breadcrumbs</p>
+    <div style="display: inline;">
+        <ul>
+            <li style="display: inline;">
+                <a href="{% url 'home' %}" class="a_top_hypers">ГЛАВНАЯ</a>
+            </li>
+            {% if category.brand %}
+              <li style="display: inline;">
+                  -> <a href="{% url 'brand' brand_slug=category.brand.slug %}">{{ category.brand.name.upper }}</a>
+              </li>
+            {% endif %}
+            {% for breadcrumb in breadcrumbs %}
+                <li style="display: inline;">
+                  -> <a href="{% url 'category' category_slug=breadcrumb.slug %}">{{ breadcrumb.name.upper }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+    {# end of breadcrumbs component #}
+
     {% if category.brand %}
       <p>Brand: <a href="{% url 'brand' brand_slug=category.brand.slug %}">{{ category.brand.name.upper }}</a></p>
     {% else %}
       <p>No Brand</p>
     {% endif %}
     <p>Name: {{ category.name.upper }}</p>
-    <p>Description: {{ category.description.upper }}</p>
-      {% for category in category.parents.all %}
+    <h3>Description: {{ category.description.upper }}</h3>
+    <h3>Parents:</h3>
+    <ul>
+        {% for category in category.parents.all %}
             <li>{{ forloop.counter }}: <a href="{% url 'category' category_slug=category.slug %}">{{ category.name.upper }}</a></li>
-      {% empty %}
-          <li>No parents</li>
-      {% endfor %}
-      <p>Children:</p>
-      <ul>
-      {% for category in category.children.all %}
+        {% empty %}
+            <li>No parents</li>
+        {% endfor %}
+    </ul>
+    <h3>Children:</h3>
+    <ul>
+        {% for category in category.children.all %}
             {% if category.is_final %}
                 <li>{{ forloop.counter }}: <a href="{% url 'offer' brand_slug=category.brand.slug category_slug=category.slug %}">{{ category.name.upper }}</a></li>
             {% else %}
                 <li>{{ forloop.counter }}: <a href="{% url 'category' category_slug=category.slug%}">{{ category.name.upper }}</a></li>
             {% endif %}
-      {% empty %}
+        {% empty %}
           <li>No children</li>
-      {% endfor %}
-      </ul>
+        {% endfor %}
+    </ul>
 </div>
 </body>
 {% endblock %}

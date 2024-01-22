@@ -25,6 +25,16 @@ pip install -r requirements.txt
     python3 manage.py collectstatic
     ```
 
+4. How to sync migrations and database
+   ```shell
+   pg_restore -U postgres -h 0.0.0.0 -d xxxx < dump.dump --disable-triggers
+   rm -rf catalog/migrations
+   rm -rf files/migrations
+   python manage.py makemigrations
+   python manage.py migrate
+   pg_dump --column-inserts --data-only -h 0.0.0.0 -U postgres -W -Fc xxxx > dump.dump
+   ```
+replace "xxxx" with DB_NAME and "postgres" with your DB_USER
 
 ## Run the app
 ```shell

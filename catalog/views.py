@@ -11,7 +11,16 @@ def index(request):
 
 def get_category(request, category_slug):
     category = Category.visible.get(slug=category_slug)
-    context = {'category': category}
+    parents = category.parents.all()
+    breadcrumbs = []
+    while len(parents) > 0:
+        brand_parents = [parent for parent in parents if parent.brand is not None]
+        if len(brand_parents) > 1:
+            raise ValueError('We don\'t expect multiple brand parents')
+        if len(brand_parents) == 1:
+            breadcrumbs.insert(0, brand_parents[0])
+        parents = brand_parents[0].parents.all()
+    context = {'category': category, 'breadcrumbs': breadcrumbs}
     return render(request, 'catalog/category.html', context=context)
 
 
