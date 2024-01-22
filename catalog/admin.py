@@ -5,7 +5,8 @@ from django.contrib.admin import AdminSite
 from django.contrib.auth.models import Group, User
 from django.contrib.auth.admin import GroupAdmin, UserAdmin
 
-from catalog.models import Unit, Brand, Category, Offer
+from catalog.models import Brand, Category, Offer
+from files.admin import OfferImageInline
 
 
 """Общие методы админки"""
@@ -21,15 +22,7 @@ class MyAdminSite(AdminSite):
 
 admin.site = MyAdminSite()
 
-admin.site.empty_value_display = '--- ОТСУТСТВУЕТ'
-
-
-class CategoryInline(admin.TabularInline):
-    model = Category
-    can_delete = True
-    extra = 0
-    show_change_link = True
-    classes = ['collapse', 'wide']
+admin.site.empty_value_display = '---- ОТСУТСТВУЕТ'
 
 
 class OfferInline(admin.TabularInline):
@@ -40,32 +33,15 @@ class OfferInline(admin.TabularInline):
     classes = ['collapse', 'wide']
 
 
+class CategoryInline(admin.TabularInline):
+    model = Category
+    can_delete = True
+    extra = 0
+    show_change_link = True
+    classes = ['collapse', 'wide']
+
+
 """"Классы админки"""
-
-
-class UnitAdmin(admin.ModelAdmin):
-    list_display = (
-        'name',
-        'parent',
-        'slug',
-        'place',
-        'status'
-    )
-    list_editable = ('slug', 'place', 'status')
-    list_filter = (('name', DropdownFilter), ('parent', RelatedOnlyDropdownFilter), 'status')
-    fields = [
-        'name',
-        'description',
-        'parent',
-        'slug',
-        'place',
-        'status'
-    ]
-    view_on_site = True
-    autocomplete_fields = ['parent']
-    actions_on_bottom = True
-    list_per_page = 25
-    search_fields = ['name']
 
 
 class BrandAdmin(admin.ModelAdmin):
@@ -83,9 +59,9 @@ class BrandAdmin(admin.ModelAdmin):
         'slug',
         'place',
         'status',
-        'logo'
+        'logo',
+        'banner'
     ]
-    # inlines = [CategoryInline]   очень долго грузится из за огромного количества категорий, надо еще поразбираться.
     view_on_site = True
     actions_on_bottom = True
     list_per_page = 25
@@ -97,18 +73,16 @@ class CategoryAdmin(admin.ModelAdmin):
     list_display = (
         'name',
         'brand',
-        'parent',
-        'unit',
         'slug',
         'place',
         'status',
         'is_final'
     )
-    list_editable = ('place', 'slug', 'unit', 'status')
+    list_editable = ('place', 'slug', 'status')
     list_filter = (
         ('name', DropdownFilter),
         ('brand', RelatedOnlyDropdownFilter),
-        ('parent', RelatedOnlyDropdownFilter),
+        ('parents', RelatedOnlyDropdownFilter),
         'status',
         'is_final'
     )
@@ -116,18 +90,19 @@ class CategoryAdmin(admin.ModelAdmin):
         'name',
         'description',
         'logo',
+        'banner',
         'certificate',
+        'instruction',
+        'parents',
         'brand',
-        'unit',
-        'parent',
         'slug',
         'place',
         'status',
         'is_final'
     ]
-    inlines = [CategoryInline, OfferInline]
+    filter_horizontal = ('parents', )
+    inlines = [OfferInline]
     view_on_site = True
-    autocomplete_fields = ['parent', 'unit']
     actions_on_bottom = True
     list_per_page = 25
     search_fields = ['name']
@@ -151,12 +126,15 @@ class OfferAdmin(admin.ModelAdmin):
     fields = [
         'name',
         'description',
+        'picture',
+        'tech_info',
+        'ctru',
         'category',
         'place',
         'status'
     ]
-    exclude = ['slug']
     autocomplete_fields = ['category']
+    inlines = [OfferImageInline]
     actions_on_bottom = True
     list_per_page = 25
     search_fields = ['name']
@@ -166,7 +144,6 @@ class OfferAdmin(admin.ModelAdmin):
         return obj.category.brand.name
 
 
-admin.site.register(Unit, UnitAdmin)
 admin.site.register(Brand, BrandAdmin)
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(Offer, OfferAdmin)

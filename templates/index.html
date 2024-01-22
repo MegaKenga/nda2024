@@ -11,9 +11,9 @@
     </div>
 	{% endfor %}
     <li>Каталог по направлениям</li>
-          {% for unit in units %}
+          {% for category in categories %}
 	<div>
-        <p><a href="{% url 'unit' unit_slug=unit.slug %}">{{ unit.name.upper }}</a></p>
+        <p><a href="{% url 'category' category_slug=category.slug %}">{{ category.name.upper }}</a></p>
     </div>
 	{% endfor %}
   </ul>

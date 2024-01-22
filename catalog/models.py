@@ -45,32 +45,6 @@ class BaseFields(models.Model):
 """Модели"""
 
 
-class Unit(BaseFields):
-    name = models.CharField(
-        max_length=128,
-        unique=True,
-        verbose_name='Направление')
-    parent = models.ForeignKey(
-        'self',
-        related_name='children',
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        verbose_name='Родительское направление')
-    slug = models.SlugField(unique=True, max_length=128, db_index=True, verbose_name='url-адрес')
-
-    class Meta:
-        ordering = ['place']
-        verbose_name = 'Направление'
-        verbose_name_plural = 'Направления'
-
-    def get_absolute_url(self):
-        return reverse('unit', kwargs={'unit_slug': self.slug})
-
-    def __str__(self):
-        str(self.name).upper()
-
-
 class Brand(BaseFields):
     name = models.CharField(
         max_length=128,
@@ -81,9 +55,23 @@ class Brand(BaseFields):
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        verbose_name='Логотип бренда'
+        verbose_name='Логотип бренда',
+        related_name='brand_logo'
         )
-    slug = models.SlugField(unique=True, max_length=128, db_index=True, verbose_name='url-адрес')
+    banner = models.ForeignKey(
+        ModelImage,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name='Баннер бренда',
+        related_name='brand_banner'
+    )
+    slug = models.SlugField(
+        unique=True,
+        max_length=128,
+        db_index=True,
+        verbose_name='url-адрес'
+    )
 
     class Meta:
         ordering = ['place']
@@ -94,7 +82,7 @@ class Brand(BaseFields):
         return reverse('brand', kwargs={'brand_slug': self.slug})
 
     def __str__(self):
-        return self.name
+        return self.name.upper()
 
 
 class Category(BaseFields):
@@ -109,37 +97,55 @@ class Category(BaseFields):
         blank=True,
         verbose_name='Бренд, к которому относится категория'
     )
-    parent = models.ForeignKey(
+    parents = models.ManyToManyField(
         'self',
+        blank=True,
+        verbose_name='Родительские категории',
         related_name='children',
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        verbose_name='Родительская категория'
-    )
-    unit = models.ForeignKey(
-        Unit,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        verbose_name='Направление, к которому относится категория'
+        symmetrical=False
     )
     logo = models.ForeignKey(
         ModelImage,
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        verbose_name='Логотип категории'
+        verbose_name='Логотип категории',
+        related_name='category_logo'
+    )
+    banner = models.ForeignKey(
+        ModelImage,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name='Баннер категории',
+        related_name='category_banner'
     )
     certificate = models.ForeignKey(
         ModelFile,
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        verbose_name='Регистрационное удостоверение'
+        verbose_name='Регистрационное удостоверение',
+        related_name='registration'
     )
-    slug = models.SlugField(unique=True, max_length=128, db_index=True, verbose_name='url-адрес')
-    is_final = models.BooleanField(default=False, verbose_name='Отметка о том, что категория является финальной и в ней содержатся товары')
+    instruction = models.ForeignKey(
+        ModelFile,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name='Инструкция',
+        related_name='instruction'
+    )
+    slug = models.SlugField(
+        unique=True,
+        max_length=128,
+        db_index=True,
+        verbose_name='url-адрес'
+    )
+    is_final = models.BooleanField(
+        default=False,
+        verbose_name='Отметка о том, что категория является финальной и в ней содержатся товары'
+    )
 
     class Meta:
         ordering = ['place']
@@ -151,8 +157,8 @@ class Category(BaseFields):
 
     def __str__(self):
         if self.brand:
-            return str(self.brand).upper() + '----' + str(self.name).upper()
-        return self.name
+            return str(self.brand).upper() + '----' + self.name.upper()
+        return 'ПОДБОРКА' + '----' + self.name.upper()
 
 
 class Offer(BaseFields):
@@ -167,6 +173,27 @@ class Offer(BaseFields):
         blank=True,
         related_name='offer',
         verbose_name='Категория, к которой принадлежит товар'
+    )
+    picture = models.ForeignKey(
+        ModelImage,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name='Изображение товара'
+    )
+    tech_info = models.ForeignKey(
+        ModelFile,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name='Техзадание',
+        related_name='tech_description'
+    )
+    ctru = models.CharField(
+        max_length=64,
+        null=True,
+        blank=True,
+        verbose_name='КТРУ'
     )
 
     class Meta:

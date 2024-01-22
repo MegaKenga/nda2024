@@ -3,26 +3,26 @@
 {% block content %}
 <body>
 <div>
-    {% if brand %}
-      <p>Brand: <a href="{% url 'brand' brand_slug=brand.slug %}">{{ brand.name.upper }}</a></p>
+    {% if category.brand %}
+      <p>Brand: <a href="{% url 'brand' brand_slug=category.brand.slug %}">{{ category.brand.name.upper }}</a></p>
     {% else %}
       <p>No Brand</p>
     {% endif %}
     <p>Name: {{ category.name.upper }}</p>
     <p>Description: {{ category.description.upper }}</p>
-    {% if parent %}
-      <p>Parent: <a href="{% url 'category' category_slug=parent.slug %}">{{ parent.name.upper }}</a></p>
-    {% else %}
-      <p>No parent</p>
-    {% endif %}
+      {% for category in category.parents.all %}
+            <li>{{ forloop.counter }}: <a href="{% url 'category' category_slug=category.slug %}">{{ category.name.upper }}</a></li>
+      {% empty %}
+          <li>No parents</li>
+      {% endfor %}
       <p>Children:</p>
       <ul>
-      {% for category in children %}
-          {% if category.is_final %}
-                <li>{{ forloop.counter }}: <a href="{% url 'offer' brand_slug=brand.slug category_slug=category.slug %}">{{ category.name.upper }}</a></li>
-          {% else %}
-                <li>{{ forloop.counter }}: <a href="{% url 'category' category_slug=category.slug %}">{{ category.name.upper }}</a></li>
-          {% endif %}
+      {% for category in category.children.all %}
+            {% if category.is_final %}
+                <li>{{ forloop.counter }}: <a href="{% url 'offer' brand_slug=category.brand.slug category_slug=category.slug %}">{{ category.name.upper }}</a></li>
+            {% else %}
+                <li>{{ forloop.counter }}: <a href="{% url 'category' category_slug=category.slug%}">{{ category.name.upper }}</a></li>
+            {% endif %}
       {% empty %}
           <li>No children</li>
       {% endfor %}
