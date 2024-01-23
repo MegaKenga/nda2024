@@ -6,7 +6,7 @@ from django.contrib.auth.models import Group, User
 from django.contrib.auth.admin import GroupAdmin, UserAdmin
 
 from catalog.models import Brand, Category, Offer
-from files.admin import OfferImageInline
+from files.admin import RegistrationInline, InstructionInline, OfferImageInline, OfferTechDescriptionInline
 
 
 """Общие методы админки"""
@@ -27,14 +27,6 @@ admin.site.empty_value_display = '---- ОТСУТСТВУЕТ'
 
 class OfferInline(admin.TabularInline):
     model = Offer
-    can_delete = True
-    extra = 0
-    show_change_link = True
-    classes = ['collapse', 'wide']
-
-
-class CategoryInline(admin.TabularInline):
-    model = Category
     can_delete = True
     extra = 0
     show_change_link = True
@@ -91,8 +83,6 @@ class CategoryAdmin(admin.ModelAdmin):
         'description',
         'logo',
         'banner',
-        'certificate',
-        'instruction',
         'parents',
         'brand',
         'slug',
@@ -101,7 +91,7 @@ class CategoryAdmin(admin.ModelAdmin):
         'is_final'
     ]
     filter_horizontal = ('parents', )
-    inlines = [OfferInline]
+    inlines = [RegistrationInline, InstructionInline, OfferInline]
     view_on_site = True
     actions_on_bottom = True
     list_per_page = 25
@@ -126,15 +116,13 @@ class OfferAdmin(admin.ModelAdmin):
     fields = [
         'name',
         'description',
-        'picture',
-        'tech_info',
         'ctru',
         'category',
         'place',
         'status'
     ]
     autocomplete_fields = ['category']
-    inlines = [OfferImageInline]
+    inlines = [OfferImageInline, OfferTechDescriptionInline]
     actions_on_bottom = True
     list_per_page = 25
     search_fields = ['name']
