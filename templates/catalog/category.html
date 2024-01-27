@@ -10,6 +10,10 @@
     {% endif %}
     <p>Name: {{ category.name.upper }}</p>
     <p>Description: {{ category.description.upper }}</p>
+    {% for image in category.images.all %}
+        Image: {{ image }}
+        <img src={{ image.file.url }}/>
+    {% endfor %}
       {% for category in category.parents.all %}
             <li>{{ forloop.counter }}: <a href="{% url 'category' category_slug=category.slug %}">{{ category.name.upper }}</a></li>
       {% empty %}

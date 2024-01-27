@@ -121,7 +121,7 @@ class Category(BaseFields):
     #     related_name='category_banner'
     # )
 
-    images = models.ManyToManyField(ModelImage, related_name='category', )
+    images = models.ManyToManyField(ModelImage, related_name='category', through="CategoryImage")
     certificate = models.ForeignKey(
         ModelFile,
         on_delete=models.SET_NULL,

@@ -11,7 +11,7 @@ from files.models import ModelImage, ModelFile
 
 
 class ModelImageAdmin(admin.ModelAdmin):
-    list_display = ('name', 'image')
+    list_display = ('name', 'file')
     actions_on_bottom = True
     list_per_page = 25
 
