@@ -1,11 +1,18 @@
+import os.path
 from django.db import models
 
 from pathlib import Path
 
 
+def get_upload_path(self, filename):
+    if self.category_link is not None:
+        return os.path.join('category', filename)
+    return os.path.join('default', filename)
+
+
 class ModelImage(models.Model):
     name = models.CharField(default='', max_length=50)
-    image = models.ImageField(upload_to='images', null=True, blank=True)
+    image = models.ImageField(upload_to=get_upload_path, null=True, blank=True)
 
     class Meta:
         verbose_name_plural = 'Изображения'
