@@ -16,7 +16,7 @@ class ModelImage(models.Model):
     def save(self, *args, **kwargs):
         file_format = self.image
         extension = Path(file_format.name).suffix[1:].lower()
-        file_name = self.name + extension
+        file_name = self.name + "." + extension
         self.image.name = file_name
         super(ModelImage, self).save(*args, **kwargs)
 

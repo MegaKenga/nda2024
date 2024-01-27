@@ -2,12 +2,12 @@ from django.contrib import admin
 from files.models import ModelImage, ModelFile
 
 
-class OfferImageInline(admin.TabularInline):
-    model = ModelImage
-    can_delete = True
-    extra = 0
-    show_change_link = True
-    classes = ['collapse', 'wide']
+# class OfferImageInline(admin.TabularInline):
+#     model = ModelImage
+#     can_delete = True
+#     extra = 0
+#     show_change_link = True
+#     classes = ['collapse', 'wide']
 
 
 class ModelImageAdmin(admin.ModelAdmin):

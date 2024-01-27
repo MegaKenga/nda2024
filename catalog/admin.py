@@ -5,8 +5,8 @@ from django.contrib.admin import AdminSite
 from django.contrib.auth.models import Group, User
 from django.contrib.auth.admin import GroupAdmin, UserAdmin
 
-from catalog.models import Brand, Category, Offer
-from files.admin import OfferImageInline
+from catalog.models import Brand, Category, CategoryImage, Offer
+# from files.admin import OfferImageInline
 
 
 """Общие методы админки"""
@@ -68,6 +68,10 @@ class BrandAdmin(admin.ModelAdmin):
     search_fields = ['name']
 
 
+class CategoryImageInline(admin.TabularInline):
+    model = CategoryImage
+    extra = 0
+
 class CategoryAdmin(admin.ModelAdmin):
     list_select_related = True
     list_display = (
@@ -89,8 +93,8 @@ class CategoryAdmin(admin.ModelAdmin):
     fields = [
         'name',
         'description',
-        'logo',
-        'banner',
+        # 'logo',
+        # 'banner',
         'certificate',
         'instruction',
         'parents',
@@ -101,7 +105,7 @@ class CategoryAdmin(admin.ModelAdmin):
         'is_final'
     ]
     filter_horizontal = ('parents', )
-    inlines = [OfferInline]
+    inlines = [OfferInline, CategoryImageInline]
     view_on_site = True
     actions_on_bottom = True
     list_per_page = 25
@@ -134,7 +138,7 @@ class OfferAdmin(admin.ModelAdmin):
         'status'
     ]
     autocomplete_fields = ['category']
-    inlines = [OfferImageInline]
+    # inlines = [OfferImageInline]
     actions_on_bottom = True
     list_per_page = 25
     search_fields = ['name']
