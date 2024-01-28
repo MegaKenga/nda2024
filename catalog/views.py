@@ -1,29 +1,53 @@
-from django.shortcuts import render, get_object_or_404, get_list_or_404
+from django.shortcuts import get_object_or_404
+from django.views.generic import TemplateView, ListView
 from catalog.models import Category, Brand, Offer
 
 
-def index(request):
-    brands = Brand.visible.all().order_by('name')
-    categories = Category.visible.filter(parents=None).filter(brand=None)
-    context = {'brands': brands, 'categories': categories}
-    return render(request, 'index.html', context=context)
+class IndexView(TemplateView):
+    template_name = 'index.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['brands'] = Brand.visible.all().order_by('name')
+        context['categories'] = Category.visible.filter(parents=None).filter(brand=None)
+        return context
 
 
-def get_category(request, category_slug):
-    category = Category.visible.get(slug=category_slug)
-    context = {'category': category}
-    return render(request, 'catalog/category.html', context=context)
+class CategoryView(TemplateView):
+    template_name = 'catalog/category.html'
+    context_object_name = 'category'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['category'] = Category.visible.get(slug=self.kwargs['category_slug'])
+        return context
 
 
-def get_brand(request, brand_slug):
-    brand = get_object_or_404(Brand.visible, slug=brand_slug)
-    categories = get_list_or_404(Category.visible, brand=brand.id, parents=None)
-    context = {'brand': brand, 'categories': categories}
-    return render(request, 'catalog/brand.html', context=context)
+class BrandView(ListView):
+    model = Category
+    template_name = 'catalog/brand.html'
+    context_object_name = 'categories'
+
+    def get_queryset(self):
+        brand = Brand.visible.get(slug=self.kwargs['brand_slug'])
+        return Category.visible.filter(brand=brand.id, parents=None)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['brand'] = get_object_or_404(Brand.visible, slug=self.kwargs['brand_slug'])
+        return context
 
 
-def get_product_with_offers(request, brand_slug, category_slug):
-    category = get_object_or_404(Category.visible, slug=category_slug)
-    offers = Offer.visible.filter(category=category.id)
-    context = {'offers': offers, 'category': category}
-    return render(request, 'catalog/offer.html', context=context)
+class OfferView(ListView):
+    model = Offer
+    template_name = 'catalog/offer.html'
+    context_object_name = 'offers'
+
+    def get_queryset(self):
+        category = Category.visible.get(slug=self.kwargs['category_slug'])
+        return Offer.visible.filter(category=category.id)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['category'] = get_object_or_404(Category.visible, slug=self.kwargs['category_slug'])
+        return context

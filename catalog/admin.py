@@ -1,12 +1,11 @@
 from django.contrib import admin
-from nda.filters import DropdownFilter, RelatedOnlyDropdownFilter
+from catalog.admin_filters import DropdownFilter, RelatedOnlyDropdownFilter
 
 from django.contrib.admin import AdminSite
 from django.contrib.auth.models import Group, User
 from django.contrib.auth.admin import GroupAdmin, UserAdmin
 
 from catalog.models import Brand, Category, Offer
-from files.admin import OfferImageInline
 
 
 """Общие методы админки"""
@@ -134,7 +133,6 @@ class OfferAdmin(admin.ModelAdmin):
         'status'
     ]
     autocomplete_fields = ['category']
-    inlines = [OfferImageInline]
     actions_on_bottom = True
     list_per_page = 25
     search_fields = ['name']
