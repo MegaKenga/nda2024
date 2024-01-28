@@ -13,13 +13,16 @@ class IndexView(TemplateView):
         return context
 
 
-class CategoryView(TemplateView):
+class CategoryView(ListView):
+    model = Category
     template_name = 'catalog/category.html'
     context_object_name = 'category'
 
+    def get_queryset(self):
+        return Category.visible.prefetch_related('children').get(slug=self.kwargs['category_slug'])
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['category'] = Category.visible.get(slug=self.kwargs['category_slug'])
         return context
 
 
@@ -29,8 +32,7 @@ class BrandView(ListView):
     context_object_name = 'categories'
 
     def get_queryset(self):
-        brand = Brand.visible.get(slug=self.kwargs['brand_slug'])
-        return Category.visible.filter(brand=brand.id, parents=None)
+        return Category.visible.select_related('brand').filter(parents=None)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -45,7 +47,7 @@ class OfferView(ListView):
 
     def get_queryset(self):
         category = Category.visible.get(slug=self.kwargs['category_slug'])
-        return Offer.visible.filter(category=category.id)
+        return Offer.visible.select_related('category').filter(category=category.id)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
