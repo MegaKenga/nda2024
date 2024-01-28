@@ -19,7 +19,7 @@ class CategoryView(ListView):
     context_object_name = 'category'
 
     def get_queryset(self):
-        return Category.visible.prefetch_related('children').get(slug=self.kwargs['category_slug'])
+        return Category.visible.prefetch_related('parents').select_related('brand').get(slug=self.kwargs['category_slug'])
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
