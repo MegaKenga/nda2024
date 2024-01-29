@@ -35,8 +35,9 @@ class BrandView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['categories'] = Category.visible.filter(parents=None).select_related('brand')
-        context['brand'] = get_object_or_404(Brand.visible, slug=self.kwargs['brand_slug'])
+        brand = get_object_or_404(Brand.visible, slug=self.kwargs['brand_slug'])
+        context['categories'] = Category.visible.filter(parents=None, brand=brand).select_related('brand')
+        context['brand'] = brand
         return context
 
 
