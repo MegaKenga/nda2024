@@ -88,10 +88,6 @@ class CategoryAdmin(admin.ModelAdmin):
     fields = [
         'name',
         'description',
-        'logo',
-        'banner',
-        'certificate',
-        'instruction',
         'parents',
         'brand',
         'slug',
@@ -125,8 +121,6 @@ class OfferAdmin(admin.ModelAdmin):
     fields = [
         'name',
         'description',
-        'picture',
-        'tech_info',
         'ctru',
         'category',
         'place',

@@ -3,8 +3,8 @@
 {% block content %}
 <body>
 <div>
-    {% if category.brand %}
-      <p>Brand: <a href="{% url 'brand' brand_slug=category.brand.slug %}">{{ category.brand.name.upper }}</a></p>
+    {% if brand %}
+      <p>Brand: <a href="{% url 'brand' brand_slug=brand.slug %}">{{ brand.name.upper }}</a></p>
     {% else %}
       <p>No Brand</p>
     {% endif %}
@@ -17,9 +17,9 @@
       {% endfor %}
       <p>Children:</p>
       <ul>
-      {% for category in category.children.all %}
+      {% for category in category.children.all%}
             {% if category.is_final %}
-                <li>{{ forloop.counter }}: <a href="{% url 'offer' brand_slug=category.brand.slug category_slug=category.slug %}">{{ category.name.upper }}</a></li>
+                <li>{{ forloop.counter }}: <a href="{% url 'offer' brand_slug=brand.slug category_slug=category.slug %}">{{ category.name.upper }}</a></li>
             {% else %}
                 <li>{{ forloop.counter }}: <a href="{% url 'category' category_slug=category.slug%}">{{ category.name.upper }}</a></li>
             {% endif %}

@@ -1,5 +1,6 @@
 from django.shortcuts import get_object_or_404
-from django.views.generic import TemplateView, ListView
+from django.views.generic import TemplateView, DetailView, ListView
+
 from catalog.models import Category, Brand, Offer
 
 
@@ -13,43 +14,39 @@ class IndexView(TemplateView):
         return context
 
 
-class CategoryView(ListView):
+class CategoryView(TemplateView):
     model = Category
     template_name = 'catalog/category.html'
-    context_object_name = 'category'
-
-    def get_queryset(self):
-        return Category.visible.prefetch_related('parents').select_related('brand').get(slug=self.kwargs['category_slug'])
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        category = Category.visible.prefetch_related('parents').select_related('brand').get(slug=self.kwargs['category_slug'])
+        context['brand'] = category.brand
+        context['category'] = category
         return context
 
 
-class BrandView(ListView):
+class BrandView(TemplateView):
     model = Category
     template_name = 'catalog/brand.html'
-    context_object_name = 'categories'
 
     def get_queryset(self):
-        return Category.visible.select_related('brand').filter(parents=None)
+        return
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['categories'] = Category.visible.filter(parents=None).select_related('brand')
         context['brand'] = get_object_or_404(Brand.visible, slug=self.kwargs['brand_slug'])
         return context
 
 
-class OfferView(ListView):
+class OfferView(TemplateView):
     model = Offer
     template_name = 'catalog/offer.html'
-    context_object_name = 'offers'
-
-    def get_queryset(self):
-        category = Category.visible.get(slug=self.kwargs['category_slug'])
-        return Offer.visible.select_related('category').filter(category=category.id)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['category'] = get_object_or_404(Category.visible, slug=self.kwargs['category_slug'])
+        category = get_object_or_404(Category.visible, slug=self.kwargs['category_slug'])
+        context['category'] = category
+        context['offers'] = Offer.visible.filter(category=category.id).select_related('category')
         return context
