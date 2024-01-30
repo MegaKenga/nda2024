@@ -44,7 +44,6 @@ INSTALLED_APPS = [
     'debug_toolbar',
     'django_extensions',
     'catalog.apps.CatalogConfig',
-    'files.apps.FilesConfig'
 ]
 
 MIDDLEWARE = [

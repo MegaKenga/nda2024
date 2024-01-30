@@ -14,6 +14,23 @@
    {% else %}
      <li><a href="{% url 'login'%}?next={{request.path}}">Login</a></li>
    {% endif %}
+<ul>
+    {% for item in sub_nav %}     
+        {% if item == "in" %}         
+            <ul>
+        {% else %}
+            {% if item == "out" %}
+                    </ul>
+            {% else %}
+                <li>
+                    <a href='{{item.full_url}}'>{{item.name}}</a>
+                    {% if item.leaf %}
+                        </li>
+                    {% endif %}
+            {% endif %}
+        {% endif %}
+    {% endfor %}
+</ul>
 {% block content %}
 {% endblock %}
 {% include 'footer.html' %}

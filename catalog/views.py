@@ -1,29 +1,63 @@
-from django.shortcuts import render, get_object_or_404, get_list_or_404
+from django.shortcuts import get_object_or_404
+from django.views.generic import TemplateView, DetailView, ListView
+
 from catalog.models import Category, Brand, Offer
 
 
-def index(request):
-    brands = Brand.visible.all().order_by('name')
-    categories = Category.visible.filter(parents=None).filter(brand=None)
-    context = {'brands': brands, 'categories': categories}
-    return render(request, 'index.html', context=context)
+class IndexView(TemplateView):
+    template_name = 'index.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['brands'] = Brand.visible.all().order_by('name')
+        context['categories'] = Category.visible.filter(parents=None).filter(brand=None)
+        return context
 
 
-def get_category(request, category_slug):
-    category = Category.visible.get(slug=category_slug)
-    context = {'category': category}
-    return render(request, 'catalog/category.html', context=context)
+class CategoryView(TemplateView):
+    model = Category
+    template_name = 'catalog/category.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        category = Category.visible.prefetch_related('parents').select_related('brand').get(slug=self.kwargs['category_slug'])
+        parents = category.parents.all()
+        breadcrumbs = []
+        while len(parents) > 0:
+            brand_parents = [parent for parent in parents if parent.brand is not None]
+            if len(brand_parents) > 1:
+                raise ValueError('We don\'t expect multiple brand parents')
+            if len(brand_parents) == 1:
+                breadcrumbs.insert(0, brand_parents[0])
+            parents = brand_parents[0].parents.all()
+        context['brand'] = category.brand
+        context['category'] = category
+        context['breadcrumbs'] = breadcrumbs
+        return context
 
 
-def get_brand(request, brand_slug):
-    brand = get_object_or_404(Brand.visible, slug=brand_slug)
-    categories = get_list_or_404(Category.visible, brand=brand.id, parents=None)
-    context = {'brand': brand, 'categories': categories}
-    return render(request, 'catalog/brand.html', context=context)
+class BrandView(TemplateView):
+    model = Category
+    template_name = 'catalog/brand.html'
+
+    def get_queryset(self):
+        return
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        brand = get_object_or_404(Brand.visible, slug=self.kwargs['brand_slug'])
+        context['categories'] = Category.visible.filter(parents=None, brand=brand).select_related('brand')
+        context['brand'] = brand
+        return context
 
 
-def get_product_with_offers(request, brand_slug, category_slug):
-    category = get_object_or_404(Category.visible, slug=category_slug)
-    offers = Offer.visible.filter(category=category.id)
-    context = {'offers': offers, 'category': category}
-    return render(request, 'catalog/offer.html', context=context)
+class OfferView(TemplateView):
+    model = Offer
+    template_name = 'catalog/offer.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        category = get_object_or_404(Category.visible, slug=self.kwargs['category_slug'])
+        context['category'] = category
+        context['offers'] = Offer.visible.filter(category=category.id).select_related('category')
+        return context

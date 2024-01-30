@@ -20,11 +20,11 @@ from django.urls import path, include
 
 from nda import settings
 from nda.views import custom_404
-from catalog.views import index
+import catalog.views
 
 
 urlpatterns = [
-    path('', index, name='home'),
+    path('', catalog.views.IndexView.as_view(), name='home'),
     path('accounts/', include('django.contrib.auth.urls')),
     path('admin/', admin.site.urls),
     path('catalog/', include('catalog.urls')),
