@@ -21,8 +21,18 @@ class CategoryView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         category = Category.visible.prefetch_related('parents').select_related('brand').get(slug=self.kwargs['category_slug'])
+        parents = category.parents.all()
+        breadcrumbs = []
+        while len(parents) > 0:
+            brand_parents = [parent for parent in parents if parent.brand is not None]
+            if len(brand_parents) > 1:
+                raise ValueError('We don\'t expect multiple brand parents')
+            if len(brand_parents) == 1:
+                breadcrumbs.insert(0, brand_parents[0])
+            parents = brand_parents[0].parents.all()
         context['brand'] = category.brand
         context['category'] = category
+        context['breadcrumbs'] = breadcrumbs
         return context
 
 
