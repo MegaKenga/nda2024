@@ -3,6 +3,10 @@
 {% block content %}
 <body>
 <div>
+    <p style="display: inline;">
+        <a href="{% url 'home' %}" class="a_top_hypers">ГЛАВНАЯ</a>
+        -> <a>{{ brand.name.upper }}</a>
+    </p>
     <p>Name: {{ brand.name.upper }}</p>
     <p>ID: {{ brand.id }}</p>
     <p>Description: {{ brand.description.upper }}</p>
