@@ -1,6 +1,8 @@
 from django.db import models
 from django.urls import reverse
 
+from files.models import ModelImage, ModelFile
+
 
 """Общие классы и миксины"""
 
@@ -48,6 +50,22 @@ class Brand(BaseFields):
         max_length=128,
         unique=True,
         verbose_name='Бренд')
+    logo = models.ForeignKey(
+        ModelImage,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name='Логотип бренда',
+        related_name='brand_logo'
+    )
+    banner = models.ForeignKey(
+        ModelImage,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name='Баннер бренда',
+        related_name='brand_banner'
+    )
     slug = models.SlugField(
         unique=True,
         max_length=128,
@@ -86,6 +104,39 @@ class Category(BaseFields):
         related_name='children',
         symmetrical=False
     )
+    logo = models.ForeignKey(
+        ModelImage,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name='Логотип категории',
+        related_name='category_logo'
+    )
+    banner = models.ForeignKey(
+        ModelImage,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name='Баннер категории',
+        related_name='category_banner'
+    )
+    images = models.ManyToManyField(ModelImage, related_name='category', through="CategoryImage")
+    certificate = models.ForeignKey(
+        ModelFile,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name='Регистрационное удостоверение',
+        related_name='registration'
+    )
+    instruction = models.ForeignKey(
+        ModelFile,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name='Инструкция',
+        related_name='instruction'
+    )
     slug = models.SlugField(
         unique=True,
         max_length=128,
@@ -111,6 +162,27 @@ class Category(BaseFields):
         return 'ПОДБОРКА' + '----' + self.name.upper()
 
 
+class CategoryImage(models.Model):
+    category = models.ForeignKey(
+        Category,
+        on_delete=models.CASCADE,
+        null=False, blank=False,
+        related_name='image_link',
+        verbose_name='Image category'
+    )
+    file = models.ForeignKey(
+        ModelImage,
+        on_delete=models.CASCADE,
+        null=False,
+        blank=False,
+        related_name='category_link',
+        verbose_name='Category image'
+    )
+    # ОПЙИОНАЛЬНО. Можно сделать выбором из "логотип", "главное изображение", "изображение галереи" и тп
+    # как вариант чтобы не плодить много полей в самой модели категории
+    image_type = models.CharField()
+
+
 class Offer(BaseFields):
     name = models.CharField(
         max_length=128,
@@ -123,6 +195,21 @@ class Offer(BaseFields):
         blank=True,
         related_name='offer',
         verbose_name='Категория, к которой принадлежит товар'
+    )
+    picture = models.ForeignKey(
+        ModelImage,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name='Изображение товара'
+    )
+    tech_info = models.ForeignKey(
+        ModelFile,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name='Техзадание',
+        related_name='tech_description'
     )
     ctru = models.CharField(
         max_length=64,

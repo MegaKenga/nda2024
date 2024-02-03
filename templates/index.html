@@ -13,7 +13,7 @@
     <li>Каталог по направлениям</li>
           {% for category in categories %}
 	<div>
-        <p><a href="{% url 'category' category_slug=category.slug %}">{{ category.name.upper }}</a></p>
+        <p><img src="{{ category.logo.image.url }}"/><a href="{% url 'category' category_slug=category.slug %}">{{ category.name.upper }}</a></p>
     </div>
 	{% endfor %}
   </ul>

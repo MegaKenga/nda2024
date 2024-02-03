@@ -14,9 +14,9 @@
         <ul>
         {% for category in categories %}
             {% if category.is_final %}
-                <li>{{ forloop.counter }}: <a href="{% url 'offer' brand_slug=category.brand.slug category_slug=category.slug %}">{{ category.name.upper }}</a></li>
+                <li>{{ forloop.counter }}: <img src="{{ category.logo.image.url }}"/> <a href="{% url 'offer' brand_slug=category.brand.slug category_slug=category.slug %}">{{ category.name.upper }}</a></li>
             {% else %}
-                <li>{{ forloop.counter }}: <a href="{% url 'category' category_slug=category.slug%}">{{ category.name.upper }}</a></li>
+                <li>{{ forloop.counter }}: <img src="{{ category.logo.image.url }}"/> <a href="{% url 'category' category_slug=category.slug%}">{{ category.name.upper }}</a></li>
             {% endif %}
         {% endfor %}
         </ul>

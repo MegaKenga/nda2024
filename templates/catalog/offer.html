@@ -4,6 +4,7 @@
 <body>
 <div>
 {% include 'catalog/breadcrumbs.html' %}
+<input type="button" onclick="history.back();" value="Пред. страница"/>
     <p>Brand: <a href="{% url 'brand' brand_slug=category.brand.slug %}">{{ category.brand }}</a></p>
     <p>Name: {{ category.name.upper }}</p>
     <p>Description: {{ category.description }}</p>
