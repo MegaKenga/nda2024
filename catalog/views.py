@@ -4,6 +4,27 @@ from django.views.generic import TemplateView, DetailView, ListView
 from catalog.models import Category, Brand, Offer
 
 
+def breadcrumbs_path(category):
+    parents = category.parents.all()
+    breadcrumbs = []
+    while len(parents) > 0:
+        parents_path = [parent for parent in parents if parent.brand is not None]
+        if parents_path:
+            if len(parents_path) > 1:
+                raise ValueError('We don\'t expect multiple brand parents')
+            if len(parents_path) == 1:
+                breadcrumbs.insert(0, parents_path [0])
+            parents = parents_path[0].parents.all()
+        else:
+            parents_path = [parent for parent in parents if parent.brand is None]
+            if len(parents_path) > 1:
+                raise ValueError('We don\'t expect multiple brand parents')
+            if len(parents_path) == 1:
+                breadcrumbs.insert(0, parents_path[0])
+            parents = parents_path[0].parents.all()
+    return breadcrumbs
+
+
 class IndexView(TemplateView):
     template_name = 'index.html'
 
@@ -21,18 +42,9 @@ class CategoryView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         category = Category.visible.prefetch_related('parents').select_related('brand').get(slug=self.kwargs['category_slug'])
-        parents = category.parents.all()
-        breadcrumbs = []
-        while len(parents) > 0:
-            brand_parents = [parent for parent in parents if parent.brand is not None]
-            if len(brand_parents) > 1:
-                raise ValueError('We don\'t expect multiple brand parents')
-            if len(brand_parents) == 1:
-                breadcrumbs.insert(0, brand_parents[0])
-            parents = brand_parents[0].parents.all()
         context['brand'] = category.brand
         context['category'] = category
-        context['breadcrumbs'] = breadcrumbs
+        context['breadcrumbs'] = breadcrumbs_path(category)
         return context
 
 
@@ -60,4 +72,5 @@ class OfferView(TemplateView):
         category = get_object_or_404(Category.visible, slug=self.kwargs['category_slug'])
         context['category'] = category
         context['offers'] = Offer.visible.filter(category=category.id).select_related('category')
+        context['breadcrumbs'] = breadcrumbs_path(category)
         return context
