@@ -113,7 +113,11 @@ class CategoryAdmin(admin.ModelAdmin):
     list_per_page = 25
     search_fields = ['name']
 
-
+    def get_form(self, request, obj=None, **kwargs):
+        form = super(CategoryAdmin, self).get_form(request, obj, **kwargs)
+        qs = form.base_fields['parents'].queryset
+        form.base_fields['parents'].queryset = qs.prefetch_related('brand').all()
+        return form
 
 
 class OfferAdmin(admin.ModelAdmin):
