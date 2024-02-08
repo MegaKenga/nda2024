@@ -1,5 +1,6 @@
 from django.db import models
 from django.urls import reverse
+from django.db.models import Q
 
 from files.models import ModelImage, ModelFile
 
@@ -17,6 +18,8 @@ class BaseFields(models.Model):
         DRAFT = 'DRAFT', 'Черновик'
         PUBLISHED = 'PUBLISHED', 'Активен'
         ARCHIVED = 'ARCHIVED', 'В архиве'
+
+    use_for_related_fields = True
 
     description = models.TextField(
         default='',
@@ -178,9 +181,6 @@ class CategoryImage(models.Model):
         related_name='category_link',
         verbose_name='Category image'
     )
-    # ОПЙИОНАЛЬНО. Можно сделать выбором из "логотип", "главное изображение", "изображение галереи" и тп
-    # как вариант чтобы не плодить много полей в самой модели категории
-    image_type = models.CharField()
 
 
 class Offer(BaseFields):

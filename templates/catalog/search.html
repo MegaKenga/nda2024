@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block content %}
+    <h1>Поиск</h1>
+<ul>
+    {% for element in object_list %}
+        {% if element.brand %}
+            <li>
+                <div><a href="{% url 'offer' brand_slug=element.brand.slug category_slug=element.slug%}">{{ element.name.upper }}</a></div>
+            </li>
+        {% else %}
+            <li>
+                <div><a href="{% url 'offer' brand_slug=element.category.brand.slug category_slug=element.category.slug%}">{{ element.category.name.upper }}</a></div>
+            </li>
+        {% endif %}
+    {% endfor %}
+
+</ul>
+{% endblock %}

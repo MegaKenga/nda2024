@@ -1,5 +1,9 @@
+from itertools import chain
+
+from django.db.models import Q
 from django.shortcuts import get_object_or_404
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, ListView
+
 
 from catalog.models import Category, Brand, Offer
 
@@ -74,3 +78,16 @@ class OfferView(TemplateView):
         context['offers'] = Offer.visible.filter(category=category.id).select_related('category')
         context['breadcrumbs'] = breadcrumbs_path(category)
         return context
+
+
+class SiteSearchView(ListView):
+    model = Category, Offer
+    template_name = 'catalog/search.html'
+
+    def get_queryset(self):
+        query = self.request.GET.get('q', None)
+        if len(query) > 2:
+            categories = Category.visible.filter(Q(name__icontains=query), is_final=True).order_by('id').distinct('id')
+            offers = Offer.visible.filter(Q(name__icontains=query) | Q(description__icontains=query)).order_by('category_id').distinct('category_id').exclude(category__in=categories)
+            object_list = chain(categories, offers)
+            return object_list

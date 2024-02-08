@@ -4,10 +4,8 @@ from django.db import models
 from pathlib import Path
 
 
-def get_upload_path(self, filename):
-    if self.category_link is not None:
-        return os.path.join('category', filename)
-    return os.path.join('default', filename)
+def get_upload_path(instance, filename):
+    return ('{}/{}').format(instance.name, filename)
 
 
 class ModelImage(models.Model):
