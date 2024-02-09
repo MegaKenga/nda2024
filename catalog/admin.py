@@ -165,6 +165,9 @@ class OfferAdmin(admin.ModelAdmin):
     list_per_page = 25
     search_fields = ['name']
 
+    def get_queryset(self, request):
+        return super().get_queryset(request).select_related('category', 'category__brand')
+
     @admin.display(description='Бренд', ordering='name')
     def brand_name(self, obj):
         return obj.category.brand.name
