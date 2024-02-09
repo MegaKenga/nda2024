@@ -1,3 +1,5 @@
+import re
+
 from django.contrib import admin
 from catalog.admin_filters import DropdownFilter, RelatedOnlyDropdownFilter
 
@@ -31,6 +33,7 @@ class OfferInline(admin.TabularInline):
     extra = 0
     show_change_link = True
     classes = ['collapse', 'wide']
+    autocomplete_fields = ('picture', 'tech_info')
 
 
 class CategoryInline(admin.TabularInline):
@@ -71,7 +74,17 @@ class BrandAdmin(admin.ModelAdmin):
 class CategoryImageInline(admin.TabularInline):
     model = CategoryImage
     extra = 0
+    autocomplete_fields = ('file', )
 
+    def get_queryset(self, request, *args, **kwargs):
+        qs = super().get_queryset(request).select_related('file')
+        try:
+            # extracting category_id from path
+            category_id = int(re.search(r'/(\d+)/change/', request.path).group(1))
+            return qs.filter(id=category_id)
+        except Exception as error:
+            print("Cannot overwrite get_queryset for CategoryImageInline", error)
+            return qs
 
 class CategoryAdmin(admin.ModelAdmin):
 
@@ -100,13 +113,14 @@ class CategoryAdmin(admin.ModelAdmin):
         'certificate',
         'instruction',
         'parents',
-        'brand',
+        'brand',  # probably 2 autocomplete_fields as well
         'slug',
         'place',
         'status',
         'is_final'
     ]
     filter_horizontal = ('parents', )
+    autocomplete_fields = ('logo', 'banner', 'certificate', 'instruction')  # default select queries all choices right away.
     inlines = [OfferInline, CategoryImageInline]
     view_on_site = True
     actions_on_bottom = True
@@ -116,7 +130,7 @@ class CategoryAdmin(admin.ModelAdmin):
     def get_form(self, request, obj=None, **kwargs):
         form = super(CategoryAdmin, self).get_form(request, obj, **kwargs)
         qs = form.base_fields['parents'].queryset
-        form.base_fields['parents'].queryset = qs.prefetch_related('brand').all()
+        form.base_fields['parents'].queryset = qs.select_related('brand').all()
         return form
 
 
