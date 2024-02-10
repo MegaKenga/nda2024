@@ -87,7 +87,12 @@ class SiteSearchView(ListView):
     def get_queryset(self):
         query = self.request.GET.get('q', None)
         if len(query) > 2:
-            categories = Category.visible.filter(Q(name__icontains=query), is_final=True).order_by('id').distinct('id')
-            offers = Offer.visible.filter(Q(name__icontains=query) | Q(description__icontains=query)).order_by('category_id').distinct('category_id').exclude(category__in=categories)
-            object_list = chain(categories, offers)
+            # categories = Category.visible.filter(Q(name__icontains=query), is_final=True).order_by('id').distinct('id')
+            # offers = Offer.visible.filter(Q(name__icontains=query) | Q(description__icontains=query)).order_by('category_id').distinct('category_id').exclude(category__in=categories)
+            # object_list = chain(categories, offers)
+            # return object_list
+            # todo: filter only offers with query
+            # related_offers = Prefetch()
+            object_list = Category.visible.filter(Q(name__icontains=query) | Q(offer__name__icontains=query)).prefetch_related('offer')
+            print(object_list)
             return object_list

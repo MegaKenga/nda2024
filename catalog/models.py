@@ -193,7 +193,7 @@ class Offer(BaseFields):
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        related_name='offer',
+        related_name='offer', #todo: offers???
         verbose_name='Категория, к которой принадлежит товар'
     )
     picture = models.ForeignKey(
