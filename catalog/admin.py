@@ -1,7 +1,7 @@
 import re
 
 from django.contrib import admin
-from catalog.admin_filters import DropdownFilter, RelatedOnlyDropdownFilter
+from catalog.admin_filters import DropdownFilter, RelatedOnlyDropdownFilter, CategoryRelatedOnlyDropdownFilter
 
 from django.contrib.admin import AdminSite
 from django.contrib.auth.models import Group, User
@@ -33,7 +33,7 @@ class OfferInline(admin.TabularInline):
     extra = 0
     show_change_link = True
     classes = ['collapse', 'wide']
-    autocomplete_fields = ('picture', 'tech_info')
+    autocomplete_fields = ('tech_info', )
 
 
 class CategoryInline(admin.TabularInline):
@@ -86,8 +86,8 @@ class CategoryImageInline(admin.TabularInline):
             print("Cannot overwrite get_queryset for CategoryImageInline", error)
             return qs
 
-class CategoryAdmin(admin.ModelAdmin):
 
+class CategoryAdmin(admin.ModelAdmin):
     list_select_related = ['brand']
     list_display = (
         'name',
@@ -99,9 +99,8 @@ class CategoryAdmin(admin.ModelAdmin):
     )
     list_editable = ('place', 'slug', 'status')
     list_filter = (
-        ('name', DropdownFilter),
         ('brand', RelatedOnlyDropdownFilter),
-        ('parents', RelatedOnlyDropdownFilter),
+        ('parents', CategoryRelatedOnlyDropdownFilter),
         'status',
         'is_final'
     )
@@ -120,7 +119,7 @@ class CategoryAdmin(admin.ModelAdmin):
         'is_final'
     ]
     filter_horizontal = ('parents', )
-    autocomplete_fields = ('logo', 'banner', 'certificate', 'instruction')  # default select queries all choices right away.
+    autocomplete_fields = ('brand', 'logo', 'banner', 'certificate', 'instruction')
     inlines = [OfferInline, CategoryImageInline]
     view_on_site = True
     actions_on_bottom = True
@@ -146,13 +145,12 @@ class OfferAdmin(admin.ModelAdmin):
     list_editable = ('place', 'status')
     list_filter = (
         ('category__brand', RelatedOnlyDropdownFilter),
-        ('category', RelatedOnlyDropdownFilter),
+        ('category', CategoryRelatedOnlyDropdownFilter),
         'status'
     )
     fields = [
         'name',
         'description',
-        'picture',
         'tech_info',
         'ctru',
         'category',
@@ -160,7 +158,6 @@ class OfferAdmin(admin.ModelAdmin):
         'status'
     ]
     autocomplete_fields = ['category']
-    # inlines = [OfferImageInline]
     actions_on_bottom = True
     list_per_page = 25
     search_fields = ['name']

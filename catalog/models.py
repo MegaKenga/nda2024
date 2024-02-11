@@ -19,8 +19,6 @@ class BaseFields(models.Model):
         PUBLISHED = 'PUBLISHED', 'Активен'
         ARCHIVED = 'ARCHIVED', 'В архиве'
 
-    use_for_related_fields = True
-
     description = models.TextField(
         default='',
         null=True,
@@ -195,13 +193,6 @@ class Offer(BaseFields):
         blank=True,
         related_name='offer',
         verbose_name='Категория, к которой принадлежит товар'
-    )
-    picture = models.ForeignKey(
-        ModelImage,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        verbose_name='Изображение товара'
     )
     tech_info = models.ForeignKey(
         ModelFile,
