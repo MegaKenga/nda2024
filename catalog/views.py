@@ -1,8 +1,7 @@
-from itertools import chain
-
 from django.db.models import Q, Prefetch
-from django.shortcuts import get_object_or_404, render
-from django.views.generic import TemplateView, ListView
+from django.shortcuts import get_object_or_404
+from django.views.generic import TemplateView
+from django_filters.views import FilterView
 
 
 from catalog.models import Category, Brand, Offer
@@ -80,9 +79,11 @@ class OfferView(TemplateView):
         return context
 
 
-class SiteSearchView(ListView):
-    model = Category, Offer
+class SiteSearchView(FilterView):
+    model = Category
     template_name = 'catalog/search.html'
+    paginate_by = 10
+    page_kwarg = 'page'
 
     def get_queryset(self):
         query = self.request.GET.get('q', None)
