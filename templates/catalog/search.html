@@ -1,18 +1,20 @@
 {% extends 'base.html' %}
 {% block content %}
-    <h1>Поиск</h1>
+    <h1>Результаты поиска</h1>
 <ul>
-    {% for element in object_list %}
-        {% if element.brand %}
-            <li>
-                <div><a href="{% url 'offer' brand_slug=element.brand.slug category_slug=element.slug%}">{{ element.name.upper }}</a></div>
-            </li>
-        {% else %}
-            <li>
-                <div><a href="{% url 'offer' brand_slug=element.category.brand.slug category_slug=element.category.slug%}">{{ element.category.name.upper }}</a></div>
-            </li>
-        {% endif %}
+{% if object_list %}
+    {% for category in object_list %}
+        <li>
+            <div><a href="{% url 'offer' brand_slug=category.brand.slug category_slug=category.slug%}">{{ category.name.upper }}</a></div>
+            <ul>
+                {%  for offer in category.related_offers %}
+                    <li>{{ offer.name }} {{ offer.description }}</li>
+                {% endfor %}
+            </ul>
+        </li>
     {% endfor %}
-
+{% else %}
+    <div>По вашему запросу ничего не найдено. Попробуйте изменить запрос и попробовать снова</div>
+{% endif %}
 </ul>
 {% endblock %}

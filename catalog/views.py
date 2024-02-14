@@ -1,7 +1,7 @@
 from itertools import chain
 
-from django.db.models import Q
-from django.shortcuts import get_object_or_404
+from django.db.models import Q, Prefetch
+from django.shortcuts import get_object_or_404, render
 from django.views.generic import TemplateView, ListView
 
 
@@ -86,8 +86,13 @@ class SiteSearchView(ListView):
 
     def get_queryset(self):
         query = self.request.GET.get('q', None)
-        if len(query) > 2:
-            categories = Category.visible.filter(Q(name__icontains=query), is_final=True).order_by('id').distinct('id')
-            offers = Offer.visible.filter(Q(name__icontains=query) | Q(description__icontains=query)).order_by('category_id').distinct('category_id').exclude(category__in=categories)
-            object_list = chain(categories, offers)
+        if len(query) >= 3:
+            related_offers = Prefetch(
+                'offer',
+                queryset=Offer.visible.filter(name__icontains=query),
+                to_attr='related_offers')
+            object_list = (
+                Category.visible.filter(is_final=True).filter(Q(name__icontains=query) | Q(offer__name__icontains=query))
+                .prefetch_related(related_offers).distinct()
+            )
             return object_list
