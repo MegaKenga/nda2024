@@ -1,7 +1,7 @@
 from django.db.models import Q, Prefetch
 from django.shortcuts import get_object_or_404
 from django.views.generic import TemplateView
-from django_filters.views import FilterView
+from django.views.generic import ListView
 
 
 from catalog.models import Category, Brand, Offer
@@ -79,21 +79,24 @@ class OfferView(TemplateView):
         return context
 
 
-class SiteSearchView(FilterView):
+SEARCH_QUERY_PARAM = 'q'
+
+
+class SiteSearchView(ListView):
     model = Category
     template_name = 'catalog/search.html'
-    paginate_by = 10
-    page_kwarg = 'page'
+    paginate_by = 2
 
     def get_queryset(self):
-        query = self.request.GET.get('q', None)
+        query = self.request.GET.get(SEARCH_QUERY_PARAM, None)
+        qs = super().get_queryset()
         if len(query) >= 3:
             related_offers = Prefetch(
                 'offer',
                 queryset=Offer.visible.filter(name__icontains=query),
                 to_attr='related_offers')
-            object_list = (
-                Category.visible.filter(is_final=True).filter(Q(name__icontains=query) | Q(offer__name__icontains=query))
+            qs = (
+                qs.filter(is_final=True).filter(Q(name__icontains=query) | Q(offer__name__icontains=query))
                 .prefetch_related(related_offers).distinct()
             )
-            return object_list
+            return qs

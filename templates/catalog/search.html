@@ -2,8 +2,8 @@
 {% load pagination_tags %}
 {% block content %}
     <h1>Результаты поиска</h1>
-<ul>
 {% if object_list %}
+    <ul>
     {% for category in object_list %}
         <li>
             <div><a href="{% url 'offer' brand_slug=category.brand.slug category_slug=category.slug%}">{{ category.name.upper }}</a></div>
@@ -14,27 +14,23 @@
             </ul>
         </li>
     {% endfor %}
-    {% if is_paginated %}
-<nav aria-label="Page navigation example" class="d-flex justify-content-center pt-3">
-  <ul class="pagination">
-    {% if page_obj.has_previous and page_obj.number != 2 %}
-    <li class="page-item"><a class="page-link text-dark" href="?{% url_replace request 'page' 1 %}" tabindex="-1" aria-disabled="true">First Page</a></li>
-    {% endif %}
-    {% if page_obj.has_previous %}
-    <li class="page-item"><a class="page-link text-dark" href="?{% url_replace request 'page' page_obj.previous_page_number %}">{{ page_obj.previous_page_number }}</a></li>
-    {% endif %}
-    <li class="page-item disabled"><a class="page-link" href="#">{{ page_obj.number }}</a></li>
-    {% if page_obj.has_next %}
-    <li class="page-item"><a class="page-link text-dark" href="?{% url_replace request 'page' page_obj.next_page_number %}">{{ page_obj.next_page_number }}</a></li>
-    {% endif %}
-    {% if page_obj.paginator.num_pages != page_obj.number and page_obj.paginator.num_pages != page_obj.next_page_number %}
-    <li class="page-item"><a class="page-link text-dark" href="?{% url_replace request 'page' page_obj.paginator.num_pages %}">Last Page</a></li>
-    {% endif %}
-  </ul>
-</nav>
-{% endif %}  
+    </ul>
+    <div>
+        <span>
+            {% if page_obj.has_previous %}
+                <a href="{% url_with_query_params request %}">&laquo; first</a>
+                <a href="{% url_with_query_params request page_obj.previous_page_number %}">previous</a>
+            {% endif %}
+            <span>
+                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+            </span>
+            {% if page_obj.has_next %}
+                <a href="{% url_with_query_params request page_obj.next_page_number %}">next</a>
+                <a href="{% url_with_query_params request page_obj.paginator.num_pages %}">last &raquo;</a>
+            {% endif %}
+        </span>
+    </div>
 {% else %}
     <div>По вашему запросу ничего не найдено. Попробуйте изменить запрос и попробовать снова</div>
 {% endif %}
-</ul>
 {% endblock %}
