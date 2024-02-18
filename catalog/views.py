@@ -2,7 +2,7 @@ from django.db.models import Q, Prefetch
 from django.shortcuts import get_object_or_404
 from django.views.generic import TemplateView
 from django.views.generic import ListView
-
+from django.contrib import messages
 
 from catalog.models import Category, Brand, Offer
 
@@ -88,15 +88,18 @@ class SiteSearchView(ListView):
     paginate_by = 2
 
     def get_queryset(self):
-        query = self.request.GET.get(SEARCH_QUERY_PARAM, None)
+        query = self.request.GET.get(SEARCH_QUERY_PARAM, '')
         qs = super().get_queryset()
-        if len(query) >= 3:
-            related_offers = Prefetch(
-                'offer',
-                queryset=Offer.visible.filter(name__icontains=query),
-                to_attr='related_offers')
-            qs = (
-                qs.filter(is_final=True).filter(Q(name__icontains=query) | Q(offer__name__icontains=query))
-                .prefetch_related(related_offers).distinct()
-            )
-            return qs
+        if len(query) < 3:
+            messages.error(self.request, 'Not enough symbols')
+            return qs.none()
+
+        related_offers = Prefetch(
+            'offer',
+            queryset=Offer.visible.filter(name__icontains=query),
+            to_attr='related_offers')
+        qs = (
+            qs.filter(is_final=True).filter(Q(name__icontains=query) | Q(offer__name__icontains=query))
+            .prefetch_related(related_offers).distinct()
+        )
+        return qs
