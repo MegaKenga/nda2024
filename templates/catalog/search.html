@@ -5,10 +5,27 @@
 {% if messages %}
     {% for message in messages %}
         <div>
-            tag: {{ message.tags }}. message: {{ message }}
+            {{ message }}
         </div>
     {% endfor %}
 {% elif object_list %}
+    <div>
+        <span>
+            {% if page_obj.has_previous %}
+                <a href="{% url_with_query_params request %}">&laquo; В начало</a>
+                <a href="{% url_with_query_params request page_obj.previous_page_number %}">Предыдущая страница</a>
+            {% endif %}
+            {% if page_obj.paginator.num_pages > 1 %}
+            <span>
+                Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}.
+            </span>
+            {% endif %}
+            {% if page_obj.has_next %}
+                <a href="{% url_with_query_params request page_obj.next_page_number %}">Следующая страница</a>
+                <a href="{% url_with_query_params request page_obj.paginator.num_pages %}">В конец &raquo;</a>
+            {% endif %}
+        </span>
+    </div>
     <ul>
     {% for category in object_list %}
         <li>
@@ -21,21 +38,6 @@
         </li>
     {% endfor %}
     </ul>
-    <div>
-        <span>
-            {% if page_obj.has_previous %}
-                <a href="{% url_with_query_params request %}">&laquo; first</a>
-                <a href="{% url_with_query_params request page_obj.previous_page_number %}">previous</a>
-            {% endif %}
-            <span>
-                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
-            </span>
-            {% if page_obj.has_next %}
-                <a href="{% url_with_query_params request page_obj.next_page_number %}">next</a>
-                <a href="{% url_with_query_params request page_obj.paginator.num_pages %}">last &raquo;</a>
-            {% endif %}
-        </span>
-    </div>
 {% else %}
     <div>По вашему запросу ничего не найдено. Попробуйте изменить запрос и попробовать снова</div>
 {% endif %}
