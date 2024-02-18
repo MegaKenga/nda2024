@@ -85,21 +85,21 @@ SEARCH_QUERY_PARAM = 'q'
 class SiteSearchView(ListView):
     model = Category
     template_name = 'catalog/search.html'
-    paginate_by = 2
+    paginate_by = 10
 
     def get_queryset(self):
         query = self.request.GET.get(SEARCH_QUERY_PARAM, '')
         qs = super().get_queryset()
         if len(query) < 3:
-            messages.error(self.request, 'Not enough symbols')
+            messages.error(self.request, message='Слишком короткий запрос. Попробуйте увеличить количество символов в запросе')
             return qs.none()
 
         related_offers = Prefetch(
             'offer',
-            queryset=Offer.visible.filter(name__icontains=query),
+            queryset=Offer.visible.filter(name__icontains=query) or Offer.visible.filter(description__icontains=query),
             to_attr='related_offers')
         qs = (
-            qs.filter(is_final=True).filter(Q(name__icontains=query) | Q(offer__name__icontains=query))
+            qs.filter(is_final=True).filter(Q(name__icontains=query) | Q(offer__name__icontains=query) | Q(offer__description__icontains=query))
             .prefetch_related(related_offers).distinct()
         )
         return qs
