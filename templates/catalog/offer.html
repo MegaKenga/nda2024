@@ -13,9 +13,9 @@
     <p>Name: {{ offer.name.upper }}</p>
     <p>Description: {{ offer.description }}</p>
     <form action="{% url "cart_add" offer_id=offer.pk %}" method="post">
-    {{ cart_product_form }}
+{#    {{ cart_product_form }}#}
     {% csrf_token %}
-    <input type="submit" value="Add to cart">
+    <button type="submit">Add to cart</button>
     </form>
     {% endfor %}
 </div>
