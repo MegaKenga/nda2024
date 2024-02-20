@@ -52,7 +52,6 @@ class Cart(object):
         for offer in offers:
             self.cart[str(offer.id)]['offer'] = offer
 
-
     def __len__(self):
         """
         Подсчет всех товаров в корзине.
