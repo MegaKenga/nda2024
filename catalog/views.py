@@ -1,10 +1,11 @@
 from django.db.models import Q, Prefetch
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, render
 from django.views.generic import TemplateView
 from django.views.generic import ListView
 from django.contrib import messages
 
 from catalog.models import Category, Brand, Offer
+from cart.forms import CartAddProductForm
 
 
 def breadcrumbs_path(category):
@@ -103,3 +104,9 @@ class SiteSearchView(ListView):
             .prefetch_related(related_offers).distinct()
         )
         return qs
+
+
+def offer_detail(request, id):
+    offer = get_object_or_404(Offer, id=id, available=True)
+    cart_product_form = CartAddProductForm()
+    return render(request, 'catalog/offer.html', {'offer': offer, 'cart_product_form': cart_product_form})

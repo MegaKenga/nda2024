@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'django_extensions',
     'catalog.apps.CatalogConfig',
     'files.apps.FilesConfig',
+    'cart.apps.CartConfig',
     'django_cleanup',
 ]
 
@@ -154,4 +155,7 @@ STATIC_ROOT = BASE_DIR.resolve().joinpath('static')
 MEDIA_ROOT = 'media/'
 MEDIA_URL = '/media/'
 
-SESSION_ENGINE = 'django.contrib.sessions.backends.signed_cookies'
+SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
+
+CART_SESSION_ID = 'cart'
+

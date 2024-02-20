@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}
+    Your shopping cart
+{% endblock %}
+{% block content %}
+    <h1>Your shopping cart</h1>
+    <table class="cart">
+        <thead>
+        <tr>
+            <th>Product</th>
+            <th>Quantity</th>
+            <th>Remove</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for offer in cart %}
+            <tr>
+                <td>{{ offer.name }}</td>
+                <td>{{ offer.quantity }}</td>
+                <td><a href="{% url "cart_remove" offer.id%}">Remove</a></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <p class="text-right">
+        <a href="#" class="button">Checkout</a>
+    </p>
+{% endblock %}
