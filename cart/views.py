@@ -13,23 +13,23 @@ def cart_add(request, offer_id):
     if form.is_valid():
         cd = form.cleaned_data
         cart.add(offer=offer,
-                 quantity=cd['quantity'],
-                 update_quantity=cd['update'])
+                 quantity=cd['quantity']
+                 )
     return redirect('cart_detail')
 
 
-@require_POST
-def cart_add_2(request, offer_id):
-    cart = request.session.get('cart', {})
-    if offer_id not in cart:
-        cart[offer_id] = 1
-    request.session['cart'] = cart
-    return redirect('cart_detail')
-
-def cart_detail_2(request):
-    cart = request.session.get('cart', {})
-    offers = Offer.visible.filter(id__in=cart.keys())
-    return render(request, 'cart/detail.html', {'offers': offers})
+# @require_POST
+# def cart_add_2(request, offer_id):
+#     cart = request.session.get('cart', {})
+#     if offer_id not in cart:
+#         cart[offer_id] = 1
+#     request.session['cart'] = cart
+#     return redirect('cart_detail')
+#
+# def cart_detail_2(request):
+#     cart = request.session.get('cart', {})
+#     offers = Offer.visible.filter(id__in=cart.keys())
+#     return render(request, 'cart/detail.html', {'offers': offers})
 
 def cart_remove(request, offer_id):
     cart = Cart(request)
@@ -40,4 +40,7 @@ def cart_remove(request, offer_id):
 
 def cart_detail(request):
     cart = Cart(request)
-    return render(request, 'cart/detail.html', {'cart': cart})
+    offers = Offer.visible.filter(id__in=cart.cart.keys())
+    for offer in offers:
+        offer.quantity = cart.cart[offer.id]['quantity']
+    return render(request, 'cart/detail.html', {'cart': cart.cart, 'offers': offers})
