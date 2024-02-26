@@ -46,6 +46,7 @@ def cart_detail(request):
         offer_cart_record = cart.get(offer_id, None)
         if offer_cart_record is None:
             offer.quantity = 0
+            print("offer_cart_record is None, which was not expected. Fallback to 0")
             continue
         offer_quantity = offer_cart_record.get('quantity', 0)
         offer.quantity = offer_quantity
