@@ -11,9 +11,9 @@ def cart_add(request, offer_id):
     offer = get_object_or_404(Offer, id=offer_id)
     form = CartAddProductForm(request.POST)
     if form.is_valid():
-        cd = form.cleaned_data
+        form_data = form.cleaned_data
         cart.add(offer=offer,
-                 quantity=cd['quantity']
+                 quantity=form_data['quantity']
                  )
     return redirect('cart_detail')
 
@@ -39,8 +39,14 @@ def cart_remove(request, offer_id):
 
 
 def cart_detail(request):
-    cart = Cart(request)
-    offers = Offer.visible.filter(id__in=cart.cart.keys())
+    cart = Cart(request).cart
+    offers = Offer.visible.filter(id__in=cart.keys())
     for offer in offers:
-        offer.quantity = cart.cart[offer.id]['quantity']
-    return render(request, 'cart/detail.html', {'cart': cart.cart, 'offers': offers})
+        offer_id = str(offer.id)
+        offer_cart_record = cart.get(offer_id, None)
+        if offer_cart_record is None:
+            offer.quantity = 0
+            continue
+        offer_quantity = offer_cart_record.get('quantity', 0)
+        offer.quantity = offer_quantity
+    return render(request, 'cart/detail.html', {'offers': offers})

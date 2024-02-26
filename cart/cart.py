@@ -20,7 +20,7 @@ class Cart(object):
         """
         offer_id = str(offer.id)
         if offer_id not in self.cart:
-            self.cart[offer_id] = {'quantity': 0}
+            self.cart[offer_id] = {'quantity': quantity}
         else:
             self.cart[offer_id]['quantity'] += quantity
         self.save()
