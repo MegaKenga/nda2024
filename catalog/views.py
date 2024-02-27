@@ -5,6 +5,7 @@ from django.views.generic import ListView
 from django.contrib import messages
 
 from catalog.models import Category, Brand, Offer
+from cart.forms import CartAddProductForm
 
 
 def breadcrumbs_path(category):
@@ -76,6 +77,7 @@ class OfferView(TemplateView):
         context['category'] = category
         context['offers'] = Offer.visible.filter(category=category.id).select_related('category')
         context['breadcrumbs'] = breadcrumbs_path(category)
+        context['cart_product_form'] = CartAddProductForm()
         return context
 
 

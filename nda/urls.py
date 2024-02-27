@@ -27,6 +27,7 @@ urlpatterns = [
     path('', catalog.views.IndexView.as_view(), name='home'),
     path('accounts/', include('django.contrib.auth.urls')),
     path('admin/', admin.site.urls),
+    path('cart/', include('cart.urls')),
     path('catalog/', include('catalog.urls')),
     path("__debug__/", include("debug_toolbar.urls")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
