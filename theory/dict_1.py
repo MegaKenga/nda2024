@@ -37,5 +37,41 @@ data = {
 #     ...
 # }
 # где ключ - имя, значение количество людей с таким именем
-def addition():
-    return 1 + 30
+
+from collections import Counter
+
+
+def data_list(data):
+    d_list = []
+    for login, info in data.items():
+        login_info = ('login', login)
+        for x in info.items():
+            d_list.append(login_info)
+            d_list.append(x)
+        print(dict(d_list))
+
+
+data_list(data)
+
+
+def second_name(data):
+    second_names = []
+    for second_name in data.values():
+        second_names.append(second_name['secondName'])
+    print(list(set(second_names)))
+
+
+second_name(data)
+
+
+def names_list(data):
+    names = []
+    for first_names in data.values():
+        name = first_names.get('firstName')
+        if name is not None:
+            names.append(name)
+    x = Counter(names)
+    print(dict(x))
+
+
+names_list(data)
