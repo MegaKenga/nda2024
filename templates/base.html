@@ -18,6 +18,18 @@
 <form action="{% url 'search_page' %}" method="get">
   <input name="q" type="text" placeholder="Search..." value="{% search_query request %}">
 </form>
+<div class="cart">
+    {% with total_items=cart|length %}
+        {% if cart|length > 0 %}
+            Your cart:
+            <a href="{% url 'cart_detail' %}">
+                {{ total_items }}
+            </a>
+        {% else %}
+            Your cart is empty.
+        {% endif %}
+    {% endwith %}
+</div>
 {% block content %}
 {% endblock %}
 {% include 'footer.html' %}

@@ -6,5 +6,5 @@ register = template.Library()
 
 @register.simple_tag()
 def search_query(request):
-    search_query = request.GET.get(SEARCH_QUERY_PARAM, '')
-    return search_query
+    searching_query = request.GET.get(SEARCH_QUERY_PARAM, '')
+    return searching_query

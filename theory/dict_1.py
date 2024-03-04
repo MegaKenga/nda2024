@@ -56,8 +56,8 @@ data_list(data)
 
 def second_name(data):
     second_names = []
-    for second_name in data.values():
-        second_names.append(second_name['secondName'])
+    for last_name in data.values():
+        second_names.append(last_name['secondName'])
     print(list(set(second_names)))
 
 
