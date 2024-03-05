@@ -14,10 +14,10 @@ dict2 = {
 # который объединяет значения и выводит словарь с сумарными значениями.
 
 
-# def dict_intersection(dict1, dict2):
-#     print({k: dict1.get(k, 0) + dict2.get(k, 0) for k in set(dict1) | set(dict2)})
-#
-# dict_intersection(dict1, dict2)
+def dict_intersection(dict1, dict2):
+    print({k: dict1.get(k, 0) + dict2.get(k, 0) for k in set(dict1) | set(dict2)})
+
+dict_intersection(dict1, dict2)
 
 
 def dict_intersection(dict1, dict2):
