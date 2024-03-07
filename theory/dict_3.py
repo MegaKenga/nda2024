@@ -26,10 +26,14 @@ def dict_intersection(*args):
     united_dict = dict()
     for arg in args:
         for key, value in arg.items():
-            if key in united_dict and value is int:
-                united_dict[key] += value
+            try:
+                quantity = int(value)
+            except (TypeError, ValueError):
+                continue
+            if key in united_dict:
+                united_dict[key] += quantity
             elif key not in united_dict:
-                united_dict.update({key: value})
+                united_dict.update({key: quantity})
 
     return united_dict
 
