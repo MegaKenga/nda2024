@@ -10,7 +10,7 @@ dict2 = {
     "kiwi": 28,
 }
 
-dict2 = {
+dict3 = {
     "tomato": 8,
     "banana": "1",
     "kiwi": "many"
@@ -20,3 +20,18 @@ dict2 = {
 # нужно написать код который принимает один, два или сколько угодно словарей типа вверху и объединяет значения и выводит словарь с сумарными значениями.
 # пусть значение может быть строкой, например {"banana": "200"} и это тоже будет работать
 # если строка не совместимая со сложением {"banana": "a lot"} ее игнорируем
+
+
+def dict_intersection(*args):
+    united_dict = dict()
+    for arg in args:
+        for key, value in arg.items():
+            if key in united_dict and value is int:
+                united_dict[key] += value
+            elif key not in united_dict:
+                united_dict.update({key: value})
+
+    return united_dict
+
+
+print(dict_intersection(dict1, dict2, dict3))
