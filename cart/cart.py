@@ -40,21 +40,24 @@ class Cart(object):
             del self.cart[offer_id]
             self.save()
 
-    def __iter__(self):
-        """
-        Перебор элементов в корзине и получение продуктов из базы данных.
-        """
-        offer_ids = self.cart.keys()
-        # получение объектов product и добавление их в корзину
-        offers = Offer.objects.filter(id__in=offer_ids)
-        for offer in offers:
-            self.cart[str(offer.id)]['offer'] = offer
+    # def __iter__(self):
+    #     """
+    #     Перебор элементов в корзине и получение продуктов из базы данных.
+    #     """
+    #     offer_ids = self.cart.keys()
+    #     # получение объектов product и добавление их в корзину
+    #     offers = Offer.objects.filter(id__in=offer_ids)
+    #     for offer in offers:
+    #         self.cart[str(offer.id)]['offer'] = offer
 
-    def __len__(self):
-        """
-        Подсчет всех товаров в корзине.
-        """
-        return sum(item['quantity'] for item in self.cart.values())
+    def items_count(self):
+        return len(self.cart.keys())
+
+    # def __len__(self):
+    #     """
+    #     Подсчет всех товаров в корзине.
+    #     """
+    #     return sum(item['quantity'] for item in self.cart.values())
 
     def clear(self):
         # удаление корзины из сессии
