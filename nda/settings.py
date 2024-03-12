@@ -160,3 +160,11 @@ SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
 
 CART_SESSION_ID = 'cart'
 
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = os.getenv('HOST', 'smtp.gmail.com')
+EMAIL_HOST_USER = os.getenv('HOST_USER')
+EMAIL_HOST_PASSWORD = os.getenv('HOST_PASSWORD')
+RECIPIENT_EMAIL = os.getenv('RECIPIENT')
+EMAIL_PORT = os.getenv('PORT', '587')
+EMAIL_USE_TLS = True
+

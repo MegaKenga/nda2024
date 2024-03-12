@@ -1,5 +1,9 @@
-from django.conf import settings
-from catalog.models import Offer
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+CART_SESSION_ID = os.getenv('CART_SESSION_ID')
 
 
 class Cart(object):
@@ -8,10 +12,10 @@ class Cart(object):
         Инициализируем корзину
         """
         self.session = request.session
-        cart = self.session.get(settings.CART_SESSION_ID)
+        cart = self.session.get(CART_SESSION_ID)
         if not cart:
             # save an empty cart in the session
-            cart = self.session[settings.CART_SESSION_ID] = {}
+            cart = self.session[CART_SESSION_ID] = {}
         self.cart = cart
 
     def add(self, offer, quantity=1):
@@ -27,7 +31,7 @@ class Cart(object):
 
     def save(self):
         # Обновление сессии cart/0
-        self.session[settings.CART_SESSION_ID] = self.cart
+        self.session[CART_SESSION_ID] = self.cart
         # Отметить сеанс как "измененный", чтобы убедиться, что он сохранен
         self.session.modified = True
 
@@ -61,5 +65,5 @@ class Cart(object):
 
     def clear(self):
         # удаление корзины из сессии
-        del self.session[settings.CART_SESSION_ID]
+        del self.session[CART_SESSION_ID]
         self.session.modified = True
