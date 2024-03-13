@@ -3,9 +3,8 @@ from django.views.decorators.http import require_POST
 from catalog.models import Offer
 from cart.cart import Cart
 from cart.forms import CartAddProductForm, ContactForm
-from django.views.generic import FormView, TemplateView
-from django.urls import reverse_lazy
-
+from django.views.generic import TemplateView
+from nda_email.email_sender import EmailSender
 
 @require_POST
 def cart_add(request, offer_id):
@@ -43,16 +42,17 @@ def get_cart_offers(request):
 
 
 def cart_detail(request):
-    offers = get_cart_offers(request)
-    form = ContactForm()
     if request.method == 'POST':
         form = ContactForm(request.POST)
-        if form.is_valid():
-            form.send()
-            return redirect('success')
-    else:
-        form = ContactForm()
+        if not form.is_valid():
+            return redirect('401')
+        subject, msg = form.get_info()
+        payload = { 'message': msg, "subject": subject }
+        EmailSender.send_submit_cart(payload)
+        return redirect('success')
 
+    form = ContactForm()
+    offers = get_cart_offers(request)
     return render(request, 'cart/detail.html', {'offers': offers, 'form': form})
 
 

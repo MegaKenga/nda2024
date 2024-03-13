@@ -1,9 +1,4 @@
-import os
-from dotenv import load_dotenv
-
-load_dotenv()
-
-CART_SESSION_ID = os.getenv('CART_SESSION_ID')
+CART_SESSION_ID = 'cart'
 
 
 class Cart(object):

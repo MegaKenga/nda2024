@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'catalog.apps.CatalogConfig',
     'files.apps.FilesConfig',
     'cart.apps.CartConfig',
+    'nda_email.apps.NdaEmailConfig',
     'django_cleanup',
 ]
 
@@ -158,13 +159,11 @@ MEDIA_URL = '/media/'
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
 
-CART_SESSION_ID = 'cart'
-
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = os.getenv('HOST', 'smtp.gmail.com')
-EMAIL_HOST_USER = os.getenv('HOST_USER')
-EMAIL_HOST_PASSWORD = os.getenv('HOST_PASSWORD')
-RECIPIENT_EMAIL = os.getenv('RECIPIENT')
-EMAIL_PORT = os.getenv('PORT', '587')
+EMAIL_HOST = 'smtp.gmail.com'   # this is not secret
+EMAIL_HOST_USER = os.getenv('HOST_USER')           # this is secret
+EMAIL_HOST_PASSWORD = os.getenv('HOST_PASSWORD')   # this is secret
+RECIPIENT_EMAIL = os.getenv('RECIPIENT')           # this is secret
+EMAIL_PORT = os.getenv('PORT', '587')               # this is not secret
 EMAIL_USE_TLS = True
 

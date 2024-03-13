@@ -33,12 +33,3 @@ class ContactForm(forms.Form):
 
         return subject, msg
 
-    def send(self):
-        subject, msg = self.get_info()
-        send_mail(
-            subject=subject,
-            message=msg,
-            from_email=EMAIL_HOST_USER,
-            auth_password=EMAIL_HOST_PASSWORD,
-            recipient_list=[RECIPIENT_EMAIL]
-        )
