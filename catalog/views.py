@@ -1,7 +1,6 @@
 from django.db.models import Q, Prefetch
 from django.shortcuts import get_object_or_404
-from django.views.generic import TemplateView
-from django.views.generic import ListView
+from django.views.generic import TemplateView, ListView
 from django.contrib import messages
 
 from catalog.models import Category, Brand, Offer

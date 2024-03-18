@@ -1,10 +1,10 @@
-import os.path
 from django.db import models
 
 from pathlib import Path
 
 
 def get_upload_path(instance, filename):
+    # to do: сделать уникальные имена, проверить, что происходит при перезаписи
     return ('{}/{}').format(instance.name, filename)
 
 

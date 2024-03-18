@@ -25,5 +25,12 @@
     </table>
     <p class="text-right">
         <a href="#" class="button">Checkout</a>
-    </p>
+    
+    <div>
+    <form action="" method="post">
+        {% csrf_token %}
+        {{ form }}
+    <button type="submit">Send message</button>
+    </form>
+    </div>
 {% endblock %}
