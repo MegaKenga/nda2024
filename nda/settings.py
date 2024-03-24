@@ -46,7 +46,6 @@ INSTALLED_APPS = [
     'catalog.apps.CatalogConfig',
     'files.apps.FilesConfig',
     'cart.apps.CartConfig',
-    'nda_email.apps.NdaEmailConfig',
     'django_cleanup',
 ]
 
@@ -157,7 +156,7 @@ STATIC_ROOT = BASE_DIR.resolve().joinpath('static')
 MEDIA_ROOT = 'media/'
 MEDIA_URL = '/media/'
 
-SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
+SESSION_ENGINE = 'django.contrib.sessions.backends.signed_cookies'
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'   # this is not secret
