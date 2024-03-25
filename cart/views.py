@@ -1,3 +1,4 @@
+from django.core.exceptions import ValidationError
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.http import require_POST
 from catalog.models import Offer
@@ -36,13 +37,14 @@ def cart_add(request, offer_id):
     cart = get_cart(request)
     offer = get_object_or_404(Offer, id=offer_id)
     item_add_form = CartAddProductForm(request.POST)
-    if item_add_form.is_valid():
-        item_add_form_data = item_add_form.cleaned_data
-        offer_id = str(offer.id)
-        if offer_id not in cart:
-            cart[offer_id] = {'quantity': item_add_form_data['quantity']}
-        else:
-            cart[offer_id]['quantity'] += item_add_form_data['quantity']
+    if not item_add_form.is_valid():
+        raise ValidationError('Invalid form')
+    item_add_form_data = item_add_form.cleaned_data
+    offer_id = str(offer.id)
+    if offer_id not in cart:
+        cart[offer_id] = {'quantity': item_add_form_data['quantity']}
+    else:
+        cart[offer_id]['quantity'] += item_add_form_data['quantity']
     save_cart(request)
     return redirect('cart_detail')
 
