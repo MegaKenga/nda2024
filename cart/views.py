@@ -2,7 +2,7 @@ from django.core.exceptions import ValidationError
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.http import require_POST
 from catalog.models import Offer
-from cart.forms import CartAddProductForm, GetOrderForm
+from cart.forms import CartAddProductForm
 from django.views.generic import TemplateView
 
 
@@ -83,18 +83,3 @@ def cart_detail(request):
 
 class ContactSuccessView(TemplateView):
     template_name = 'cart/success.html'
-
-
-def get_order_info(request):
-    # Cleaned data
-    cl_data = super().clean()
-
-    name = cl_data.get('name').strip()
-    from_email = cl_data.get('email')
-    subject = cl_data.get('inquiry')
-
-    msg = f'{name} with email {from_email} said:'
-    msg += f'\n"{subject}"\n\n'
-    msg += cl_data.get('message')
-
-    return subject, msg
