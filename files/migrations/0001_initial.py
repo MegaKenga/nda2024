@@ -28,7 +28,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', models.CharField(default='', max_length=128)),
-                ('image', models.ImageField(blank=True, null=True, upload_to=files.models.get_upload_path)),
+                ('image', models.ImageField(blank=True, null=True, upload_to='category/images')),
             ],
             options={
                 'verbose_name_plural': 'Изображения',
