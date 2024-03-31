@@ -68,7 +68,7 @@ def cart_clear(request):
 
 
 def get_cart_offers(request):
-    cart = Cart(request).cart
+    cart = get_cart(request)
     offers = Offer.visible.filter(id__in=cart.keys())
     for offer in offers:
         offer_id = str(offer.id)
