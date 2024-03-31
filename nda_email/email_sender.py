@@ -11,3 +11,4 @@ class EmailSender:
             auth_password=EMAIL_HOST_PASSWORD,
             recipient_list=[RECIPIENT_EMAIL]  # todo: send message to customer as well
         )
+        

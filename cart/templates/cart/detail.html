@@ -5,7 +5,7 @@
 {% endblock %}
 {% block content %}
     <h1>Your shopping cart</h1>
-    <table class="cart">
+    <table class='cart'>
         <thead>
         <tr>
             <th>Product</th>
@@ -18,19 +18,12 @@
             <tr>
                 <td>{{ offer.name }}</td>
                 <td>{{ offer.quantity }}</td>
-                <td><a href="{% url "cart_remove" offer.id %}">Remove</a></td>
+                <td><a href='{% url 'cart_remove' offer.id %}'>Remove</a></td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
-    <p class="text-right">
-        <a href="#" class="button">Checkout</a>
-    
-    <div>
-    <form action="" method="post">
-        {% csrf_token %}
-        {{ form }}
-    <button type="submit">Send message</button>
+    <form action='{% url 'clear'%}'>
+        <input type='submit' value='Очистить корзину'/>
     </form>
-    </div>
 {% endblock %}

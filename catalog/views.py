@@ -55,9 +55,6 @@ class BrandView(TemplateView):
     model = Category
     template_name = 'catalog/brand.html'
 
-    def get_queryset(self):
-        return
-
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         brand = get_object_or_404(Brand.visible, slug=self.kwargs['brand_slug'])
