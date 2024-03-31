@@ -2,7 +2,7 @@ from django.core.exceptions import ValidationError
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.http import require_POST
 from catalog.models import Offer
-from cart.forms import CartAddProductForm
+from cart.forms import CartAddProductForm, ContactForm
 from django.views.generic import TemplateView
 
 
