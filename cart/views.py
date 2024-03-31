@@ -6,6 +6,7 @@ from cart.forms import CartAddProductForm, ContactForm
 from django.views.generic import TemplateView
 from nda_email.email_sender import EmailSender
 
+
 @require_POST
 def cart_add(request, offer_id):
     cart = Cart(request)
@@ -47,8 +48,9 @@ def cart_detail(request):
         if not form.is_valid():
             return redirect('401')
         subject, msg = form.get_info()
-        payload = { 'message': msg, "subject": subject }
-        EmailSender.send_submit_cart(payload)
+        payload = {'msg': msg, "subject": subject}
+        offers = get_cart_offers(request)
+        EmailSender().send_submit_cart(payload)
         return redirect('success')
 
     form = ContactForm()
