@@ -4,6 +4,7 @@ from django.views.decorators.http import require_POST
 from catalog.models import Offer
 from cart.forms import CartAddProductForm, ContactForm
 from django.views.generic import TemplateView
+from nda_email.email_sender import EmailSender
 
 
 CART_SESSION_ID = 'cart'
