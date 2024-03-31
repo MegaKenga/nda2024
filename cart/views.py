@@ -32,6 +32,7 @@ def items_count(request):
     return len(cart.keys())
 
 
+
 @require_POST
 def cart_add(request, offer_id):
     cart = get_cart(request)
@@ -67,18 +68,19 @@ def cart_clear(request):
 
 
 def cart_detail(request):
-    cart = get_cart(request)
-    offers = Offer.visible.filter(id__in=cart.keys())
-    for offer in offers:
-        offer_id = str(offer.id)
-        offer_cart_record = cart.get(offer_id, None)
-        if offer_cart_record is None:
-            offer.quantity = 0
-            print("offer_cart_record is None, which was not expected. Fallback to 0")
-            continue
-        offer_quantity = offer_cart_record.get('quantity', 0)
-        offer.quantity = offer_quantity
-    return render(request, 'cart/detail.html', {'offers': offers})
+    if request.method == 'POST':
+        form = ContactForm(request.POST)
+        if not form.is_valid():
+            return redirect('401')
+        subject, msg = form.get_info()
+        payload = {'msg': msg, "subject": subject}
+        offers = get_cart_offers(request)
+        EmailSender().send_submit_cart(payload)
+        return redirect('success')
+
+    form = ContactForm()
+    offers = get_cart_offers(request)
+    return render(request, 'cart/detail.html', {'offers': offers, 'form': form})
 
 
 class ContactSuccessView(TemplateView):

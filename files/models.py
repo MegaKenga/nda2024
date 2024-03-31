@@ -1,16 +1,10 @@
 from django.db import models
-
 from pathlib import Path
-
-
-def get_upload_path(instance, filename):
-    # to do: сделать уникальные имена, проверить, что происходит при перезаписи
-    return ('{}/{}').format(instance.name, filename)
 
 
 class ModelImage(models.Model):
     name = models.CharField(default='', max_length=128)
-    image = models.ImageField(upload_to=get_upload_path, null=True, blank=True)
+    image = models.ImageField(upload_to='category/images', null=True, blank=True)
 
     class Meta:
         verbose_name_plural = 'Изображения'

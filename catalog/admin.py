@@ -7,7 +7,7 @@ from django.contrib.admin import AdminSite
 from django.contrib.auth.models import Group, User
 from django.contrib.auth.admin import GroupAdmin, UserAdmin
 
-from catalog.models import Brand, Category, CategoryImage, Offer
+from catalog.models import CategoryImage, CategoryFile, Brand, Category, Offer
 # from files.admin import OfferImageInline
 
 
@@ -33,7 +33,6 @@ class OfferInline(admin.TabularInline):
     extra = 0
     show_change_link = True
     classes = ['collapse', 'wide']
-    autocomplete_fields = ('tech_info', )
 
 
 class CategoryInline(admin.TabularInline):
@@ -42,6 +41,29 @@ class CategoryInline(admin.TabularInline):
     extra = 0
     show_change_link = True
     classes = ['collapse', 'wide']
+
+
+class FilesInline(admin.TabularInline):
+    extra = 0
+    autocomplete_fields = ('file', )
+
+    def get_queryset(self, request, *args, **kwargs):
+        qs = super().get_queryset(request).select_related('file')
+        try:
+            # extracting category_id from path
+            category_id = int(re.search(r'/(\d+)/change/', request.path).group(1))
+            return qs.filter(id=category_id)
+        except Exception as error:
+            print("Cannot overwrite get_queryset for CategoryImageInline", error)
+            return qs
+
+
+class CategoryImageInline(FilesInline):
+    model = CategoryImage
+
+
+class CategoryFileInline(FilesInline):
+    model = CategoryFile
 
 
 """"Классы админки"""
@@ -71,22 +93,6 @@ class BrandAdmin(admin.ModelAdmin):
     search_fields = ['name']
 
 
-class CategoryImageInline(admin.TabularInline):
-    model = CategoryImage
-    extra = 0
-    autocomplete_fields = ('file', )
-
-    def get_queryset(self, request, *args, **kwargs):
-        qs = super().get_queryset(request).select_related('file')
-        try:
-            # extracting category_id from path
-            category_id = int(re.search(r'/(\d+)/change/', request.path).group(1))
-            return qs.filter(id=category_id)
-        except Exception as error:
-            print("Cannot overwrite get_queryset for CategoryImageInline", error)
-            return qs
-
-
 class CategoryAdmin(admin.ModelAdmin):
     list_select_related = ['brand']
     list_display = (
@@ -109,18 +115,17 @@ class CategoryAdmin(admin.ModelAdmin):
         'description',
         'logo',
         'banner',
-        'certificate',
         'instruction',
         'parents',
-        'brand',  # probably 2 autocomplete_fields as well
+        'brand',
         'slug',
         'place',
         'status',
         'is_final'
     ]
     filter_horizontal = ('parents', )
-    autocomplete_fields = ('brand', 'logo', 'banner', 'certificate', 'instruction')
-    inlines = [OfferInline, CategoryImageInline]
+    autocomplete_fields = ('brand', 'certificate')
+    inlines = [OfferInline, CategoryImageInline, CategoryFileInline]
     view_on_site = True
     actions_on_bottom = True
     list_per_page = 25
