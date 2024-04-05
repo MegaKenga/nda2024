@@ -1,0 +1,20 @@
+
+    <h1>Your shopping cart</h1>
+    <table class="cart">
+        <thead>
+        <tr>
+            <th>Product</th>
+            <th>Quantity</th>
+            <th>Remove</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for offer in offers %}
+            <tr>
+                <td>{{ offer.name }}</td>
+                <td>{{ offer.quantity }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+

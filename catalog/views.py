@@ -7,6 +7,9 @@ from catalog.models import Category, Brand, Offer
 from cart.forms import CartAddProductForm
 
 
+SEARCH_QUERY_PARAM = 'q'
+
+
 def breadcrumbs_path(category):
     parents = category.parents.all()
     breadcrumbs = []
@@ -75,9 +78,6 @@ class OfferView(TemplateView):
         context['breadcrumbs'] = breadcrumbs_path(category)
         context['cart_product_form'] = CartAddProductForm()
         return context
-
-
-SEARCH_QUERY_PARAM = 'q'
 
 
 class SiteSearchView(ListView):
