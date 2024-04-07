@@ -3,12 +3,12 @@ from nda.settings import EMAIL_HOST_USER, EMAIL_HOST_PASSWORD, RECIPIENT_EMAIL
 
 
 class EmailSender:
-    def send_submit_cart(self, payload):
+    def send_submit_cart(self, customer_email, subject, message):
         send_mail(
-            subject=payload['subject'],
-            message=payload['msg'],
+            subject=subject,
+            message=message,
             from_email=EMAIL_HOST_USER,
             auth_password=EMAIL_HOST_PASSWORD,
-            recipient_list=[RECIPIENT_EMAIL]  # todo: send message to customer as well
+            recipient_list=[RECIPIENT_EMAIL, customer_email]  # todo: send message to customer as well
         )
         

@@ -1,5 +1,6 @@
 from django.core.exceptions import ValidationError
 from django.shortcuts import render, redirect, get_object_or_404
+from django.template.loader import render_to_string
 from django.views.decorators.http import require_POST
 from catalog.models import Offer
 from cart.forms import CartAddProductForm, ContactForm
@@ -86,12 +87,14 @@ def cart_detail(request):
         form = ContactForm(request.POST)
         if not form.is_valid():
             return redirect('401')
-        subject, msg = form.get_info()
         offers = get_cart_offers(request)
-        for offer in offers:
-            msg += offer.name + " " + str(offer.quantity)
-        payload = {'msg': msg, "subject": subject}
-        EmailSender().send_submit_cart(payload)
+        customer_email = form.cleaned_data['email']
+        subject = "A curated message based on the design the customer purchased."
+        message = render_to_string(
+            'cart/detail_for_mail.html',
+            {"subject": subject, 'offers': offers}
+        )
+        EmailSender().send_submit_cart(customer_email, subject, message)
         cart_clear(request)
         return redirect('success')
 
