@@ -89,12 +89,14 @@ def cart_detail(request):
             return redirect('401')
         offers = get_cart_offers(request)
         customer_email = form.cleaned_data['email']
-        subject = "A curated message based on the design the customer purchased."
+        customer_phone = form.cleaned_data['phone_number']
+        customer_message = form.cleaned_data['message']
         message = render_to_string(
             'cart/detail_for_mail.html',
-            {"subject": subject, 'offers': offers}
+            {'customer_message': customer_message, 'customer_email': customer_email,
+             'customer_phone': customer_phone, 'offers': offers}
         )
-        EmailSender().send_submit_cart(customer_email, subject, message)
+        EmailSender().send_submit_cart(message)
         cart_clear(request)
         return redirect('success')
 
