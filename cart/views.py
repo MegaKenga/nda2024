@@ -33,7 +33,6 @@ def items_count(request):
     return len(cart.keys())
 
 
-
 @require_POST
 def cart_add(request, offer_id):
     cart = get_cart(request)
@@ -78,8 +77,7 @@ def get_cart_offers(request):
             offer.quantity = 0
             print("offer_cart_record is None, which was not expected. Fallback to 0")
             continue
-        offer_quantity = offer_cart_record.get('quantity', 0)
-        offer.quantity = offer_quantity
+        offer.quantity = offer_cart_record.get('quantity', 0)
     return offers
 
 
@@ -88,10 +86,10 @@ def cart_detail(request):
         form = ContactForm(request.POST)
         if not form.is_valid():
             return redirect('401')
-        subject, msg = form.get_info()
-        payload = {'msg': msg, "subject": subject}
         offers = get_cart_offers(request)
-        EmailSender().send_submit_cart(payload)
+        EmailSender().send_submitted_order(request, offers)
+        EmailSender().send_message_to_customer(request, offers)
+        cart_clear(request)
         return redirect('success')
 
     form = ContactForm()
