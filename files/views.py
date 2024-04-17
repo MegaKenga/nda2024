@@ -1,3 +1,8 @@
-from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
+from django_sendfile import sendfile
 
-# Create your views here.
+
+@login_required
+def serve_file(request, file_path):
+    print("I am serving file: ", file_path)
+    return sendfile(request, "instructions/" + file_path)

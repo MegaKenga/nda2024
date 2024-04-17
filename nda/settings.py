@@ -166,3 +166,6 @@ RECIPIENT_EMAIL = os.getenv('RECIPIENT')           # this is secret
 EMAIL_PORT = os.getenv('PORT', '587')               # this is not secret
 EMAIL_USE_TLS = True
 
+PRIVATE_ROOT = "/Users/vlkromm/code/trainingdjango/"
+SENDFILE_ROOT = "private/"
+SENDFILE_BACKEND = "django_sendfile.backends.simple"
