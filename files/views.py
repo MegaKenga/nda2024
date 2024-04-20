@@ -4,5 +4,4 @@ from django_sendfile import sendfile
 
 @login_required
 def serve_file(request, file_path):
-    print("I am serving file: ", file_path)
-    return sendfile(request, "instructions/" + file_path)
+    return sendfile(request, 'instructions/' + file_path)

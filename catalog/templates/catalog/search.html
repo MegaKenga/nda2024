@@ -12,8 +12,8 @@
     <div>
         <span>
             {% if page_obj.has_previous %}
-                <a href="{% url_with_query_params request %}">&laquo; В начало</a>
-                <a href="{% url_with_query_params request page_obj.previous_page_number %}">Предыдущая страница</a>
+                <a href='{% url_with_query_params request %}'>&laquo; В начало</a>
+                <a href='{% url_with_query_params request page_obj.previous_page_number %}'>Предыдущая страница</a>
             {% endif %}
             {% if page_obj.paginator.num_pages > 1 %}
             <span>
@@ -21,8 +21,8 @@
             </span>
             {% endif %}
             {% if page_obj.has_next %}
-                <a href="{% url_with_query_params request page_obj.next_page_number %}">Следующая страница</a>
-                <a href="{% url_with_query_params request page_obj.paginator.num_pages %}">В конец &raquo;</a>
+                <a href='{% url_with_query_params request page_obj.next_page_number %}'>Следующая страница</a>
+                <a href='{% url_with_query_params request page_obj.paginator.num_pages %}'>В конец &raquo;</a>
             {% endif %}
         </span>
     </div>

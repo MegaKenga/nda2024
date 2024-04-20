@@ -4,18 +4,19 @@
 <body>
 <div>
 {% include 'catalog/breadcrumbs.html' %}
-<input type="button" onclick="history.back();" value="Пред. страница"/>
+<input type='button' onclick='history.back();' value='Пред. страница'/>
     <p>Brand: <a href="{% url 'brand' brand_slug=category.brand.slug %}">{{ category.brand }}</a></p>
     <p>Name: {{ category.name.upper }}</p>
     <p>Description: {{ category.description }}</p>
-    <div>РУ: <a href="{{ category.certificate.file.url }}">Скачать</a></div>
+    <div>РУ: <a href='{{ category.certificate.file.url }}'>Скачать</a></div>
+    <div>Инструкция: <a href={{ category.instruction.url }}>Скачать</a></div>
     {% for offer in offers %}
     <p>Name: {{ offer.name.upper }}</p>
     <p>Description: {{ offer.description }}</p>
-    <form action="{% url "cart_add" offer_id=offer.pk %}" method="post">
+    <form action="{% url 'cart_add' offer_id=offer.pk %}" method='post'>
     {{ cart_product_form }}
     {% csrf_token %}
-    <button type="submit">Add to cart</button>
+    <button type='submit'>Add to cart</button>
     </form>
     {% endfor %}
 </div>

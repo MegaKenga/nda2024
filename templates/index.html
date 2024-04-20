@@ -1,22 +1,23 @@
 {% extends 'base.html' %}
 
 {% block content %}
+    
 <body>
 <div>
-  <ul>
-    <li>Каталог по производителям</li>
-          {% for brand in brands %}
-	<div>
-        <p><img src="{{ brand.logo.url }}"/><a href="{% url 'brand' brand_slug=brand.slug %}">{{ brand.name.upper }}</a></p>
-    </div>
-	{% endfor %}
+    <ul>
+        <li>Каталог по производителям</li>
+        {% for brand in brands %}
+            <div>
+            <p><img src='{{ brand.logo.url }}'/><a href="{% url 'brand' brand_slug=brand.slug %}">{{ brand.name.upper }}</a></p>
+            </div>
+        {% endfor %}
     <li>Каталог по направлениям</li>
-          {% for category in categories %}
-	<div>
-        <p><img src="{{ category.logo.image.url }}"/><a href="{% url 'category' category_slug=category.slug %}">{{ category.name.upper }}</a></p>
-    </div>
-	{% endfor %}
-  </ul>
+        {% for category in categories %}
+            <div>
+            <p><img src='{{ category.logo.image.url }}'/><a href="{% url 'category' category_slug=category.slug %}">{{ category.name.upper }}</a></p>
+            </div>
+        {% endfor %}
+    </ul>
 </div>
 </body>
 

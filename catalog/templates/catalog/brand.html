@@ -4,19 +4,19 @@
 <body>
 <div>
     <p style="display: inline;">
-        <a href="{% url 'home' %}" class="a_top_hypers">ГЛАВНАЯ</a>
+        <a href="{% url 'home' %}" class='a_top_hypers'>ГЛАВНАЯ</a>
         -> <a>{{ brand.name.upper }}</a>
     </p>
     <p>Name: {{ brand.name.upper }}</p>
     <p>ID: {{ brand.id }}</p>
     <p>Description: {{ brand.description.upper }}</p>
-    <div><img src="{{ brand.logo.image.url }}"></div>
+    <div><img src='{{ brand.logo.image.url }}'></div>
         <ul>
         {% for category in categories %}
             {% if category.is_final %}
-                <li>{{ forloop.counter }}: <img src="{{ category.logo.image.url }}"/> <a href="{% url 'offer' brand_slug=category.brand.slug category_slug=category.slug %}">{{ category.name.upper }}</a></li>
+                <li>{{ forloop.counter }}: <img src='{{ category.logo.image.url }}'/> <a href="{% url 'offer' brand_slug=category.brand.slug category_slug=category.slug %}">{{ category.name.upper }}</a></li>
             {% else %}
-                <li>{{ forloop.counter }}: <img src="{{ category.logo.image.url }}"/> <a href="{% url 'category' category_slug=category.slug%}">{{ category.name.upper }}</a></li>
+                <li>{{ forloop.counter }}: <img src='{{ category.logo.image.url }}'/> <a href="{% url 'category' category_slug=category.slug%}">{{ category.name.upper }}</a></li>
             {% endif %}
         {% endfor %}
         </ul>
