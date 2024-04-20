@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'files.apps.FilesConfig',
     'cart.apps.CartConfig',
     'django_cleanup',
+    'django_sendfile'
 ]
 
 MIDDLEWARE = [
@@ -159,10 +160,14 @@ MEDIA_URL = '/media/'
 SESSION_ENGINE = 'django.contrib.sessions.backends.signed_cookies'
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'   # this is not secret
-EMAIL_HOST_USER = os.getenv('HOST_USER')           # this is secret
-EMAIL_HOST_PASSWORD = os.getenv('HOST_PASSWORD')   # this is secret
-RECIPIENT_EMAIL = os.getenv('RECIPIENT')           # this is secret
-EMAIL_PORT = os.getenv('PORT', '587')               # this is not secret
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = os.getenv('HOST_USER')
+EMAIL_HOST_PASSWORD = os.getenv('HOST_PASSWORD')
+RECIPIENT_EMAIL = os.getenv('RECIPIENT')
+EMAIL_PORT = os.getenv('PORT', '587')
 EMAIL_USE_TLS = True
+
+PRIVATE_ROOT = os.getenv('PRIVATE_PATH')
+SENDFILE_ROOT = 'private/'
+SENDFILE_BACKEND = 'django_sendfile.backends.simple'
 

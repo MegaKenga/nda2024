@@ -1,7 +1,12 @@
 from django.db import models
 from django.urls import reverse
+from django.core.files.storage import FileSystemStorage
 
 from files.models import ModelImage, ModelFile
+
+from nda.settings import PRIVATE_ROOT, SENDFILE_ROOT
+
+private_storage = FileSystemStorage(location=PRIVATE_ROOT + SENDFILE_ROOT, base_url='/files')
 
 
 """Общие классы и миксины"""
@@ -116,7 +121,8 @@ class Category(BaseFields):
     images = models.ManyToManyField(ModelImage, related_name='category', through="CategoryImage")
     certificate = models.ManyToManyField(ModelFile, related_name='category_certificate', through="CategoryFile")
     instruction = models.FileField(
-        upload_to='files/instructions',
+        storage=private_storage,
+        upload_to='instructions',
         null=True,
         blank=True,
         verbose_name='Инструкция'
