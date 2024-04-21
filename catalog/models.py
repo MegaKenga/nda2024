@@ -117,8 +117,6 @@ class Category(BaseFields):
         blank=True,
         verbose_name='Баннер категории'
     )
-    # images = models.ForeignKey(ModelImage, related_name='category', blank=True, null=True, on_delete=models.SET_NULL)
-    # certificate = models.ForeignKey(ModelFile, related_name='category_certificate', blank=True, null=True, on_delete=models.SET_NULL)
     instruction = models.FileField(
         storage=PRIVATE_STORAGE,
         upload_to='instructions',
@@ -184,39 +182,3 @@ class Offer(BaseFields):
 
     def __str__(self):
         return self.name
-
-#
-# class CategoryImage(models.Model):
-#     category = models.ForeignKey(
-#         Category,
-#         on_delete=models.CASCADE,
-#         null=False, blank=False,
-#         related_name='image_link',
-#         verbose_name='Image category'
-#     )
-#     file = models.ForeignKey(
-#         ModelImage,
-#         on_delete=models.CASCADE,
-#         null=False,
-#         blank=False,
-#         related_name='category_link',
-#         verbose_name='Category image'
-#     )
-#
-#
-# class CategoryFile(models.Model):
-#     category = models.ForeignKey(
-#         Category,
-#         on_delete=models.CASCADE,
-#         null=False, blank=False,
-#         related_name='file_link',
-#         verbose_name='file category'
-#     )
-#     file = models.ForeignKey(
-#         ModelFile,
-#         on_delete=models.CASCADE,
-#         null=False,
-#         blank=False,
-#         related_name='category_link',
-#         verbose_name='Category file'
-#     )

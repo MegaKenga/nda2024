@@ -5,31 +5,31 @@
 <div>
 {% include 'catalog/breadcrumbs.html' %}
     {% if brand %}
-      <p>Brand: <a href="{% url 'brand' brand_slug=brand.slug %}">{{ brand.name.upper }}</a></p>
+        <p>Brand: <a href="{% url 'brand' brand_slug=brand.slug %}">{{ brand.name.upper }}</a></p>
     {% else %}
-      <p>No Brand</p>
+        <p>No Brand</p>
     {% endif %}
     <h3>Name: {{ category.name.upper }}</h3>
     <h3>Description: {{ category.description.upper }}</h3>
     <ul>
-      {% for category in category.parents.all %}
+        {% for category in category.parents.all %}
             <li>{{ forloop.counter }}: <a href="{% url 'category' category_slug=category.slug %}">{{ category.name.upper }}</a></li>
-      {% empty %}
-          <li>No parents</li>
-      {% endfor %}
+        {% empty %}
+            <li>No parents</li>
+        {% endfor %}
     </ul>
-      <h3>Children:</h3>
-      <ul>
-      {% for category in category.children.all %}
+        <h3>Children:</h3>
+        <ul>
+        {% for category in category.children.all %}
             {% if category.is_final %}
-                <li>{{ forloop.counter }}: <a href="{% url 'offer' brand_slug=category.brand.slug category_slug=category.slug %}">{{ category.name.upper }}</a></li>
+                <li>{{ forloop.counter }}: <a href="{% url 'offer' brand_slug=brand.slug category_slug=category.slug %}">{{ category.name.upper }}</a></li>
             {% else %}
                 <li>{{ forloop.counter }}: <a href="{% url 'category' category_slug=category.slug%}">{{ category.name.upper }}</a></li>
             {% endif %}
-      {% empty %}
-          <li>No children</li>
-      {% endfor %}
-      </ul>
+        {% empty %}
+            <li>No children</li>
+        {% endfor %}
+        </ul>
 </div>
 </body>
 {% endblock %}
