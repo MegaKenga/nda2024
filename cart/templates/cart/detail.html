@@ -29,7 +29,57 @@
     <div>
     <form action="" method="post">
         {% csrf_token %}
-        {{ form }}
+        <div>
+            {{ form.name.label_tag }}
+            {{ form.name }}
+            {% if form.name.errors %}
+                <span style="color: #FF4343">
+                    {{ form.name.errors }}
+                </span>
+            {% endif %}
+        </div>
+
+        <div>
+        {{ form.phone_number.label_tag }}
+        {{ form.phone_number }}
+        {% if form.phone_number.errors %}
+            <span style="color: #FF4343">
+                {{ form.phone_number.errors }}
+            </span>
+        {% endif %}
+        </div>
+
+        <div>
+        {{ form.email.label_tag }}
+        {{ form.email }}
+        {% if form.email.errors %}
+            <span style="color: #FF4343">
+                {{ form.email.errors }}
+            </span>
+        {% endif %}
+        </div>
+
+        <div>
+        {{ form.subject.label_tag }}
+        {{ form.subject }}
+        {% if form.subject.errors %}
+            <span style="color: #FF4343">
+                {{ form.subject.errors }}
+            </span>
+        {% endif %}
+        </div>
+
+        <div>
+        {{ form.message.label_tag }}
+        {{ form.message }}
+        {% if form.message.errors %}
+            <span style="color: #FF4343">
+                {{ form.errors.message }}
+            </span>
+        {% endif %}
+        </div>
+
+
         <button type="submit">Send message</button>
     </form>
     </div>

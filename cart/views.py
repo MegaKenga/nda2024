@@ -85,7 +85,10 @@ def cart_detail(request):
     if request.method == 'POST':
         form = ContactForm(request.POST)
         if not form.is_valid():
-            return redirect('401')
+            return render(request,
+                          'cart/detail.html',
+                          {'offers': get_cart_offers(request), 'form': form})
+            # return redirect('401')
         offers = get_cart_offers(request)
         EmailSender().send_submitted_order(request, offers)
         EmailSender().send_message_to_customer(request, offers)
