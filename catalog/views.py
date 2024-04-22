@@ -12,7 +12,7 @@ SEARCH_QUERY_PARAM = 'q'
 
 
 def breadcrumbs_path(category):
-    parents = category.parents.all()
+    parents = category.parents.prefetch_related('parents').select_related('brand').all()
     breadcrumbs = []
     while len(parents) > 0:
         parents_path = [parent for parent in parents if parent.brand is not None]
@@ -20,7 +20,7 @@ def breadcrumbs_path(category):
             if len(parents_path) > 1:
                 raise ValueError('We don\'t expect multiple brand parents')
             if len(parents_path) == 1:
-                breadcrumbs.insert(0, parents_path [0])
+                breadcrumbs.insert(0, parents_path[0])
             parents = parents_path[0].parents.all()
         else:
             parents_path = [parent for parent in parents if parent.brand is None]
@@ -48,7 +48,7 @@ class CategoryView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        category = Category.visible.prefetch_related('parents').select_related('brand').get(slug=self.kwargs['category_slug'])
+        category = Category.visible.select_related('brand').get(slug=self.kwargs['category_slug'])
         context['brand'] = category.brand
         context['category'] = category
         context['breadcrumbs'] = breadcrumbs_path(category)
@@ -73,8 +73,9 @@ class OfferView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        category = get_object_or_404(Category.visible, slug=self.kwargs['category_slug'])
+        category = Category.visible.select_related('brand').get(slug=self.kwargs['category_slug'])
         context['category'] = category
+        context['brand'] = category.brand
         context['offers'] = Offer.visible.filter(category=category.id).select_related('category')
         context['images'] = ModelImage.objects.filter(category=category.id).select_related('category')
         context['certificates'] = ModelFile.objects.filter(category=category.id).select_related('category')
