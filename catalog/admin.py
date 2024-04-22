@@ -1,14 +1,11 @@
-import re
-
 from django.contrib import admin
-from catalog.admin_filters import DropdownFilter, RelatedOnlyDropdownFilter, CategoryRelatedOnlyDropdownFilter
-
 from django.contrib.admin import AdminSite
 from django.contrib.auth.models import Group, User
 from django.contrib.auth.admin import GroupAdmin, UserAdmin
 
-from catalog.models import CategoryImage, CategoryFile, Brand, Category, Offer
-# from files.admin import OfferImageInline
+from catalog.models import Brand, Category, Offer
+from files.models import ModelImage, ModelFile
+from catalog.admin_filters import DropdownFilter, RelatedOnlyDropdownFilter, CategoryRelatedOnlyDropdownFilter
 
 
 """Общие методы админки"""
@@ -35,35 +32,13 @@ class OfferInline(admin.TabularInline):
     classes = ['collapse', 'wide']
 
 
-class CategoryInline(admin.TabularInline):
-    model = Category
-    can_delete = True
-    extra = 0
-    show_change_link = True
-    classes = ['collapse', 'wide']
+class CategoryImageInline(admin.TabularInline):
+    model = ModelImage
+    readonly_fields = ('image_preview',)
 
 
-class FilesInline(admin.TabularInline):
-    extra = 0
-    autocomplete_fields = ('file', )
-
-    def get_queryset(self, request, *args, **kwargs):
-        qs = super().get_queryset(request).select_related('file')
-        try:
-            # extracting category_id from path
-            category_id = int(re.search(r'/(\d+)/change/', request.path).group(1))
-            return qs.filter(id=category_id)
-        except Exception as error:
-            print("Cannot overwrite get_queryset for CategoryImageInline", error)
-            return qs
-
-
-class CategoryImageInline(FilesInline):
-    model = CategoryImage
-
-
-class CategoryFileInline(FilesInline):
-    model = CategoryFile
+class CategoryFileInline(admin.TabularInline):
+    model = ModelFile
 
 
 """"Классы админки"""
@@ -124,7 +99,7 @@ class CategoryAdmin(admin.ModelAdmin):
         'is_final'
     ]
     filter_horizontal = ('parents', )
-    autocomplete_fields = ('brand', 'certificate')
+    autocomplete_fields = ('brand', )
     inlines = [OfferInline, CategoryImageInline, CategoryFileInline]
     view_on_site = True
     actions_on_bottom = True

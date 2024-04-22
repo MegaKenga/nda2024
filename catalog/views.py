@@ -4,6 +4,7 @@ from django.views.generic import TemplateView, ListView
 from django.contrib import messages
 
 from catalog.models import Category, Brand, Offer
+from files.models import ModelFile, ModelImage
 from cart.forms import CartAddProductForm
 
 
@@ -75,6 +76,8 @@ class OfferView(TemplateView):
         category = get_object_or_404(Category.visible, slug=self.kwargs['category_slug'])
         context['category'] = category
         context['offers'] = Offer.visible.filter(category=category.id).select_related('category')
+        context['images'] = ModelImage.objects.filter(category=category.id).select_related('category')
+        context['certificates'] = ModelFile.objects.filter(category=category.id).select_related('category')
         context['breadcrumbs'] = breadcrumbs_path(category)
         context['cart_product_form'] = CartAddProductForm()
         return context

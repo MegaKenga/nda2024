@@ -1,38 +1,32 @@
 from django.db import models
-from pathlib import Path
+from django.utils.safestring import mark_safe
+
+from catalog.models import Category
 
 
 class ModelImage(models.Model):
-    name = models.CharField(default='', max_length=128)
+    category = models.ForeignKey(Category, null=True, blank=True, on_delete=models.SET_NULL)
     image = models.ImageField(upload_to='category/images', null=True, blank=True)
 
     class Meta:
         verbose_name_plural = 'Изображения'
 
-    def __str__(self):
-        return self.name
+    def image_preview(self):
+        if self.image:
+            return mark_safe('<img src="{0}" width="150" height="150" />'.format(self.image.url))
+        else:
+            return '(No image)'
 
-    def save(self, *args, **kwargs):
-        file_format = self.image
-        extension = Path(file_format.name).suffix[1:].lower()
-        file_name = self.name + "." + extension
-        self.image.name = file_name
-        super(ModelImage, self).save(*args, **kwargs)
+    def __str__(self):
+        return self.image.url
 
 
 class ModelFile(models.Model):
-    name = models.CharField(default='', max_length=128)
-    file = models.FileField(upload_to='files', null=True, blank=True)
+    category = models.ForeignKey(Category, null=True, blank=True, on_delete=models.SET_NULL)
+    file = models.FileField(upload_to='category/certificates', null=True, blank=True)
 
     class Meta:
-        verbose_name_plural = 'Файлы'
+        verbose_name_plural = 'Сертификаты'
 
     def __str__(self):
-        return self.name
-
-    def save(self, *args, **kwargs):
-        file_format = self.file
-        extension = Path(file_format.name).suffix
-        file_name = self.name + extension
-        self.file.name = file_name
-        super(ModelFile, self).save(*args, **kwargs)
+        return self.file.url
