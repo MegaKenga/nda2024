@@ -76,9 +76,9 @@ class OfferView(TemplateView):
         category = Category.visible.select_related('brand').get(slug=self.kwargs['category_slug'])
         context['category'] = category
         context['brand'] = category.brand
-        context['offers'] = Offer.visible.filter(category=category.id).select_related('category')
-        context['images'] = ModelImage.objects.filter(category=category.id).select_related('category')
-        context['certificates'] = ModelFile.objects.filter(category=category.id).select_related('category')
+        context['offers'] = Offer.visible.filter(category=category.id)
+        context['images'] = ModelImage.objects.filter(category=category.id)
+        context['certificates'] = ModelFile.objects.filter(category=category.id)
         context['breadcrumbs'] = breadcrumbs_path(category)
         context['cart_product_form'] = CartAddProductForm()
         return context

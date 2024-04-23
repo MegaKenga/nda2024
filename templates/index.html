@@ -3,11 +3,17 @@
 {% block content %}
 <body>
 <div>
-  <ul>
+    <ul>
     <li>Каталог по производителям</li>
-          {% for brand in brands %}
-	<div>
-        <p><img src="{{ brand.logo.url }}"/><a href="{% url 'brand' brand_slug=brand.slug %}">{{ brand.name.upper }}</a></p>
+        {% for brand in brands %}
+            <div>
+                <p>
+                    {% if not brand.logo %}
+            <img src="media/default.jpg"/>
+            {% else %}
+            <img src="{{ brand.logo.url }}"/>
+            {% endif %}
+            <a href="{% url 'brand' brand_slug=brand.slug %}">{{ brand.name.upper }}</a></p>
     </div>
 	{% endfor %}
     <li>Каталог по направлениям</li>

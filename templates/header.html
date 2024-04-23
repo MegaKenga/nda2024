@@ -12,8 +12,6 @@
      <li><a href="{% url 'login'%}?next={{request.path}}">Login</a></li>
    {% endif %}
     <form action="{% url 'search_page' %}" method="get">
-        <label>
             <input name="q" type="text" placeholder="Search..." value="{% search_query request %}">
-        </label>
     </form>
 </header>

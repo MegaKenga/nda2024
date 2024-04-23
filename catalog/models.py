@@ -5,7 +5,7 @@ from django.core.files.storage import FileSystemStorage
 from nda.settings import PRIVATE_ROOT, SENDFILE_ROOT
 
 
-PRIVATE_STORAGE = FileSystemStorage(location=PRIVATE_ROOT + SENDFILE_ROOT, base_url='/files')
+private_storage = FileSystemStorage(location=PRIVATE_ROOT + SENDFILE_ROOT, base_url='/files')
 
 
 """Общие классы и миксины"""
@@ -56,7 +56,7 @@ class Brand(BaseFields):
         verbose_name='Бренд')
     logo = models.ImageField(
         upload_to='brand/logo',
-        default='default.jpg',
+        default='',
         blank=True,
         verbose_name='Логотип бренда'
     )
@@ -118,7 +118,7 @@ class Category(BaseFields):
         verbose_name='Баннер категории'
     )
     instruction = models.FileField(
-        storage=PRIVATE_STORAGE,
+        storage=private_storage,
         upload_to='instructions',
         null=True,
         blank=True,

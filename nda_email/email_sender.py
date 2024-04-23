@@ -4,7 +4,7 @@ from datetime import datetime
 from django.template.loader import render_to_string
 
 from nda.settings import EMAIL_HOST_USER, EMAIL_HOST_PASSWORD, RECIPIENT_EMAIL
-from cart.forms import ContactForm
+from nda_email.forms import ContactForm
 
 
 class EmailSender:
@@ -34,6 +34,7 @@ class EmailSender:
 
     def send_message_to_customer(self, request, offers):
         form = ContactForm(request.POST)
+        subject = f'Ваш заказ от {datetime.now().strftime("%Y-%m-%d %H:%M:%S.")}'
         if form.is_valid():
             customer_email = form.cleaned_data['email']
             customer_phone = form.cleaned_data['phone_number']
@@ -43,6 +44,5 @@ class EmailSender:
                 {'customer_message': customer_message, 'customer_email': customer_email,
                  'customer_phone': customer_phone, 'offers': offers}
             )
-            subject = f'Ваш заказ от {datetime.now().strftime("%Y-%m-%d %H:%M:%S.")}'
             recipient_list = [customer_email]
             self.__send_email(subject, message, recipient_list)

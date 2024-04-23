@@ -1,16 +1,27 @@
 {% extends "base.html" %}
 {% load static %}
 {% block title %}
-    Your shopping cart
+    <title>Отправить запрос</title>
 {% endblock %}
 {% block content %}
-    <h1>Your shopping cart</h1>
+    <h1>Ваш запрос</h1>
+    <div>
+        {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                    <li class="{{ message.tags }}">
+                        {{ message|safe }}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </div>
     <table class="cart">
         <thead>
         <tr>
-            <th>Product</th>
-            <th>Quantity</th>
-            <th>Remove</th>
+            <th>Наименование</th>
+            <th>Количество</th>
+            <th></th>
         </tr>
         </thead>
         <tbody>
@@ -18,19 +29,55 @@
             <tr>
                 <td>{{ offer.name }}</td>
                 <td>{{ offer.quantity }}</td>
-                <td><a href="{% url "cart_remove" offer.id %}">Remove</a></td>
+                <td><a href="{% url "cart_remove" offer.id %}">Удалить</a></td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
-    <p class="text-right">
-        <a href="#" class="button">Checkout</a>
-
     <div>
     <form action="" method="post">
         {% csrf_token %}
-        {{ form }}
-        <button type="submit">Send message</button>
+        <div>
+            {{ form.name }}
+            {% if form.name.errors %}
+                <span style="color: #FF4343">
+                    {{ form.name.errors }}
+                </span>
+            {% endif %}
+        </div>
+        <div>
+        {{ form.phone_number }}
+        {% if form.phone_number.errors %}
+            <span style="color: #FF4343">
+                {{ form.phone_number.errors }}
+            </span>
+        {% endif %}
+        </div>
+        <div>
+        {{ form.email }}
+        {% if form.email.errors %}
+            <span style="color: #FF4343">
+                {{ form.email.errors }}
+            </span>
+        {% endif %}
+        </div>
+        <div>
+        {{ form.details }}
+        {% if form.details.errors %}
+            <span style="color: #FF4343">
+                {{ form.details.errors }}
+            </span>
+        {% endif %}
+        </div>
+        <div>
+        {{ form.message }}
+        {% if form.message.errors %}
+            <span style="color: #FF4343">
+                {{ form.errors.message }}
+            </span>
+        {% endif %}
+        </div>
+        <button type="submit">Отправить запрос</button>
     </form>
     </div>
 {% endblock %}

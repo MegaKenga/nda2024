@@ -1,8 +1,11 @@
 from django.core.exceptions import ValidationError
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.http import require_POST
+from django.contrib import messages
+
 from catalog.models import Offer
-from cart.forms import CartAddProductForm, ContactForm
+from cart.forms import CartAddProductForm
+from nda_email.forms import ContactForm
 from django.views.generic import TemplateView
 from nda_email.email_sender import EmailSender
 
@@ -14,7 +17,7 @@ def get_cart(request):
     # session = request.session
     cart = request.session.get(CART_SESSION_ID)
     if not cart:
-        # save an empty cart in the session
+        # Сохраняем пустую корзину в сессии
         cart = request.session[CART_SESSION_ID] = {}
     return cart
 
@@ -47,7 +50,7 @@ def cart_add(request, offer_id):
     else:
         cart[offer_id]['quantity'] += item_add_form_data['quantity']
     save_cart(request)
-    return redirect('cart_detail')
+    return redirect('offer', brand_slug=offer.category.brand.slug, category_slug=offer.category.slug)
 
 
 def cart_remove(request, offer_id):
@@ -85,7 +88,8 @@ def cart_detail(request):
     if request.method == 'POST':
         form = ContactForm(request.POST)
         if not form.is_valid():
-            return redirect('401')
+            messages.error(request, 'Проверьте правильность заполнения номера телефона и адреса электронной почты:')
+            return redirect('cart_detail')
         offers = get_cart_offers(request)
         EmailSender().send_submitted_order(request, offers)
         EmailSender().send_message_to_customer(request, offers)

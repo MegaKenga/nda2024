@@ -159,6 +159,8 @@ MEDIA_URL = '/media/'
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.signed_cookies'
 
+MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
+
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = os.getenv('HOST_USER')
