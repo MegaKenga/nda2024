@@ -88,14 +88,16 @@ def cart_detail(request):
     if request.method == 'POST':
         form = ContactForm(request.POST)
         if not form.is_valid():
-            messages.error(request, 'Проверьте правильность заполнения номера телефона и адреса электронной почты:')
-            return redirect('cart_detail')
-        offers = get_cart_offers(request)
-        EmailSender().send_submitted_order(request, offers)
-        EmailSender().send_message_to_customer(request, offers)
-        cart_clear(request)
-        return redirect('success')
-
+            return render(request,
+                          'cart/detail.html',
+                          {'offers': get_cart_offers(request), 'form': form})
+        else:
+            offers = get_cart_offers(request)
+            EmailSender().send_submitted_order(request, offers)
+            EmailSender().send_message_to_customer(request, offers)
+            cart_clear(request)
+            messages.success(request, 'Запрос успешно отправлен')
+            return redirect('home')
     form = ContactForm()
     offers = get_cart_offers(request)
     return render(request, 'cart/detail.html', {'offers': offers, 'form': form})

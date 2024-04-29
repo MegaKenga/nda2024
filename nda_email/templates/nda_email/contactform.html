@@ -1,0 +1,39 @@
+    <form action="" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div>
+            {{ form.name }}
+        </div>
+        <div>
+        {{ form.phone_number }}
+        {% if form.phone_number.errors %}
+            <span style="color: #FF4343">
+                {{ form.phone_number.errors }}
+            </span>
+        {% endif %}
+        </div>
+        <div>
+        {{ form.email }}
+        {% if form.email.errors %}
+            <span style="color: #FF4343">
+                {{ form.email.errors }}
+            </span>
+        {% endif %}
+        </div>
+        <div>
+        {{ form.company_details }}
+        {% if form.company_details.errors %}
+            <span style="color: #FF4343">
+                {{ form.details.errors }}
+            </span>
+        {% endif %}
+        </div>
+        <div>
+        {{ form.message }}
+        {% if form.message.errors %}
+            <span style="color: #FF4343">
+                {{ form.errors.message }}
+            </span>
+        {% endif %}
+        </div>
+        <button type="submit">Отправить запрос</button>
+    </form>

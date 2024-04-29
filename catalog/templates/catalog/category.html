@@ -11,13 +11,6 @@
     {% endif %}
     <h3>Name: {{ category.name.upper }}</h3>
     <h3>Description: {{ category.description.upper }}</h3>
-    <ul>
-        {% for category in category.parents.all %}
-            <li>{{ forloop.counter }}: <a href="{% url 'category' category_slug=category.slug %}">{{ category.name.upper }}</a></li>
-        {% empty %}
-            <li>No parents</li>
-        {% endfor %}
-    </ul>
         <h3>Children:</h3>
         <ul>
         {% for category in category.children.all %}

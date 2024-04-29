@@ -3,6 +3,17 @@
 {% block content %}
 <body>
 <div>
+{#        {% if messages %}#}
+            <ul class="messages">
+                {% for message in messages %}
+                    <li class="{{ message.tags }}">
+                        {{ message|safe }}
+                    </li>
+                {% endfor %}
+            </ul>
+{#        {% endif %}#}
+    </div>
+<div>
     <ul>
     <li>Каталог по производителям</li>
         {% for brand in brands %}

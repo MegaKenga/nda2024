@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'catalog.apps.CatalogConfig',
     'files.apps.FilesConfig',
     'cart.apps.CartConfig',
+    'nda_email.apps.NdaEmailConfig',
     'django_cleanup',
     'django_sendfile'
 ]
