@@ -26,6 +26,7 @@ class TestEmailRegex(unittest.TestCase):
             "a@b.c",
             "abc",
             "a@b@c",
+            ""
         ]
         for phone in invalid_emails:
             with self.subTest(phone=phone):

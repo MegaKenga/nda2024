@@ -28,7 +28,8 @@ class TestPhoneRegex(unittest.TestCase):
             "7913@0073119",
             "5573212",
             "332 12 07",
-            "01234567890123456789"
+            "01234567890123456789",
+            ""
         ]
         for phone in invalid_phones:
             with self.subTest(phone=phone):
