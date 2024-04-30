@@ -9,3 +9,4 @@ django-debug-toolbar==4.2.0
 pillow==10.2.0
 django-cleanup==8.1.0
 django-sendfile2==0.7.1
+redis==5.0.4
