@@ -62,7 +62,7 @@ class Brand(BaseFields):
     )
     banner = models.ImageField(
         upload_to='brand/banner',
-        default='default_banner.jpg',
+        default='',
         blank=True,
         verbose_name='Баннер бренда',
     )
@@ -106,14 +106,14 @@ class Category(BaseFields):
     )
     logo = models.ImageField(
         upload_to='category/logo',
-        default='default.jpg',
+        default='',
         null=True,
         blank=True,
         verbose_name='Логотип категории'
     )
     banner = models.ImageField(
         upload_to='category/banner',
-        default='default_banner.jpg',
+        default='',
         blank=True,
         verbose_name='Баннер категории'
     )

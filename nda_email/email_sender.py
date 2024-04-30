@@ -46,12 +46,12 @@ class EmailSender:
 
     @classmethod
     def send_submitted_order(cls, form, offers):
-        subject = f'Заказ с сайта {datetime.now().strftime("%Y-%m-%d %H:%M:%S.")}'
+        subject = f'Заказ с сайта {datetime.now().strftime("%Y-%m-%d %H:%M.")}'
         message_to_send = cls.get_message_data(form, 'nda', subject, offers)
         cls.__send_email(message_to_send)
 
     @classmethod
     def send_message_to_customer(cls, form, offers):
-        subject = f'Ваш заказ от {datetime.now().strftime("%Y-%m-%d %H:%M:%S.")}'
+        subject = f'Ваш заказ от {datetime.now().strftime("%Y-%m-%d %H:%M.")}'
         message_to_send = cls.get_message_data(form, 'customer', subject, offers)
         cls.__send_email(message_to_send)
