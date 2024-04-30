@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'catalog.apps.CatalogConfig',
     'files.apps.FilesConfig',
     'cart.apps.CartConfig',
+    'nda_email.apps.NdaEmailConfig',
     'django_cleanup',
     'django_sendfile'
 ]
@@ -158,6 +159,8 @@ MEDIA_ROOT = 'media/'
 MEDIA_URL = '/media/'
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.signed_cookies'
+
+MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
