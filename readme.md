@@ -35,6 +35,19 @@ pip install -r requirements.txt
    ```
 replace "xxxx" with DB_NAME and "postgres" with your DB_USER
 
+5. Redis
+   ```shell
+   sudo add-apt-repository ppa:redislabs/redis
+   sudo apt-get update
+   sudo apt-get install redis
+   redis-server
+   ```
+stop Redis
+   ```shell
+    sudo service redis-server stop 
+   ```
+
+
 ## Run the app
 ```shell
 python3 manage.py runserver
