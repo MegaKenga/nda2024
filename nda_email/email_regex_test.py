@@ -1,8 +1,7 @@
-
 import unittest
 import re
 
-EMAIL_PATTERN = r'([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9_-]+)'
+EMAIL_PATTERN = r'([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9_-]{2,})'
 # todo: write more test cases, improve pattern
 
 
@@ -14,13 +13,13 @@ class TestEmailRegex(unittest.TestCase):
         valid_emails = [
             "a@b.com",
             "a.b@c.d.ru",
-            " a.b@c.d.ru ",
+            "adsfsdfsf.bgfdgdfg12@cdgfdfgd25.ddfgdgf25.ru ",
         ]
-        for phone in valid_emails:
-            with self.subTest(phone=phone):
-                self.assertIsNotNone(self.regex.match(phone))
+        for email in valid_emails:
+            with self.subTest(email=email):
+                self.assertIsNotNone(self.regex.match(email))
 
-    def test_invalid_phones(self):
+    def test_invalid_emails(self):
         invalid_emails = [
             "a@b",
             "a@b.c",
@@ -28,6 +27,10 @@ class TestEmailRegex(unittest.TestCase):
             "a@b@c",
             ""
         ]
-        for phone in invalid_emails:
-            with self.subTest(phone=phone):
-                self.assertIsNone(self.regex.match(phone))
+        for email in invalid_emails:
+            with self.subTest(email=email):
+                self.assertIsNone(self.regex.match(email))
+
+
+if __name__ == '__main__':
+    unittest.main()
