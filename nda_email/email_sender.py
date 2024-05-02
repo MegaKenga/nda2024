@@ -19,7 +19,7 @@ class EmailSender:
     def get_message_data(request, recipient, subject, offers):
         template = TEMPLATES.get(recipient)
         if template is None:
-            raise ValueError('No template for recipient %s' % recipient)
+            raise ValueError(f'No template for recipient {recipient}')
 
         form = ContactForm(request.POST, request.FILES)
         if not form.is_valid():
