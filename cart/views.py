@@ -91,17 +91,16 @@ def cart_detail(request):
             return render(request,
                           'cart/detail.html',
                           {'offers': get_cart_offers(request), 'form': form})
-        else:
-            offers = get_cart_offers(request)
-            EmailSender.send_submitted_order(request, offers)
-            EmailSender.send_message_to_customer(request, offers)
-            cart_clear(request)
-            messages.success(request, 'Запрос успешно отправлен')
-            return redirect('home')
+        offers = get_cart_offers(request)
+        EmailSender.send_submitted_order(request, offers)
+        EmailSender.send_message_to_customer(request, offers)
+        cart_clear(request)
+        messages.success(request, 'Запрос успешно отправлен')
+        return redirect('home')
     form = ContactForm()
     offers = get_cart_offers(request)
     return render(request, 'cart/detail.html', {'offers': offers, 'form': form})
 
 
 class ContactSuccessView(TemplateView):
-    template_name = 'cart/success.html'
+    template_name = 'cart/message_success.html'
