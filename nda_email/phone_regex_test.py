@@ -2,11 +2,7 @@ import unittest
 import re
 
 
-# todo: consider using this simplified and more robust regex
-PHONE_PATTERN = r'(\+7|7|8)?[\s\-]?\(?[489][0-9]{2}\)?[\s\-]?[0-9]{3}[\s\-]?[0-9]{2}[\s\-]?[0-9]{2}$'
-
-
-# PHONE_PATTERN = r'(\s*)?(\+)?([- _():=+]?\d[- _():=+]?){10,14}(\s*)?'
+PHONE_PATTERN = r'^((\+?)(?:\d[^A-Z,a-z,@]{10,14}))$'
 
 
 class TestPhoneRegex(unittest.TestCase):
@@ -17,11 +13,14 @@ class TestPhoneRegex(unittest.TestCase):
         valid_phones = [
             "+79130073119",
             "79130073119",
-            "7-913-007 31 19",
+            "7-913-0073119",
             "79130073119",
             "7:913:007:31:19",
             "7.913.007.31.19",
-            "+7  91 3   007 31  1   9",
+            "083 120 56 20",
+            "8(846)2569888",
+            "8(3432)5698888"
+
 
         ]
         for phone in valid_phones:
@@ -35,6 +34,9 @@ class TestPhoneRegex(unittest.TestCase):
             "5573212",
             "332 12 07",
             "01234567890123456789",
+            "+7  91 3   007 31  1   9",
+            "84456464641g"
+            "898553@10868"
             ""
         ]
         for phone in invalid_phones:
