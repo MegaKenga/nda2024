@@ -2,7 +2,6 @@ import unittest
 import re
 
 EMAIL_PATTERN = r'([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9_-]{2,})'
-# todo: write more test cases, improve pattern
 
 
 class TestEmailRegex(unittest.TestCase):
