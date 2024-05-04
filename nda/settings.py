@@ -35,20 +35,21 @@ ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 # Application definition
 
 INSTALLED_APPS = [
+    'debug_toolbar',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'debug_toolbar',
     'django_extensions',
     'catalog.apps.CatalogConfig',
     'files.apps.FilesConfig',
     'cart.apps.CartConfig',
     'nda_email.apps.NdaEmailConfig',
     'django_cleanup',
-    'django_sendfile'
+    'django_sendfile',
+    'django_celery_results'
 ]
 
 MIDDLEWARE = [
@@ -118,6 +119,14 @@ CACHES = {
     }
 }
 
+# CELERY SETTINGS
+CELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL')
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_TIMEZONE = os.getenv('TIMEZONE')
+CELERY_RESULT_BACKEND = 'django-db'
+CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -146,7 +155,7 @@ LOGIN_REDIRECT_URL = '/'
 
 LANGUAGE_CODE = 'ru-ru'
 
-TIME_ZONE = 'Europe/Moscow'
+TIME_ZONE = os.getenv('TIMEZONE')
 
 USE_I18N = True
 

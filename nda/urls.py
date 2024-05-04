@@ -1,4 +1,4 @@
-"""
+"""catalog/medtronic/medtronic-oxygen-masks
 URL configuration for nda project.
 
 The `urlpatterns` list routes URLs to views. For more information please see:
@@ -17,6 +17,7 @@ Including another URLconf
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
+from django.views.decorators.cache import cache_page
 
 from nda import settings
 from nda.views import custom_404
@@ -24,7 +25,7 @@ import catalog.views
 
 
 urlpatterns = [
-    path('', catalog.views.IndexView.as_view(), name='home'),
+    path('', cache_page(60)(catalog.views.IndexView.as_view()), name='home'),
     path('accounts/', include('django.contrib.auth.urls')),
     path('admin/', admin.site.urls),
     path('cart/', include('cart.urls')),

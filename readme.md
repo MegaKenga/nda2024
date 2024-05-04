@@ -42,7 +42,7 @@ replace "xxxx" with DB_NAME and "postgres" with your DB_USER
    ```
    stop
    ```shell
-    sudo service redis-server stop 
+   service redis-server stop 
    ```
 
 

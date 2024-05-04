@@ -14,14 +14,11 @@ class TestPhoneRegex(unittest.TestCase):
             "+79130073119",
             "79130073119",
             "7-913-0073119",
-            "79130073119",
             "7:913:007:31:19",
             "7.913.007.31.19",
             "083 120 56 20",
             "8(846)2569888",
             "8(3432)5698888"
-
-
         ]
         for phone in valid_phones:
             with self.subTest(phone=phone):

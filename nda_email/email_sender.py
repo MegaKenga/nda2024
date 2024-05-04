@@ -1,7 +1,9 @@
 from django.core.mail import EmailMessage
+from django.template.loader import render_to_string
+
 from datetime import datetime
 
-from django.template.loader import render_to_string
+from celery import shared_task
 
 from nda.settings import EMAIL_HOST_USER, RECIPIENT_EMAIL
 from nda_email.forms import ContactForm
@@ -40,8 +42,8 @@ class EmailSender:
             message_to_send.attach(company_details.name, company_details.read(), company_details.content_type)
         return message_to_send
 
-    @staticmethod
-    def __send_email(message_to_send):
+    @shared_task(bind=True)
+    def __send_email(self, message_to_send):
         message_to_send.send(fail_silently=False)
 
     @classmethod
