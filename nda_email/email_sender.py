@@ -3,7 +3,7 @@ from django.template.loader import render_to_string
 
 from datetime import datetime
 
-from nda_email.tasks import send_feedback_email_task
+from celery import shared_task
 
 from nda.settings import EMAIL_HOST_USER, RECIPIENT_EMAIL
 from nda_email.forms import ContactForm
@@ -16,7 +16,6 @@ TEMPLATES = {
 
 
 class EmailSender:
-
     @staticmethod
     def get_message_data(request, recipient, subject, offers):
         template = TEMPLATES.get(recipient)
@@ -44,16 +43,16 @@ class EmailSender:
 
     @staticmethod
     def __send_email(message_to_send):
-        send_feedback_email_task.delay(message_to_send)
+        message_to_send.send(fail_silently=False)
 
     @classmethod
-    def send_submitted_order(cls, form, offers):
+    def send_submitted_order(cls, request, offers):
         subject = f'Заказ с сайта {datetime.now().strftime("%Y-%m-%d %H:%M.")}'
-        message_to_send = cls.get_message_data(form, 'nda', subject, offers)
+        message_to_send = cls.get_message_data(request, 'nda', subject, offers)
         cls.__send_email(message_to_send)
 
     @classmethod
-    def send_message_to_customer(cls, form, offers):
+    def send_message_to_customer(cls, request, offers):
         subject = f'Ваш заказ от {datetime.now().strftime("%Y-%m-%d %H:%M.")}'
-        message_to_send = cls.get_message_data(form, 'customer', subject, offers)
+        message_to_send = cls.get_message_data(request, 'customer', subject, offers)
         cls.__send_email(message_to_send)
