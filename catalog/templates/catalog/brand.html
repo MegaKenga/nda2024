@@ -17,7 +17,7 @@
     {% endif %}
     <p>ID: {{ brand.id }}</p>
     <p>Description: {{ brand.description.upper }}</p>
-{% cache 60 categories %}
+{% cache 60 categories brand.id%}
         <ul>
         {% for category in categories %}
             {% if category.is_final %}

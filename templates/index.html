@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load cache %}
 {% load static %}
 
 {% block content %}
@@ -8,6 +9,7 @@
     </div>
 <div>
     <ul>
+    {% cache 60 brands brand.id %}
     <li>Каталог по производителям</li>
         {% for brand in brands %}
             <div>
@@ -21,7 +23,9 @@
                 </p>
             </div>
         {% endfor %}
+    {% endcache %}
     <li>Каталог по направлениям</li>
+    {% cache 60 categories category.id %}
         {% for category in categories %}
             <div>
                 <p>
@@ -29,6 +33,7 @@
                 </p>
             </div>
         {% endfor %}
+    {% endcache %}
     </ul>
 </div>
 </body>
