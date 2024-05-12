@@ -15,3 +15,6 @@ admin:
 
 squashcatalog:
 		python3 manage.py squashmigrations catalog
+
+flushredis:
+		redis-cli flushall

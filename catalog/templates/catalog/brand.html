@@ -17,27 +17,31 @@
     {% endif %}
     <p>ID: {{ brand.id }}</p>
     <p>Description: {{ brand.description.upper }}</p>
-{% cache 60 categories brand.id%}
+    {% cache 600 categories brand.id%}
         <ul>
-        {% for category in categories %}
-            {% if category.is_final %}
-                <li>{{ forloop.counter }}:
-                    {% if not category.logo %}
-                        <img src="{% get_media_prefix %}default.jpg"/>
-                    {% else %}
-                        <img src="{{ category.logo.image.url }}"/>
-                    {% endif %}
-                    <a href="{% url 'offer' brand_slug=category.brand.slug category_slug=category.slug %}">{{ category.name.upper }}</a></li>
-            {% else %}
-                <li>{{ forloop.counter }}:
-                    {% if not category.logo %}
-                        <img src="{% get_media_prefix %}default.jpg"/>
-                    {% else %}
-                        <img src="{{ category.logo.image.url }}"/>
-                    {% endif %}
-                        <a href="{% url 'category' category_slug=category.slug%}">{{ category.name.upper }}</a></li>
-            {% endif %}
-        {% endfor %}
+            {% for category in categories %}
+                {% if category.is_final %}
+                    <li>{{ forloop.counter }}:
+                        {% if not category.logo %}
+                            <img src="{% get_media_prefix %}default.jpg"/>
+                        {% else %}
+                            <img src="{{ category.logo.image.url }}"/>
+                        {% endif %}
+                        <a href="{% url 'offer' brand_slug=category.brand.slug category_slug=category.slug %}">
+                            {{ category.name.upper }}
+                        </a>
+                    </li>
+                {% else %}
+                    <li>{{ forloop.counter }}:
+                        {% if not category.logo %}
+                            <img src="{% get_media_prefix %}default.jpg"/>
+                        {% else %}
+                            <img src="{{ category.logo.image.url }}"/>
+                        {% endif %}
+                            <a href="{% url 'category' category_slug=category.slug%}">{{ category.name.upper }}</a>
+                    </li>
+                {% endif %}
+            {% endfor %}
         </ul>
 {% endcache %}
 </div>

@@ -5,37 +5,37 @@
 {% block content %}
 <body>
 <div>
-{% include 'cart/message_success.html' %}
-    </div>
-<div>
-    <ul>
-    {% cache 60 brands brand.id %}
-    <li>Каталог по производителям</li>
-        {% for brand in brands %}
-            <div>
-                <p>
-                    {% if not brand.logo %}
-                        <img src="{% get_media_prefix %}default.jpg"/>
-                    {% else %}
-                        <img src="{{ brand.logo.url }}"/>
-                    {% endif %}
-                        <a href="{% url 'brand' brand_slug=brand.slug %}">{{ brand.name.upper }}</a>
-                </p>
-            </div>
-        {% endfor %}
-    {% endcache %}
-    <li>Каталог по направлениям</li>
-    {% cache 60 categories category.id %}
-        {% for category in categories %}
-            <div>
-                <p>
-                    <img src="{{ category.logo.image.url }}"/><a href="{% url 'category' category_slug=category.slug %}">{{ category.name.upper }}</a>
-                </p>
-            </div>
-        {% endfor %}
-    {% endcache %}
+    {% include 'cart/message_success.html' %}
+</div>
+{% cache 600 index_page %}
+    <div>
+        <ul>
+            <li>Каталог по производителям</li>
+            {% for brand in brands %}
+                <div>
+                    <p>
+                        {% if not brand.logo %}
+                            <img src="{% get_media_prefix %}default.jpg"/>
+                        {% else %}
+                            <img src="{{ brand.logo.url }}"/>
+                        {% endif %}
+                            <a href="{% url 'brand' brand_slug=brand.slug %}">{{ brand.name.upper }}</a>
+                    </p>
+                </div>
+            {% endfor %}
+            <li>Каталог по направлениям</li>
+            {% for category in categories %}
+                <div>
+                    <p>
+                        <img src="{{ category.logo.image.url }}"/>
+                        <a href="{% url 'category' category_slug=category.slug %}">{{ category.name.upper }}</a>
+                    </p>
+                </div>
+            {% endfor %}
+        
     </ul>
 </div>
+{% endcache %}
 </body>
 
 {% endblock %}      
