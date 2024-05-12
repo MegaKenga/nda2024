@@ -176,6 +176,9 @@ STATIC_ROOT = BASE_DIR.resolve().joinpath('static')
 MEDIA_ROOT = 'media/'
 MEDIA_URL = '/media/'
 
+TEMPORARY_UPLOAD_ROOT = 'tmp/'
+TEMPORARY_UPLOAD_URL = '/tmp/'
+
 SESSION_ENGINE = 'django.contrib.sessions.backends.signed_cookies'
 
 MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
