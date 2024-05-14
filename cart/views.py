@@ -93,8 +93,8 @@ def cart_detail(request):
                           'cart/detail.html',
                           {'offers': get_cart_offers(request), 'form': form})
         offers = get_cart_offers(request)
-        EmailSender.send_submitted_order(request, offers)
-        EmailSender.send_message_to_customer(request, offers)
+        EmailSender.send_submitted_order_and_customer_reply(request, offers)
+        # EmailSender.send_message_to_customer(request, offers)
         cart_clear(request)
         messages.success(request, 'Запрос успешно отправлен')
         return redirect('home')
