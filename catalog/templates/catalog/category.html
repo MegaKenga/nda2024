@@ -1,7 +1,9 @@
 {% extends 'base.html' %}
+{% load cache %}
 {% load static %}
 {% block title %}<title>{{ category.name }}</title>{% endblock %}
 {% block content %}
+
 <body>
 <div>
 {% include 'catalog/breadcrumbs.html' %}
@@ -9,38 +11,45 @@
         <p>Brand: <a href="{% url 'brand' brand_slug=brand.slug %}">{{ brand.name.upper }}</a></p>
         {% if not brand.logo %}
             <img src="{% get_media_prefix %}default.jpg"/>
-            {% else %}
+        {% else %}
             <img src="{{ brand.logo.url }}"/>
-            {% endif %}
+        {% endif %}
     {% else %}
         <p>No Brand</p>
     {% endif %}
     <h3>Name: {{ category.name.upper }}</h3>
     <h3>Description: {{ category.description.upper }}</h3>
-        <h3>Children:</h3>
+    <h3>Children:</h3>
+    {% cache 600 children_categories category.id %}
         <ul>
-        {% for category in category.children.all %}
-            {% if category.is_final %}
-                <li>{{ forloop.counter }}:
-                    {% if not category.logo %}
-                        <img src="{% get_media_prefix %}default.jpg"/>
-                    {% else %}
-                        <img src="{{ category.logo.image.url }}"/>
-                    {% endif %}
-                    <a href="{% url 'offer' brand_slug=brand.slug category_slug=category.slug %}">{{ category.name.upper }}</a></li>
-            {% else %}
-                <li>{{ forloop.counter }}:
-                    {% if not category.logo %}
-                        <img src="{% get_media_prefix %}default.jpg"/>
-                    {% else %}
-                        <img src="{{ category.logo.image.url }}"/>
-                    {% endif %}
-                    <a href="{% url 'category' category_slug=category.slug%}">{{ category.name.upper }}</a></li>
-            {% endif %}
-        {% empty %}
-            <li>No children</li>
-        {% endfor %}
+            {% for category in category.children.all %}
+                {% if category.is_final %}
+                    <li>{{ forloop.counter }}:
+                        {% if not category.logo %}
+                            <img src="{% get_media_prefix %}default.jpg"/>
+                        {% else %}
+                            <img src="{{ category.logo.image.url }}"/>
+                        {% endif %}
+                        <a href="{% url 'offer' brand_slug=brand.slug category_slug=category.slug %}">
+                            {{ category.name.upper }}
+                        </a>
+                    </li>
+                {% else %}
+                    <li>{{ forloop.counter }}:
+                        {% if not category.logo %}
+                            <img src="{% get_media_prefix %}default.jpg"/>
+                        {% else %}
+                            <img src="{{ category.logo.image.url }}"/>
+                        {% endif %}
+                        <a href="{% url 'category' category_slug=category.slug%}">{{ category.name.upper }}</a>
+                    </li>
+                {% endif %}
+            {% empty %}
+                <li>No children</li>
+            {% endfor %}
         </ul>
+    {% endcache %}
 </div>
 </body>
+
 {% endblock %}

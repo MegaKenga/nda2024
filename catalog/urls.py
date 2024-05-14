@@ -1,5 +1,6 @@
 from django.urls import path
-from . import views
+
+from catalog import views
 
 urlpatterns = [
     path('brands/<slug:brand_slug>', views.BrandView.as_view(), name='brand'),

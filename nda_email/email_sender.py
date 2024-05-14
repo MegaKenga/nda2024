@@ -1,7 +1,9 @@
 from django.core.mail import EmailMessage
+from django.template.loader import render_to_string
+
 from datetime import datetime
 
-from django.template.loader import render_to_string
+from nda_email.tasks import send_feedback_email_task
 
 from nda.settings import EMAIL_HOST_USER, RECIPIENT_EMAIL
 from nda_email.forms import ContactForm
@@ -42,7 +44,7 @@ class EmailSender:
 
     @staticmethod
     def __send_email(message_to_send):
-        message_to_send.send(fail_silently=False)
+        send_feedback_email_task.delay(message_to_send)
 
     @classmethod
     def send_submitted_order(cls, form, offers):

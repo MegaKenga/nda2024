@@ -34,6 +34,19 @@ pip install -r requirements.txt
    pg_dump --column-inserts --data-only -h 0.0.0.0 -U postgres -W -Fc xxxx > dump.dump
    ```
 replace "xxxx" with DB_NAME and "postgres" with your DB_USER
+5. Redis
+   start
+   ```shell
+   redis-server
+   ```
+   stop
+   ```shell
+   service redis-server stop 
+   ```
+   flush cache
+   ```shell
+   redis-cli flushall
+   ```
 
 ## Run the app
 ```shell

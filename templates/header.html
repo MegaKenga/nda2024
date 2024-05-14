@@ -1,17 +1,18 @@
 {% load search_query %}
 
 <header>
-	<div>
-		<div><a href='/' class="menu">Вернуться на главную</a></div>
+    <div>
+        <div><a href='/' class="menu">Вернуться на главную</a></div>
         <div><a href='/admin/' class="menu">Админка</a></div>
-	</div>
+    </div>
     {% if user.is_authenticated %}
-     <li>User: {{ user.get_username }}</li>
-     <li><a href="{% url 'logout'%}?next={{request.path}}">Logout</a></li>
-   {% else %}
-     <li><a href="{% url 'login'%}?next={{request.path}}">Login</a></li>
-   {% endif %}
+        <li>User: {{ user.get_username }}</li>
+        <li><a href="{% url 'logout'%}?next={{request.path}}">Logout</a></li>
+    {% else %}
+        <li><a href="{% url 'login'%}?next={{request.path}}">Login</a></li>
+    {% endif %}
     <form action="{% url 'search_page' %}" method="get">
-            <input name="q" type="text" placeholder="Search..." value="{% search_query request %}">
+        <input name="q" type="text" placeholder="Search..." value="{% search_query request %}">
     </form>
+{% include 'cart_items_count.html' %}
 </header>

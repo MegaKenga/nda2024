@@ -3,6 +3,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.http import require_POST
 from django.contrib import messages
 
+
 from catalog.models import Offer
 from cart.forms import CartAddProductForm
 from nda_email.forms import ContactForm

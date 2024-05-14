@@ -1,4 +1,4 @@
-"""
+"""catalog/medtronic/medtronic-oxygen-masks
 URL configuration for nda project.
 
 The `urlpatterns` list routes URLs to views. For more information please see:
