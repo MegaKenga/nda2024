@@ -65,11 +65,11 @@ class EmailSender:
         # send_email_task.delay(file, email_address, subject, html_message)
         email = EmailMessage(subject, html_message, EMAIL_HOST_USER, [email_address])
         if file is not None:
-            file_name = 'company_details'
-            storaged_file = TEMPORARY_STORAGE.save(file_name, file)
+            file_name = 'company_details.'
+            extension = Path(file.name).suffix[1:].lower()
+            full_name = file_name + extension
+            storaged_file = TEMPORARY_STORAGE.save(full_name, file)
             storaged_file_url = TEMPORARY_STORAGE.url(storaged_file)
-            print(storaged_file, storaged_file_url)
-
             email.attach_file(os.path.join(settings.BASE_DIR) + storaged_file_url)
         email.send(fail_silently=False)
 
