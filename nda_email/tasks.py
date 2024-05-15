@@ -1,30 +1,25 @@
+from datetime import datetime
+
 from celery import shared_task
 
 from django.core.mail import EmailMessage
-from django.core.files.storage import FileSystemStorage
 
-from nda.settings import EMAIL_HOST_USER, TEMPORARY_UPLOAD_ROOT, TEMPORARY_UPLOAD_URL
+from nda.settings import EMAIL_HOST_USER, RECIPIENT_EMAIL
+from nda_email.temporary_storage import temporary_storage
 
-
-TEMPORARY_STORAGE = FileSystemStorage(location=TEMPORARY_UPLOAD_ROOT, base_url=TEMPORARY_UPLOAD_URL)
 
 @shared_task
-def send_email_task(file, to_recipient, subject, html_message):
-    email = EmailMessage(subject, html_message, EMAIL_HOST_USER, [to_recipient])
-    if file is not None:
-        storaged_file = TEMPORARY_STORAGE.save(file.name, file)
-        storaged_file_url = TEMPORARY_STORAGE.url(storaged_file)
-        email.attach_file(storaged_file_url)
-    email.send(fail_silently=False)
-
-
-# @shared_task
-# def send_email_with_file_task(file, to_recipient, subject, html_message):
-#     email = EmailMessage(subject, html_message, EMAIL_HOST_USER, [to_recipient])
-#     storaged_file = TEMPORARY_STORAGE.save(file.name, file)
-#     storaged_file_url = TEMPORARY_STORAGE.url(storaged_file)
-#     email.attach_file(storaged_file_url)
-#     email.send(fail_silently=False)
-
-@shared_task
-def send_emails_task(customer_email, customer_phone, customer_message, file_name):
+def send_emails_task(html_message_for_nda, html_message_for_customer, customer_email, file_name):
+    subject_for_nda = f'Заказ с сайта от {datetime.now().strftime("%Y-%m-%d %H:%M.")}'
+    email_for_nda = EmailMessage(subject_for_nda,
+                                 html_message_for_nda, EMAIL_HOST_USER, [RECIPIENT_EMAIL])
+    subject_for_customer = f'Ваш заказ от {datetime.now().strftime("%Y-%m-%d %H:%M.")}'
+    email_for_customer = EmailMessage(subject_for_customer,
+                                      html_message_for_customer, EMAIL_HOST_USER, [customer_email])
+    if file_name is not None:
+        storaged_file_path = temporary_storage.path(file_name)
+        email_for_nda.attach_file(storaged_file_path)
+        email_for_customer.attach_file(storaged_file_path)
+        temporary_storage.delete(file_name)
+    email_for_nda.send(fail_silently=False)
+    email_for_customer.send(fail_silently=False)

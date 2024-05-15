@@ -1,15 +1,8 @@
-from datetime import datetime
-
 from django.template.loader import render_to_string
 
-from nda.settings import RECIPIENT_EMAIL, TEMPORARY_UPLOAD_ROOT, TEMPORARY_UPLOAD_URL, EMAIL_HOST_USER
-
+from nda_email.temporary_storage import temporary_storage
 from nda_email.forms import ContactForm
-from django.core.mail import EmailMessage
-from django.core.files.storage import FileSystemStorage
-
-
-TEMPORARY_STORAGE = FileSystemStorage(location=TEMPORARY_UPLOAD_ROOT, base_url=TEMPORARY_UPLOAD_URL)
+from nda_email.tasks import send_emails_task
 
 
 class EmailSender:
@@ -25,7 +18,7 @@ class EmailSender:
         return customer_email, customer_phone, customer_message, file
 
     @classmethod
-    def create_message(cls, request, offers):
+    def send_messages(cls, request, offers):
         customer_email, customer_phone, customer_message, file = cls.get_message_data(request)
         html_message_for_nda = render_to_string(
             'cart/message_for_nda.html',
@@ -37,18 +30,7 @@ class EmailSender:
             {'customer_message': customer_message, 'customer_email': customer_email,
              'customer_phone': customer_phone, 'offers': offers}
         )
-        email_for_nda = EmailMessage(f'Заказ с сайта от {datetime.now().strftime("%Y-%m-%d %H:%M.")}',
-                                     html_message_for_nda, EMAIL_HOST_USER, [RECIPIENT_EMAIL])
-        email_for_customer = EmailMessage(f'Ваш заказ от {datetime.now().strftime("%Y-%m-%d %H:%M.")}',
-                                          html_message_for_customer, EMAIL_HOST_USER, [customer_email])
+        storaged_file = None
         if file is not None:
-            storaged_file = TEMPORARY_STORAGE.save(file.name, file)
-            storaged_file_path = TEMPORARY_STORAGE.path(storaged_file)
-            email_for_nda.attach_file(storaged_file_path)
-            email_for_customer.attach_file(storaged_file_path)
-        email_for_nda.send(fail_silently=False)
-        email_for_customer.send(fail_silently=False)
-
-    @classmethod
-    def send_submitted_order_and_customer_reply(cls, request, offers):
-        cls.create_message(request, offers)
+            storaged_file = temporary_storage.save(file.name, file)
+        send_emails_task.delay(html_message_for_nda, html_message_for_customer, customer_email, storaged_file)
