@@ -1,7 +1,7 @@
 import unittest
 import re
 
-EMAIL_PATTERN = r'([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9_-]{2,})'
+from nda_email.forms import EMAIL_PATTERN
 
 
 class TestEmailRegex(unittest.TestCase):

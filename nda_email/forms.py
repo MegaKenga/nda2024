@@ -3,8 +3,9 @@ import re
 from django import forms
 from django.core.exceptions import ValidationError
 
-from nda_email.phone_regex_test import PHONE_PATTERN
-from nda_email.email_regex_test import EMAIL_PATTERN
+
+PHONE_PATTERN = r'^((\+?)(?:\d[^A-Z,a-z,@]{10,14}))$'
+EMAIL_PATTERN = r'([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9_-]{2,})'
 
 
 class ContactForm(forms.Form):

@@ -1,8 +1,8 @@
 {% if cart_items_count > 0 %}
-<div class="cart">
-            Your cart:
-            <a href="{% url 'cart_detail' %}">
-                {{ cart_items_count }}
-            </a>
-</div>
+    <div class="cart">
+        Your cart:
+        <a href="{% url 'cart_detail' %}">
+            {{ cart_items_count }}
+        </a>
+    </div>
 {% endif %}

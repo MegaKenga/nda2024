@@ -1,8 +1,7 @@
 import unittest
 import re
 
-
-PHONE_PATTERN = r'^((\+?)(?:\d[^A-Z,a-z,@]{10,14}))$'
+from nda_email.forms import PHONE_PATTERN
 
 
 class TestPhoneRegex(unittest.TestCase):
