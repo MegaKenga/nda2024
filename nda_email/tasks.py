@@ -25,3 +25,6 @@ def send_email_task(file, to_recipient, subject, html_message):
 #     storaged_file_url = TEMPORARY_STORAGE.url(storaged_file)
 #     email.attach_file(storaged_file_url)
 #     email.send(fail_silently=False)
+
+@shared_task
+def send_emails_task(customer_email, customer_phone, customer_message, file_name):
