@@ -176,6 +176,11 @@ STATIC_ROOT = BASE_DIR.resolve().joinpath('static')
 MEDIA_ROOT = 'media/'
 MEDIA_URL = '/media/'
 
+TEMPORARY_UPLOAD_ROOT = 'tmp/'
+
+
+FILE_UPLOAD_MAX_MEMORY_SIZE = 10485760
+
 SESSION_ENGINE = 'django.contrib.sessions.backends.signed_cookies'
 
 MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
