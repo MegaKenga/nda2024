@@ -1,4 +1,5 @@
 <form action="" method="post" enctype="multipart/form-data">
+<script src="https://captcha-api.yandex.ru/captcha.js?render=onload&onload=onloadFunction" defer></script>
     {% csrf_token %}
     <div>
         {{ form.name }}
@@ -35,5 +36,18 @@
                 </span>
             {% endif %}
     </div>
+    <div style="height: 100px" id="captcha-container" class="smart-captcha"></div>
     <button type="submit">Отправить запрос</button>
 </form>
+<script>
+    function onloadFunction() {
+        if (window.smartCaptcha) {
+            const containers = document.querySelectorAll('#captcha-container');
+            containers.forEach(function (container) {
+                const widgetId = window.smartCaptcha.render(container, {
+                sitekey: "ysc1_sxny6cNZmnvhyJKrojDDLNxj0nvkGnTleldHzqEo9d9475ca",
+                });
+                container.dataset.widgetid = widgetId
+            })}
+    }
+</script>
