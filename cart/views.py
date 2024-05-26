@@ -3,6 +3,12 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.http import require_POST
 from django.contrib import messages
 
+import json
+import sys
+
+from django.conf import settings
+import requests
+
 
 from catalog.models import Offer
 from cart.forms import CartAddProductForm
@@ -88,6 +94,13 @@ def get_cart_offers(request):
 def cart_detail(request):
     if request.method == 'POST':
         form = ContactForm(request.POST)
+        token = request.POST.get('smart-token')
+        ip = get_client_ip(request)
+        if not yandex_captcha_validation(token, ip):
+            messages.error(request, 'Докажите, что вы не робот')
+            return render(request,
+                          'cart/detail.html',
+                          {'offers': get_cart_offers(request), 'form': form})
         if not form.is_valid():
             return render(request,
                           'cart/detail.html',
@@ -100,6 +113,38 @@ def cart_detail(request):
     form = ContactForm()
     offers = get_cart_offers(request)
     return render(request, 'cart/detail.html', {'offers': offers, 'form': form})
+
+
+def get_client_ip(request):
+    """получение IP пользователя"""
+    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    if x_forwarded_for:
+        ip = x_forwarded_for.split(',')[0]
+    else:
+        ip = request.META.get('REMOTE_ADDR', '')
+    return ip
+
+
+def yandex_captcha_validation(token, ip):
+    print(f"I'm {ip}")
+    if len(token) == 0:
+        return False
+    print(settings.YACAPCHA_SERVER)
+    resp = requests.get(
+        "https://captcha-api.yandex.ru/validate",
+        {
+            "secret": settings.YACAPCHA_SERVER,
+            "token": token,
+            "ip": ip
+        },
+        timeout=1
+    )
+    server_output = resp.content.decode()
+    print(server_output)
+    if resp.status_code != 200:
+        print(f"Allow access due to an error: code={resp.status_code}; message={server_output}", file=sys.stderr)
+        return True
+    return json.loads(server_output)["status"] == "ok"
 
 
 class ContactSuccessView(TemplateView):
