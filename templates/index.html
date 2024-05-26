@@ -1,39 +1,74 @@
 {% extends 'base.html' %}
 {% load cache %}
 {% load static %}
-
 {% block content %}
+    
 <body>
 <div>
     {% include 'cart/message_success.html' %}
 </div>
 {% cache 600 index_page %}
-    <div>
-        <ul>
-            <li>Каталог по производителям</li>
-            {% for brand in brands %}
-                <div>
-                    <p>
-                        {% if not brand.logo %}
-                            <img src="{% get_media_prefix %}default.jpg"/>
-                        {% else %}
-                            <img src="{{ brand.logo.url }}"/>
-                        {% endif %}
-                            <a href="{% url 'brand' brand_slug=brand.slug %}">{{ brand.name.upper }}</a>
-                    </p>
-                </div>
-            {% endfor %}
-            <li>Каталог по направлениям</li>
-            {% for category in categories %}
-                <div>
-                    <p>
-                        <img src="{{ category.logo.image.url }}"/>
-                        <a href="{% url 'category' category_slug=category.slug %}">{{ category.name.upper }}</a>
-                    </p>
-                </div>
-            {% endfor %}
-        </ul>
+    <div class="tabs">
+    <ul class="tab-list">
+        <li class="tab-item active" data-tab="tab1">Каталог по производителям</li>
+        <li class="tab-item" data-tab="tab2">Каталог по направлениям</li>
+    </ul>
+    <div class="tab-content">
+    <div class="tab-pane active" id="tab1">
+    <div class="box">
+        {% for brand in brands %}
+            <div class="selection">
+                {% if not brand.logo %}
+                    <div class="back_fon">
+                        <img src="{{ MEDIA_URL }}default.jpg"/>
+                    </div>
+                {% else %}
+                    <div class="back_fon">
+                        <img src="{{ brand.logo.url }}"/>
+                    </div>
+                {% endif %}
+                <a href="{% url 'brand' brand_slug=brand.slug %}">{{ brand.name.upper }}</a>
+            </div>
+        {% endfor %}
     </div>
+    </div>
+    <div class="tab-pane" id="tab2"></div>
+    <div class="box">
+    {% for category in categories %}
+        <div class="selection">
+            {% if not category.logo %}
+                <p class="back_fon">
+                    <img src="{{ MEDIA_URL }}default.jpg"/>
+                </p>
+            {% else %}
+                <p class="back_fon">
+                    <img src="{{ category.logo.url }}"/>
+                </p>
+            {% endif %}
+            <a href="{% url 'category' category_slug=category.slug %}">{{ category.name.upper }}</a>
+        </div>
+    {% endfor %}
+    </div>
+    </div>
+    </div>
+    <script>document.addEventListener('DOMContentLoaded', function() {
+        var tabItems = document.querySelectorAll('.tab-item');
+        tabItems.forEach(function(tab) {
+            tab.addEventListener('click', function() {
+                var tabId = this.getAttribute('data-tab');
+                var content = document.getElementById(tabId);
+
+      // Удаляем активный класс у текущих вкладок и контента
+        document.querySelector('.tab-item.active').classList.remove('active');
+        document.querySelector('.tab-pane.active').classList.remove('active');
+
+      // Добавляем активный класс для выбранной вкладки и контента
+        this.classList.add('active');
+        content.classList.add('active');
+            });
+        });
+    });
+    </script>
 {% endcache %}
 </body>
 

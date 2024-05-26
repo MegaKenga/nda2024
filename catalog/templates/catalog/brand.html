@@ -1,14 +1,17 @@
 {% extends 'base.html' %}
 {% load cache %}
 {% load static %}
+<link href="{% static 'bootstrap/css/bootstrap.css' %}" rel="stylesheet">
 {% block title %}<title>{{ brand.name }}</title>{% endblock %}
 {% block content %}
 <body>
 <div>
-    <p style="display: inline;">
-        <a href="{% url 'home' %}" class="a_top_hypers">ГЛАВНАЯ</a>
-        -> <a>{{ brand.name.upper }}</a>
-    </p>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'home' %}">ГЛАВНАЯ</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ brand.name.upper }}</li>
+        </ol>
+    </nav>
     <p>Name: {{ brand.name.upper }}</p>
     {% if not brand.logo %}
         <img src="{% get_media_prefix %}default.jpg"/>
