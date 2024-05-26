@@ -1,9 +1,4 @@
 <form action="" method="post" enctype="multipart/form-data">
-{#<script>#}
-{#      function callback(token) {#}
-{#        console.log(callback);#}
-{#      }#}
-{#    </script>#}
     <script src="https://smartcaptcha.yandexcloud.net/captcha.js" async defer></script>
     {% csrf_token %}
     <div>
@@ -47,18 +42,7 @@
         data-sitekey="ysc1_sxny6cNZmnvhyJKrojDDLNxj0nvkGnTleldHzqEo9d9475ca"
         data-hl="ru"
         data-callback="callback"
-      ></div>
+    >
+    </div>
     <button type="submit">Отправить запрос</button>
 </form>
-{#<script>#}
-{#    function onloadFunction() {#}
-{#        if (window.smartCaptcha) {#}
-{#            const containers = document.querySelectorAll('#captcha-container');#}
-{#            containers.forEach(function (container) {#}
-{#                const widgetId = window.smartCaptcha.render(container, {#}
-{#                sitekey: "ysc1_sxny6cNZmnvhyJKrojDDLNxj0nvkGnTleldHzqEo9d9475ca",#}
-{#                });#}
-{#                container.dataset.widgetid = widgetId#}
-{#            })}#}
-{#    }#}
-{#</script>#}
