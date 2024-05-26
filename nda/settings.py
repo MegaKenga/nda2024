@@ -129,6 +129,10 @@ CELERY_TIMEZONE = os.getenv('TIMEZONE')
 CELERY_RESULT_BACKEND = 'django-db'
 CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
 
+# CELERY FILES UPLOAD SETTINGS
+TEMPORARY_UPLOAD_ROOT = 'tmp/'
+FILE_UPLOAD_MAX_MEMORY_SIZE = 10485760
+
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 
@@ -153,7 +157,6 @@ LOGIN_REDIRECT_URL = '/'
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
-
 LANGUAGE_CODE = 'ru-ru'
 
 TIME_ZONE = os.getenv('TIMEZONE')
@@ -177,15 +180,19 @@ STATIC_ROOT = BASE_DIR.resolve().joinpath('static')
 MEDIA_ROOT = 'media/'
 MEDIA_URL = '/media/'
 
-TEMPORARY_UPLOAD_ROOT = 'tmp/'
 
+# DJANGO_SENDFILE SETTINGS
+PRIVATE_ROOT = os.getenv('PRIVATE_PATH')
+SENDFILE_ROOT = 'private/'
+SENDFILE_BACKEND = 'django_sendfile.backends.simple'
 
-FILE_UPLOAD_MAX_MEMORY_SIZE = 10485760
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.signed_cookies'
 
 MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 
+
+# EMAIL_SENDER SETTINGS
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = os.getenv('HOST_USER')
@@ -194,6 +201,7 @@ RECIPIENT_EMAIL = os.getenv('RECIPIENT')
 EMAIL_PORT = os.getenv('PORT', '587')
 EMAIL_USE_TLS = True
 
-PRIVATE_ROOT = os.getenv('PRIVATE_PATH')
-SENDFILE_ROOT = 'private/'
-SENDFILE_BACKEND = 'django_sendfile.backends.simple'
+
+# YANDEX CAPTCHA SETTINGS
+SECURE_REFERRER_POLICY = 'no-referrer-when-downgrade'
+YACAPTCHA_SERVER = os.getenv('SERVER_KEY')

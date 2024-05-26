@@ -1,4 +1,5 @@
 <form action="" method="post" enctype="multipart/form-data">
+    <script src="https://smartcaptcha.yandexcloud.net/captcha.js" async defer></script>
     {% csrf_token %}
     <div>
         {{ form.name }}
@@ -34,6 +35,14 @@
                     {{ form.errors.message }}
                 </span>
             {% endif %}
+    </div>
+    <div
+        id="captcha-container"
+        class="smart-captcha"
+        data-sitekey="ysc1_sxny6cNZmnvhyJKrojDDLNxj0nvkGnTleldHzqEo9d9475ca"
+        data-hl="ru"
+        data-callback="callback"
+    >
     </div>
     <button type="submit">Отправить запрос</button>
 </form>

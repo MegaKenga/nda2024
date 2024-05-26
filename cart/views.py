@@ -3,19 +3,19 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.http import require_POST
 from django.contrib import messages
 
-
 from catalog.models import Offer
 from cart.forms import CartAddProductForm
 from nda_email.forms import ContactForm
 from django.views.generic import TemplateView
 from nda_email.email_sender import EmailSender
+from nda_email.captcha import get_client_ip, yandex_captcha_validation
 
 
 CART_SESSION_ID = 'cart'
 
 
 def get_cart(request):
-    # session = request.session
+    # Создаем корзину для сессии
     cart = request.session.get(CART_SESSION_ID)
     if not cart:
         # Сохраняем пустую корзину в сессии
@@ -65,7 +65,6 @@ def cart_remove(request, offer_id):
 
 
 def cart_clear(request):
-    # удаление корзины из сессии
     del request.session[CART_SESSION_ID]
     request.session.modified = True
     return redirect('cart_detail')
@@ -88,6 +87,13 @@ def get_cart_offers(request):
 def cart_detail(request):
     if request.method == 'POST':
         form = ContactForm(request.POST)
+        token = request.POST.get('smart-token')
+        client_ip = get_client_ip(request)
+        if not yandex_captcha_validation(token, client_ip):
+            messages.error(request, 'Докажите, что вы не робот')
+            return render(request,
+                          'cart/detail.html',
+                          {'offers': get_cart_offers(request), 'form': form})
         if not form.is_valid():
             return render(request,
                           'cart/detail.html',
