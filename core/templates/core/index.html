@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'core/base.html' %}
 {% load cache %}
 {% load static %}
 {% block content %}
@@ -15,9 +15,11 @@
     </ul>
     <div class="tab-content">
     <div class="tab-pane active" id="tab1">
+    <div class="selection_block">
     <div class="box">
         {% for brand in brands %}
-            <div class="selection">
+            <div class="brand_box">
+            <a href="{% url 'brand' brand_slug=brand.slug %}"></a>
                 {% if not brand.logo %}
                     <div class="back_fon">
                         <img src="{% get_media_prefix %}default.jpg"/>
@@ -27,9 +29,10 @@
                         <img src="{{ brand.logo.url }}"/>
                     </div>
                 {% endif %}
-                <a href="{% url 'brand' brand_slug=brand.slug %}">{{ brand.name.upper }}</a>
+                {{ brand.name.upper }}
             </div>
         {% endfor %}
+    </div>
     </div>
     </div>
     <div class="tab-pane" id="tab2"></div>

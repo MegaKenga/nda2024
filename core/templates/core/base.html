@@ -1,0 +1,18 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1" >
+    {% block title %}
+        <title>НДА Деловая медицинская компания</title>
+    {% endblock %}
+    <link rel="stylesheet" type="text/css" href="{% static 'bootstrap/css/bootstrap.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'custom/css/custom.css' %}">
+</head>
+{% include 'core/header.html' %}
+{% block content %}
+{% endblock %}
+{% include 'core/footer.html' %}
+</html>

@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_extensions',
+    'core.apps.CoreConfig',
     'catalog.apps.CatalogConfig',
     'files.apps.FilesConfig',
     'cart.apps.CartConfig',
@@ -75,7 +76,7 @@ ROOT_URLCONF = 'nda.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates']
+        'DIRS': [BASE_DIR / 'core/templates']
         ,
         'APP_DIRS': True,
         'OPTIONS': {
@@ -155,6 +156,8 @@ AUTH_PASSWORD_VALIDATORS = [
 
 
 LOGIN_REDIRECT_URL = '/'
+LOGIN_URL = 'login'
+LOGOUT_URL = 'logout'
 
 
 # Internationalization
@@ -172,7 +175,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = '/static/'
-STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"),)
+STATICFILES_DIRS = (os.path.join(BASE_DIR, "core/static"),)
 STATIC_ROOT = os.path.join(BASE_DIR, "/static/")
 
 # Default primary key field type
