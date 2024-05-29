@@ -20,15 +20,13 @@
         {% for brand in brands %}
             <div class="brand_box">
             <a href="{% url 'brand' brand_slug=brand.slug %}"></a>
+            <div class="back_fon">
                 {% if not brand.logo %}
-                    <div class="back_fon">
-                        <img src="{% get_media_prefix %}default.jpg"/>
-                    </div>
+                    <img src="{% get_media_prefix %}default.jpg"/>
                 {% else %}
-                    <div class="back_fon">
-                        <img src="{{ brand.logo.url }}"/>
-                    </div>
+                    <img src="{{ brand.logo.url }}"/>
                 {% endif %}
+            </div>
                 {{ brand.name.upper }}
             </div>
         {% endfor %}

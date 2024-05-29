@@ -14,5 +14,5 @@
     <form action="{% url 'search_page' %}" method="get">
         <input name="q" type="text" placeholder="Search..." value="{% search_query request %}">
     </form>
-{% include 'core/cart_items_count.html' %}
+{% include 'cart/cart_items_count.html' %}
 </header>
