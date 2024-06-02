@@ -45,4 +45,4 @@ class MainPage(models.Model):
         verbose_name_plural = 'Реклама на главной странице'
 
     def __str__(self):
-        return str(self.advert_name)
+        return self.advert_name
