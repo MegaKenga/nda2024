@@ -1,7 +1,7 @@
 {% load static %}
 
 <!DOCTYPE html>
-<html lang="en" >
+<html lang="en" class="h-100">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1" >
@@ -10,9 +10,12 @@
     {% endblock %}
     <link rel="stylesheet" type="text/css" href="{% static 'bootstrap/css/bootstrap.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'custom/css/custom.css' %}">
+    <script src="{% static 'bootstrap/js/bootstrap.js' %}"></script>
 </head>
-{% include 'core/header.html' %}
-{% block content %}
-{% endblock %}
-{% include 'core/footer.html' %}
+<body class="d-flex flex-column h-100">
+    {% include 'core/header.html' %}
+    {% block content %}
+    {% endblock %}
+    {% include 'core/footer.html' %}
+</body>
 </html>
