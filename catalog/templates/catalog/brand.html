@@ -1,52 +1,80 @@
 {% extends 'core/base.html' %}
 {% load cache %}
 {% load static %}
-<link href="{% static 'bootstrap/css/bootstrap.css' %}" rel="stylesheet">
 {% block title %}<title>{{ brand.name }}</title>{% endblock %}
 {% block content %}
 <body>
-<div>
-    <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{% url 'home' %}">ГЛАВНАЯ</a></li>
-            <li class="breadcrumb-item active" aria-current="page">{{ brand.name.upper }}</li>
-        </ol>
-    </nav>
-    <p>Name: {{ brand.name.upper }}</p>
+<dl class="row">
+    <dd class="col-sm-9">
     {% if not brand.logo %}
-        <img src="{% get_media_prefix %}default.jpg"/>
+        <img src="{% get_media_prefix %}default.jpg" class="card-img w-100 nda-card-image">
     {% else %}
-        <img src="{{ brand.logo.url }}"/>
+        {% load thumbnail %}
+            {% thumbnail brand.logo '140x100' upscale=True as im %}
+                <img src="{{ im.url }}">
+        {% endthumbnail %}
     {% endif %}
-    <p>ID: {{ brand.id }}</p>
-    <p>Description: {{ brand.description.upper }}</p>
-    {% cache 600 categories brand.id%}
-        <ul>
-            {% for category in categories %}
-                {% if category.is_final %}
-                    <li>{{ forloop.counter }}:
-                        {% if not category.logo %}
-                            <img src="{% get_media_prefix %}default.jpg"/>
-                        {% else %}
-                            <img src="{{ category.logo.image.url }}"/>
-                        {% endif %}
-                        <a href="{% url 'offer' brand_slug=category.brand.slug category_slug=category.slug %}">
-                            {{ category.name.upper }}
-                        </a>
-                    </li>
-                {% else %}
-                    <li>{{ forloop.counter }}:
-                        {% if not category.logo %}
-                            <img src="{% get_media_prefix %}default.jpg"/>
-                        {% else %}
-                            <img src="{{ category.logo.image.url }}"/>
-                        {% endif %}
-                            <a href="{% url 'category' category_slug=category.slug%}">{{ category.name.upper }}</a>
-                    </li>
-                {% endif %}
-            {% endfor %}
-        </ul>
-{% endcache %}
+    </dd>
+    <dd class="col-sm-8 p-1 fs-2 fw-bold text-uppercase"> {{ brand.name }}</dd>
+    <dd class="col-sm-8 p-1 fs-4 fw-bold text-uppercase"> {{ brand.description }}</dd>
+</dl>
+<div class="row mx-5 mt-5 g-2 g-lg-3">
+<div class="d-flex bd-highlight mb-3">
+    <div class="mb-auto p-2 bd-highlight">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item fs-4"><a href="{% url 'home' %}">ГЛАВНАЯ</a></li>
+                <li class="breadcrumb-item active fs-4" aria-current="page">{{ brand.name.upper }}</li>
+            </ol>
+        </nav>
 </div>
+</div>
+</div>
+{% cache 600 categories brand.id%}
+    <div class="container-fluid">
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xxl-5 mx-5 mt-5 g-2 g-lg-3">
+        {% for category in categories %}
+            {% if category.is_final %}
+                <div class="col">
+                    <div class="card nda-card">
+                        <a class="text-decoration-none" href="{% url 'offer' brand_slug=category.brand.slug category_slug=category.slug %}" style="color: inherit">
+                            <div class="position-relative">
+                                {% if not category.logo %}
+                                    <img src="{% get_media_prefix %}default.jpg" class="card-img w-100 nda-card-image">
+                                {% else %}
+                                    {% load thumbnail %}
+                                        {% thumbnail category.logo '221x152' upscale=True as im %}
+                                            <img src="{{ im.url }}" class="card-image w-100 nda-card-image">
+                                    {% endthumbnail %}
+                                {% endif %}
+                                <p class="p-1 card-text fs-6 text-uppercase">{{ category.name }}</p>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            {% else %}
+                <div class="col">
+                    <div class="card nda-card">
+                        <a class="text-decoration-none" href="{% url 'category' category_slug=category.slug %}" style="color: inherit">
+                            <div class="position-relative">
+                                {% if not category.logo %}
+                                    <img src="{% get_media_prefix %}default.jpg" class="card-img w-100 nda-card-image">
+                                {% else %}
+                                    {% load thumbnail %}
+                                        {% thumbnail category.logo '221x152' upscale=True as im %}
+                                            <img src="{{ im.url }}" class="card-image w-100 nda-card-image">
+                                    {% endthumbnail %}
+                                {% endif %}
+                            </div>
+                            <p class="p-1 card-text fs-6 text-uppercase">{{ category.name }}</p>
+                        </a>
+                    </div>
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+    </div>
+{% endcache %}
+
 </body>
 {% endblock %}
