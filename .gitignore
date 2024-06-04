@@ -2,7 +2,7 @@
 /venv
 .idea
 /dumps
-/media
+/media/
 /temporary_unused_code
 **/**/__pycache__
 TODO.py

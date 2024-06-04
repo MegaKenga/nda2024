@@ -1,6 +1,7 @@
 {% extends 'core/base.html' %}
 {% load cache %}
 {% load static %}
+{% load thumbnail %}
 {% block title %}<title>{{ category.name }}</title>{% endblock %}
 {% block content %}
 
@@ -9,11 +10,10 @@
     <dl class="row">
         <dd class="col-sm-9">
             {% if not brand.logo %}
-                <img src="{% get_media_prefix %}default.jpg" class="card-img w-100 nda-card-image">
+                <img src="{% get_media_prefix %}default.jpg" height="100" width="140">
             {% else %}
-                {% load thumbnail %}
-                    {% thumbnail brand.logo '140x100' upscale=True as im %}
-                        <img src="{{ im.url }}">
+                {% thumbnail brand.logo '140x100' upscale=True as im %}
+                    <img src="{{ im.url }}">
                 {% endthumbnail %}
             {% endif %}
         </dd>
@@ -28,15 +28,14 @@
         {% for category in category.children.all %}
             {% if category.is_final %}
                 <div class="col">
-                    <div class="card nda-card">
+                    <div class="nda-card">
                         <a class="text-decoration-none" href="{% url 'offer' brand_slug=category.brand.slug category_slug=category.slug %}" style="color: inherit">
                             <div class="position-relative">
                                 {% if not category.logo %}
                                     <img src="{% get_media_prefix %}default.jpg" class="card-img w-100 nda-card-image">
                                 {% else %}
-                                    {% load thumbnail %}
-                                        {% thumbnail category.logo '221x152' upscale=True as im %}
-                                            <img src="{{ im.url }}" class="card-image w-100 nda-card-image">
+                                    {% thumbnail category.logo '221x152' upscale=True as im %}
+                                        <img src="{{ im.url }}" class="card-image w-100 nda-card-image">
                                     {% endthumbnail %}
                                 {% endif %}
                                 <p class="p-1 card-text fs-6 text-uppercase">{{ category.name }}</p>
@@ -46,15 +45,14 @@
                 </div>
             {% else %}
                 <div class="col">
-                    <div class="card nda-card">
+                    <div class="nda-card">
                         <a class="text-decoration-none" href="{% url 'category' category_slug=category.slug %}" style="color: inherit">
                             <div class="position-relative">
                                 {% if not category.logo %}
                                     <img src="{% get_media_prefix %}default.jpg" class="card-img w-100 nda-card-image">
                                 {% else %}
-                                    {% load thumbnail %}
-                                        {% thumbnail category.logo '221x152' upscale=True as im %}
-                                            <img src="{{ im.url }}" class="card-image w-100 nda-card-image">
+                                    {% thumbnail category.logo '221x152' upscale=True as im %}
+                                        <img src="{{ im.url }}" class="card-image w-100 nda-card-image">
                                     {% endthumbnail %}
                                 {% endif %}
                             </div>

@@ -1,16 +1,16 @@
 {% load static %}
+{% load thumbnail %}
 <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xxl-5 mx-5 mt-5 g-2 g-lg-3">
     {% for brand in brands %}
         <div class="col">
-            <div class="card nda-card">
+            <div class="nda-card">
                 <a class="text-decoration-none" href="{% url 'brand' brand_slug=brand.slug %}" style="color: inherit">
                     <div class="position-relative">
                         {% if not brand.logo %}
                             <img src="{% get_media_prefix %}default.jpg" class="card-img w-100 nda-card-image">
                         {% else %}
-                            {% load thumbnail %}
-                                {% thumbnail brand.logo '221x152' upscale=True as im %}
-                                    <img src="{{ im.url }}" class="card-image w-100 nda-card-image">
+                            {% thumbnail brand.logo '221x152' upscale=True as im %}
+                                <img src="{{ im.url }}" class="card-image w-100 nda-card-image">
                             {% endthumbnail %}
                         {% endif %}
                         <div class="card-img-overlay">
