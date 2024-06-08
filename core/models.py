@@ -1,5 +1,5 @@
 from django.db import models
-from catalog.models import Category
+from catalog.models import Category, NotHidden
 
 
 class MainPage(models.Model):
@@ -39,6 +39,9 @@ class MainPage(models.Model):
         default=Status.DRAFT,
         verbose_name='Статус показа на страницах'
     )
+
+    objects = models.Manager()
+    visible = NotHidden()
 
     class Meta:
         verbose_name = 'Реклама на главной странице'

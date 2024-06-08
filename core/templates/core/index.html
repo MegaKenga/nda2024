@@ -1,10 +1,10 @@
 {% extends 'core/base.html' %}
 {% load cache %}
+{% load ad_tag %}
 {% block content %}
     
-<div>
-    {% include 'cart/message_success.html' %}
-</div>
+<div>{% ad_query %}</div>
+
 {% cache 600 index_page %}
     <div class="container-fluid">
         <ul class="nav nav-tabs nav-justified" id="index-tabs" role="tablist">
