@@ -1,7 +1,8 @@
+<div class="container-lg">
 <div id="carouselExampleDark" class="carousel carousel-dark slide" data-bs-ride="carousel">
     <div class="carousel-inner">
         {% for ad in ads %}
-            <div class="carousel-item {% if forloop.counter == 1 %}active{% endif %}" data-bs-interval="10000">
+            <div class="carousel-item {% if forloop.counter == 1 %}active{% endif %}" data-bs-interval="1000000000">
                 <img src="{{ ad.advert_image.url }}" class="d-block w-100" alt="...">
                 <div class="carousel-caption d-none d-md-block">
                     <h5>{{ ad.advert_category.name }}</h5>
@@ -18,4 +19,5 @@
         <span class="carousel-control-next-icon" aria-hidden="true"></span>
         <span class="visually-hidden">Next</span>
     </button>
+</div>
 </div>

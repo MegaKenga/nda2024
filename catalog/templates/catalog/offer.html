@@ -2,7 +2,6 @@
 {% load static %}
 {% block title %}<title>{{ category.name }}</title>{% endblock %}
 {% block content %}
-<body>
 <div>
     {% include 'catalog/components/breadcrumbs.html' %}
     <dl class="row">
@@ -16,12 +15,12 @@
         <dd class="col-sm-8 p-1 fs-2 fw-bold text-uppercase"> {{ brand.name }}</dd>
         <dd class="col-sm-8 p-1 fs-4 fw-bold text-uppercase"> {{ category.name }}</dd>
     </dl>
-    <div>
-        <div id="carousel-card" class="carousel carousel-dark slide" data-bs-ride="carousel">
+    <div style="display: inline-block">
+        <div id="carousel-card" class="carousel carousel-dark slide" >
             <div class="carousel-inner">
                 {% for image in images %}
-                    <div class="class=carousel-item {% if forloop.counter == 1 %}active{% endif %}">
-                        <img src="{{ image }}" class="d-block w-25">
+                    <div class="carousel-item {% if forloop.counter == 1 %}active{% endif %}">
+                        <img src="{{ image }}" class="d-block w-25" alt="...">
                     </div>
                 {% endfor %}
             </div>
@@ -45,7 +44,6 @@
     </div>
     <div>
         <table>
-            <colgroup><col span="3"> </colgroup>
             <tbody>
             <tr>
                 <td>Артикул</td>
@@ -70,6 +68,5 @@
     </div>
 </div>
 
-</body>
 {% endblock %}
 
