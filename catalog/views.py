@@ -6,6 +6,7 @@ from django.contrib import messages
 from catalog.models import Category, Brand, Offer
 from files.models import ModelFile, ModelImage
 from cart.forms import CartAddProductForm
+from core.models import MainPage
 
 
 SEARCH_QUERY_PARAM = 'q'
@@ -39,6 +40,7 @@ class IndexView(TemplateView):
         context = super().get_context_data(**kwargs)
         context['brands'] = Brand.visible.all().order_by('name')
         context['categories'] = Category.visible.filter(parents=None).filter(brand=None)
+        context['ads'] = MainPage.visible.all()
         return context
 
 
