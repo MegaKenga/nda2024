@@ -2,7 +2,7 @@ from django.db import models
 from catalog.models import Category, NotHidden
 
 
-class MainPage(models.Model):
+class MainPageAdvertisement(models.Model):
     class Status(models.TextChoices):
         DRAFT = 'DRAFT', 'Черновик'
         PUBLISHED = 'PUBLISHED', 'Активен'
