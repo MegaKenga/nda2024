@@ -14,4 +14,4 @@ celery==5.4.0
 django-celery-results==2.5.1
 importlib-metadata==4.13.0
 requests==2.31.0
-
+sorl-thumbnail==12.10.0
