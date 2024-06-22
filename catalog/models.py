@@ -67,6 +67,12 @@ class Brand(BaseFields):
         blank=True,
         verbose_name='Баннер бренда',
     )
+    banner_color = models.CharField(
+        max_length=32,
+        default='#005d9c',
+        null=True,
+        verbose_name='Цвет баннера бренда'
+    )
     slug = models.SlugField(
         unique=True,
         max_length=128,

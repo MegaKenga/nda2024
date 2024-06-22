@@ -1,3 +1,5 @@
+{% load thumbnail %}
+
 <div id="carouselExampleDark" class="carousel carousel-dark slide" data-bs-ride="carousel" style="background-color: #f9f9f7;">
     <div class="carousel-inner">
         {% for ad in ads %}
@@ -18,7 +20,9 @@
                         {% endif %}
                     </div>
                     <div class="col-auto">
-                        <img src="{{ ad.advert_image.url }}" alt="...">
+                        {% thumbnail ad.advert_image "450x550" as im %}
+                            <img src="{{ im.url }}" alt="...">
+                        {% endthumbnail %}
                     </div>
                 </div>
             </div>

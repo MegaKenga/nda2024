@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'django_sendfile',
     'django_celery_results',
     'core.apps.CoreConfig',
+    'sorl.thumbnail',
 ]
 
 MIDDLEWARE = [

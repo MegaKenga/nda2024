@@ -49,9 +49,10 @@ class BrandAdmin(admin.ModelAdmin):
         'name',
         'slug',
         'place',
-        'status'
+        'status',
+        'banner_color'
     )
-    list_editable = ('place', 'slug', 'status')
+    list_editable = ('place', 'slug', 'status', 'banner_color')
     list_filter = (('name', DropdownFilter), 'status')
     fields = [
         'name',
@@ -60,7 +61,8 @@ class BrandAdmin(admin.ModelAdmin):
         'place',
         'status',
         'logo',
-        'banner'
+        'banner',
+        'banner_color'
     ]
     view_on_site = True
     actions_on_bottom = True
