@@ -33,7 +33,7 @@ def breadcrumbs_path(category):
 
 
 class IndexView(TemplateView):
-    template_name = 'index.html'
+    template_name = 'core/index.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -86,7 +86,7 @@ class OfferView(TemplateView):
 
 class SiteSearchView(ListView):
     model = Category
-    template_name = 'catalog/search.html'
+    template_name = 'catalog/components/search.html'
     paginate_by = 10
 
     def get_queryset(self):

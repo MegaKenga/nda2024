@@ -1,0 +1,26 @@
+{% load search_query %}
+
+<header class="p-3 mb-3 border-bottom">
+    <div class="container">
+        <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+            <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+                <li>
+                    <a href='/' class="nav-link px-2 link-secondary">Вернуться на главную</a>
+                </li>
+                <li>
+                    <a href='/admin/' class="nav-link px-2 link-secondary">Админка</a>
+                </li>
+            {% if user.is_authenticated %}
+                <li class="nav-link px-2 link-secondary">User: {{ user.get_username }}</li>
+                <li><a href="{% url 'logout'%}?next={{request.path}}" class="nav-link px-2 link-secondary">Logout</a></li>
+            {% else %}
+                <li><a href="{% url 'login'%}?next={{request.path}}" class="nav-link px-2 link-secondary">Login</a></li>
+            {% endif %}
+            </ul>
+            <form action="{% url 'search_page' %}" method="get">
+                <input name="q" type="text" placeholder="Search..." value="{% search_query request %}">
+            </form>
+            {% include 'cart/cart_items_count.html' %}
+        </div>
+    </div>
+</header>

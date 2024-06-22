@@ -1,0 +1,49 @@
+{% extends 'core/base.html' %}
+{% load cache %}
+{% load ad_tag %}
+{% block content %}
+
+<div>{% include 'cart/message_success.html' %}</div>
+    
+{% ad_query %}
+
+{% cache 600 index_page %}
+    <ul class="nav nav-tabs nav-justified mt-5" id="index-tabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button
+                    class="nav-link active"
+                    id="brands-tab"
+                    data-bs-toggle="tab"
+                    data-bs-target="#brands"
+                    type="button"
+                    role="tab"
+                    aria-controls="brands"
+                    aria-selected="true">
+                Каталог по производителям
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button
+                class="nav-link"
+                id="categories-tab"
+                data-bs-toggle="tab"
+                data-bs-target="#categories"
+                type="button"
+                role="tab"
+                aria-controls="categories"
+                aria-selected="false">
+            Каталог по направлениям
+            </button>
+        </li>
+    </ul>
+    <div class="tab-content" id="index-tabs-content">
+        <div class="tab-pane fade show active" id="brands" role="tabpanel" aria-labelledby="brands-tab">
+            {% include 'core/components/brands_tab.html' %}
+        </div>
+        <div class="tab-pane fade show" id="categories" role="tabpanel" aria-labelledby="categories-tab">
+            {% include 'core/components/categories_tab.html' %}
+        </div>
+    </div>
+{% endcache %}
+
+{% endblock %}      
