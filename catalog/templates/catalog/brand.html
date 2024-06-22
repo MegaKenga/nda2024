@@ -6,16 +6,12 @@
 
 {% include 'catalog/components/brand_banner.html' %}
 
-<div class="px-5 row mt-5 g-2 g-lg-3">
-    <div class="mb-auto">
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item fs-4"><a href="{% url 'home' %}">ГЛАВНАЯ</a></li>
-                <li class="breadcrumb-item active fs-4" aria-current="page">{{ brand.name.upper }}</li>
-            </ol>
-        </nav>
-</div>
-</div>
+<nav aria-label="breadcrumb" class="px-5 mt-5">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item fs-4"><a href="{% url 'home' %}">ГЛАВНАЯ</a></li>
+        <li class="breadcrumb-item active fs-4" aria-current="page">{{ brand.name.upper }}</li>
+    </ol>
+</nav>
 {% cache 600 categories brand.id%}
 <div class="px-5 row row-cols-1 row-cols-sm-1 row-cols-md-1 row-cols-lg-2 row-cols-xl-2 row-cols-xxl-2 mt-5 g-2 g-lg-3">
     {% for category in categories %}

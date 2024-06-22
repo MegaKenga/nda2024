@@ -1,18 +1,17 @@
 {% load static %}
 
 
-<div class="d-flex flex-row flex-wrap" style="width: 100%; min-height: 200px; background: linear-gradient(to right, {{brand.banner_color}}, #ffffff);">
-    <div style="display: flex; align-items: center; justify-content: flex-start;">
-        <div class="mt-auto mb-auto mx-5">
-            {% if not brand.logo %}
-                <img src="{% get_media_prefix %}logo-header.png" height="100" width="140" style="border-radius: 10px">
-            {% else %}
-                <img src="{{ brand.logo.url }}" style="width: 140px; height: 100px; border-radius: 10px">
-            {% endif %}
-        </div>
-        <div style="width: 100%; flex-direction: column; justify-content: center; text-align: left;">
-            <h1 style="color: white; font-weight: bold; font-size: 36px; line-height: 48px; margin: 0; text-transform: uppercase">{{ brand.name }}</h1>
-            <h4 style="font-size: 20px; color: #ffffff; line-height: 36px; margin: 0; text-transform: uppercase;">{{ brand.description }}</h4>
-        </div>
+<div class="row align-items-center" style="min-height: 200px; background: linear-gradient(to right, {{brand.banner_color}}, #ffffff);">
+    <div class="col-2 d-flex justify-content-center">
+        {% if not brand.logo %}
+            <img src="{% get_media_prefix %}logo-header.png" style="border-radius: 10px; height:100px; width:140px;">
+        {% else %}
+            {# todo: add thumbnail here as well? #}
+            <img src="{{ brand.logo.url }}" style="width: 140px; height: 100px; border-radius: 10px">
+        {% endif %}
+    </div>
+    <div class="col-10 text-white text-uppercase">
+        <h1 class="m-0 fs-2 fw-bold">{{ brand.name }}</h1>
+        <h4 class="m-0 fs-5">{{ brand.description }}</h4>
     </div>
 </div>

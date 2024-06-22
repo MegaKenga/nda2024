@@ -4,7 +4,7 @@
     <div class="carousel-inner">
         {% for ad in ads %}
             <div class="carousel-item {% if forloop.counter == 1 %}active{% endif %}" data-bs-interval="5000000">
-                <div class="d-flex flex-row flex-wrap">
+                <div class="row">
                     <div class="flex-grow-1 mt-auto mb-auto me-auto col-auto" style="flex-basis: 30%; margin-left: 7.5%;" >
                         <h1 class="display-3 text-wrap">{{ ad.advert_name }}</h1>
                         {% if ad.advert_category.is_final %}
@@ -20,7 +20,7 @@
                         {% endif %}
                     </div>
                     <div class="col-auto">
-                        {% thumbnail ad.advert_image "450x550" as im %}
+                        {% thumbnail ad.advert_image "x450" as im %}
                             <img src="{{ im.url }}" alt="...">
                         {% endthumbnail %}
                     </div>
