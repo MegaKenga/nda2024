@@ -1,8 +1,8 @@
 from django.db import models
-from catalog.models import Category
+from catalog.models import Category, NotHidden
 
 
-class MainPage(models.Model):
+class MainPageAdvertisement(models.Model):
     class Status(models.TextChoices):
         DRAFT = 'DRAFT', 'Черновик'
         PUBLISHED = 'PUBLISHED', 'Активен'
@@ -40,9 +40,12 @@ class MainPage(models.Model):
         verbose_name='Статус показа на страницах'
     )
 
+    objects = models.Manager()
+    visible = NotHidden()
+
     class Meta:
         verbose_name = 'Реклама на главной странице'
         verbose_name_plural = 'Реклама на главной странице'
 
     def __str__(self):
-        return str(self.advert_name)
+        return self.advert_name

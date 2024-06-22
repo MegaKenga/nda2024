@@ -44,14 +44,14 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_extensions',
-    'core.apps.CoreConfig',
     'catalog.apps.CatalogConfig',
     'files.apps.FilesConfig',
     'cart.apps.CartConfig',
     'nda_email.apps.NdaEmailConfig',
     'django_cleanup',
     'django_sendfile',
-    'django_celery_results'
+    'django_celery_results',
+    'core.apps.CoreConfig',
 ]
 
 MIDDLEWARE = [

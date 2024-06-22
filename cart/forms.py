@@ -3,4 +3,4 @@ from django.forms import NumberInput
 
 
 class CartAddProductForm(forms.Form):
-    quantity = forms.IntegerField(min_value=1, widget=NumberInput)
+    quantity = forms.IntegerField(min_value=1, widget=NumberInput, label='')
