@@ -17,55 +17,56 @@
         <dd class="col-sm-8 p-1 fs-4 fw-bold text-uppercase"> {{ category.name }}</dd>
     </dl>
 {% endif %}
-{% include 'catalog/components/breadcrumbs.html' %}
-{% cache 600 children_categories category.id %}
 
+{% include 'catalog/components/breadcrumbs.html' %}
+
+{% cache 600 children_categories category.id %}
     <div class="px-5 row row-cols-1 row-cols-sm-1 row-cols-md-2 row-cols-lg-2 row-cols-xl-2 row-cols-xxl-2 mt-5 g-2 g-lg-3">
-    {% for category in category.children.all %}
-        {% if category.is_final %}
-            <div class="col">
-                <a class="text-decoration-none" href="{% url 'offer' brand_slug=category.brand.slug category_slug=category.slug %}" style="color: inherit">
-                    <div class="card border-dark rounded-2 mb-3">
-                        <div class="row g-0">
-                            <div class="col-md-4">
-                                {% if not category.logo %}
-                                    <img src="{% get_media_prefix %}default.jpg" class="img-fluid rounded-start">
-                                {% else %}
-                                    <img src="{{ category.logo.url }}" class="img-fluid rounded-start">
-                                {% endif %}
-                            </div>
-                            <div class="col-md-8">
-                                <div class="card-body">
-                                    <p class="p-1 card-text fs-6 text-uppercase">{{ category.name }}</p>
+        {% for category in category.children.all %}
+            {% if category.is_final %}
+                <div class="col">
+                    <a class="text-decoration-none" href="{% url 'offer' brand_slug=category.brand.slug category_slug=category.slug %}" style="color: inherit">
+                        <div class="card border-dark rounded-2 mb-3">
+                            <div class="row g-0">
+                                <div class="col-md-2">
+                                    {% if not category.logo %}
+                                        <img src="{% get_media_prefix %}default.jpg" class="img-fluid rounded-start">
+                                    {% else %}
+                                        <img src="{{ category.logo.url }}" class="img-fluid rounded-start">
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="card-body">
+                                        <h5 class="card-text text-uppercase" style="padding-left: 5rem; position: absolute; top: 50%; -ms-transform: translateY(-50%); transform: translateY(-50%);">{{ category.name }}</h5>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </a>
-            </div>
-        {% else %}
-            <div class="col">
-                <a class="text-decoration-none" href="{% url 'category' category_slug=category.slug %}" style="color: inherit">
-                    <div class="card border-dark rounded-2 mb-3">
-                        <div class="row g-0">
-                            <div class="col-md-4">
-                                {% if not category.logo %}
-                                    <img src="{% get_media_prefix %}default.jpg" class="img-fluid rounded-start">
-                                {% else %}
-                                    <img src="{{ category.logo.url }}" class="img-fluid rounded-start">
-                                {% endif %}
-                            </div>
-                            <div class="col-md-8">
-                                <div class="card-body">
-                                    <p class="p-1 card-text fs-6 text-uppercase">{{ category.name }}</p>
+                    </a>
+                </div>
+            {% else %}
+                <div class="col">
+                    <a class="text-decoration-none" href="{% url 'category' category_slug=category.slug %}" style="color: inherit">
+                        <div class="card border-dark rounded-2 mb-3">
+                            <div class="row g-0">
+                                <div class="col-md-2">
+                                    {% if not category.logo %}
+                                        <img src="{% get_media_prefix %}default.jpg" class="img-fluid rounded-start">
+                                    {% else %}
+                                        <img src="{{ category.logo.url }}" class="img-fluid rounded-start">
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="card-body">
+                                        <h5 class="card-text text-uppercase" style="padding-left: 5rem; position: absolute; top: 50%; -ms-transform: translateY(-50%); transform: translateY(-50%);">{{ category.name }}</h5>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </a>
-            </div>
-        {% endif %}
-    {% endfor %}
+                    </a>
+                </div>
+            {% endif %}
+        {% endfor %}
     </div>
 
 {% endcache %}
