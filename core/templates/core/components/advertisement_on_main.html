@@ -1,31 +1,37 @@
-<div class="container-fluid" style="width: 100%; height: 450px; position: relative; background-color: #f9f9f7; background-blend-mode: exclusion">
-    <div id="carouselExampleDark" class="carousel carousel-dark slide" data-bs-ride="carousel" style="width: 100%; height: 450px;">
-        <div class="carousel-inner">
-            {% for ad in ads %}
-                <div class="carousel-item {% if forloop.counter == 1 %}active{% endif %}" data-bs-interval="5000000">
-                    <div>
-                        <img src="{{ ad.advert_image.url }}" class="d-block" style="height: 450px; width: 550px; float: right" alt="...">
-                    </div>
-                    <div class="text_wrapper" style="margin-top: 175px; align-self: start">
+<div id="carouselExampleDark" class="carousel carousel-dark slide" data-bs-ride="carousel" style="background-color: #f9f9f7;">
+    <div class="carousel-inner">
+        {% for ad in ads %}
+            <div class="carousel-item {% if forloop.counter == 1 %}active{% endif %}" data-bs-interval="5000000">
+                <div class="d-flex flex-row flex-wrap">
+                    <div class="flex-grow-1 mt-auto mb-auto me-auto col-auto" style="flex-basis: 30%; margin-left: 7.5%;" >
+                        <h1 class="display-3 text-wrap">{{ ad.advert_name }}</h1>
                         {% if ad.advert_category.is_final %}
-                            <h1 class="display-3">{{ ad.advert_name }}</h1>
-                            <p><a href="{% url 'offer' brand_slug=ad.advert_category.brand.slug category_slug=ad.advert_category.slug %}"> {{ ad.advert_text }} </a></p>
+                            <a class="btn btn-primary btn-lg"
+                                href="{% url 'offer' brand_slug=ad.advert_category.brand.slug category_slug=ad.advert_category.slug %}" role="button">
+                                {{ ad.advert_text }}
+                            </a>
                         {% else %}
-                            <h1 class="display-3">{{ ad.advert_name }}</h1>
-                            <p><a href="{% url 'category' category_slug=ad.advert_category.slug %}"> {{ ad.advert_text }} </a></p>
+                            <a class="btn btn-primary btn-lg"
+                                href="{% url 'category' category_slug=ad.advert_category.slug %}" role="button">
+                                {{ ad.advert_text }}
+                            </a>
                         {% endif %}
                     </div>
+                    <div class="col-auto">
+                        <img src="{{ ad.advert_image.url }}" alt="...">
+                    </div>
                 </div>
-            {% endfor %}
-        </div>
-        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleDark" data-bs-slide="prev" style="width: 7%;">
-            <span class="carousel-control-prev-icon" aria-hidden="true" style="position: relative; left: -10px"></span>
-            <span class="visually-hidden">Previous</span>
-        </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleDark" data-bs-slide="next" style="width: 10%;">
-            <span class="carousel-control-next-icon" aria-hidden="true" style="position: relative; right: -70px"></span>
-            <span class="visually-hidden">Next</span>
-        </button>
+            </div>
+        {% endfor %}
     </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleDark" data-bs-slide="prev" style="width: 7%">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleDark" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+    </button>
 </div>
+
 

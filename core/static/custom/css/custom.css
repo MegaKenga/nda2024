@@ -52,10 +52,10 @@
     );
 }
 
-.text_wrapper {
-    margin-top: 40px;
-    margin-left: 7.5%;
-    width: 70%;
-    position: absolute;
-    text-align: left !important;
-}
+/*.text_wrapper {*/
+/*    margin-top: 40px;*/
+/*    margin-left: 7.5%;*/
+/*    width: 70%;*/
+/*    position: relative;*/
+/*    text-align: left*/
+/*}*/
