@@ -14,10 +14,8 @@
 </head>
 {% include 'core/header.html' %}
 <body class="d-flex flex-column h-100">
-    <div class="container-fluid">
-        {% block content %}
-        {% endblock %}
-    </div>
+{% block content %}
+{% endblock %}
 </body>
 {% include 'core/footer.html' %}
 </html>

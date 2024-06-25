@@ -30,7 +30,7 @@
 }
 .nda-card:hover {
     border: solid 1px var(--color-theme-4);
-    transform: scale(1.05);
+    transform: scale(1.03);
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
 }
 
@@ -52,10 +52,14 @@
     );
 }
 
-/*.text_wrapper {*/
-/*    margin-top: 40px;*/
-/*    margin-left: 7.5%;*/
-/*    width: 70%;*/
-/*    position: relative;*/
-/*    text-align: left*/
-/*}*/
+@media (max-width: 1100px) {
+    .hz {
+        min-height: 105px;
+    }
+}
+
+@media (min-width: 1101px) {
+    .hz {
+        min-height: auto;
+    }
+}
