@@ -2,71 +2,52 @@
 {% load static %}
 {% block title %}<title>{{ category.name }}</title>{% endblock %}
 {% block content %}
-<div>
-    {% include 'catalog/components/breadcrumbs.html' %}
-    <dl class="row">
-        <dd class="col-sm-9">
-            {% if not brand.logo %}
-                <img src="{% get_media_prefix %}default.jpg" height="100" width="140">
-            {% else %}
-                <img src="{{ brand.logo.url }}">
-            {% endif %}
-        </dd>
-        <dd class="col-sm-8 p-1 fs-2 fw-bold text-uppercase"> {{ brand.name }}</dd>
-        <dd class="col-sm-8 p-1 fs-4 fw-bold text-uppercase"> {{ category.name }}</dd>
-    </dl>
-    <div style="display: inline-block">
-        <div id="carousel-card" class="carousel carousel-dark slide" >
+
+{% include 'catalog/components/banner.html' %}
+
+{% include 'catalog/components/breadcrumbs.html' %}
+
+<div class="row">
+    <div class="row row-cols-2">
+        <div id="carouselOffer" class="col-sm-5 carousel carousel-dark slide" data-bs-ride="carousel">
             <div class="carousel-inner">
                 {% for image in images %}
-                    <div class="carousel-item {% if forloop.counter == 1 %}active{% endif %}">
-                        <img src="{{ image }}" class="d-block w-25" alt="...">
+                    <div class="carousel-item {% if forloop.counter == 1 %}active{% endif %} text-center">
+                        <img src="{{ image }}" height="500" width="500" alt="...">
                     </div>
                 {% endfor %}
             </div>
-            <button class="carousel-control-prev" type="button" data-bs-target="#carousel-card" data-bs-slide="prev">
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselOffer" data-bs-slide="prev">
                 <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                 <span class="visually-hidden">Previous</span>
             </button>
-            <button class="carousel-control-next" type="button" data-bs-target="#carousel-card" data-bs-slide="next">
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselOffer" data-bs-slide="next">
                 <span class="carousel-control-next-icon" aria-hidden="true"></span>
                 <span class="visually-hidden">Next</span>
             </button>
         </div>
-            <h1>{{ category.name }}</h1>
-            <p>{{ category.description }}</p>
-        {% for certificate in certificates %}
-            <div>РУ: <a href='{{ certificate }}'>Скачать</a></div>
-        {% endfor %}
-        {% if category.instruction %}
-            <div>Инструкция: <a href='{{ category.instruction.url }}'>Скачать</a></div>
-        {% endif %}
+        <div class="col-sm-7" style="border: solid">
+            <div>
+                <h1>{{ category.name }}</h1>
+                <p>{{ category.description }}</p>
+            </div>
+        </div>
     </div>
-    <div>
-        <table>
-            <tbody>
-            <tr>
-                <td>Артикул</td>
-                <td>Описание</td>
-                <td class=><span>Количество</span></td>
-            </tr>
+</div>
+<div class="row">
+    <div class="d-flex flex-row flex-wrap row-cols-1">
+        <div class="col" style="border: solid">
             {% for offer in offers %}
-                <tr>
-                    <td>{{ offer.name }}</td>
-                    <td >{{ offer.description}}</td>
-                    <td>
-                        <form action="{% url 'cart_add' offer_id=offer.pk %}" method='post'>
-                            {{ cart_product_form.as_p }}
-                            {% csrf_token %}
-                            <button type='submit'>Add to cart</button>
-                        </form>
-                    </td>
-                </tr>
+                {{ offer.name }}
+                {{ offer.description}}
+                <form action="{% url 'cart_add' offer_id=offer.pk %}" method='post'>
+                    {{ cart_product_form.quantity }}
+                    {% csrf_token %}
+                    <button type='submit'>Add to cart</button>
+                </form>
             {% endfor %}
-            </tbody>
-        </table>
+        </div>
     </div>
 </div>
 
 {% endblock %}
-
