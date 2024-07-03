@@ -2,6 +2,9 @@ from django.contrib import admin
 from django.contrib.admin import AdminSite
 from django.contrib.auth.models import Group, User
 from django.contrib.auth.admin import GroupAdmin, UserAdmin
+from django.urls import reverse
+
+from tinymce.widgets import TinyMCE
 
 from catalog.models import Brand, Category, Offer
 from files.models import ModelImage, ModelFile
@@ -107,6 +110,14 @@ class CategoryAdmin(admin.ModelAdmin):
     actions_on_bottom = True
     list_per_page = 25
     search_fields = ['name']
+
+    def formfield_for_dbfield(self, db_field, **kwargs):
+        if db_field.name == 'description':
+            return db_field.formfield(widget=TinyMCE(
+                attrs={'cols': 80, 'rows': 30},
+                mce_attrs={'external_link_list_url': reverse('tinymce-linklist')},
+            ))
+        return super().formfield_for_dbfield(db_field, **kwargs)
 
     def get_form(self, request, obj=None, **kwargs):
         form = super(CategoryAdmin, self).get_form(request, obj, **kwargs)

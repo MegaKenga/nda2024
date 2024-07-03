@@ -20,8 +20,8 @@
                         {% endif %}
                     </div>
                     <div class="col-auto">
-                        {% thumbnail ad.advert_image "450x550" as im %}
-                            <img src="{{ im.url }}" alt="..." style="height: 450px">
+                        {% thumbnail ad.advert_image "x450" as im %}
+                            <img src="{{ im.url }}" alt="..." >
                         {% endthumbnail %}
                     </div>
                 </div>

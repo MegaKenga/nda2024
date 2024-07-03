@@ -1,53 +1,143 @@
 {% extends 'core/base.html' %}
 {% load static %}
 {% block title %}<title>{{ category.name }}</title>{% endblock %}
+{% block header %}
+    {{ form.media }} # Required for styling/js to make ckeditor5 work
+{% endblock %}
 {% block content %}
 
 {% include 'catalog/components/banner.html' %}
 
 {% include 'catalog/components/breadcrumbs.html' %}
 
-<div class="row">
+<div class="d-flex flex-row flex-wrap" style="padding-left: 2rem; padding-right: 2rem">
     <div class="row row-cols-2">
-        <div id="carouselOffer" class="col-sm-5 carousel carousel-dark slide" data-bs-ride="carousel">
-            <div class="carousel-inner">
-                {% for image in images %}
-                    <div class="carousel-item {% if forloop.counter == 1 %}active{% endif %} text-center">
-                        <img src="{{ image }}" height="500" width="500" alt="...">
-                    </div>
-                {% endfor %}
+{#        <div id="carouselOffer" class="col-sm-5 carousel carousel-dark slide" data-bs-ride="carousel" style="height: 500px">#}
+{#            <div class="carousel-inner">#}
+{#                {% for image in images %}#}
+{#                    <div class="carousel-item {% if forloop.counter == 1 %}active{% endif %} text-center">#}
+{#                        <img src="{{ image }}" height="500" width="500" alt="...">#}
+{#                    </div>#}
+{#                {% endfor %}#}
+{#            </div>#}
+{#            <button class="carousel-control-prev" type="button" data-bs-target="#carouselOffer" data-bs-slide="prev">#}
+{#                <span class="carousel-control-prev-icon" aria-hidden="true"></span>#}
+{#                <span class="visually-hidden">Previous</span>#}
+{#            </button>#}
+{#            <button class="carousel-control-next" type="button" data-bs-target="#carouselOffer" data-bs-slide="next">#}
+{#                <span class="carousel-control-next-icon" aria-hidden="true"></span>#}
+{#                <span class="visually-hidden">Next</span>#}
+{#            </button>#}
+{#        </div>#}
+<div class="container mt-5">
+`    <div class="row">
+        <div class="col-md-6">
+            <div class="selected-image">
+                <img id="mainImage" src="{{ images.all.0 }}" alt="Product Image">
             </div>
-            <button class="carousel-control-prev" type="button" data-bs-target="#carouselOffer" data-bs-slide="prev">
-                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Previous</span>
-            </button>
-            <button class="carousel-control-next" type="button" data-bs-target="#carouselOffer" data-bs-slide="next">
-                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Next</span>
-            </button>
+            <div class="thumbnail-carousel carousel">
+                <a class="carousel-control-prev" role="button" id="prevControl">
+                  <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                  <span class="sr-only">Previous</span>
+                </a>
+                <a class="carousel-control-next" role="button" id="nextControl">
+                  <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                  <span class="sr-only">Next</span>
+                </a>
+                <div class="thumbnails">
+                    {% for image in images %}
+                    <img src="{{ image }}" alt="Thumbnail 1" onclick="changeImage(this.src)">
+                    {% endfor %}
+                </div>
+            </div>
         </div>
-        <div class="col-sm-7" style="border: solid">
+    </div>
+</div>`
+        <div class="col-sm-7">
             <div>
                 <h1>{{ category.name }}</h1>
-                <p>{{ category.description }}</p>
+                <p>{{ category.description|safe }}</p>
             </div>
         </div>
     </div>
 </div>
-<div class="row">
-    <div class="d-flex flex-row flex-wrap row-cols-1">
-        <div class="col" style="border: solid">
-            {% for offer in offers %}
-                {{ offer.name }}
-                {{ offer.description}}
-                <form action="{% url 'cart_add' offer_id=offer.pk %}" method='post'>
-                    {{ cart_product_form.quantity }}
-                    {% csrf_token %}
-                    <button type='submit'>Add to cart</button>
-                </form>
-            {% endfor %}
-        </div>
-    </div>
+    <div class="d-flex flex-row flex-wrap" style="margin-left: 10rem; margin-right: 10rem">
+    <table class="table table-bordered table-sm my-5" style="border: 2px solid #3f96c9; box-shadow: 0 0 5px 0 #000000">
+        <thead>
+            <tr style="background: rgb(249, 249, 247);">
+                <th scope="col" class="col-sm-2" style="text-align: center; border-right: 1px solid #a1a1a0">
+                    <strong>Код</strong>
+                </th>
+                <th scope="col" class="col-sm-8" style="text-align: left; border-right: 1px solid #a1a1a0">
+                    <strong>Описание</strong>
+                </th>
+                <th scope="col" class="col-sm-2">
+                    Количество
+                </th>
+            </tr>
+        </thead>
+        <tbody class="table-group-divider">
+        {% for offer in offers %}
+            <tr>
+                <td style="vertical-align: middle; text-align: center; border-top: 1px solid #a1a1a0; border-bottom: 1px solid #a1a1a0; border-right: 1px solid #a1a1a0;">
+                    {{ offer.name }}
+                </td>
+                <td style="vertical-align: middle; text-align: left; border-top: 1px solid #a1a1a0; border-left: 1px solid #a1a1a0; border-right: 1px solid #a1a1a0;">
+                    {{ offer.description}}
+                </td>
+                <td style="vertical-align: middle; text-align: left; border-top: 1px solid #a1a1a0; border-left: 1px solid #a1a1a0;">
+                    <form action="{% url 'cart_add' offer_id=offer.pk %}" method='post'>
+                        {% csrf_token %}
+                        <div class="input-group w-auto">
+                            <input  class="form-control" type="number" name="quantity" min="1" required="" id="id_quantity">
+                            <button class="btn btn-primary" type="submit" value="">Add to cart</button>
+                        </div>
+                    </form>
+
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
 </div>
+
+<script>
+        const thumbnails = document.querySelector('.thumbnails');
+        const prevControl = document.getElementById('prevControl');
+        const nextControl = document.getElementById('nextControl');
+        let currentOffset = -200;
+
+        function changeImage(src) {
+            document.getElementById('mainImage').src = src;
+        }
+
+        function moveImagesLeft(){
+            const thumbnailImages = document.querySelectorAll('.thumbnails img');
+            const itemToRemove = thumbnailImages[0]
+            thumbnails.appendChild(itemToRemove)
+            itemToRemove.remove
+        }
+
+        function moveImagesRight(){
+            const thumbnailImages = document.querySelectorAll('.thumbnails img');
+            const itemToRemove = thumbnailImages[thumbnailImages.length - 1]
+            const firstItem = thumbnailImages[0]
+            thumbnails.insertBefore(itemToRemove, firstItem)
+            itemToRemove.remove
+        }
+
+        function updateCarousel(direction) {
+            if (direction === 'next') {
+                moveImagesLeft()
+            } else if (direction === 'prev') {
+                moveImagesRight()
+            }
+        }
+
+        thumbnails.style.transform = `translateX(${currentOffset}px)`;
+
+        prevControl.addEventListener('click', () => updateCarousel('prev'));
+        nextControl.addEventListener('click', () => updateCarousel('next'));
+    </script>
 
 {% endblock %}

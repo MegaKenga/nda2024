@@ -80,7 +80,7 @@ class OfferView(TemplateView):
         context['images'] = ModelImage.objects.filter(category=category.id)
         context['certificates'] = ModelFile.objects.filter(category=category.id)
         context['breadcrumbs'] = breadcrumbs_path(category)
-        context['cart_product_form'] = CartAddProductForm()
+        # context['cart_product_form'] = CartAddProductForm()
         return context
 
 

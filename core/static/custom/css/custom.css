@@ -57,3 +57,21 @@
         min-height: 105px;
     }
 }
+
+
+.thumbnail-carousel {
+    display: flex;
+    overflow: hidden;
+}
+.thumbnail-carousel .thumbnails {
+    display: flex;
+    transition: transform 0.3s ease-in-out;
+}
+.thumbnail-carousel img {
+    max-height: 100px;
+    cursor: pointer;
+}
+.selected-image img {
+    width: 100%;
+    height: auto;
+}
