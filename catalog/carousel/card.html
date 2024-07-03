@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Card</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .thumbnail-carousel {
+            display: flex;
+            overflow: hidden;
+        }
+        .thumbnail-carousel .thumbnails {
+            display: flex;
+            transition: transform 0.3s ease-in-out;
+        }
+        .thumbnail-carousel img {
+            max-height: 100px;
+            cursor: pointer;
+        }
+        .selected-image img {
+            width: 100%;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="selected-image">
+                    <img id="mainImage" src="img1.jpg" alt="Product Image">
+                </div>
+                <div class="thumbnail-carousel carousel">
+                    <a class="carousel-control-prev" role="button" id="prevControl">
+                      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                      <span class="sr-only">Previous</span>
+                    </a>
+                    <a class="carousel-control-next" role="button" id="nextControl">
+                      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                      <span class="sr-only">Next</span>
+                    </a>
+                    <div class="thumbnails">
+                        <img src="img1.jpg" alt="Thumbnail 1" onclick="changeImage(this.src)">
+                        <img src="img2.jpg" alt="Thumbnail 2" onclick="changeImage(this.src)">
+                        <img src="img3.jpg" alt="Thumbnail 3" onclick="changeImage(this.src)">
+                        <img src="img4.jpg" alt="Thumbnail 4" onclick="changeImage(this.src)">
+                        <img src="img5.jpg" alt="Thumbnail 5" onclick="changeImage(this.src)">
+                        <img src="img6.png" alt="Thumbnail 6" onclick="changeImage(this.src)">
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <h3>Product Name</h3>
+                <p>Some product description goes here it can include....</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const thumbnails = document.querySelector('.thumbnails');
+        const prevControl = document.getElementById('prevControl');
+        const nextControl = document.getElementById('nextControl');
+        let currentOffset = -200;
+
+        function changeImage(src) {
+            document.getElementById('mainImage').src = src;
+        }
+
+        function moveImagesLeft(){
+            const thumbnailImages = document.querySelectorAll('.thumbnails img');
+            const itemToRemove = thumbnailImages[0]
+            thumbnails.appendChild(itemToRemove)
+            itemToRemove.remove
+        }
+
+        function moveImagesRight(){
+            const thumbnailImages = document.querySelectorAll('.thumbnails img');
+            const itemToRemove = thumbnailImages[thumbnailImages.length - 1]
+            const firstItem = thumbnailImages[0]
+            thumbnails.insertBefore(itemToRemove, firstItem)
+            itemToRemove.remove
+        }
+
+        function updateCarousel(direction) {
+            if (direction === 'next') {
+                moveImagesLeft()
+            } else if (direction === 'prev') {
+                moveImagesRight()
+            }
+        }
+
+        thumbnails.style.transform = `translateX(${currentOffset}px)`;
+
+        prevControl.addEventListener('click', () => updateCarousel('prev'));
+        nextControl.addEventListener('click', () => updateCarousel('next'));
+    </script>
+</body>
+</html>
