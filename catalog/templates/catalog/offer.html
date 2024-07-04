@@ -105,7 +105,11 @@
         const thumbnails = document.querySelector('.thumbnails');
         const prevControl = document.getElementById('prevControl');
         const nextControl = document.getElementById('nextControl');
-        let currentOffset = -200;
+        const thumbnailsDivWidth = 600;
+        const thumbnailWidth = 200;
+        const thumbnailsWidth = thumbnailWidth * document.querySelectorAll('.thumbnails img').length
+        const currentOffset = (thumbnailsDivWidth - thumbnailsWidth) / 2;
+
 
         function changeImage(src) {
             document.getElementById('mainImage').src = src;
@@ -135,6 +139,7 @@
         }
 
         thumbnails.style.transform = `translateX(${currentOffset}px)`;
+        console.log('currentOffset', currentOffset)
 
         prevControl.addEventListener('click', () => updateCarousel('prev'));
         nextControl.addEventListener('click', () => updateCarousel('next'));
