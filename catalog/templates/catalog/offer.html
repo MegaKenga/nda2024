@@ -12,47 +12,26 @@
 
 <div class="d-flex flex-row flex-wrap" style="padding-left: 2rem; padding-right: 2rem">
     <div class="row row-cols-2">
-{#        <div id="carouselOffer" class="col-sm-5 carousel carousel-dark slide" data-bs-ride="carousel" style="height: 500px">#}
-{#            <div class="carousel-inner">#}
-{#                {% for image in images %}#}
-{#                    <div class="carousel-item {% if forloop.counter == 1 %}active{% endif %} text-center">#}
-{#                        <img src="{{ image }}" height="500" width="500" alt="...">#}
-{#                    </div>#}
-{#                {% endfor %}#}
-{#            </div>#}
-{#            <button class="carousel-control-prev" type="button" data-bs-target="#carouselOffer" data-bs-slide="prev">#}
-{#                <span class="carousel-control-prev-icon" aria-hidden="true"></span>#}
-{#                <span class="visually-hidden">Previous</span>#}
-{#            </button>#}
-{#            <button class="carousel-control-next" type="button" data-bs-target="#carouselOffer" data-bs-slide="next">#}
-{#                <span class="carousel-control-next-icon" aria-hidden="true"></span>#}
-{#                <span class="visually-hidden">Next</span>#}
-{#            </button>#}
-{#        </div>#}
-<div class="container mt-5">
-`    <div class="row">
-        <div class="col-md-6">
-            <div class="selected-image">
-                <img id="mainImage" src="{{ images.all.0 }}" alt="Product Image">
+        <div class="col-sm-5">
+            <div class="selected-image" style="text-align: center">
+                <img id="mainImage" src="{{ images.all.0 }}" style="width: 500px; height: 500px">
             </div>
             <div class="thumbnail-carousel carousel">
-                <a class="carousel-control-prev" role="button" id="prevControl">
-                  <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                  <span class="sr-only">Previous</span>
+                <a class="carousel-control-prev" type="button" id="prevControl">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Previous</span>
                 </a>
-                <a class="carousel-control-next" role="button" id="nextControl">
-                  <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                  <span class="sr-only">Next</span>
+                <a class="carousel-control-next" type="button" id="nextControl">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Next</span>
                 </a>
-                <div class="thumbnails">
+                <div class="thumbnails" style="margin: auto">
                     {% for image in images %}
-                    <img src="{{ image }}" alt="Thumbnail 1" onclick="changeImage(this.src)">
+                        <img src="{{ image }}" style="width: 150px; height: 150px" onclick="changeImage(this.src)">
                     {% endfor %}
                 </div>
             </div>
         </div>
-    </div>
-</div>`
         <div class="col-sm-7">
             <div>
                 <h1>{{ category.name }}</h1>
@@ -61,14 +40,15 @@
         </div>
     </div>
 </div>
-    <div class="d-flex flex-row flex-wrap" style="margin-left: 10rem; margin-right: 10rem">
+
+<div class="d-flex flex-row flex-wrap" style="margin-left: 10rem; margin-right: 10rem">
     <table class="table table-bordered table-sm my-5" style="border: 2px solid #3f96c9; box-shadow: 0 0 5px 0 #000000">
         <thead>
             <tr style="background: rgb(249, 249, 247);">
-                <th scope="col" class="col-sm-2" style="text-align: center; border-right: 1px solid #a1a1a0">
+                <th scope="col" class="col-sm-1" style="text-align: center; border-right: 1px solid #a1a1a0">
                     <strong>Код</strong>
                 </th>
-                <th scope="col" class="col-sm-8" style="text-align: left; border-right: 1px solid #a1a1a0">
+                <th scope="col" class="col-sm-9" style="text-align: left; border-right: 1px solid #a1a1a0">
                     <strong>Описание</strong>
                 </th>
                 <th scope="col" class="col-sm-2">
@@ -88,8 +68,8 @@
                 <td style="vertical-align: middle; text-align: left; border-top: 1px solid #a1a1a0; border-left: 1px solid #a1a1a0;">
                     <form action="{% url 'cart_add' offer_id=offer.pk %}" method='post'>
                         {% csrf_token %}
-                        <div class="input-group w-auto">
-                            <input  class="form-control" type="number" name="quantity" min="1" required="" id="id_quantity">
+                        <div class="input-group" style="justify-content: space-evenly">
+                            <input class="form-control" type="number" name="quantity" min="1" required="" id="id_quantity">
                             <button class="btn btn-primary" type="submit" value="">Add to cart</button>
                         </div>
                     </form>
@@ -102,47 +82,47 @@
 </div>
 
 <script>
-        const thumbnails = document.querySelector('.thumbnails');
-        const prevControl = document.getElementById('prevControl');
-        const nextControl = document.getElementById('nextControl');
-        const thumbnailsDivWidth = 600;
-        const thumbnailWidth = 200;
-        const thumbnailsWidth = thumbnailWidth * document.querySelectorAll('.thumbnails img').length
-        const currentOffset = (thumbnailsDivWidth - thumbnailsWidth) / 2;
+    const thumbnails = document.querySelector('.thumbnails');
+    const prevControl = document.getElementById('prevControl');
+    const nextControl = document.getElementById('nextControl');
+    const thumbnailsDivWidth = 600;
+    const thumbnailWidth = 200;
+    const thumbnailsWidth = thumbnailWidth * document.querySelectorAll('.thumbnails img').length
+    const currentOffset = (thumbnailsDivWidth - thumbnailsWidth) / 2;
 
 
-        function changeImage(src) {
-            document.getElementById('mainImage').src = src;
+    function changeImage(src) {
+        document.getElementById('mainImage').src = src;
+    }
+
+    function moveImagesLeft(){
+        const thumbnailImages = document.querySelectorAll('.thumbnails img');
+        const itemToRemove = thumbnailImages[0]
+        thumbnails.appendChild(itemToRemove)
+        itemToRemove.remove
+    }
+
+    function moveImagesRight(){
+        const thumbnailImages = document.querySelectorAll('.thumbnails img');
+        const itemToRemove = thumbnailImages[thumbnailImages.length - 1]
+        const firstItem = thumbnailImages[0]
+        thumbnails.insertBefore(itemToRemove, firstItem)
+        itemToRemove.remove
+    }
+
+    function updateCarousel(direction) {
+        if (direction === 'next') {
+            moveImagesLeft()
+        } else if (direction === 'prev') {
+            moveImagesRight()
         }
+    }
 
-        function moveImagesLeft(){
-            const thumbnailImages = document.querySelectorAll('.thumbnails img');
-            const itemToRemove = thumbnailImages[0]
-            thumbnails.appendChild(itemToRemove)
-            itemToRemove.remove
-        }
+    thumbnails.style.transform = `translateX(${currentOffset}px)`;
+    console.log('currentOffset', currentOffset)
 
-        function moveImagesRight(){
-            const thumbnailImages = document.querySelectorAll('.thumbnails img');
-            const itemToRemove = thumbnailImages[thumbnailImages.length - 1]
-            const firstItem = thumbnailImages[0]
-            thumbnails.insertBefore(itemToRemove, firstItem)
-            itemToRemove.remove
-        }
-
-        function updateCarousel(direction) {
-            if (direction === 'next') {
-                moveImagesLeft()
-            } else if (direction === 'prev') {
-                moveImagesRight()
-            }
-        }
-
-        thumbnails.style.transform = `translateX(${currentOffset}px)`;
-        console.log('currentOffset', currentOffset)
-
-        prevControl.addEventListener('click', () => updateCarousel('prev'));
-        nextControl.addEventListener('click', () => updateCarousel('next'));
-    </script>
+    prevControl.addEventListener('click', () => updateCarousel('prev'));
+    nextControl.addEventListener('click', () => updateCarousel('next'));
+</script>
 
 {% endblock %}

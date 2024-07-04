@@ -68,10 +68,52 @@
     transition: transform 0.3s ease-in-out;
 }
 .thumbnail-carousel img {
-    max-height: 100px;
+    /*max-height: 100px;*/
     cursor: pointer;
 }
 .selected-image img {
     width: 100%;
     height: auto;
+}
+
+@media (max-width: 4000px) {
+    .main-container {
+        margin-right: 18rem;
+        margin-left: 18rem;
+    }
+}
+
+@media (max-width: 2300px) {
+    .main-container {
+        margin-right: 15rem;
+        margin-left: 15rem;
+    }
+}
+
+@media (max-width: 1800px) {
+    .main-container {
+        margin-right: 12rem;
+        margin-left: 12rem;
+    }
+}
+
+@media (max-width: 1500px) {
+    .main-container {
+        margin-right: 7rem;
+        margin-left: 7rem;
+    }
+}
+
+@media (max-width: 1500px) {
+    .main-container {
+        margin-right: 5rem;
+        margin-left: 5rem;
+    }
+}
+
+@media (max-width: 999px) {
+    .main-container {
+        margin-right: 2rem;
+        margin-left: 2rem;
+    }
 }
