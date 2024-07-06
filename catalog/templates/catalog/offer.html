@@ -1,5 +1,6 @@
 {% extends 'core/base.html' %}
 {% load static %}
+{% load thumbnail %}
 {% block title %}<title>{{ category.name }}</title>{% endblock %}
 {% block header %}
     {{ form.media }} # Required for styling/js to make ckeditor5 work
@@ -9,48 +10,47 @@
 {% include 'catalog/components/banner.html' %}
 
 <div class="main-container">
-
     {% include 'catalog/components/breadcrumbs.html' %}
-
-    <div class="d-flex flex-row flex-wrap carousel-dark">
-        <div class="row row-cols-2">
-            <div class="col-sm-5">
-                <div class="selected-image" style="text-align: center">
-                    <img id="mainImage" src="{{ images.all.0 }}" style="width: 500px; height: 500px">
-                </div>
-                <div class="thumbnail-carousel carousel">
-                    <button class="carousel-control-prev" type="button" id="prevControl">
-                        <span class="carousel-control-prev-icon" aria-hidden="true" ></span>
-                        <span class="visually-hidden">Previous</span>
-                    </button>
-                    <button class="carousel-control-next" type="button" id="nextControl">
-                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Next</span>
-                    </button>
-                    <div class="thumbnails" style="margin: auto">
-                        {% for image in images %}
-                            <img src="{{ image }}" style="width: 150px; height: 150px" onclick="changeImage(this.src)">
-                        {% endfor %}
-                    </div>
-                </div>
+    <div class="row">
+        <div class="col-md-5">
+            <div class="d-flex justify-content-center align-items-center">
+                {% thumbnail images.all.0.image "450x450" as im %}
+                    <img id="mainImage" src="{{ im.url }}" class="img-fluid w-auto" style="height: 450px;">
+                {% endthumbnail %}
             </div>
-            <div class="col-sm-7">
-                <div>
-                    <h1>{{ category.name }}</h1>
-                    <p>{{ category.description|safe }}</p>
+            <div class="thumbnail-carousel carousel carousel-dark">
+                <a class="carousel-control-prev" type="button" id="prevControl">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </a>
+                <a class="carousel-control-next" type="button" id="nextControl">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </a>
+                <div class="thumbnails" style="margin: auto">
+                    {% for image in images %}
+                        {% thumbnail image.image "450x450" as im %}
+                            <img src="{{ im.url }}" class="p-2 w-auto" style="height: 150px; " onclick="changeImage(this.src)">
+                        {% endthumbnail %}
+                    {% endfor %}
                 </div>
             </div>
         </div>
+        <div class="col-md-7 d-flex flex-column justify-content-start">
+            <h1>{{ category.name }}</h1>
+            <p>{{ category.description|safe }}</p>
+            </div>
     </div>
+
 
     <div class="d-flex flex-row flex-wrap">
         <table class="table table-bordered table-sm my-5" style="border: 2px solid #3f96c9; box-shadow: 0 0 5px 0 #000000">
             <thead>
                 <tr style="background: rgb(249, 249, 247);">
-                    <th scope="col" class="col-sm-1" style="text-align: center; border-right: 1px solid #a1a1a0">
+                    <th scope="col" class="col-sm-1 text-center" style="border-right: 1px solid #a1a1a0">
                         <strong>Код</strong>
                     </th>
-                    <th scope="col" class="col-sm-9" style="text-align: left; border-right: 1px solid #a1a1a0">
+                    <th scope="col" class="col-sm-9 text-start" style="border-right: 1px solid #a1a1a0">
                         <strong>Описание</strong>
                     </th>
                     <th scope="col" class="col-sm-2">
@@ -61,16 +61,16 @@
             <tbody class="table-group-divider">
             {% for offer in offers %}
                 <tr>
-                    <td style="vertical-align: middle; text-align: center; border-top: 1px solid #a1a1a0; border-bottom: 1px solid #a1a1a0; border-right: 1px solid #a1a1a0;">
+                    <td class="text-center align-middle" style="border-top: 1px solid #a1a1a0; border-bottom: 1px solid #a1a1a0; border-right: 1px solid #a1a1a0;">
                         {{ offer.name }}
                     </td>
-                    <td style="vertical-align: middle; text-align: left; border-top: 1px solid #a1a1a0; border-left: 1px solid #a1a1a0; border-right: 1px solid #a1a1a0;">
+                    <td class="text-start align-middle" style="border-top: 1px solid #a1a1a0; border-left: 1px solid #a1a1a0; border-right: 1px solid #a1a1a0;">
                         {{ offer.description}}
                     </td>
-                    <td style="vertical-align: middle; text-align: left; border-top: 1px solid #a1a1a0; border-left: 1px solid #a1a1a0;">
+                    <td class="text-start align-middle" style="border-top: 1px solid #a1a1a0; border-left: 1px solid #a1a1a0;">
                         <form action="{% url 'cart_add' offer_id=offer.pk %}" method='post'>
                             {% csrf_token %}
-                            <div class="input-group" style="justify-content: space-evenly">
+                            <div class="input-group justify-content-evenly">
                                 <input class="form-control" type="number" name="quantity" min="1" required="" id="id_quantity">
                                 <button class="btn btn-primary" type="submit" value="">Add to cart</button>
                             </div>
@@ -89,10 +89,12 @@
     const thumbnails = document.querySelector('.thumbnails');
     const prevControl = document.getElementById('prevControl');
     const nextControl = document.getElementById('nextControl');
-    const thumbnailsDivWidth = 600;
-    const thumbnailWidth = 200;
+    const thumbnailsDivWidth = 526;
+    const thumbnailWidth = 150;
     const thumbnailsWidth = thumbnailWidth * document.querySelectorAll('.thumbnails img').length
-    const currentOffset = (thumbnailsDivWidth - thumbnailsWidth) / 2;
+    const currentOffset = thumbnailsDivWidth < thumbnailsWidth
+        ? (thumbnailsDivWidth - thumbnailsWidth) / 2
+        :0 ;
 
 
     function changeImage(src) {
@@ -123,7 +125,6 @@
     }
 
     thumbnails.style.transform = `translateX(${currentOffset}px)`;
-    console.log('currentOffset', currentOffset)
 
     prevControl.addEventListener('click', () => updateCarousel('prev'));
     nextControl.addEventListener('click', () => updateCarousel('next'));
