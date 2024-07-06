@@ -1,5 +1,6 @@
 {% extends 'core/base.html' %}
 {% load static %}
+{% load thumbnail %}
 {% block title %}<title>{{ category.name }}</title>{% endblock %}
 {% block header %}
     {{ form.media }} # Required for styling/js to make ckeditor5 work
@@ -8,38 +9,42 @@
 
 {% include 'catalog/components/banner.html' %}
 
-{% include 'catalog/components/breadcrumbs.html' %}
-
-<div class="d-flex flex-row flex-wrap" style="padding-left: 2rem; padding-right: 2rem">
-    <div class="row row-cols-2">
-        <div class="col-sm-5">
-            <div class="selected-image" style="text-align: center">
-                <img id="mainImage" src="{{ images.all.0 }}" style="width: 500px; height: 500px">
+<div class="main-container">
+    {% include 'catalog/components/breadcrumbs.html' %}
+    <div class="row">
+        <div class="col-md-5">
+            <div class="d-flex justify-content-center align-items-center">
+                {% thumbnail images.all.0.image "450x450" crop="center" as im %}
+                    <img id="mainImage" src="{{ im.url }}" class="img-fluid" style="height: 450px; width: auto;">
+                {% endthumbnail %}
             </div>
-            <div class="thumbnail-carousel carousel">
+            <div class="thumbnail-carousel carousel carousel-dark">
                 <a class="carousel-control-prev" type="button" id="prevControl">
                     <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                    <span class="sr-only">Previous</span>
+                    <span class="visually-hidden">Previous</span>
                 </a>
                 <a class="carousel-control-next" type="button" id="nextControl">
                     <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                    <span class="sr-only">Next</span>
+                    <span class="visually-hidden">Next</span>
                 </a>
                 <div class="thumbnails" style="margin: auto">
                     {% for image in images %}
-                        <img src="{{ image }}" style="width: 150px; height: 150px" onclick="changeImage(this.src)">
+                        {% thumbnail image.image "450x450" crop="center" as im %}
+                            <img src="{{ im.url }}" class="p-2" style="height: 150px; width: auto;" onclick="changeImage(this.src)">
+                        {% endthumbnail %}
                     {% endfor %}
                 </div>
             </div>
         </div>
-        <div class="col-sm-7">
-            <div>
-                <h1>{{ category.name }}</h1>
-                <p>{{ category.description|safe }}</p>
-            </div>
+        <div class="col-md-7 d-flex flex-column justify-content-start">
+            <h1>{{ category.name }}</h1>
+            <p>{{ category.description|safe }}</p>
         </div>
     </div>
 </div>
+
+<div><hr/></div>
+
 
 <div class="d-flex flex-row flex-wrap" style="margin-left: 10rem; margin-right: 10rem">
     <table class="table table-bordered table-sm my-5" style="border: 2px solid #3f96c9; box-shadow: 0 0 5px 0 #000000">
@@ -85,12 +90,13 @@
     const thumbnails = document.querySelector('.thumbnails');
     const prevControl = document.getElementById('prevControl');
     const nextControl = document.getElementById('nextControl');
-    const thumbnailsDivWidth = 600;
-    const thumbnailWidth = 200;
+    const thumbnailsDivWidth = 526;
+    const thumbnailWidth = 150;
     const thumbnailsWidth = thumbnailWidth * document.querySelectorAll('.thumbnails img').length
-    const currentOffset = (thumbnailsDivWidth - thumbnailsWidth) / 2;
-
-
+    const currentOffset = thumbnailsDivWidth < thumbnailsWidth 
+        ? (thumbnailsDivWidth - thumbnailsWidth) / 2
+        :0 ;
+    
     function changeImage(src) {
         document.getElementById('mainImage').src = src;
     }
@@ -119,8 +125,6 @@
     }
 
     thumbnails.style.transform = `translateX(${currentOffset}px)`;
-    console.log('currentOffset', currentOffset)
-
     prevControl.addEventListener('click', () => updateCarousel('prev'));
     nextControl.addEventListener('click', () => updateCarousel('next'));
 </script>
