@@ -58,7 +58,6 @@
     }
 }
 
-
 .thumbnail-carousel {
     display: flex;
     overflow: hidden;
@@ -111,4 +110,24 @@
         margin-right: 2rem;
         margin-left: 2rem;
     }
+}
+
+.offer-carousel-next {
+      display: inline-block;
+  width: 2rem;
+  height: 2rem;
+  background-repeat: no-repeat;
+  background-position: 50%;
+  background-size: 100% 100%;
+    background-image: url('icons8-next-page-32.png');
+}
+
+.offer-carousel-previous {
+      display: inline-block;
+  width: 2rem;
+  height: 2rem;
+  background-repeat: no-repeat;
+  background-position: 50%;
+  background-size: 100% 100%;
+    background-image: url('icons8-back-to-32.png');
 }

@@ -1,0 +1,20 @@
+<table class="cart">
+    {% if cart_items_count > 0 %}
+        <thead>
+            <tr>
+                <th>Наименование</th>
+                <th>Количество</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for offer in offers_in_cart %}
+            <tr>
+                <td>{{ offer.name }}</td>
+                <td>{{ offer.quantity }}</td>
+                <td><a href="{% url "cart_remove" offer.id %}">Удалить</a></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    {% endif %}
+</table>
+
