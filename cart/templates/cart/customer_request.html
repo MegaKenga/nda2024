@@ -1,4 +1,4 @@
-<div class="cart">
+<div id="cart">
     <div>Позиций в запросе: {{ cart_items_count }}</div>
     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
         Отправить запрос
@@ -11,7 +11,9 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    {% include 'cart/cart_popup.html' %}
+                    {% if cart_items_count > 0 %}
+                        {% include 'cart/cart_popup.html' %}
+                    {% endif %}
                     {% include 'nda_email/contactform.html' %}
                 </div>
                 <div class="modal-footer">

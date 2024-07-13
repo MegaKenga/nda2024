@@ -2,6 +2,7 @@ from django.core.exceptions import ValidationError
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.http import require_POST
 from django.contrib import messages
+from django.http import HttpResponseRedirect
 
 from catalog.models import Offer
 from cart.forms import CartAddProductForm
@@ -51,7 +52,7 @@ def cart_add(request, offer_id):
     else:
         cart[offer_id]['quantity'] += item_add_form_data['quantity']
     save_cart(request)
-    return redirect('offer', brand_slug=offer.category.brand.slug, category_slug=offer.category.slug)
+    return render(request, 'cart/customer_request.html')
 
 
 def cart_remove(request, offer_id):
@@ -61,13 +62,13 @@ def cart_remove(request, offer_id):
     if offer_id in cart:
         del cart[offer_id]
     save_cart(request)
-    return redirect('cart_detail')
+    return render(request, 'cart/cart_popup.html')
 
 
 def cart_clear(request):
     del request.session[CART_SESSION_ID]
     request.session.modified = True
-    return redirect('cart_detail')
+    return redirect('/')
 
 
 def get_cart_offers(request):
@@ -85,6 +86,7 @@ def get_cart_offers(request):
 
 
 def cart_detail(request):
+    offers = get_cart_offers(request)
     if request.method == 'POST':
         form = ContactForm(request.POST)
         token = request.POST.get('smart-token')
@@ -92,20 +94,19 @@ def cart_detail(request):
         if not yandex_captcha_validation(token, client_ip):
             messages.error(request, 'Докажите, что вы не робот')
             return render(request,
-                          'cart/detail.html',
-                          {'offers': get_cart_offers(request), 'form': form})
+                          'cart/customer_request.html',
+                          {'offers': offers, 'form': form})
         if not form.is_valid():
             return render(request,
-                          'cart/detail.html',
-                          {'offers': get_cart_offers(request), 'form': form})
-        offers = get_cart_offers(request)
+                          'cart/customer_request.html',
+                          {'offers': offers, 'form': form})
         EmailSender.send_messages(request, offers)
         cart_clear(request)
         messages.success(request, 'Запрос успешно отправлен')
-        return redirect('home')
+        return HttpResponseRedirect(request.path_info)
     form = ContactForm()
     offers = get_cart_offers(request)
-    return render(request, 'cart/detail.html', {'offers': offers, 'form': form})
+    return render(request, 'cart/customer_request.html', {'offers': offers, 'form': form})
 
 
 class ContactSuccessView(TemplateView):

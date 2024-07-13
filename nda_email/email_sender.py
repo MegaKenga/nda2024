@@ -20,16 +20,28 @@ class EmailSender:
     @classmethod
     def send_messages(cls, request, offers):
         customer_email, customer_phone, customer_message, file = cls.get_message_data(request)
-        html_message_for_nda = render_to_string(
-            'cart/message_for_nda.html',
-            {'customer_message': customer_message, 'customer_email': customer_email,
-             'customer_phone': customer_phone, 'offers': offers}
-        )
-        html_message_for_customer = render_to_string(
-            'cart/message_for_customer.html',
-            {'customer_message': customer_message, 'customer_email': customer_email,
-             'customer_phone': customer_phone, 'offers': offers}
-        )
+        if offers != 0:
+            html_message_for_nda = render_to_string(
+                'cart/message_for_nda.html',
+                {'customer_message': customer_message, 'customer_email': customer_email,
+                 'customer_phone': customer_phone, 'offers': offers}
+            )
+            html_message_for_customer = render_to_string(
+                'cart/message_for_customer.html',
+                {'customer_message': customer_message, 'customer_email': customer_email,
+                 'customer_phone': customer_phone, 'offers': offers}
+            )
+        else:
+            html_message_for_nda = render_to_string(
+                'cart/message_for_nda.html',
+                {'customer_message': customer_message, 'customer_email': customer_email,
+                 'customer_phone': customer_phone}
+            )
+            html_message_for_customer = render_to_string(
+                'cart/message_for_customer.html',
+                {'customer_message': customer_message, 'customer_email': customer_email,
+                 'customer_phone': customer_phone}
+            )
         storaged_file = None
         if file is not None:
             storaged_file = temporary_storage.save(file.name, file)

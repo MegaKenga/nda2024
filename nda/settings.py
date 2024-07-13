@@ -53,7 +53,7 @@ INSTALLED_APPS = [
     'django_celery_results',
     'core.apps.CoreConfig',
     'sorl.thumbnail',
-    'tinymce'
+    'tinymce',
 ]
 
 MIDDLEWARE = [
@@ -119,8 +119,8 @@ DATABASES = {
 
 CACHES = {
     "default": {
-        # "BACKEND": "django.core.cache.backends.redis.RedisCache",
-        "BACKEND": 'django.core.cache.backends.dummy.DummyCache',
+        "BACKEND": "django.core.cache.backends.redis.RedisCache",
+        # "BACKEND": 'django.core.cache.backends.dummy.DummyCache',
         "LOCATION": "redis://127.0.0.1:6379",
     }
 }
