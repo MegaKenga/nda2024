@@ -11,7 +11,7 @@
             <tr>
                 <td>{{ offer.name }}</td>
                 <td>{{ offer.quantity }}</td>
-                <td hx-confirm="Вы уверены?" hx-target="#offers-table">
+                <td hx-confirm="Вы уверены?" hx-target="#cart">
                     <button class="btn btn-danger" hx-delete="{% url 'cart_remove' offer_id=offer.id %}">Удалить</button>
                 </td>
             </tr>
