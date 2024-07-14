@@ -1,19 +1,17 @@
 <div id="cart">
-    <div>Позиций в запросе: {{ cart_items_count }}</div>
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+    <div>Позиций в запросе: {{ offers_in_cart|length }}</div>
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#cartModal">
         Отправить запрос
     </button>
-    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="cartModal" tabindex="-1" aria-labelledby="cartModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">Ваш запрос</h1>
+                    <h1 class="modal-title fs-5" id="cartModalLabel">Ваш запрос</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    {% if cart_items_count > 0 %}
-                        {% include 'cart/cart_popup.html' %}
-                    {% endif %}
+                    {% include 'cart/cart_popup.html' %}
                     {% include 'nda_email/contactform.html' %}
                 </div>
                 <div class="modal-footer">

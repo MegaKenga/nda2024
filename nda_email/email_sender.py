@@ -20,28 +20,20 @@ class EmailSender:
     @classmethod
     def send_messages(cls, request, offers):
         customer_email, customer_phone, customer_message, file = cls.get_message_data(request)
+        context = {
+            'customer_message': customer_message,
+            'customer_email': customer_email,
+            'customer_phone': customer_phone,
+            }
         if offers != 0:
-            html_message_for_nda = render_to_string(
+            context['offers'] = offers
+        html_message_for_nda = render_to_string(
                 'cart/message_for_nda.html',
-                {'customer_message': customer_message, 'customer_email': customer_email,
-                 'customer_phone': customer_phone, 'offers': offers}
+                context
             )
-            html_message_for_customer = render_to_string(
+        html_message_for_customer = render_to_string(
                 'cart/message_for_customer.html',
-                {'customer_message': customer_message, 'customer_email': customer_email,
-                 'customer_phone': customer_phone, 'offers': offers}
-            )
-        else:
-            html_message_for_nda = render_to_string(
-                'cart/message_for_nda.html',
-                {'customer_message': customer_message, 'customer_email': customer_email,
-                 'customer_phone': customer_phone}
-            )
-            html_message_for_customer = render_to_string(
-                'cart/message_for_customer.html',
-                {'customer_message': customer_message, 'customer_email': customer_email,
-                 'customer_phone': customer_phone}
-            )
+                context)
         storaged_file = None
         if file is not None:
             storaged_file = temporary_storage.save(file.name, file)

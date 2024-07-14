@@ -33,9 +33,9 @@ def save_cart(request):
     return cart
 
 
-def items_count(request):
-    cart = get_cart(request)
-    return len(cart.keys())
+# def items_count(request):
+#     cart = get_cart(request)
+#     return len(cart.keys())
 
 
 @require_POST

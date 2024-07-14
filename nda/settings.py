@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
     'django_extensions',
     'catalog.apps.CatalogConfig',
     'files.apps.FilesConfig',
@@ -119,8 +120,8 @@ DATABASES = {
 
 CACHES = {
     "default": {
-        "BACKEND": "django.core.cache.backends.redis.RedisCache",
-        # "BACKEND": 'django.core.cache.backends.dummy.DummyCache',
+        # "BACKEND": "django.core.cache.backends.redis.RedisCache",
+        "BACKEND": 'django.core.cache.backends.dummy.DummyCache',
         "LOCATION": "redis://127.0.0.1:6379",
     }
 }
