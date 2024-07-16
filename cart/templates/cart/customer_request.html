@@ -1,5 +1,5 @@
 <div id="cart">
-    <div>Позиций в запросе: {{ offers_in_cart|length }}</div>
+    <div>Позиций в запросе: <span id="offers-in-cart-counter">{{ offers_in_cart|length }}</span></div>
     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#cartModal">
         Отправить запрос
     </button>

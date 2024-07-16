@@ -62,7 +62,7 @@ def cart_remove(request, offer_id):
     if offer_id in cart:
         del cart[offer_id]
     save_cart(request)
-    return render(request, 'cart/customer_request.html')
+    return render(request, 'cart/cart_popup.html')
 
 
 def cart_clear(request):

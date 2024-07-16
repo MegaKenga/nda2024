@@ -68,7 +68,7 @@
                         {{ offer.description}}
                     </td>
                     <td class="text-start align-middle" style="border-top: 1px solid #a1a1a0; border-left: 1px solid #a1a1a0;">
-                        <form hx-post="{% url 'cart_add' offer_id=offer.pk %}" hx-target="#cart">
+                        <form hx-post="{% url 'cart_add' offer_id=offer.pk %}" hx-target="#cart" hx-swap="outerHTML">
                             <div class="input-group justify-content-evenly">
                                 <input class="form-control" type="number" name="quantity" min="1" required="" id="id_quantity">
                                 <button class="btn btn-primary" type="submit" value="">Добавить</button>
@@ -86,6 +86,7 @@
 </div>
 
 <script>
+    // product photos carousel
     const thumbnails = document.querySelector('.thumbnails');
     const prevControl = document.getElementById('prevControl');
     const nextControl = document.getElementById('nextControl');
@@ -128,6 +129,21 @@
 
     prevControl.addEventListener('click', () => updateCarousel('prev'));
     nextControl.addEventListener('click', () => updateCarousel('next'));
+
+    // replace <span id="offers-in-cart-counter"> inner value with reduced one 
+    document.addEventListener('htmx:afterOnLoad', function(event) {
+        if (event?.detail?.requestConfig?.elt?.id !== "remove-offer-button") {
+            return
+        }
+        const counter = document.querySelector("#offers-in-cart-counter")
+        const currentCount = parseInt(counter.textContent, 10);
+    
+        if (!isNaN(currentCount) && currentCount > 0) {
+            counter.textContent = String(currentCount - 1);
+        }
+    });
+
+    
 </script>
 
 {% endblock %}
