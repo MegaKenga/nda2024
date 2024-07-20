@@ -1,11 +1,7 @@
-<div id="cart">
-    <div>Позиций в запросе: <span id="offers-in-cart-counter">{{ offers_in_cart|length }}</span></div>
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#cartModal">
-        Отправить запрос
-    </button>
-    <div class="modal fade" id="cartModal" tabindex="-1" aria-labelledby="cartModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
+<div id="cartModal">
+    <div  class="modal fade" tabindex="-1" aria-labelledby="cartModalLabel" aria-hidden="true">
+        <div  class="modal-dialog">
+            <div class="modal-content" hx-post="{{ request.path }}">
                 <div class="modal-header">
                     <h1 class="modal-title fs-5" id="cartModalLabel">Ваш запрос</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>

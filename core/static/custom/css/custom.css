@@ -52,9 +52,9 @@
     );
 }
 
-@media (max-width: 1100px) {
+@media (max-width: 1200px) {
     .text-height-media {
-        min-height: 105px;
+        min-height: 130px;
     }
 }
 

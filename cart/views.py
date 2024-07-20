@@ -2,7 +2,9 @@ from django.core.exceptions import ValidationError
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.http import require_POST
 from django.contrib import messages
-from django.http import HttpResponseRedirect
+from django.http import HttpResponse
+
+import json
 
 from catalog.models import Offer
 from cart.forms import CartAddProductForm
@@ -52,7 +54,7 @@ def cart_add(request, offer_id):
     else:
         cart[offer_id]['quantity'] += item_add_form_data['quantity']
     save_cart(request)
-    return render(request, 'cart/customer_request.html')
+    return render(request, 'cart/cart.html')
 
 
 def cart_remove(request, offer_id):
@@ -91,22 +93,37 @@ def cart_detail(request):
         form = ContactForm(request.POST)
         token = request.POST.get('smart-token')
         client_ip = get_client_ip(request)
-        if not yandex_captcha_validation(token, client_ip):
-            messages.error(request, 'Докажите, что вы не робот')
-            return render(request,
-                          'cart/customer_request.html',
-                          {'offers': offers, 'form': form})
-        if not form.is_valid():
-            return render(request,
-                          'cart/customer_request.html',
-                          {'offers': offers, 'form': form})
-        EmailSender.send_messages(request, offers)
-        cart_clear(request)
-        messages.success(request, 'Запрос успешно отправлен')
-        return HttpResponseRedirect(request.path_info)
-    form = ContactForm()
-    offers = get_cart_offers(request)
-    return render(request, 'cart/customer_request.html', {'offers': offers, 'form': form})
+        if form.is_valid() and yandex_captcha_validation(token, client_ip):
+            EmailSender.send_messages(request, offers)
+            cart_clear(request)
+            return HttpResponse(
+                status=204,
+                headers={
+                    'HX-Trigger': json.dumps({
+                        "bookListChanged": None,
+                        "showMessage": "Запрос отправлен"
+                    })
+                })
+        else:
+            return render(request, 'cart/customer_request.html', {'offers': offers, 'form': form})
+    else:
+
+        # if not yandex_captcha_validation(token, client_ip):
+        #     messages.error(request, 'Докажите, что вы не робот')
+        #     return render(request,
+        #                   'cart/customer_request.html',
+        #                   {'offers': offers, 'form': form})
+        # if not form.is_valid():
+        #     return render(request,
+        #                   'cart/customer_request.html',
+        #                   {'offers': offers, 'form': form})
+        # EmailSender.send_messages(request, offers)
+        # cart_clear(request)
+        # messages.success(request, 'Запрос успешно отправлен')
+        # return HttpResponseRedirect(request.path_info)
+        form = ContactForm()
+        offers = get_cart_offers(request)
+        return render(request, 'cart/customer_request.html', {'offers': offers, 'form': form})
 
 
 class ContactSuccessView(TemplateView):
