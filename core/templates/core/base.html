@@ -12,7 +12,7 @@
     <link rel="stylesheet" type="text/css" href="{% static 'custom/css/custom.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'custom/css/header.css' %}">
     <script src="{% static 'bootstrap/js/bootstrap.js' %}"></script>
-    <script src="{% static 'htmx/htmx.min.js' %}" defer></script>
+    <script src="{% static 'htmx/htmx.min.js' %}"></script>
 </head>
 {% include 'core/header.html' %}
 <body class="d-flex flex-column h-100" hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>

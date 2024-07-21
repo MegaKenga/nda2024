@@ -16,7 +16,7 @@ def get_client_ip(request):
 
 
 def yandex_captcha_validation(token, client_ip):
-    if len(token) == 0:
+    if not token or len(token) == 0:
         return False
     resp = requests.get(
         "https://captcha-api.yandex.ru/validate",

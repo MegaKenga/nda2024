@@ -1,4 +1,14 @@
-<form action="{% url 'cart_detail' %}" method="post" enctype="multipart/form-data">
+<form
+        id="cart_modal_form"
+        action="{% url 'cart_submit' %}"
+        method="post"
+        enctype="multipart/form-data"
+        hx-post="{% url 'cart_submit' %}"
+        hx-target="#cart_modal_form"
+        hx-swap="outerHTML"
+>
+
+
     <script src="https://smartcaptcha.yandexcloud.net/captcha.js" async defer></script>
     {% csrf_token %}
     <div>
@@ -21,14 +31,6 @@
             {% endif %}
     </div>
     <div>
-        {{ contact_form.company_details }}
-            {% if contact_form.company_details.errors %}
-                <span style="color: #FF4343">
-                    {{ contact_form.details.errors }}
-                </span>
-            {% endif %}
-    </div>
-    <div>
         {{ contact_form.message }}
             {% if contact_form.message.errors %}
                 <span style="color: #FF4343">
@@ -36,13 +38,17 @@
                 </span>
             {% endif %}
     </div>
-    <div
-        id="captcha-container"
-        class="smart-captcha"
-        data-sitekey="ysc1_sxny6cNZmnvhyJKrojDDLNxj0nvkGnTleldHzqEo9d9475ca"
-        data-hl="ru"
-        data-callback="callback"
-    >
+    <div>
+        {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                    <li class="{{ message.tags }}">
+                        <span style="color: #FF4343">
+                        {{ message|safe }}
+                        </span>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
     </div>
-    <button type="submit">Отправить запрос</button>
 </form>

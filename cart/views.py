@@ -68,9 +68,9 @@ def cart_remove(request, offer_id):
 
 
 def cart_clear(request):
-    del request.session[CART_SESSION_ID]
-    request.session.modified = True
-    return redirect('/')
+    if request.session.get(CART_SESSION_ID):
+        del request.session[CART_SESSION_ID]
+        request.session.modified = True
 
 
 def get_cart_offers(request):
@@ -88,6 +88,7 @@ def get_cart_offers(request):
 
 
 def cart_detail(request):
+    # todo: method not in use. Delete
     offers = get_cart_offers(request)
     if request.method == 'POST':
         form = ContactForm(request.POST)
@@ -125,6 +126,33 @@ def cart_detail(request):
         offers = get_cart_offers(request)
         return render(request, 'cart/customer_request.html', {'offers': offers, 'form': form})
 
+def cart_modal(request):
+    form = ContactForm()
+    offers = get_cart_offers(request)
+    return render(request, 'cart/cart_modal.html', {'offers': offers, 'form': form})
 
-class ContactSuccessView(TemplateView):
-    template_name = 'cart/message_success.html'
+@require_POST
+def cart_submit(request):
+    form = ContactForm(request.POST)
+    token = request.POST.get('smart-token')
+    client_ip = get_client_ip(request)
+    if not yandex_captcha_validation(token, client_ip):
+        return HttpResponse(
+            status=204,
+            headers={
+                'HX-Trigger': json.dumps({
+                    "showError": "Докажите что вы не робот"
+                })
+            })
+    if form.is_valid():
+        EmailSender.send_messages(request, offers)
+        # todo: try-catch -> show error through showMessage
+        cart_clear(request)
+        return HttpResponse(
+            status=204,
+            headers={
+                'HX-Trigger': json.dumps({
+                    "showMessage": "Запрос отправлен"
+                })
+            })
+    return render(request, 'nda_email/contactform.html', {'contact_form': form})

@@ -13,7 +13,7 @@ class ContactForm(forms.Form):
     phone_number = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Номер телефона'}))
     email = forms.CharField(required=True, widget=forms.TextInput(attrs={'placeholder': 'example@example.ru'}))
     company_details = forms.FileField(required=False, widget=forms.ClearableFileInput(
-        attrs={'multiple': False, 'allow_empty_file': True}))
+        attrs={'multiple': False, 'allow_empty_file': True, 'id': 'cart_modal_form'}))
     message = forms.CharField(required=False, widget=forms.Textarea(attrs={'placeholder': 'Ваше сообщение'}))
 
     def clean_phone_number(self):

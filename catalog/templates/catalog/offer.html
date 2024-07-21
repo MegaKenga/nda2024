@@ -68,7 +68,7 @@
                         {{ offer.description}}
                     </td>
                     <td class="text-start align-middle" style="border-top: 1px solid #a1a1a0; border-left: 1px solid #a1a1a0;">
-                        <form hx-post="{% url 'cart_add' offer_id=offer.pk %}" hx-target="#cart">
+                        <form hx-post="{% url 'cart_add' offer_id=offer.pk %}" hx-target="#cart" hx-swap="outerHTML">
                             <div class="input-group justify-content-evenly">
                                 <input class="form-control" type="number" name="quantity" min="1" required="" id="id_quantity">
                                 <button class="btn btn-primary" type="submit" value="">Добавить</button>
@@ -81,20 +81,44 @@
             </tbody>
         </table>
     </div>
-    {% include 'cart/cart.html' %}
-    {% include 'cart/customer_request.html' %}
+
+    <div id="cart">
+        <div>Позиций в запросе: <span id="offers-in-cart-counter">{{ offers_in_cart|length }}</span></div>
+        <button
+                type="button"
+                class="btn btn-primary"
+                hx-get="{% url 'cart_modal' %}"
+                hx-target="#dialog"
+        >
+            Отправить запрос
+        </button>
+    </div>
+
+    <!-- Placeholder for the modal -->
+    <div id="modal" class="modal fade">
+      <div id="dialog" class="modal-dialog" hx-target="this"></div>
+    </div>
 
     <!-- Empty toast to show the message -->
-        <div class="toast-container position-fixed top-0 end-0 p-3">
-            <div id="toast" class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive"
-            aria-atomic="true">
-                <div class="d-flex">
-                    <div id="toast-body" class="toast-body"></div>
-                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close">
-                    </button>
-                </div>
+
+    <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 2000;">
+        <div id="toast" class="toast align-items-center text-white border-0 bg-success" role="alert" aria-live="assertive"
+        aria-atomic="true">
+            <div class="d-flex">
+                <div id="toast-body" class="toast-body"></div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close">
+                </button>
             </div>
         </div>
+        <div id="toast-warning" class="toast align-items-center text-white border-0 bg-warning" role="alert" aria-live="assertive"
+        aria-atomic="true">
+            <div class="d-flex">
+                <div id="toast-warning-body" class="toast-body"></div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close">
+                </button>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script>
@@ -144,6 +168,7 @@
 
     // replace <span id="offers-in-cart-counter"> inner value with reduced one 
     document.addEventListener('htmx:afterOnLoad', function(event) {
+        console.log('event', event)
         if (event?.detail?.requestConfig?.elt?.id !== "remove-offer-button") {
             return
         }
@@ -154,19 +179,49 @@
             counter.textContent = String(currentCount - 1);
         }
     });
-</script>
 
-  <script>
-      ; (function () {
-        const toastElement = document.getElementById("toast")
-        const toastBody = document.getElementById("toast-body")
-        const toast = new bootstrap.Toast(toastElement, { delay: 2000 })
-
+        
+    ;(function() {
         htmx.on("showMessage", (e) => {
+          const toastElement = document.getElementById("toast")
+          const toastBody = document.getElementById("toast-body")
+          const toast = new bootstrap.Toast(toastElement, { delay: 2000 })
           toastBody.innerText = e.detail.value
           toast.show()
         })
-      })()
+
+        htmx.on("showError", (e) => {
+          const toastElement = document.getElementById("toast-warning")
+          const toastBody = document.getElementById("toast-warning-body")
+          const toast = new bootstrap.Toast(toastElement, { delay: 2000 })
+          toastBody.innerText = e.detail.value
+          toast.show()
+        })
+        
+        const modal = new bootstrap.Modal(document.getElementById("modal"))
+    
+        htmx.on("htmx:afterSwap", (e) => {
+          // Response targeting #dialog => show the modal
+          if (e.detail.target.id == "dialog") {
+            modal.show()
+          }
+        })
+    
+        htmx.on("htmx:beforeSwap", (e) => {
+        // Empty response targeting #cart_modal_form => hide the modal
+        if (e.detail.target.id == "cart_modal_form" && !e.detail.xhr.response) {
+          modal.hide()
+          e.detail.shouldSwap = false
+          const counter = document.querySelector("#offers-in-cart-counter")
+          counter.textContent = String(0);
+        }
+        })
+    
+        // Remove dialog content after hiding
+        htmx.on("hidden.bs.modal", () => {
+        document.getElementById("dialog").innerHTML = ""
+        })
+    })()
   </script>
 
 {% endblock %}
