@@ -15,7 +15,7 @@
     <script src="{% static 'htmx/htmx.min.js' %}"></script>
 </head>
 {% include 'core/header.html' %}
-<body class="d-flex flex-column h-100" hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+<body class="d-flex flex-column h-100">
 {% block content %}
 {% endblock %}
 </body>
