@@ -131,19 +131,18 @@ def cart_modal(request):
     offers = get_cart_offers(request)
     return render(request, 'cart/cart_modal.html', {'offers': offers, 'form': form})
 
+
 @require_POST
 def cart_submit(request):
     form = ContactForm(request.POST)
     token = request.POST.get('smart-token')
     client_ip = get_client_ip(request)
+    offers = get_cart_offers(request)
     if not yandex_captcha_validation(token, client_ip):
-        return HttpResponse(
-            status=204,
-            headers={
-                'HX-Trigger': json.dumps({
-                    "showError": "Докажите что вы не робот"
-                })
-            })
+        response = render(request, 'nda_email/contactform.html', {'contact_form': form})
+        response['HX-Trigger'] = json.dumps({"showError": "Докажите что вы не робот"})
+        return response
+
     if form.is_valid():
         EmailSender.send_messages(request, offers)
         # todo: try-catch -> show error through showMessage
