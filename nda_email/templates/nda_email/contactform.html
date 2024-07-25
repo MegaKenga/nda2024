@@ -56,9 +56,7 @@
     </div>
 </form>
 
-{# todo: не работает #}
 <script>
-{#const contactModalForm22 = document.getElementById('cart_modal_form');#}
 function onloadFunction() {
   if (!window.smartCaptcha) {
     return;
@@ -67,18 +65,10 @@ function onloadFunction() {
   window.smartCaptcha.render('captcha-container', {
     sitekey: 'ysc1_sxny6cNZmnvhyJKrojDDLNxj0nvkGnTleldHzqEo9d9475ca',
     invisible: true, // Сделать капчу невидимой
-    callback: callback,
+    callback: (token)=>{ console.debug("Yandex SmartCaptcha token: ", token) },
   });
 }
-
-function callback(token) {
-    console.log('callback', token)
-
-}
-
-function handleSubmit(event) {
-    console.log('handleSubmit', event)
-
-
-}
+document.querySelector('#id_email').addEventListener('blur', ()=>{
+     window.smartCaptcha.execute();
+})
 </script>

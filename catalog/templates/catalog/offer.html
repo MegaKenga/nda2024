@@ -69,7 +69,6 @@
                     </td>
                     <td class="text-start align-middle" style="border-top: 1px solid #a1a1a0; border-left: 1px solid #a1a1a0;">
                         <form hx-post="{% url 'cart_add' offer_id=offer.pk %}" hx-target="#cart" hx-swap="outerHTML">
-                            {% csrf_token %}
                             <div class="input-group justify-content-evenly">
                                 <input class="form-control" type="number" name="quantity" min="1" required="" id="id_quantity">
                                 <button class="btn btn-primary" type="submit" value="">Добавить</button>
