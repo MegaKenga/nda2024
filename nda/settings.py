@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
     'django_extensions',
     'catalog.apps.CatalogConfig',
     'files.apps.FilesConfig',
@@ -52,6 +53,8 @@ INSTALLED_APPS = [
     'django_sendfile',
     'django_celery_results',
     'core.apps.CoreConfig',
+    'sorl.thumbnail',
+    'tinymce',
 ]
 
 MIDDLEWARE = [
@@ -175,7 +178,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = '/static/'
-STATICFILES_DIRS = (os.path.join(BASE_DIR, "core/static"),)
+STATICFILES_DIRS = [
+    (os.path.join(BASE_DIR, "core/static")),
+    BASE_DIR / "static"
+]
 STATIC_ROOT = os.path.join(BASE_DIR, "/static/")
 
 # Default primary key field type
@@ -211,3 +217,26 @@ EMAIL_USE_TLS = True
 # YANDEX CAPTCHA SETTINGS
 SECURE_REFERRER_POLICY = 'no-referrer-when-downgrade'
 YACAPTCHA_SERVER = os.getenv('SERVER_KEY')
+
+
+# TINYMCE SETTINGS
+TINYMCE_JS_URL = os.path.join(BASE_DIR, MEDIA_URL, "tinymce/js/tinymce/tinymce.min.js")
+TINYMCE_COMPRESSOR = False
+TINYMCE_SPELLCHECKER = True
+TINYMCE_DEFAULT_CONFIG = {
+    "height": "320px",
+    "width": "960px",
+    "menubar": "file edit view insert format tools table help",
+    "plugins": "advlist autolink lists link image charmap print preview anchor searchreplace visualblocks code "
+    "fullscreen insertdatetime media table paste code help wordcount spellchecker",
+    "toolbar": "undo redo | bold italic underline strikethrough | fontselect fontsizeselect formatselect | alignleft "
+    "aligncenter alignright alignjustify | outdent indent |  numlist bullist checklist | forecolor "
+    "backcolor casechange permanentpen formatpainter removeformat | pagebreak | charmap emoticons | "
+    "fullscreen  preview save print | insertfile image media pageembed template link anchor codesample | "
+    "a11ycheck ltr rtl | showcomments addcomment code",
+    "custom_undo_redo_levels": 10,
+    "language": "ru_RU"
+}
+
+
+ADMINS = [("Ivan", "terryjj0@gmail.com")]

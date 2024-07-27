@@ -1,12 +1,14 @@
 from django.core.exceptions import ValidationError
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, get_object_or_404
 from django.views.decorators.http import require_POST
-from django.contrib import messages
+from smtplib import SMTPException
+from django.http import HttpResponse
+
+import json
 
 from catalog.models import Offer
 from cart.forms import CartAddProductForm
 from nda_email.forms import ContactForm
-from django.views.generic import TemplateView
 from nda_email.email_sender import EmailSender
 from nda_email.captcha import get_client_ip, yandex_captcha_validation
 
@@ -32,11 +34,6 @@ def save_cart(request):
     return cart
 
 
-def items_count(request):
-    cart = get_cart(request)
-    return len(cart.keys())
-
-
 @require_POST
 def cart_add(request, offer_id):
     cart = get_cart(request)
@@ -51,7 +48,7 @@ def cart_add(request, offer_id):
     else:
         cart[offer_id]['quantity'] += item_add_form_data['quantity']
     save_cart(request)
-    return redirect('offer', brand_slug=offer.category.brand.slug, category_slug=offer.category.slug)
+    return render(request, 'cart/cart.html')
 
 
 def cart_remove(request, offer_id):
@@ -61,13 +58,13 @@ def cart_remove(request, offer_id):
     if offer_id in cart:
         del cart[offer_id]
     save_cart(request)
-    return redirect('cart_detail')
+    return render(request, 'cart/cart_popup.html')
 
 
 def cart_clear(request):
-    del request.session[CART_SESSION_ID]
-    request.session.modified = True
-    return redirect('cart_detail')
+    if request.session.get(CART_SESSION_ID):
+        del request.session[CART_SESSION_ID]
+        request.session.modified = True
 
 
 def get_cart_offers(request):
@@ -84,29 +81,36 @@ def get_cart_offers(request):
     return offers
 
 
-def cart_detail(request):
-    if request.method == 'POST':
-        form = ContactForm(request.POST)
-        token = request.POST.get('smart-token')
-        client_ip = get_client_ip(request)
-        if not yandex_captcha_validation(token, client_ip):
-            messages.error(request, 'Докажите, что вы не робот')
-            return render(request,
-                          'cart/detail.html',
-                          {'offers': get_cart_offers(request), 'form': form})
-        if not form.is_valid():
-            return render(request,
-                          'cart/detail.html',
-                          {'offers': get_cart_offers(request), 'form': form})
-        offers = get_cart_offers(request)
-        EmailSender.send_messages(request, offers)
-        cart_clear(request)
-        messages.success(request, 'Запрос успешно отправлен')
-        return redirect('home')
+def cart_modal(request):
     form = ContactForm()
     offers = get_cart_offers(request)
-    return render(request, 'cart/detail.html', {'offers': offers, 'form': form})
+    return render(request, 'cart/cart_modal.html', {'offers': offers, 'form': form})
 
 
-class ContactSuccessView(TemplateView):
-    template_name = 'cart/message_success.html'
+@require_POST
+def cart_submit(request):
+    form = ContactForm(request.POST)
+    token = request.POST.get('smart-token')
+    client_ip = get_client_ip(request)
+    offers = get_cart_offers(request)
+    if not yandex_captcha_validation(token, client_ip):
+        response = render(request, 'nda_email/contactform.html', {'contact_form': form})
+        response['HX-Trigger'] = json.dumps({"showError": "Докажите что вы не робот"})
+        return response
+    if form.is_valid():
+        try:
+            EmailSender.send_messages(request, offers)
+        except Exception as e:
+            print(f'email_send failed due to: {e}')
+            response = HttpResponse(status=500)
+            response['HX-Trigger'] = json.dumps({"showError": "Сообщение не отправлено"})
+            return response
+        cart_clear(request)
+        return HttpResponse(
+            status=204,
+            headers={
+                'HX-Trigger': json.dumps({
+                    "showMessage": "Запрос отправлен"
+                })
+            })
+    return render(request, 'nda_email/contactform.html', {'contact_form': form})
