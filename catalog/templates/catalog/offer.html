@@ -74,7 +74,6 @@
                                 <button class="btn btn-primary" type="submit" value="">Добавить</button>
                             </div>
                         </form>
-
                     </td>
                 </tr>
             {% endfor %}
@@ -198,14 +197,14 @@
         })
         
         const modal = new bootstrap.Modal(document.getElementById("modal"))
-    
+
         htmx.on("htmx:afterSwap", (e) => {
           // Response targeting #dialog => show the modal
           if (e.detail.target.id == "dialog") {
             modal.show()
           }
         })
-    
+
         htmx.on("htmx:beforeSwap", (e) => {
         // Empty response targeting #cart_modal_form => hide the modal
         if (e.detail.target.id == "cart_modal_form" && !e.detail.xhr.response) {

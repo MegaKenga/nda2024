@@ -9,12 +9,24 @@ EMAIL_PATTERN = r'([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9_-]{2,})'
 
 
 class ContactForm(forms.Form):
-    name = forms.CharField(required=True, max_length=120, widget=forms.TextInput(attrs={'placeholder': 'Ваше имя'}))
-    phone_number = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Номер телефона'}))
-    email = forms.CharField(required=True, widget=forms.TextInput(attrs={'placeholder': 'example@example.ru'}))
+    name = forms.CharField(
+        required=True,
+        max_length=120,
+        widget=forms.TextInput(
+            attrs={'placeholder': 'Ваше имя',
+                   'class': 'form-control',
+                   }))
+    phone_number = forms.CharField(
+        required=True,
+        widget=forms.TextInput(
+            attrs={'placeholder': 'Номер телефона',
+                   'class': 'form-control',
+                   'id': 'validationPhoneNumber'
+                   }))
+    email = forms.CharField(required=True, widget=forms.TextInput(attrs={'placeholder': 'example@example.ru', 'class': 'form-control'}))
     company_details = forms.FileField(required=False, widget=forms.ClearableFileInput(
-        attrs={'multiple': False, 'allow_empty_file': True, 'id': 'cart_modal_form'}))
-    message = forms.CharField(required=False, widget=forms.Textarea(attrs={'placeholder': 'Ваше сообщение'}))
+        attrs={'multiple': False, 'allow_empty_file': True, 'id': 'cart_modal_form', 'class': 'form-control', 'type': 'file'}))
+    message = forms.CharField(required=False, widget=forms.Textarea(attrs={'placeholder': 'Ваше сообщение', 'class': 'form-control'}))
 
     def clean_phone_number(self):
         phone_number = self.cleaned_data['phone_number']

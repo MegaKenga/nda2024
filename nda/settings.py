@@ -120,8 +120,8 @@ DATABASES = {
 
 CACHES = {
     "default": {
-        "BACKEND": "django.core.cache.backends.redis.RedisCache",
-        # "BACKEND": 'django.core.cache.backends.dummy.DummyCache',
+        # "BACKEND": "django.core.cache.backends.redis.RedisCache",
+        "BACKEND": 'django.core.cache.backends.dummy.DummyCache',
         "LOCATION": "redis://127.0.0.1:6379",
     }
 }
@@ -237,3 +237,6 @@ TINYMCE_DEFAULT_CONFIG = {
     "custom_undo_redo_levels": 10,
     "language": "ru_RU"
 }
+
+
+ADMINS = [("Ivan", "terryjj0@gmail.com")]

@@ -1,7 +1,7 @@
 from django.core.exceptions import ValidationError
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, get_object_or_404
 from django.views.decorators.http import require_POST
-from django.contrib import messages
+from smtplib import SMTPException
 from django.http import HttpResponse
 
 import json
@@ -9,7 +9,6 @@ import json
 from catalog.models import Offer
 from cart.forms import CartAddProductForm
 from nda_email.forms import ContactForm
-from django.views.generic import TemplateView
 from nda_email.email_sender import EmailSender
 from nda_email.captcha import get_client_ip, yandex_captcha_validation
 
@@ -33,11 +32,6 @@ def save_cart(request):
     # Отметить сеанс как "измененный", чтобы убедиться, что он сохранен
     request.session.modified = True
     return cart
-
-
-# def items_count(request):
-#     cart = get_cart(request)
-#     return len(cart.keys())
 
 
 @require_POST
@@ -87,45 +81,6 @@ def get_cart_offers(request):
     return offers
 
 
-def cart_detail(request):
-    # todo: method not in use. Delete
-    offers = get_cart_offers(request)
-    if request.method == 'POST':
-        form = ContactForm(request.POST)
-        token = request.POST.get('smart-token')
-        client_ip = get_client_ip(request)
-        if form.is_valid() and yandex_captcha_validation(token, client_ip):
-            EmailSender.send_messages(request, offers)
-            cart_clear(request)
-            return HttpResponse(
-                status=204,
-                headers={
-                    'HX-Trigger': json.dumps({
-                        "bookListChanged": None,
-                        "showMessage": "Запрос отправлен"
-                    })
-                })
-        else:
-            return render(request, 'cart/customer_request.html', {'offers': offers, 'form': form})
-    else:
-
-        # if not yandex_captcha_validation(token, client_ip):
-        #     messages.error(request, 'Докажите, что вы не робот')
-        #     return render(request,
-        #                   'cart/customer_request.html',
-        #                   {'offers': offers, 'form': form})
-        # if not form.is_valid():
-        #     return render(request,
-        #                   'cart/customer_request.html',
-        #                   {'offers': offers, 'form': form})
-        # EmailSender.send_messages(request, offers)
-        # cart_clear(request)
-        # messages.success(request, 'Запрос успешно отправлен')
-        # return HttpResponseRedirect(request.path_info)
-        form = ContactForm()
-        offers = get_cart_offers(request)
-        return render(request, 'cart/customer_request.html', {'offers': offers, 'form': form})
-
 def cart_modal(request):
     form = ContactForm()
     offers = get_cart_offers(request)
@@ -142,10 +97,14 @@ def cart_submit(request):
         response = render(request, 'nda_email/contactform.html', {'contact_form': form})
         response['HX-Trigger'] = json.dumps({"showError": "Докажите что вы не робот"})
         return response
-
     if form.is_valid():
-        EmailSender.send_messages(request, offers)
-        # todo: try-catch -> show error through showMessage
+        try:
+            EmailSender.send_messages(request, offers)
+        except Exception as e:
+            print(f'email_send failed due to: {e}')
+            response = HttpResponse(status=500)
+            response['HX-Trigger'] = json.dumps({"showError": "Сообщение не отправлено"})
+            return response
         cart_clear(request)
         return HttpResponse(
             status=204,

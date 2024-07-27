@@ -3,8 +3,6 @@
 {% load ad_tag %}
 {% block content %}
 
-<div>{% include 'cart/message_success.html' %}</div>
-    
 {% ad_query %}
 
 {% cache 600 index_page %}

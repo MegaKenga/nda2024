@@ -1,74 +1,41 @@
+
 <form
         id="cart_modal_form"
-        action="{% url 'cart_submit' %}"
-        method="post"
+{#        action="{% url 'cart_submit' %}"#}
+{#        method="post"#}
         enctype="multipart/form-data"
         hx-post="{% url 'cart_submit' %}"
         hx-target="#cart_modal_form"
         hx-swap="outerHTML"
+        novalidate
 >
-
-    <script src="https://smartcaptcha.yandexcloud.net/captcha.js?render=onload&onload=onloadFunction" defer></script>
     {% csrf_token %}
-    <div>
+    <div class="mb-3">
         {{ contact_form.name }}
     </div>
-    <div>
+    <div class="mb-3">
         {{ contact_form.phone_number }}
         {% if contact_form.phone_number.errors %}
-            <span style="color: #FF4343">
+            <div style="color: red">
                 {{ contact_form.phone_number.errors }}
-            </span>
+            </div>
         {% endif %}
     </div>
-    <div>
+    <div class="mb-3">
         {{ contact_form.email }}
             {% if contact_form.email.errors %}
-                <span style="color: #FF4343">
+                <span class="invalid-feedback">
                     {{ contact_form.email.errors }}
                 </span>
             {% endif %}
     </div>
-    <div>
+    <div class="mb-3">
         {{ contact_form.message }}
-            {% if contact_form.message.errors %}
-                <span style="color: #FF4343">
-                    {{ contact_form.errors.message }}
-                </span>
-            {% endif %}
-    </div>
-    <div>
-        {% if messages %}
-            <ul class="messages">
-                {% for message in messages %}
-                    <li class="{{ message.tags }}">
-                        <span style="color: #FF4343">
-                        {{ message|safe }}
-                        </span>
-                    </li>
-                {% endfor %}
-            </ul>
-        {% endif %}
     </div>
     <div
-        id="captcha-container"
-    >
+            id="captcha-container"
+            class="smart-captcha mb-3"
+            data-sitekey="ysc1_sxny6cNZmnvhyJKrojDDLNxj0nvkGnTleldHzqEo9d9475ca"
+        >
     </div>
 </form>
-
-<script>
-function onloadFunction() {
-  if (!window.smartCaptcha) {
-    return;
-  }
-
-  window.smartCaptcha.render('captcha-container', {
-    sitekey: 'ysc1_sxny6cNZmnvhyJKrojDDLNxj0nvkGnTleldHzqEo9d9475ca',
-    invisible: true, // Сделать капчу невидимой
-    callback: (token)=>{ console.debug("Yandex SmartCaptcha token: ", token) },
-  });
-}
-document.querySelector('#id_email').addEventListener('blur', ()=>{
-     window.smartCaptcha.execute();
-})
-</script>
