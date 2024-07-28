@@ -15,9 +15,51 @@
     --color-bright-text: #080808;
 }
 
+@font-face {
+    font-family: Circe-bold;
+    src: url('../fonts/circe-bold.ttf');
+}
+
+@font-face {
+    font-family: Circe;
+    src: url('../fonts/circe.ttf');
+}
+
+html body {
+    font-family: Circe, sans-serif;
+
+}
+
+p span {
+    font-family: Circe, sans-serif !important;
+}
+
+.breadcrumb .breadcrumb-item {
+    letter-spacing: -1px;
+}
+
+h1, h4 {
+    font-family: Circe-bold, sans-serif;
+    letter-spacing: -1px;
+}
+
+.button_bg {
+    background-color: #3391c5 !important;
+    border-color: #3391c5 !important;
+}
+
+.button_bg:hover{
+    background-color: #5BA7D0 !important;
+    border-color: #5BA7D0 !important;
+}
+
+.nav-item .active {
+    background-color: #3391c5 !important;
+}
+
 .nda-card {
     border: solid 1px var(--color-theme-3);
-    border-radius: 15px;
+    border-radius: 10px;
     transition: transform 0.3s, box-shadow 0.3s;
     overflow: hidden;
     position: relative;
@@ -30,15 +72,14 @@
 }
 .nda-card:hover {
     border: solid 1px var(--color-theme-4);
-    transform: scale(1.03);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 0 0 rgba(0, 0, 0, 0.2);
 }
 
 .nda-card .card-title {
     opacity: 0;
 }
 .nda-card:hover .card-title {
-    color: var(--color-theme-1);
+    color: black;
     opacity: 1;
 }
 
@@ -113,21 +154,32 @@
 }
 
 .offer-carousel-next {
-      display: inline-block;
-  width: 2rem;
-  height: 2rem;
-  background-repeat: no-repeat;
-  background-position: 50%;
-  background-size: 100% 100%;
+    display: inline-block;
+    width: 2rem;
+    height: 2rem;
+    background-repeat: no-repeat;
+    background-position: 50%;
+    background-size: 100% 100%;
     background-image: url('icons8-next-page-32.png');
 }
 
 .offer-carousel-previous {
-      display: inline-block;
-  width: 2rem;
-  height: 2rem;
-  background-repeat: no-repeat;
-  background-position: 50%;
-  background-size: 100% 100%;
+    display: inline-block;
+    width: 2rem;
+    height: 2rem;
+    background-repeat: no-repeat;
+    background-position: 50%;
+    background-size: 100% 100%;
     background-image: url('icons8-back-to-32.png');
+}
+
+.search_button {
+    display: inline-block;
+    min-height: calc(1.5em + (1rem + 2px));
+    padding: 0.5rem 1rem;
+    background-repeat: no-repeat;
+    background-size: 70% 70%;
+    background-position: center;
+    border-radius: 0.3rem;
+    background-image: url('icons8-search.svg');
 }

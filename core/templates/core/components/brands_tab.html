@@ -1,7 +1,7 @@
 {% load static %}
 {% load thumbnail %}
 
-<div class="row row-cols-1 row-cols-sm-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 row-cols-xxl-5 mt-1 g-2 g-lg-3 gy-4" >
+<div class="row row-cols-1 row-cols-sm-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 row-cols-xxl-5 mt-1 mb-3 g-2 g-lg-3 gy-4" >
     {% for brand in brands %}
         <div class="col">
             <div class="nda-card">
@@ -15,8 +15,8 @@
                         {% endif %}
                         <div class="card-img-overlay">
                             <div class="nda-card-overlay position-absolute mb-0 top-0 bottom-0 start-0 end-0">
-                                <h4 class="mt-5 card-title text-center text-uppercase" style="font-size: 2em">{{ brand.name }}</h4>
-                                <h5 class="mt-auto card-title text-center text-uppercase">{{ brand.description }}</h5>
+                                <h5 class="mt-5 fw-bold text-break card-title text-center text-uppercase" style="font-size: 2em">{{ brand.name }}</h5>
+                                <h6 class="mt-auto fw-bolder text-break card-title text-center text-uppercase">{{ brand.description }}</h6>
                             </div>
                         </div>
 

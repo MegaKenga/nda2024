@@ -39,12 +39,12 @@
         </div>
         <div class="col-md-7 d-flex flex-column justify-content-start">
             <h1>{{ category.name }}</h1>
-            <p>{{ category.description|safe }}</p>
+            {{ category.description|safe }}
             </div>
     </div>
 
     <div class="d-flex flex-row flex-wrap">
-        <table class="table table-bordered table-sm my-5" style="border: 2px solid #3f96c9; box-shadow: 0 0 5px 0 #000000">
+        <table class="table table-bordered table-sm my-5" style="border: 2px solid #3391c5; box-shadow: 0 0 5px 0 #000000">
             <thead>
                 <tr style="background: rgb(249, 249, 247);">
                     <th scope="col" class="col-sm-1 text-center" style="border-right: 1px solid #a1a1a0">
@@ -71,7 +71,7 @@
                         <form hx-post="{% url 'cart_add' offer_id=offer.pk %}" hx-target="#cart" hx-swap="outerHTML">
                             <div class="input-group justify-content-evenly">
                                 <input class="form-control" type="number" name="quantity" min="1" required="" id="id_quantity">
-                                <button class="btn btn-primary" type="submit" value="">Добавить</button>
+                                <button class="btn button_bg btn-primary" type="submit" value="">Добавить</button>
                             </div>
                         </form>
                     </td>
@@ -85,7 +85,7 @@
         <div>Позиций в запросе: <span id="offers-in-cart-counter">{{ offers_in_cart|length }}</span></div>
         <button
                 type="button"
-                class="btn btn-primary"
+                class="btn button_bg btn-primary"
                 hx-get="{% url 'cart_modal' %}"
                 hx-target="#dialog"
         >
