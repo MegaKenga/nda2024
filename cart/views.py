@@ -1,7 +1,6 @@
 from django.core.exceptions import ValidationError
 from django.shortcuts import render, get_object_or_404
 from django.views.decorators.http import require_POST
-from smtplib import SMTPException
 from django.http import HttpResponse
 
 import json

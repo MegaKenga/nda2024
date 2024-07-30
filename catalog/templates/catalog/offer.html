@@ -38,7 +38,7 @@
             </div>
         </div>
         <div class="col-md-7 d-flex flex-column justify-content-start">
-            <h1>{{ category.name }}</h1>
+            <h2 class="mb-5">{{ category.name }}</h2>
             {{ category.description|safe }}
             </div>
     </div>
@@ -61,10 +61,10 @@
             <tbody class="table-group-divider">
             {% for offer in offers %}
                 <tr>
-                    <td class="text-center align-middle" style="border-top: 1px solid #a1a1a0; border-bottom: 1px solid #a1a1a0; border-right: 1px solid #a1a1a0;">
+                    <td class="text-center align-middle" style="border-top: 1px solid #a1a1a0; border-bottom: 1px solid #a1a1a0; border-right: 1px solid #a1a1a0; font-size: 20px;">
                         {{ offer.name }}
                     </td>
-                    <td class="text-start align-middle" style="border-top: 1px solid #a1a1a0; border-left: 1px solid #a1a1a0; border-right: 1px solid #a1a1a0;">
+                    <td class="text-start align-middle" style="border-top: 1px solid #a1a1a0; border-left: 1px solid #a1a1a0; border-right: 1px solid #a1a1a0; font-size: 20px;">
                         {{ offer.description}}
                     </td>
                     <td class="text-start align-middle" style="border-top: 1px solid #a1a1a0; border-left: 1px solid #a1a1a0;">

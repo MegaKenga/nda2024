@@ -1,18 +1,8 @@
 :root {
-    --color-theme-1: rgba(0, 14, 152, 100);
-    --color-theme-2: rgba(200, 80, 192, 100);
-    --color-theme-3: rgba(217, 229, 236, 0.8);
-    --color-theme-4: rgba(175, 222, 249, 0.8);
-    --color-theme-1-light: color-mix(in srgb, var(--color-theme-1), #FFF 90%);
-    --color-theme-2-light: color-mix(in srgb, var(--color-theme-2), #FFF 90%);
-
-    --color-error: red;
-
-    --color-background: #FFF;
-    --color-shaded-background: #C0C0C0;
-    --color-shaded-text: #808080;
-    --color-text: #404040;
-    --color-bright-text: #080808;
+    --color-theme-main: #3391c5;
+    --color-theme-button-border: #5BA7D0;
+    --color-theme-card-border: #efefee;
+    --color-theme-text: #454545;
 }
 
 @font-face {
@@ -32,6 +22,7 @@ html body {
 
 p span {
     font-family: Circe, sans-serif !important;
+    font-size: 20px;
 }
 
 .breadcrumb .breadcrumb-item {
@@ -44,53 +35,41 @@ h1, h4 {
 }
 
 .button_bg {
-    background-color: #3391c5 !important;
-    border-color: #3391c5 !important;
+    background-color: var(--color-theme-main) !important;
+    border-color: var(--color-theme-main) !important;
 }
 
 .button_bg:hover{
-    background-color: #5BA7D0 !important;
-    border-color: #5BA7D0 !important;
+    background-color: var(--color-theme-button-border) !important;
+    border-color: var(--color-theme-button-border) !important;
 }
 
 .nav-item .active {
-    background-color: #3391c5 !important;
+    background-color: var(--color-theme-main) !important;
 }
 
 .nda-card {
-    border: solid 1px var(--color-theme-3);
-    border-radius: 10px;
+    border: solid 1px var(--color-theme-card-border);
+    border-radius: 0.25rem;
     transition: transform 0.3s, box-shadow 0.3s;
     overflow: hidden;
     position: relative;
-
 }
 
 .nda-card-image {
-    border-radius: 30px;
+    border-radius: 10px;
     object-fit: fill;
 }
-.nda-card:hover {
-    border: solid 1px var(--color-theme-4);
-    box-shadow: 0 0 0 rgba(0, 0, 0, 0.2);
+.nda-card:hover img{
+    filter:blur(7px);
 }
 
 .nda-card .card-title {
     opacity: 0;
 }
 .nda-card:hover .card-title {
-    color: black;
+    color: var(--color-theme-text);
     opacity: 1;
-}
-
-.nda-card:hover .nda-card-overlay{
-    background-image:
-        radial-gradient(
-        circle at 10% 10%,
-        var(--color-theme-1-light),
-        transparent 80%,
-        var(--color-theme-1-light)
-    );
 }
 
 @media (max-width: 1200px) {
