@@ -7,7 +7,8 @@
 {% block content %}
 
 {% include 'catalog/components/banner.html' %}
-
+<script src="{% static '/js/carousel.js' %}"></script>
+<script src="{% static '/js/offers-htmx-handlers.js' %}"></script>
 <div class="main-container">
 
     {% include 'catalog/components/breadcrumbs.html' %}
@@ -119,107 +120,4 @@
         </div>
     </div>
 </div>
-
-<script>
-    // product photos carousel
-    const thumbnails = document.querySelector('.thumbnails');
-    const prevControl = document.getElementById('prevControl');
-    const nextControl = document.getElementById('nextControl');
-    const thumbnailsDivWidth = 526;
-    const thumbnailWidth = 150;
-    const thumbnailsWidth = thumbnailWidth * document.querySelectorAll('.thumbnails img').length
-    const currentOffset = thumbnailsDivWidth < thumbnailsWidth
-        ? (thumbnailsDivWidth - thumbnailsWidth) / 2
-        :0 ;
-
-
-    function changeImage(src) {
-        document.getElementById('mainImage').src = src;
-    }
-
-    function moveImagesLeft(){
-        const thumbnailImages = document.querySelectorAll('.thumbnails img');
-        const itemToRemove = thumbnailImages[0]
-        thumbnails.appendChild(itemToRemove)
-        itemToRemove.remove
-    }
-
-    function moveImagesRight(){
-        const thumbnailImages = document.querySelectorAll('.thumbnails img');
-        const itemToRemove = thumbnailImages[thumbnailImages.length - 1]
-        const firstItem = thumbnailImages[0]
-        thumbnails.insertBefore(itemToRemove, firstItem)
-        itemToRemove.remove
-    }
-
-    function updateCarousel(direction) {
-        if (direction === 'next') {
-            moveImagesLeft()
-        } else if (direction === 'prev') {
-            moveImagesRight()
-        }
-    }
-
-    thumbnails.style.transform = `translateX(${currentOffset}px)`;
-
-    prevControl.addEventListener('click', () => updateCarousel('prev'));
-    nextControl.addEventListener('click', () => updateCarousel('next'));
-
-    // replace <span id="offers-in-cart-counter"> inner value with reduced one 
-    document.addEventListener('htmx:afterOnLoad', function(event) {
-        if (event?.detail?.requestConfig?.elt?.id !== "remove-offer-button") {
-            return
-        }
-        const counter = document.querySelector("#offers-in-cart-counter")
-        const currentCount = parseInt(counter.textContent, 10);
-    
-        if (!isNaN(currentCount) && currentCount > 0) {
-            counter.textContent = String(currentCount - 1);
-        }
-    });
-
-        
-    ;(function() {
-        htmx.on("showMessage", (e) => {
-          const toastElement = document.getElementById("toast")
-          const toastBody = document.getElementById("toast-body")
-          const toast = new bootstrap.Toast(toastElement, { delay: 2000 })
-          toastBody.innerText = e.detail.value
-          toast.show()
-        })
-
-        htmx.on("showError", (e) => {
-          const toastElement = document.getElementById("toast-warning")
-          const toastBody = document.getElementById("toast-warning-body")
-          const toast = new bootstrap.Toast(toastElement, { delay: 2000 })
-          toastBody.innerText = e.detail.value
-          toast.show()
-        })
-        
-        const modal = new bootstrap.Modal(document.getElementById("modal"))
-
-        htmx.on("htmx:afterSwap", (e) => {
-          // Response targeting #dialog => show the modal
-          if (e.detail.target.id == "dialog") {
-            modal.show()
-          }
-        })
-
-        htmx.on("htmx:beforeSwap", (e) => {
-        // Empty response targeting #cart_modal_form => hide the modal
-        if (e.detail.target.id == "cart_modal_form" && !e.detail.xhr.response) {
-          modal.hide()
-          e.detail.shouldSwap = false
-          const counter = document.querySelector("#offers-in-cart-counter")
-          counter.textContent = String(0);
-        }
-        })
-    
-        // Remove dialog content after hiding
-        htmx.on("hidden.bs.modal", () => {
-        document.getElementById("dialog").innerHTML = ""
-        })
-    })()
-  </script>
-
 {% endblock %}
