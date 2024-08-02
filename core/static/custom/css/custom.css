@@ -44,8 +44,13 @@ h1, h4 {
     border-color: var(--color-theme-button-border) !important;
 }
 
+.nav-link {
+    color: var(--color-theme-main) !important;
+}
+
 .nav-item .active {
     background-color: var(--color-theme-main) !important;
+    color: #fff !important;;
 }
 
 .nda-card {
