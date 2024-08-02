@@ -4,9 +4,8 @@
 {% block content %}
 
     {% ad_query %}
-<div style="position: relative; right: 12.5%; bottom: 20px;">
-        {% include 'core/components/search_field.html' %}
-    </div>
+
+    {% include 'core/components/search_field.html' %}
 
     {% cache 600 index_page %}
         <div class="main-container">

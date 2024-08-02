@@ -1,9 +1,9 @@
 <nav aria-label="breadcrumb" class="mt-5">
     <ol class="breadcrumb">
-        <li class="breadcrumb-item fs-4"><a href="{% url 'home' %}">ГЛАВНАЯ</a></li>
+        <li class="breadcrumb-item fs-4"><a href="{% url 'home' %}" style="color: var(--color-theme-main)">ГЛАВНАЯ</a></li>
         {% if category.brand %}
             <li class="breadcrumb-item fs-4">
-                <a href="{% url 'brand' brand_slug=category.brand.slug %}">
+                <a href="{% url 'brand' brand_slug=category.brand.slug %}" style="color: var(--color-theme-main)">
                     {{ category.brand.name.upper }}
                 </a>
             </li>
@@ -13,7 +13,7 @@
     {% else %}
         {% for breadcrumb in breadcrumbs %}
             <li class="breadcrumb-item fs-4">
-                <a href="{% url 'category' category_slug=breadcrumb.slug %}">
+                <a href="{% url 'category' category_slug=breadcrumb.slug %}" style="color: var(--color-theme-main)">
                     {{ breadcrumb.name.upper }}
                 </a>
             </li>
