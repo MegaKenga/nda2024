@@ -1,0 +1,8 @@
+{% load search_query %}
+
+<div style="position: relative; right: 11.3%; bottom: 20px;">
+    <form action="{% url 'search_page' %}" method="get" style="display: flex; justify-content: flex-end; align-items: center;">
+        <input class="form-control form-control-lg " style="width: 20rem" name="q" type="text" value="{% search_query request %}">
+        <button class="button-bg search-button" type="submit"></button>
+    </form>
+</div>
