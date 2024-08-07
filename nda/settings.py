@@ -120,8 +120,8 @@ DATABASES = {
 
 CACHES = {
     "default": {
-        # "BACKEND": "django.core.cache.backends.redis.RedisCache",
-        "BACKEND": 'django.core.cache.backends.dummy.DummyCache',
+        "BACKEND": "django.core.cache.backends.redis.RedisCache",
+        # "BACKEND": 'django.core.cache.backends.dummy.DummyCache',
         "LOCATION": "redis://127.0.0.1:6379",
     }
 }
@@ -193,7 +193,7 @@ MEDIA_URL = '/media/'
 
 
 # DJANGO_SENDFILE SETTINGS
-PRIVATE_ROOT = os.getenv('PRIVATE_PATH')
+PRIVATE_ROOT = os.getenv('PRIVATE_PATH', '')
 SENDFILE_ROOT = 'private/'
 SENDFILE_BACKEND = 'django_sendfile.backends.simple'
 
