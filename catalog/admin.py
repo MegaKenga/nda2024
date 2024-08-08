@@ -144,6 +144,7 @@ class OfferAdmin(admin.ModelAdmin):
     fields = [
         'name',
         'description',
+        'shipping_pack'
         'tech_info',
         'ctru',
         'category',

@@ -4,8 +4,8 @@
     <div class="carousel-inner">
         {% for ad in ads %}
             <div class="carousel-item {% if forloop.counter == 1 %}active{% endif %}" data-bs-interval="5000000">
-                <div class="d-flex flex-row flex-wrap">
-                    <div class="flex-grow-1 mt-auto mb-auto me-auto col-auto" style="flex-basis: 30%; margin-left: 12.5%;" >
+                <div class="d-flex flex-row flex-wrap ad-margin">
+                    <div class="flex-grow-1 mt-auto mb-auto col-auto" style="flex-basis: 30%;">
                         <h1 class="display-5 text-uppercase text-wrap">{{ ad.advert_name }}</h1>
                         {% if ad.advert_category.is_final %}
                             <a class="btn button-bg btn-primary btn-lg"
