@@ -12,6 +12,7 @@
 
     <script src="{% static '/js/carousel.js' %}"></script>
     <script src="{% static '/js/offers-htmx-handlers.js' %}"></script>
+
     <div class="main-container">
 
         {% include 'catalog/components/breadcrumbs.html' %}
@@ -43,47 +44,81 @@
             </div>
             <div class="col-md-7 d-flex flex-column justify-content-start">
                 <h2 class="mb-5">{{ category.name }}</h2>
-                {{ category.description|safe }}
-                </div>
+                {{ category.description | safe }}
+            </div>
         </div>
 
-        <div class="d-flex flex-row flex-wrap">
-            <table class="table table-bordered table-sm my-5" style="border: 2px solid #3391c5; box-shadow: 0 0 5px 0 #000000">
-                <thead>
-                    <tr style="background: rgb(249, 249, 247);">
-                        <th scope="col" class="col-sm-1 text-center" style="border-right: 1px solid #a1a1a0">
-                            <strong>Код</strong>
-                        </th>
-                        <th scope="col" class="col-sm-9 text-start" style="border-right: 1px solid #a1a1a0">
-                            <strong>Описание</strong>
-                        </th>
-                        <th scope="col" class="col-sm-2">
-                            Количество
-                        </th>
-                    </tr>
-                </thead>
-                <tbody class="table-group-divider">
-                {% for offer in offers %}
-                    <tr>
-                        <td class="text-center align-middle" style="border-top: 1px solid #a1a1a0; border-bottom: 1px solid #a1a1a0; border-right: 1px solid #a1a1a0; font-size: 20px;">
-                            {{ offer.name }}
-                        </td>
-                        <td class="text-start align-middle" style="border-top: 1px solid #a1a1a0; border-left: 1px solid #a1a1a0; border-right: 1px solid #a1a1a0; font-size: 20px;">
-                            {{ offer.description}}
-                        </td>
-                        <td class="text-start align-middle" style="border-top: 1px solid #a1a1a0; border-left: 1px solid #a1a1a0;">
-                            <form hx-post="{% url 'cart_add' offer_id=offer.pk %}" hx-target="#cart" hx-swap="outerHTML">
-                                <div class="input-group justify-content-evenly">
-                                    <input class="form-control" type="number" name="quantity" min="1" required="" id="id_quantity">
-                                    <button class="btn button-bg btn-primary" type="submit" value="">Добавить</button>
-                                </div>
-                            </form>
-                        </td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
-        </div>
+{#        <div class="d-flex">#}
+{#        <div class="divTable">#}
+{#            <div class="divTableBody">#}
+{#                <div class="divTableRowHead">#}
+{#                    <div class="divTableCell">Код</div>#}
+{#                    <div class="divTableCell">Описание</div>#}
+{#                    <div class="divTableCell">Количество в упаковке</div>#}
+{#                    <div class="divTableCell">Количество</div>#}
+{#                </div>#}
+{#                {% for offer in offers %}#}
+{#                <div class="divTableRow">#}
+{#                    <div class="divTableCell"> {{ offer.name }}</div>#}
+{#                    <div class="divTableCell"> {{ offer.description }}</div>#}
+{#                    <div class="divTableCell"> {{ offer.shipping_pack }}</div>#}
+{#                    <div class="divTableCell">#}
+{#                        <form hx-post="{% url 'cart_add' offer_id=offer.pk %}" hx-target="#cart" hx-swap="outerHTML">#}
+{#                            <div class="input-group justify-content-evenly">#}
+{#                                <input class="form-control" type="number" name="quantity" min="1" required="" id="id_quantity">#}
+{#                                <button class="btn button-bg btn-primary" type="submit" value="">Добавить</button>#}
+{#                            </div>#}
+{#                        </form>#}
+{#                    </div>#}
+{#                </div>#}
+{#                {% endfor %}#}
+{#            </div>#}
+{#        </div>#}
+{#        </div>#}
+
+        <table class="table-responsive table-bordered my-5 w-100" style="border: 2px solid #3391c5; box-shadow: 0 0 5px 0 #000000">
+            <thead>
+                <tr style="background: rgb(249, 249, 247);">
+                    <th scope="col" class="col-sm-2 text-center" style="border-right: 1px solid #a1a1a0">
+                        <strong>Код</strong>
+                    </th>
+                    <th scope="col" class="col-sm-7 text-start" style="border-right: 1px solid #a1a1a0">
+                        <strong>Описание</strong>
+                    </th>
+                    <th scope="col" class="col-sm-1 text-start" style="border-right: 1px solid #a1a1a0">
+                        <strong>Количество в упаковке</strong>
+                    </th>
+                    <th scope="col" class="col-sm-2">
+                        Количество
+                    </th>
+                </tr>
+            </thead>
+            <tbody class="table-group-divider">
+            {% for offer in offers %}
+                <tr>
+                    <td class="text-center align-middle" style="border-top: 1px solid #a1a1a0; border-bottom: 1px solid #a1a1a0; border-right: 1px solid #a1a1a0; font-size: 20px;">
+                        {{ offer.name }}
+                    </td>
+                    <td class="text-start align-middle" style="border-top: 1px solid #a1a1a0; border-left: 1px solid #a1a1a0; border-right: 1px solid #a1a1a0; font-size: 20px;">
+                        {{ offer.description }}
+                    </td>
+                    <td class="text-start align-middle" style="border-top: 1px solid #a1a1a0; border-left: 1px solid #a1a1a0; border-right: 1px solid #a1a1a0; font-size: 20px;">
+                        {{ offer.shipping_pack }}
+                    </td>
+                    <td class="text-start align-middle" style="border-top: 1px solid #a1a1a0; border-left: 1px solid #a1a1a0;">
+                        <form hx-post="{% url 'cart_add' offer_id=offer.pk %}" hx-target="#cart" hx-swap="outerHTML">
+                            <div class="input-group justify-content-evenly">
+                                <input class="form-control" type="number" name="quantity" min="1" required="" id="id_quantity">
+                                <button class="btn button-bg btn-primary" type="submit" value="">Добавить</button>
+                            </div>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+
 
         <div id="cart">
             <div>Позиций в запросе: <span id="offers-in-cart-counter">{{ offers_in_cart|length }}</span></div>
@@ -99,7 +134,7 @@
 
         <!-- Placeholder for the modal -->
         <div id="modal" class="modal fade">
-          <div id="dialog" class="modal-dialog" hx-target="this"></div>
+            <div id="dialog" class="modal-dialog" hx-target="this"></div>
         </div>
 
         <!-- Empty toast to show the message -->

@@ -63,16 +63,16 @@ h1, h4 {
     position: relative;
 }
 
-.nda-card:hover {
-    border: solid 1px var(--color-theme-main);
-}
+/*.nda-card:hover {*/
+/*    border: solid 1px var(--color-theme-text);*/
+/*}*/
 
 .nda-card-image {
     border-radius: 10px;
     object-fit: fill;
 }
 .nda-card:hover img{
-    filter:blur(7px);
+    filter:blur(12px);
 }
 
 .nda-card .card-title {
@@ -129,11 +129,17 @@ h1, h4 {
         margin-right: 18rem;
         margin-left: 18rem;
     }
+    .ad-margin {
+        margin-left: 18rem;
+    }
 }
 
 @media (max-width: 2300px) {
     .main-container {
         margin-right: 15rem;
+        margin-left: 15rem;
+    }
+    .ad-margin {
         margin-left: 15rem;
     }
 }
@@ -143,6 +149,9 @@ h1, h4 {
         margin-right: 12rem;
         margin-left: 12rem;
     }
+    .ad-margin {
+        margin-left: 12rem;
+    }
 }
 
 @media (max-width: 1500px) {
@@ -150,11 +159,17 @@ h1, h4 {
         margin-right: 7rem;
         margin-left: 7rem;
     }
+    .ad-margin {
+        margin-left: 7rem;
+    }
 }
 
-@media (max-width: 1500px) {
+@media (max-width: 1200px) {
     .main-container {
         margin-right: 5rem;
+        margin-left: 5rem;
+    }
+    .ad-margin {
         margin-left: 5rem;
     }
 }
@@ -162,6 +177,9 @@ h1, h4 {
 @media (max-width: 999px) {
     .main-container {
         margin-right: 2rem;
+        margin-left: 2rem;
+    }
+    .ad-margin {
         margin-left: 2rem;
     }
 }
@@ -224,7 +242,7 @@ header ul li {
 
 a {
     cursor: pointer;
-    color: #333333;
+    color: var(--color-theme-text);
     text-decoration: none;
 }
 
@@ -257,3 +275,37 @@ a {
 header {
     background-color: var(--color-theme-header);
 }
+
+/*.divTable{*/
+/*    display: table;*/
+/*    width: 100%;*/
+/*    border: 2px solid #3391c5;*/
+/*    box-shadow: 0 0 5px 0 #000000*/
+/*}*/
+/*.divTableRow {*/
+/*    display: table-row;*/
+/*}*/
+/*.divTableRowHead {*/
+/*    display: table-row;*/
+/*    background: rgb(249, 249, 247);*/
+/*    border-bottom: 20px;*/
+/*}*/
+
+/*.divTableCell {*/
+/*    border: 1px solid #999999;*/
+/*    display: table-cell;*/
+/*    padding: 3px 10px;*/
+/*}*/
+
+/*.divTableBody {*/
+/*    display: table-row-group;*/
+/*}*/
+
+/*.breadcrumb li {*/
+/*    display: inline;*/
+/*    max-width: 200px;*/
+/*    white-space: nowrap;*/
+/*    overflow: hidden; */
+/*    text-overflow: ellipsis;*/
+/*}*/
+

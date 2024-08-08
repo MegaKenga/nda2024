@@ -69,7 +69,7 @@ class Brand(BaseFields):
     )
     banner_color = models.CharField(
         max_length=32,
-        default='#005d9c',
+        default='#3391c5',
         null=True,
         verbose_name='Цвет баннера бренда'
     )
@@ -160,6 +160,12 @@ class Offer(BaseFields):
     name = models.CharField(
         max_length=128,
         verbose_name='Артикул'
+    )
+    shipping_pack = models.CharField(
+        max_length=10,
+        verbose_name="Количество в упаковке",
+        null=True,
+        blank=True,
     )
     category = models.ForeignKey(
         Category,
