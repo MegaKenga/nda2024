@@ -47,6 +47,17 @@
                 {{ category.description | safe }}
             </div>
         </div>
+        <div class="additional-info">
+            <div class="d-flex justify-content-start align-items-center">
+                <div class="info-icon"></div>
+                <span style="padding-left: 20px">Дополнительная информация</span>
+            </div>
+            <div>
+                {% for certificate in certificates %}
+                    <embed src="{{ certificate.file.url }}"/> {{ certificate.file.name }}
+                {% endfor %}
+            </div>
+        </div>
 
 {#        <div class="d-flex">#}
 {#        <div class="divTable">#}

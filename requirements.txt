@@ -17,4 +17,3 @@ requests==2.31.0
 sorl-thumbnail==12.10.0
 psycopg2-binary==2.9.9
 django-tinymce==4.1.0
-
