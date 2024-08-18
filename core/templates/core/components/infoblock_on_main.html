@@ -5,7 +5,7 @@
         <div class="carousel-inner">
             {% for block in blocks %}
                 <div class="carousel-item {% if forloop.counter == 1 %}active{% endif %}" data-bs-interval="5000000">
-                    <div class="d-flex flex-row flex-wrap ad-margin">
+                    <div class="d-flex flex-row flex-wrap infoblock-margin">
                         <div class="flex-grow-1 mt-auto mb-auto col-auto" style="flex-basis: 30%;">
                             <h1 class="display-5 text-uppercase text-wrap">{{ block.block_name }}</h1>
                             {% if block.block_category.is_final %}
