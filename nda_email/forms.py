@@ -25,7 +25,7 @@ class ContactForm(forms.Form):
                    }))
     email = forms.CharField(required=True, widget=forms.TextInput(attrs={'placeholder': 'example@example.ru', 'class': 'form-control'}))
     company_details = forms.FileField(required=False, widget=forms.ClearableFileInput(
-        attrs={'multiple': False, 'allow_empty_file': True, 'id': 'cart_modal_form', 'class': 'form-control', 'type': 'file'}))
+        attrs={'multiple': False, 'allow_empty_file': True, 'id': 'company_details_input', 'form': 'cart_modal_form', 'class': 'form-control', 'type': 'file'}))
     message = forms.CharField(required=False, widget=forms.Textarea(attrs={'placeholder': 'Ваше сообщение', 'class': 'form-control'}))
 
     def clean_phone_number(self):

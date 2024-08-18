@@ -2,33 +2,33 @@ from django.db import models
 from catalog.models import Category, NotHidden
 
 
-class MainPageAdvertisement(models.Model):
+class MainPageInfoBlock(models.Model):
     class Status(models.TextChoices):
         DRAFT = 'DRAFT', 'Черновик'
         PUBLISHED = 'PUBLISHED', 'Активен'
         ARCHIVED = 'ARCHIVED', 'В архиве'
 
-    advert_name = models.CharField(
+    block_name = models.CharField(
         max_length=128,
         null=False,
         blank=False,
         verbose_name='Название рекламного блока'
     )
-    advert_category = models.ForeignKey(
+    block_category = models.ForeignKey(
         Category,
         on_delete=models.SET_NULL,
         null=True,
         blank=False,
         verbose_name='Категория для рекламы на главной странице'
     )
-    advert_text = models.CharField(
+    block_text = models.CharField(
         max_length=256,
         null=False,
         blank=False,
         verbose_name='Текст рекламного блока'
     )
-    advert_image = models.ImageField(
-        upload_to='main_page/banner',
+    block_image = models.ImageField(
+        upload_to='main_page/infoblock',
         default='',
         null=False,
         blank=False,
@@ -48,4 +48,4 @@ class MainPageAdvertisement(models.Model):
         verbose_name_plural = 'Реклама на главной странице'
 
     def __str__(self):
-        return self.advert_name
+        return self.block_name

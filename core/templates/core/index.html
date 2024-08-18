@@ -1,9 +1,9 @@
 {% extends 'core/base.html' %}
 {% load cache %}
-{% load ad_tag %}
+{% load infoblock_tag %}
 {% block content %}
 
-    {% ad_query %}
+    {% infoblock_query %}
 
     {% include 'core/components/search_field.html' %}
 
