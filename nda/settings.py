@@ -26,8 +26,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-# SECRET_KEY = os.getenv('SECRET_KEY')
-SECRET_KEY = 'django-insecure-=j#*b5xl1dgzvmdrf9zc+qae3z7^uqie)rao-_*okz+=tboh2-'
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -56,7 +55,6 @@ INSTALLED_APPS = [
     'core.apps.CoreConfig',
     'sorl.thumbnail',
     'phonenumber_field',
-    # 'ckeditor',
     'django.contrib.sitemaps',
     'django_ckeditor_5',
 ]
@@ -126,7 +124,7 @@ DATABASES = {
 
 CACHES = {
     "default": {
-        "BACKEND": "django.core.cache.backends.redis.RedisCache",
+        # "BACKEND": "django.core.cache.backends.redis.RedisCache",
         "BACKEND": 'django.core.cache.backends.dummy.DummyCache',
         "LOCATION": "redis://127.0.0.1:6379",
     }
@@ -196,12 +194,6 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
 
-# DJANGO_SENDFILE SETTINGS
-PRIVATE_ROOT = os.getenv('PRIVATE_PATH', os.path.join(BASE_DIR, 'private')) 
-SENDFILE_ROOT = 'private/'
-SENDFILE_BACKEND = 'django_sendfile.backends.simple'
-
-
 SESSION_ENGINE = 'django.contrib.sessions.backends.signed_cookies'
 
 MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
@@ -220,7 +212,6 @@ EMAIL_USE_TLS = True
 # YANDEX CAPTCHA SETTINGS
 SECURE_REFERRER_POLICY = 'no-referrer-when-downgrade'
 YACAPTCHA_SERVER = os.getenv('SERVER_KEY')
-
 
 
 # Конфигурация CKEditor
@@ -303,7 +294,6 @@ customColorPalette = [
     }
 ]
 
-CKEDITOR_5_CUSTOM_CSS = 'path_to.css'  # optional
 CKEDITOR_5_CUSTOM_CSS = 'css/admin_dark_mode_fix.css'
 CKEDITOR_5_CONFIGS = {
     "default": {
@@ -379,6 +369,5 @@ CKEDITOR_5_CONFIGS = {
 }
 
 # Custom CSS for Dark Mode Fix
-CKEDITOR_5_CUSTOM_CSS = 'css/admin_dark_mode_fix.css'
 
 ADMINS = [("Ivan", "terryjj0@gmail.com")]
