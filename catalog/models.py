@@ -47,6 +47,14 @@ class BaseFields(models.Model):
         blank=True,
         verbose_name='Keywords'
     )
+    slug = models.SlugField(
+        unique=True,
+        max_length=128,
+        db_index=True,
+        null=True,
+        blank=True,
+        verbose_name='url-адрес'
+    )
 
     objects = models.Manager()
     visible = NotHidden()
@@ -70,32 +78,25 @@ class Specialist(models.Model):
     def __str__(self):
         return self.name
 
-    def save(self, *args, **kwargs):
-        cache_key = f'specialist_{self.pk}'
-        cache.delete(cache_key)  # Инвалидируем кэш
-        super().save(*args, **kwargs)  # Сохраняем объект
-
-    def delete(self, *args, **kwargs):
-        cache_key = f'specialist_{self.pk}'
-        cache.delete(cache_key)  # Инвалидируем кэш
-        super().delete(*args, **kwargs)  # Удаляем объект
-
 
 class Brand(BaseFields):
     name = models.CharField(
         max_length=128,
         unique=True,
-        verbose_name='Бренд')
+        null=True,
+        blank=True,
+        verbose_name='Бренд',
+    )
     description = models.TextField(
         default='',
         null=True,
         blank=True,
         verbose_name='Описание бренда'
-
     )
     logo = models.ImageField(
         upload_to='brand/logo',
         default='',
+        null=True,
         blank=True,
         verbose_name='Логотип бренда'
     )
@@ -104,12 +105,6 @@ class Brand(BaseFields):
         default='#3391c5',
         null=True,
         verbose_name='Цвет баннера бренда'
-    )
-    slug = models.SlugField(
-        unique=True,
-        max_length=128,
-        db_index=True,
-        verbose_name='url-адрес'
     )
 
     class Meta:
@@ -123,20 +118,12 @@ class Brand(BaseFields):
     def __str__(self):  
         return self.name.upper()
 
-    def save(self, *args, **kwargs):
-        cache_key_breadcrumbs = f'brand_breadcrumbs {self.slug}'
-        cache.delete(cache_key_breadcrumbs)
-        super().save(*args, **kwargs)  # Сначала сохраняем, потом инвалидируем кэш
-
-    def delete(self, *args, **kwargs):
-        cache_key_breadcrumbs = f'brand_breadcrumbs {self.slug}'
-        cache.delete(cache_key_breadcrumbs)
-        super().delete(*args, **kwargs)  # Сначала удаляем, потом инвалидируем кэш
-
 
 class Category(BaseFields):
-    name = models.CharField(
-        max_length=256,
+    name = models.TextField(
+        default='',
+        null=True,
+        blank=True,
         verbose_name='Название категории'
     )
     brand = models.ForeignKey(
@@ -160,15 +147,9 @@ class Category(BaseFields):
         blank=True,
         verbose_name='Логотип'
     )
-    slug = models.SlugField(
-        unique=True,
-        max_length=128,
-        db_index=True,
-        verbose_name='url-адрес'
-    )
     banner_color = models.CharField(
         max_length=32,
-        default='',
+        default='#3391c5',
         null=True,
         verbose_name='Цвет баннера категории'
     )
@@ -180,9 +161,6 @@ class Category(BaseFields):
         self.banner_color = self.brand.banner_color
         return self.banner_color
 
-    def save(self, *args, **kwargs):
-        self.full_clean()
-        super().save(*args, **kwargs)
 
     class Meta:
         ordering = ['place']
@@ -199,9 +177,18 @@ class Category(BaseFields):
     
 
 class Product(BaseFields):
-    name = models.CharField(
-        max_length=256,
+    name = models.TextField(
+        default='',
+        null=True,
+        blank=True,
         verbose_name='Название товара'
+    )
+    brand = models.ForeignKey(
+        Brand,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name='Бренд, к которому относится товар'
     )
     logo = models.ImageField(
         upload_to='product/logo',
@@ -210,11 +197,11 @@ class Product(BaseFields):
         blank=True,
         verbose_name='Логотип'
     )
-    parents = models.ManyToManyField(
+    category = models.ManyToManyField(
         'Category',
         blank=True,
         verbose_name='Родительские категории',
-        related_name='children',
+        related_name='children_products',
         symmetrical=False
     )
     short_description = CKEditor5Field(
@@ -257,29 +244,41 @@ class Product(BaseFields):
         blank=True,
         verbose_name='Ссылка Rutube'
     )
-    slug = models.SlugField(
-        unique=True,
-        max_length=128,
-        db_index=True,
-        verbose_name='url-адрес'
-    )
 
-    def save(self, *args, **kwargs):
-        self.full_clean()
-        super().save(*args, **kwargs)
 
     class Meta:
-        proxy = True
+        ordering = ['place']
         verbose_name = 'Товар'
         verbose_name_plural = 'Товары'
 
     def get_absolute_url(self):
         return reverse('product', kwargs={'product_slug': self.slug})
 
+    def __str__(self):
+        return str(self.brand).upper() + '----' + self.name.upper()
 
-class Offer(BaseFields):
+
+class Offer(models.Model):
+    class Status(models.TextChoices):
+        DRAFT = 'DRAFT', 'Черновик'
+        PUBLISHED = 'PUBLISHED', 'Активен'
+        ARCHIVED = 'ARCHIVED', 'В архиве'
+
+    place = models.IntegerField(
+        blank=True,
+        null=True,
+        default=0,  # Добавлено значение по умолчанию
+        verbose_name='Место в списке'
+    )
+    status = models.CharField(
+        choices=Status.choices,
+        default=Status.DRAFT,
+        verbose_name='Статус показа на страницах'
+    )
     name = models.CharField(
         max_length=128,
+        null=True,
+        blank=True,
         verbose_name='Артикул'
     )
     text_description = models.TextField(
@@ -290,9 +289,9 @@ class Offer(BaseFields):
     )
     shipping_pack = models.CharField(
         max_length=10,
-        verbose_name="Количество в упаковке",
         null=True,
         blank=True,
+        verbose_name="Количество в упаковке",
     )
     product = models.ForeignKey(
         Product,
@@ -303,6 +302,9 @@ class Offer(BaseFields):
         verbose_name='Товар, к которому принадлежит код'
     )
 
+    objects = models.Manager()
+    visible = NotHidden()
+
     class Meta:
         ordering = ['place']
         verbose_name = 'Код'
@@ -310,27 +312,3 @@ class Offer(BaseFields):
 
     def __str__(self): # __str__
         return self.name
-
-    def save(self, *args, **kwargs):
-        # Инвалидируем кэш, связанный с этим Offer
-        cache_key_offer = f'offer_{self.pk}'
-        cache.delete(cache_key_offer)
-
-        # Также инвалидируем кэш, связанный с категорией этого Offer
-        if self.product:
-            cache_key_category = f'category_{self.product.slug}'
-            cache.delete(cache_key_category)
-
-        super().save(*args, **kwargs)  # Сначала сохраняем, потом инвалидируем кэш
-
-    def delete(self, *args, **kwargs):
-        # Инвалидируем кэш, связанный с этим Offer
-        cache_key_offer = f'offer_{self.pk}'
-        cache.delete(cache_key_offer)
-
-        # Также инвалидируем кэш, связанный с категорией этого Offer
-        if self.product:
-            cache_key_category = f'category_{self.product.slug}'
-            cache.delete(cache_key_category)
-
-        super().delete(*args, **kwargs)  # Сначала удаляем, потом инвалидируем кэш
