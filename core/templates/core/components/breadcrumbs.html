@@ -15,7 +15,11 @@
     </li>
     {% endif %}
     {% if not breadcrumbs %}
-      <li class="breadcrumb-item breadcrumb-item-active" aria-current="page">{{ category.name.upper }}</li>
+        {% if category %}
+            <li class="breadcrumb-item breadcrumb-item-active" aria-current="page">{{ category.name.upper }}</li>
+        {% elif product %}
+            <li class="breadcrumb-item breadcrumb-item-active" aria-current="page">{{ product.name.upper }}</li>
+        {% endif %}
     {% else %}
       {% for breadcrumb in breadcrumbs %}
         <li class="breadcrumb-item">

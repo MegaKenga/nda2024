@@ -32,36 +32,7 @@
         <div class="catalogBrandItems">
             {% cache 3600 'brand_categories' brand.slug %}
           {% for category in categories %}
-            {% if category.is_final %}
-              {% if category.children.all %}
-                <div class="catalogBrandItem">
-                  <a href="{% url 'category' category_slug=category.slug %}">
-                    <div class="catalogBrandItemImg">
-                      {% if category.logo %}
-                        <img src="{{ category.logo.url }}" alt="Логотип категории" />
-                      {% else %}
-                        <img src="{% static "/images/noImage.jpg" %}" alt="Нет логотипа" />
-                      {% endif %}
-                    </div>
-                    <div class="catalogBrandItemTitle">{{ category.name }}</div>
-                  </a>
-                </div>
-              {% else %}
-                <div class="catalogBrandItem">
-                  <a href="{% url 'offer' brand_slug=category.brand.slug category_slug=category.slug %}">
-                    <div class="catalogBrandItemImg">
-                      {% if category.logo %}
-                        <img src="{{ category.logo.url }}" alt="Логотип категории" />
-                      {% else %}
-                        <img src="{% static "/images/noImage.jpg" %}" alt="Нет логотипа" />
-                      {% endif %}
-                    </div>
-                    <div class="catalogBrandItemTitle">{{ category.name }}</div>
-                  </a>
-                </div>
-              {% endif %}
-            {% else %}
-              <div class="catalogBrandItem">
+            <div class="catalogBrandItem">
                 <a href="{% url 'category' category_slug=category.slug %}">
                   <div class="catalogBrandItemImg">
                     {% if category.logo %}
@@ -73,7 +44,20 @@
                   <div class="catalogBrandItemTitle">{{ category.name }}</div>
                 </a>
               </div>
-              {% endif %}
+          {% endfor %}
+          {% for product in products %}
+            <div class="catalogBrandItem">
+                <a href="{% url 'offer' brand_slug=brand.slug product_slug=product.slug %}">
+                  <div class="catalogBrandItemImg">
+                    {% if product.logo %}
+                      <img src="{{ product.logo.url }}" alt="Логотип категории" />
+                    {% else %}
+                    <img src="{% static "/images/noImage.jpg" %}" alt="Нет логотипа" />
+                    {% endif %}
+                  </div>
+                  <div class="catalogBrandItemTitle">{{ product.name }}</div>
+                </a>
+              </div>
           {% endfor %}
           {% endcache %}
         </div>

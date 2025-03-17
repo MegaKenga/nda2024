@@ -36,37 +36,34 @@
         <!-- Выбор по производителям -->
 
         <div class="catalogBrandItems">
-          {% for category in category.children.all|dictsort:'place' %}
-            {% if category.status == 'PUBLISHED' %}
-              {% if category.children.all or not category.is_final %}
-                <div class="catalogBrandItem">
-                  <a href="{% url 'category' category_slug=category.slug %}">
-                    <div class="catalogBrandItemImg">
-                      {% if category.logo %}
-                        <img src="{{ category.logo.url }}" alt="Логотип категории" />
-                      {% else %}
-                        <img src="{% static '/images/noImage.jpg' %}" alt="Нет логотипа" />
-                      {% endif %}
-                    </div>
-                    <div class="catalogBrandItemTitle">{{ category.name }}</div>
-                  </a>
+          {% for category in categories %}
+              <div class="catalogBrandItem">
+              <a href="{% url 'category' category_slug=category.slug %}">
+                <div class="catalogBrandItemImg">
+                  {% if category.logo %}
+                    <img src="{{ category.logo.url }}" alt="Логотип категории" />
+                  {% else %}
+                    <img src="{% static '/images/noImage.jpg' %}" alt="Нет логотипа" />
+                  {% endif %}
                 </div>
-              {% else %}
-                <div class="catalogBrandItem">
-                  <a href="{% url 'offer' brand_slug=category.brand.slug category_slug=category.slug %}">
-                    <div class="catalogBrandItemImg">
-                      {% if category.logo %}
-                        <img src="{{ category.logo.url }}" alt="Логотип категории" />
-                      {% else %}
-                        <img src="{% static '/images/noImage.jpg' %}" alt="Нет логотипа" />
-                      {% endif %}
-                    </div>
-                    <div class="catalogBrandItemTitle">{{ category.name }}</div>
-                  </a>
-                </div>
-              {% endif %}
-            {% endif %}
+                <div class="catalogBrandItemTitle">{{ category.name }}</div>
+              </a>
+            </div>
           {% endfor %}
+        {% for product in products %}
+            <div class="catalogBrandItem">
+                <a href="{% url 'offer' brand_slug=brand.slug product_slug=product.slug %}">
+                  <div class="catalogBrandItemImg">
+                    {% if product.logo %}
+                      <img src="{{ product.logo.url }}" alt="Логотип категории" />
+                    {% else %}
+                    <img src="{% static "/images/noImage.jpg" %}" alt="Нет логотипа" />
+                    {% endif %}
+                  </div>
+                  <div class="catalogBrandItemTitle">{{ product.name }}</div>
+                </a>
+              </div>
+        {% endfor %}
         </div>
       </div>
       <!-- конец каталога -->

@@ -149,7 +149,7 @@ class Category(BaseFields):
     )
     banner_color = models.CharField(
         max_length=32,
-        default='#3391c5',
+        default='',
         null=True,
         verbose_name='Цвет баннера категории'
     )
@@ -197,7 +197,7 @@ class Product(BaseFields):
         blank=True,
         verbose_name='Логотип'
     )
-    category = models.ManyToManyField(
+    parents = models.ManyToManyField(
         'Category',
         blank=True,
         verbose_name='Родительские категории',

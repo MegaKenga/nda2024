@@ -30,7 +30,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('cart/', include('cart.urls')),
     path('catalog/', include('catalog.urls')),
-    path('files/', include('files.urls')),
     path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
     path('debug/', include('debug_toolbar.urls')),
     path('ckeditor5/', include('django_ckeditor_5.urls')),

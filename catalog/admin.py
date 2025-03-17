@@ -138,7 +138,7 @@ class ProductAdmin(admin.ModelAdmin):
     list_display = ["name", "brand"]
     list_filter = [
         ("brand", RelatedOnlyDropdownFilter),
-        ("category", CategoryRelatedOnlyDropdownFilter),
+        ("parents", CategoryRelatedOnlyDropdownFilter),
         "status",
     ]
     search_fields = ["name"]
@@ -154,7 +154,8 @@ class ProductAdmin(admin.ModelAdmin):
         "brand",
         "short_description",
         "full_description",
-        "category",
+        "characteristics",
+        "parents",
         "logo",
         "specialist",
         "youtube_link",
@@ -166,7 +167,7 @@ class ProductAdmin(admin.ModelAdmin):
         "slug",
         "status",
     ]
-    filter_horizontal = ("category",)
+    filter_horizontal = ("parents",)
     autocomplete_fields = ("brand",)
     view_on_site = True
     actions_on_bottom = True

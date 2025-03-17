@@ -50,7 +50,6 @@ INSTALLED_APPS = [
     'cart.apps.CartConfig',
     'nda_email.apps.NdaEmailConfig',
     'django_cleanup',
-    'django_sendfile',
     'django_celery_results',
     'core.apps.CoreConfig',
     'sorl.thumbnail',

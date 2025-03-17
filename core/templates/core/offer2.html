@@ -114,7 +114,7 @@
                     <div class="productTitleText">
                         {% comment %} <h3>{{brand}}</h3> {% endcomment %}
                         <h2>{{ product.name }}</h2>
-                        {{ product.description|safe }}
+                        {{ product.short_description|safe }}
                     
                     </div>
                     <div class="productTitleConnect">
@@ -142,38 +142,38 @@
             <div class="productInfo">
                 <div class="productInfoChoice">
                     <ul class="nav nav-pills" id="pills-tab" role="tablist">
-                        <li {% if not video_file and not youtube_link and not rt_link and product.characteristics %} style="width: 25%;"{% endif %} 
-                            {% if not video_file and not youtube_link and not rt_link and not product.characteristics %} style="width: 33.3%;"{% endif %}
-                            {% if video_file or youtube_link or rt_link and not product.characteristics %} style="width: 25%;"{% endif %} 
+                        <li {% if not youtube_link and not rutube_link and product.characteristics %} style="width: 25%;"{% endif %}
+                            {% if not youtube_link and not rutube_link and not product.characteristics %} style="width: 33.3%;"{% endif %}
+                            {% if youtube_link or rutube_link and not product.characteristics %} style="width: 25%;"{% endif %}
                         class="nav-item" role="presentation">
                             <button class="nav-link first active" id="pills-description-tab" data-bs-toggle="pill"
                                 data-bs-target="#pills-description" type="button" role="tab"
                                 aria-controls="pills-description" aria-selected="true">Описание</button>
                         </li>
                         {% if product.characteristics %}
-                        <li {% if not video_file and not youtube_link and not rt_link %} style="width: 25%;"{% endif %} class="nav-item" role="presentation">
+                        <li {% if not youtube_link and not rutube_link %} style="width: 25%;"{% endif %} class="nav-item" role="presentation">
                             <button class="nav-link" id="pills-characteristics-tab" data-bs-toggle="pill"
                                 data-bs-target="#pills-characteristics" type="button" role="tab"
                                 aria-controls="pills-characteristics" aria-selected="false">Характеристики</button>
                         </li>
                         {% endif%}
-                        <li {% if not video_file and not youtube_link and not rt_link and product.characteristics %} style="width: 25%;"{% endif %} 
-                            {% if not video_file and not youtube_link and not rt_link and not product.characteristics%} style="width: 33.3%;"{% endif %}
-                            {% if video_file or youtube_link or rt_link and not product.characteristics %} style="width: 25%;"{% endif %} 
+                        <li {% if not youtube_link and not rutube_link and product.characteristics %} style="width: 25%;"{% endif %}
+                            {% if not youtube_link and not rutube_link and not product.characteristics%} style="width: 33.3%;"{% endif %}
+                            {% if youtube_link or rutube_link and not product.characteristics %} style="width: 25%;"{% endif %}
                         class="nav-item" role="presentation">
                             <button class="nav-link" id="pills-order-tab" data-bs-toggle="pill"
                                 data-bs-target="#pills-order" type="button" role="tab" aria-controls="pills-order"
                                 aria-selected="false">Оформить заказ</button>
                         </li>
-                        <li {% if not video_file and not youtube_link and not rt_link and product.characteristics %} style="width: 25%;"{% endif %} 
-                            {% if not video_file and not youtube_link and not rt_link and not product.characteristics%} style="width: 33.4%;"{% endif %}
-                            {% if video_file or youtube_link or rt_link and not product.characteristics %} style="width: 25%;"{% endif %} 
+                        <li {% if not youtube_link and not rutube_link and product.characteristics %} style="width: 25%;"{% endif %}
+                            {% if not youtube_link and not rutube_link and not product.characteristics%} style="width: 33.4%;"{% endif %}
+                            {% if youtube_link or rutube_link and not product.characteristics %} style="width: 25%;"{% endif %}
                         class="nav-item" role="presentation">
                             <button class="nav-link" id="pills-catalogs-tab" data-bs-toggle="pill"
                                 data-bs-target="#pills-catalogs" type="button" role="tab" aria-controls="pills-catalogs"
                                 aria-selected="false">Каталоги и РУ</button>
                         </li>
-                        {% if video_file or youtube_link or rt_link %}
+                        {% if video_file or youtube_link or rutube_link %}
                         <li {% if not product.characteristics %} style="width: 25%;"{% endif %} 
                         class="nav-item" role="presentation">
                             <button class="nav-link last" id="pills-video-tab" data-bs-toggle="pill"
@@ -219,8 +219,7 @@
                                         </tr>
                                     </thead>
                                     <tbody class="">
-                                        {% for offer in offers|dictsort:'place' %}
-                                            {% if offer.status == 'PUBLISHED' %}
+                                        {% for offer in offers %}
                                         <tr class="table-row">
                                             <td class="text-center align-middle">{{ offer.name | safe}}</td>
                                             <td class="text-start align-middle">{{ offer.text_description | safe}}</td>
@@ -246,7 +245,6 @@
                                                 </div>
                                             </td>
                                         </tr>
-                                        {% endif %}
                                         {% endfor %}
                                     </tbody>
                                 </table>
@@ -297,16 +295,11 @@
                             {% endif %}
                         </div>
                     </div>
-                    {% if video_file or youtube_link or rt_link %}
+                    {% if youtube_link or rutube_link %}
                     <div class="tab-pane fade" id="pills-video" role="tabpanel" aria-labelledby="pills-video-tab">
                         <div class="productVideo">
                             <div class="productVideoContainer">
-                                    {% if  video_file %}
-                                        <!-- Локальное видео -->
-                                        <video controls style="width:100%; height:100%">
-                                            <source src="{{ video_file.url }}" type="video/mp4">
-                                        </video>
-                                    {% elif rt_link %}
+                                    {% if rutube_link %}
                                         <!-- Видео с RuTube -->
                                         <iframe width="100%" height="100%" src="https://rutube.ru/play/embed/{{ rt_link|slice:'23:' }}" frameBorder="0" allow="clipboard-write; autoplay" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>
                                     {% elif youtube_link %}
@@ -442,16 +435,12 @@
                         <div class="dropDownEl">
                             <div class="productVideo">
                                 <div class="productVideoContainer">
-                                        {% if  video_file %}
-                                            <!-- Локальное видео -->
-                                            <video controls style="width:100%; height:auto">
-                                                <source src="{{ video_file.url }}" type="video/mp4">
-                                            </video>
-                                        {% elif rt_link %}
+                                        {% if rutube_link %}
                                             <!-- Видео с RuTube -->
                                             <iframe width="100%" height="100%" src="https://rutube.ru/play/embed/{{ rt_link|slice:'23:' }}" frameBorder="0" allow="clipboard-write; autoplay" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>
+                                        {% elif youtube_link %}
                                             <!-- Видео с Ютуб -->
-                                            {% comment %} <iframe width="100%" height="100%" src="" frameBorder="0" allow="clipboard-write; autoplay" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe> {% endcomment %}
+                                            <iframe width="100%" height="100%" src="" frameBorder="0" allow="clipboard-write; autoplay" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>
                                         {% endif %} 
                                 </div>
                             </div>
