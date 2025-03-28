@@ -114,16 +114,15 @@ class OfferView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        product = Product.objects.select_related('brand', 'specialist').get(slug=self.kwargs['product_slug'])
+        product = Product.visible.select_related('brand', 'specialist').get(slug=self.kwargs['product_slug'])
         context['product'] = product
         context['brand'] = product.brand
-        context['offers'] = Offer.objects.filter(product=product).order_by('place')
-        print([Offer.objects.filter(product=product)])
+        context['offers'] = Offer.visible.filter(product=product).order_by('place')
         context['images'] = ModelImage.objects.filter(product=product)
         context['certificates'] = ModelFile.objects.filter(product=product)
         context['breadcrumbs'] = breadcrumbs_path(product)
         context['cart_product_form'] = CartAddProductForm()
-        context['brands'] = Brand.objects.all().order_by('name') # no need to filter, already in the view
+        context['brands'] = Brand.visible.all().order_by('name') # no need to filter, already in the view
         # context['specialist'] = product.specialist
         # context['youtube_link'] = product.youtube_link
         # context['rutube_link'] = product.rt_link
@@ -165,7 +164,7 @@ class BrandsWithCertificatesView(ListView):
     def get_queryset(self):
         
         queryset = super().get_queryset()
-        brands_with_certs = set(Brand.objects.filter(category__modelfile__isnull=False))
+        brands_with_certs = set(Brand.visible.filter(product__modelfile__isnull=False))
 
         return queryset.filter(id__in=[b.id for b in brands_with_certs])
     
@@ -194,12 +193,12 @@ class BrandCertificatesDetailView(DetailView):
         context['current_url_name'] = current_url_name
 
         brand = self.object
-        products = Product.objects.filter(brand=brand)
+        products = Product.visible.filter(brand=brand)
         certificates = ModelFile.objects.filter(product__in=products)
 
         context['products'] = products
         context['certificates'] = certificates
-        context['brands'] = Brand.objects.all().order_by('name') 
+        context['brands'] = Brand.visible.all().order_by('name')
 
         current_year = datetime.datetime.now().year
         context['current_year'] = current_year
@@ -253,5 +252,3 @@ class ContactsView(TemplateView):
         current_year = datetime.datetime.now().year
         context['current_year'] = current_year
         return context
-
-

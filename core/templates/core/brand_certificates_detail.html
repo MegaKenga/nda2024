@@ -59,9 +59,7 @@
                   {% for certificate in certificates %}
                     <tr class="table-row">
                       <td class="text-center align-middle">{{ forloop.counter }}</td>
-                      {% comment %} <td class="text-center align-middle">{{ certificate.get_filename }}</td> {% endcomment %} 
-                      {% comment %} Заглушка под поле Содержание документа {% endcomment %}
-                      <td class="text-center align-middle">Устройство для дренирования ран в наборах и отдельных упаковках</td>
+                      <td class="text-center align-middle">{{ certificate.product.name }}</td>
                       <td class="text-center align-middle">{{ certificate.get_filename|slice:"3:12" }}</td>
                       <td class="text-center align-middle" id="certificateDownload">
                         <img src="{% static 'images/certificates/downloadCertificates.svg' %}" alt="" />  
@@ -91,8 +89,6 @@
                   {% for certificate in certificates %}
                     <tr class="table-row">
                       <td class="text-center align-middle">{{ forloop.counter }}</td>
-                      {% comment %} <td class="text-center align-middle">{{ certificate.get_filename }}</td> {% endcomment %}
-                      {% comment %} Заглушка под поле Содержание документа {% endcomment %}
                       <td class="text-start align-middle p-2">Устройство для дренирования ран в наборах и отдельных упаковках</td>
                       <td class="text-center align-middle">{{ certificate.get_filename|slice:"3:12" }}</td>
                       <td class="text-center align-middle" id= "certificateDownload">
