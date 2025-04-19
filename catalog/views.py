@@ -1,5 +1,3 @@
-from unicodedata import category
-
 from django.db.models import Q, Prefetch
 from django.shortcuts import get_object_or_404
 from django.views.generic import TemplateView, ListView
@@ -9,11 +7,9 @@ from catalog.models import Category, Brand, Offer, Product
 from files.models import ModelFile, ModelImage, InstructionsFile, CatalogFile
 from cart.forms import CartAddProductForm
 from django.views.generic import DetailView
-from django.core.mail import send_mail
-from django.views.generic.edit import FormView
 from django.urls import resolve
 import datetime
-import time
+
 
 SEARCH_QUERY_PARAM = 'q'
 
@@ -24,10 +20,7 @@ def breadcrumbs_path(category):
     while len(parents) > 0:
         parents_path = [parent for parent in parents if parent.brand is not None]
         if parents_path:
-            if len(parents_path) > 1:
-                raise ValueError('We don\'t expect multiple brand parents')
-            if len(parents_path) == 1:
-                breadcrumbs.insert(0, parents_path[0])
+            breadcrumbs.insert(0, parents_path[0])
             parents = parents_path[0].parents.all()
         else:
             parents_path = [parent for parent in parents if parent.brand is None]
@@ -37,6 +30,7 @@ def breadcrumbs_path(category):
                 breadcrumbs.insert(0, parents_path[0])
             parents = parents_path[0].parents.all()
     return breadcrumbs
+
 
 
 class IndexView(TemplateView):
@@ -114,20 +108,21 @@ class OfferView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        product = Product.visible.select_related('brand', 'specialist').get(slug=self.kwargs['product_slug'])
+        product = Product.objects.select_related('brand', 'specialist').get(slug=self.kwargs['product_slug'])
         context['product'] = product
         context['brand'] = product.brand
         context['offers'] = Offer.visible.filter(product=product).order_by('place')
+        print([Offer.objects.filter(product=product)])
         context['images'] = ModelImage.objects.filter(product=product)
         context['certificates'] = ModelFile.objects.filter(product=product)
         context['breadcrumbs'] = breadcrumbs_path(product)
         context['cart_product_form'] = CartAddProductForm()
         context['brands'] = Brand.visible.all().order_by('name') # no need to filter, already in the view
-        # context['specialist'] = product.specialist
-        # context['youtube_link'] = product.youtube_link
-        # context['rutube_link'] = product.rt_link
-        # context['keywords'] = product.keywords
-        # context['title'] = product.title
+        context['specialist'] = product.specialist
+        context['youtube_link'] = product.youtube_link
+        context['rutube_link'] = product.rutube_link
+        context['keywords'] = product.keywords
+        context['title'] = product.title
         context['instructions'] = InstructionsFile.objects.filter(product=product)
         context['catalogs'] = CatalogFile.objects.filter(product=product)
 
@@ -135,7 +130,7 @@ class OfferView(TemplateView):
 
 
 class SiteSearchView(ListView):
-    model = Category
+    model = Product
     template_name = 'core/search.html'
     paginate_by = 10
 
@@ -148,13 +143,14 @@ class SiteSearchView(ListView):
 
         related_offers = Prefetch(
             'offer',
-            queryset=Offer.visible.filter(name__icontains=query) or Offer.visible.filter(description__icontains=query),
+            queryset=Offer.visible.filter(name__icontains=query) or Offer.visible.filter(text_description__icontains=query),
             to_attr='related_offers')
         qs = (
-            qs.filter(is_final=True).filter(Q(name__icontains=query) | Q(offer__name__icontains=query) | Q(offer__description__icontains=query))
+            qs.filter(Q(name__icontains=query) | Q(offer__name__icontains=query) | Q(offer__text_description__icontains=query))
             .prefetch_related(related_offers).distinct()
         )
         return qs
+
 
 class BrandsWithCertificatesView(ListView):
     model = Brand

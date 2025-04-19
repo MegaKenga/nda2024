@@ -6,8 +6,8 @@ from catalog.models import Brand, Category, Offer, Specialist, Product
 from files.models import ModelImage, ModelFile, InstructionsFile, CatalogFile
 from catalog.admin_filters import (
     DropdownFilter,
-    RelatedOnlyDropdownFilter,
     CategoryRelatedOnlyDropdownFilter,
+    RelatedOnlyDropdownFilter,
     ProductRelatedOnlyDropdownFilter
 )
 
@@ -102,7 +102,6 @@ class CategoryAdmin(admin.ModelAdmin):
     list_editable = ("place", "slug", "status")
     list_filter = (
         ("brand", RelatedOnlyDropdownFilter),
-        ("parents", CategoryRelatedOnlyDropdownFilter),
         "status",
     )
     fields = [
@@ -138,7 +137,6 @@ class ProductAdmin(admin.ModelAdmin):
     list_display = ["name", "brand"]
     list_filter = [
         ("brand", RelatedOnlyDropdownFilter),
-        ("parents", CategoryRelatedOnlyDropdownFilter),
         "status",
     ]
     search_fields = ["name"]
@@ -172,6 +170,9 @@ class ProductAdmin(admin.ModelAdmin):
     view_on_site = True
     actions_on_bottom = True
     list_per_page = 25
+
+    def get_queryset(self, request):
+        return super().get_queryset(request).select_related('brand')
 
 
 class OfferAdmin(admin.ModelAdmin):

@@ -40,24 +40,24 @@
               </span>
             </div>
 
-            {% for category in object_list %}
-              {% cache 600 category.pk %}
+            {% for product in object_list %}
+              {% cache 600 product.pk %}
                 <div class="searchResultEl">
-                  <a href="{% url 'offer' brand_slug=category.brand.slug category_slug=category.slug %}">
+                  <a href="{% url 'offer' brand_slug=product.brand.slug product_slug=product.slug %}">
                     <div class="searchResultName">
-                      {{ category.name.upper }}
+                      {{ product.name.upper }}
                     </div>
-                  
-                    {% for offer in category.related_offers %}
+
+                    {% for offer in product.related_offers %}
                       <div class="searchResultArticle">
                        <div class="searchResultArticleName">
-                        <div class="">Артикл: </div>
+                        <div class="">Код товара: </div>
                         <div class=""><b>{{ offer.name | safe}}</b> </div>
-                       </div> 
+                       </div>
                        <div class="searchResultArticleDescription">
                         <div class="">Описание: </div>
                         <div class="innerDescription">{{ offer.text_description | safe}}</div>
-                         
+
                        </div>
                       </div>
                     {% endfor %}
@@ -65,6 +65,7 @@
                 </div>
               {% endcache %}
             {% endfor %}
+
           {% endcache %}
         {% else %}
           <div>По вашему запросу ничего не найдено. Попробуйте изменить запрос и попробовать снова</div>

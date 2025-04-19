@@ -2,7 +2,7 @@
 {% load static %}
 
 <form action="{% url 'search_page' %}" class="formInner">
-    <input type="text" placeholder="Искать по артиклу" name='q' value="{% search_query request %}">
+    <input type="text" placeholder="Поиск" name='q' value="{% search_query request %}">
     <button type="submit">
         <div class="searchButton button"><img src="{% static 'images/SearchButton.svg' %}" alt="Поиск"
                 class="searchImg"></div>

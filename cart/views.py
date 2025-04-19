@@ -2,15 +2,16 @@ from django.core.exceptions import ValidationError
 from django.shortcuts import render, get_object_or_404
 from django.views.decorators.http import require_POST
 from django.http import HttpResponse
-import time
+
 import json
 import logging
 from catalog.models import Offer
 from cart.forms import CartAddProductForm
+
 from nda_email.forms import ContactForm, PhysicalContactForm, MailForm, CallForm
 from nda_email.email_sender import LegalEntityEmailSender, PhysicalPersonEmailSender, MailFormEmailSender, CallFormEmailSender
 from nda_email.captcha import get_client_ip, yandex_captcha_validation
-import requests
+
 
 CART_SESSION_ID = 'cart'
 logger = logging.getLogger(__name__)
