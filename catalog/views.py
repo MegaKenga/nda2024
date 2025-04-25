@@ -32,7 +32,6 @@ def breadcrumbs_path(category):
     return breadcrumbs
 
 
-
 class IndexView(TemplateView):
     template_name = 'core/index.html'
 
@@ -158,10 +157,8 @@ class BrandsWithCertificatesView(ListView):
     context_object_name = 'brands'
 
     def get_queryset(self):
-        
         queryset = super().get_queryset()
         brands_with_certs = set(Brand.visible.filter(product__modelfile__isnull=False))
-
         return queryset.filter(id__in=[b.id for b in brands_with_certs])
     
     def get_context_data(self, **kwargs):

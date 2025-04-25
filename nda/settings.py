@@ -13,8 +13,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 from pathlib import Path
 import os
 from dotenv import load_dotenv
-import logging
-from django.utils.log import DEFAULT_LOGGING
+
 
 load_dotenv()
 
@@ -33,7 +32,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 
-logging.basicConfig(level=logging.INFO)
 # Application definition
 
 INSTALLED_APPS = [
@@ -129,6 +127,8 @@ CACHES = {
     }
 }
 
+DATA_UPLOAD_MAX_NUMBER_FIELDS = None
+
 # CELERY SETTINGS
 CELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL', 'redis://localhost:6379')
 CELERY_ACCEPT_CONTENT = ['json']
@@ -214,49 +214,6 @@ YACAPTCHA_SERVER = os.getenv('SERVER_KEY')
 
 
 # Конфигурация CKEditor
-CKEDITOR_CONFIGS = {
-    'default': {
-        'toolbar': 'full',
-        'height': 300,
-        'width': '100%',
-    },
-}
-
-
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'formatters': {
-        'verbose': {
-            'format': '{levelname} {asctime} {module} {process:d} {thread:d} {message}',
-            'style': '{',
-        },
-        'simple': {
-            'format': '{levelname} {message}',
-            'style': '{',
-        },
-    },
-    'handlers': {
-        'file': {
-            'level': 'DEBUG',  
-            'class': 'logging.FileHandler',
-            'filename': 'nda_email.log',  
-            'formatter': 'verbose',
-        },
-        'console': {
-            'level': 'INFO',
-            'class': 'logging.StreamHandler',
-            'formatter': 'simple',
-        },
-    },
-    'loggers': {
-        'nda_email': {  
-            'handlers': ['file', 'console'],
-            'level': 'DEBUG',  
-            'propagate': True,
-        },
-    },
-}
 
 customColorPalette = [
     {
