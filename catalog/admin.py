@@ -38,6 +38,7 @@ class OfferInline(admin.TabularInline):
         "name",
         "text_description",
         "shipping_pack",
+        "place",
         "status",
     ]
 
@@ -93,6 +94,7 @@ class BrandAdmin(admin.ModelAdmin):
     actions_on_bottom = True
     list_per_page = 25
     search_fields = ["name"]
+    save_on_top = True
 
 
 class CategoryAdmin(admin.ModelAdmin):
@@ -123,6 +125,7 @@ class CategoryAdmin(admin.ModelAdmin):
     actions_on_bottom = True
     list_per_page = 25
     search_fields = ["name"]
+    save_on_top = True
 
     def get_form(self, request, obj=None, **kwargs):
         form = super(CategoryAdmin, self).get_form(request, obj, **kwargs)
@@ -169,6 +172,8 @@ class ProductAdmin(admin.ModelAdmin):
     autocomplete_fields = ("brand",)
     view_on_site = True
     actions_on_bottom = True
+    save_as = True
+    save_on_top = True
     list_per_page = 25
 
     def get_queryset(self, request):
@@ -202,6 +207,7 @@ class OfferAdmin(admin.ModelAdmin):
     actions_on_bottom = True
     list_per_page = 25
     search_fields = ["name"]
+    save_on_top = True
 
     def get_queryset(self, request):
         return (

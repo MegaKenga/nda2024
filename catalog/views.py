@@ -1,13 +1,15 @@
-from django.db.models import Q, Prefetch
+from django.db.models import Q, Prefetch, Count
 from django.shortcuts import get_object_or_404
 from django.views.generic import TemplateView, ListView
 from django.contrib import messages
+from django.urls import resolve
+from django.contrib.auth.mixins import LoginRequiredMixin
+
 from core.models import MainPageInfoBlock
 from catalog.models import Category, Brand, Offer, Product
 from files.models import ModelFile, ModelImage, InstructionsFile, CatalogFile
 from cart.forms import CartAddProductForm
-from django.views.generic import DetailView
-from django.urls import resolve
+
 import datetime
 
 
@@ -63,13 +65,10 @@ class CategoryView(TemplateView):
         context['current_url_name'] = current_url_name
 
         category = Category.visible.select_related('brand').order_by('place').get(slug=self.kwargs['category_slug'])
-        print([category])
         context['brand'] = category.brand
         context['category'] = category
         context['categories'] = Category.visible.filter(parents=category).order_by('place')
         context['products'] = Product.visible.filter(parents=category).order_by('place')
-        print([Category.visible.filter(parents=category)])
-        print([Product.visible.filter(parents=category)])
         context['breadcrumbs'] = breadcrumbs_path(category)
         context['brands'] = Brand.visible.all().order_by('name')
 
@@ -111,7 +110,6 @@ class OfferView(TemplateView):
         context['product'] = product
         context['brand'] = product.brand
         context['offers'] = Offer.visible.filter(product=product).order_by('place')
-        print([Offer.objects.filter(product=product)])
         context['images'] = ModelImage.objects.filter(product=product)
         context['certificates'] = ModelFile.objects.filter(product=product)
         context['breadcrumbs'] = breadcrumbs_path(product)
@@ -151,97 +149,12 @@ class SiteSearchView(ListView):
         return qs
 
 
-class BrandsWithCertificatesView(ListView):
-    model = Brand
-    template_name = 'core/certificates.html'  
-    context_object_name = 'brands'
-
-    def get_queryset(self):
-        queryset = super().get_queryset()
-        brands_with_certs = set(Brand.visible.filter(product__modelfile__isnull=False))
-        return queryset.filter(id__in=[b.id for b in brands_with_certs])
-    
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        current_path = self.request.path_info
-        match = resolve(current_path)
-        current_url_name = match.url_name
-        context['current_url_name'] = current_url_name
-        current_year = datetime.datetime.now().year
-        context['current_year'] = current_year
-        return context
-
-
-class BrandCertificatesDetailView(DetailView):
-    model = Brand
-    template_name = 'core/brand_certificates_detail.html'
-    context_object_name = 'brand'
-
+class DuplicatesView(LoginRequiredMixin, TemplateView):
+    template_name = 'core/duplicates.html'
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        current_path = self.request.path_info
-        match = resolve(current_path)
-        current_url_name = match.url_name
-        context['current_url_name'] = current_url_name
-
-        brand = self.object
-        products = Product.visible.filter(brand=brand)
-        certificates = ModelFile.objects.filter(product__in=products)
-
-        context['products'] = products
-        context['certificates'] = certificates
-        context['brands'] = Brand.visible.all().order_by('name')
-
-        current_year = datetime.datetime.now().year
-        context['current_year'] = current_year
-        return context
-    
-class WorkView(TemplateView):
-    template_name = 'core/work.html'
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-
-        current_path = self.request.path_info
-        match = resolve(current_path)
-        current_url_name = match.url_name
-        context['current_url_name'] = current_url_name
-
-        context['brands'] = Brand.visible.all().order_by('name')
-
-        current_year = datetime.datetime.now().year
-        context['current_year'] = current_year
-        return context
-
-
-class PrivacyView(TemplateView):
-    template_name = 'core/privacy.html'
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-
-        current_path = self.request.path_info
-        match = resolve(current_path)
-        current_url_name = match.url_name
-        context['current_url_name'] = current_url_name
-
-        context['brands'] = Brand.visible.all().order_by('name')
-
-        current_year = datetime.datetime.now().year
-        context['current_year'] = current_year
-        return context
-
-class ContactsView(TemplateView):
-    template_name = 'core/contacts.html'
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-
-        current_path = self.request.path_info
-        match = resolve(current_path)
-        current_url_name = match.url_name
-        context['current_url_name'] = current_url_name
-
-        context['brands'] = Brand.visible.all().order_by('name')
-
-        current_year = datetime.datetime.now().year
-        context['current_year'] = current_year
+        get_duplicates = Offer.visible.values('name').annotate(Count('name')).order_by().filter(name__count__gt=1).values_list('name', flat=True)
+        duplicates = Offer.visible.filter(name__in=get_duplicates).order_by('name')
+        context['duplicates'] = duplicates
         return context

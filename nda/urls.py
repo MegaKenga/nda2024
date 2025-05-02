@@ -18,10 +18,11 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
 from django.contrib.sitemaps.views import sitemap
-from nda.sitemaps import sitemaps  
+
+from nda.sitemaps import sitemaps
 from nda import settings
 from nda.views import custom_404
-import catalog.views
+import catalog.views, core.views
 
 
 urlpatterns = [
@@ -33,6 +34,11 @@ urlpatterns = [
     path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
     path('debug/', include('debug_toolbar.urls')),
     path('ckeditor5/', include('django_ckeditor_5.urls')),
+    path('privacy/', core.views.PrivacyView.as_view(), name='privacy'),
+    path('contacts/', core.views.ContactsView.as_view(), name='contacts'),
+    path('work/', core.views.WorkView.as_view(), name='work'),
+    path('certificates/', core.views.BrandsWithCertificatesView.as_view(), name='brands_with_certificates'),
+    path('brand/<int:pk>/certificates/', core.views.BrandCertificatesDetailView.as_view(),name='brand_certificates'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+{% for duplicate in duplicates %}
+    <ul>
+        <li>{{ duplicate.name }}</li>
+        {% if duplicate.product %}
+            <li>
+                <a href="{% url 'offer' brand_slug=duplicate.product.brand.slug product_slug=duplicate.product.slug %}">
+                    {{ duplicate.product.name }}
+                </a>
+            </li>
+        {% endif %}
+    </ul>
+{% endfor %}
+</html>
