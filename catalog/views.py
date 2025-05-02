@@ -1,8 +1,8 @@
-from django.db.models import Q, Prefetch, Count
 from django.shortcuts import get_object_or_404
 from django.views.generic import TemplateView, ListView
-from django.contrib import messages
 from django.urls import resolve
+from django.db.models import Q, Prefetch, Count
+from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 from core.models import MainPageInfoBlock
@@ -35,7 +35,7 @@ def breadcrumbs_path(category):
 
 
 class IndexView(TemplateView):
-    template_name = 'core/index.html'
+    template_name = 'catalog/index.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -54,7 +54,7 @@ class IndexView(TemplateView):
 
 class CategoryView(TemplateView):
     model = Category
-    template_name = 'core/category.html'
+    template_name = 'catalog/category.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -79,7 +79,7 @@ class CategoryView(TemplateView):
 
 class BrandView(TemplateView):
     model = Category
-    template_name = 'core/brand.html'
+    template_name = 'catalog/brand.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -101,7 +101,7 @@ class BrandView(TemplateView):
 
 
 class OfferView(TemplateView):
-    template_name = 'core/offer2.html'
+    template_name = 'catalog/offer.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

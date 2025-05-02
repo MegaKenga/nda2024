@@ -1,4 +1,4 @@
-{% extends 'core/base1.html' %}
+{% extends 'core/base.html' %}
 {% load static %}
 {% load static cache %}
 
@@ -6,16 +6,10 @@
 <title> Контакты</title>
 {% endblock%}
 
-
 {% block metatag %}
   <meta name="keywords" content="Контакты с компанией">
-  {% comment %} <meta property="og:url" content="https://nda.ru{{ request.path }}"> {% endcomment %}
-  {% comment %} <meta property="og:title" content="РУ и сертификаты"> {% endcomment %}
-  {% comment %} <meta property="og:type" content="website"> {% endcomment %}
-  {% comment %} <meta property="og:description" content="Регистрационные удостоверения {{brand}}"> {% endcomment %}
   <meta name="description" content="Контакты с ООО &quot;НДА Деловая медицинская компания&quot;">
 {% endblock %}
-
 
 {% block content%}
 <header style="height: 0px;">
@@ -29,19 +23,17 @@
         <div class="breadCrumbs">
             <ol class="breadcrumb">
               <li class="breadcrumb-item ">
-                <a href="{% url 'home' %}" style="color: var(--color-theme-main)">ГЛАВНАЯ</a>
+                <a href="{% url 'home' %}">ГЛАВНАЯ</a>
               </li>
               <li class="breadcrumb-item breadcrumb-item-active" aria-current="page"> КОНТАКТЫ </li>
             </ol>
         </div>
-       
         <div class="brandBanner contactsBanner">
           <div class="brandLogo">
               <img src="{% static "images/contacts/contactsPhone.svg" %}" alt="">
           </div>
           <div class="brandInfo">
               <h1>Контакты</h1>
-              <h2>С нами можно связаться</h2>
           </div>
       </div>
      <!-- карта     -->
@@ -159,18 +151,11 @@
         {% endcache %}
       </div>
      <!-- адреса -->
-      <!-- заявка -->
-     
-      <!-- заявка -->
+        <!-- заявка -->
+        <!-- заявка -->
     </div>
-       <!-- плавающий элемент с формами связи -->
-       {% include "core/components/formsContainer.html" %}
-
-        <!-- плавающий элемент с формами связи -->
+    <!-- плавающий элемент с формами связи -->
+    {% include "core/components/formsContainer.html" %}
+    <!-- плавающий элемент с формами связи -->
 </main>
 {% endblock %}   
-
-
-  
-
-   

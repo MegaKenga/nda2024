@@ -9,7 +9,7 @@ from catalog.models import Offer
 from cart.forms import CartAddProductForm
 
 from nda_email.forms import ContactForm, PhysicalContactForm, MailForm, CallForm
-from nda_email.email_sender import LegalEntityEmailSender, PhysicalPersonEmailSender, MailFormEmailSender, CallFormEmailSender
+from nda_email.email_sender import LegalEntityEmailSender, PhysicalPersonEmailSender, CallFormEmailSender
 from nda_email.captcha import get_client_ip, yandex_captcha_validation
 
 
@@ -249,4 +249,3 @@ def call_submit(request):
             "showError": error_message,
         })
         return response
-        

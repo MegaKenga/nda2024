@@ -35,11 +35,11 @@ class LegalEntityEmailSender:  # Класс для отправки писем �
             context['offers'] = offers
 
         html_message_for_nda = render_to_string(
-            'cart/message_for_nda.html',
+            'cart/../templates/cart/message_for_nda.html',
             context
         )
         html_message_for_customer = render_to_string(
-            'cart/message_for_customer.html',
+            'cart/../templates/cart/message_for_customer.html',
             context
         )
         storaged_file = None
@@ -78,11 +78,11 @@ class PhysicalPersonEmailSender:  # Класс для отправки писе�
             context['offers'] = offers
 
         html_message_for_nda = render_to_string(
-            'cart/message_for_nda.html',
+            'cart/../templates/cart/message_for_nda.html',
             context
         )
         html_message_for_customer = render_to_string(
-            'cart/message_for_customer.html',
+            'cart/../templates/cart/message_for_customer.html',
             context
         )
 
@@ -122,8 +122,8 @@ class MailFormEmailSender:
             'offers': offers, # Убедитесь, что offers всегда передается в контекст
         }
 
-        html_message_for_nda = render_to_string('cart/message_for_nda.html', context)
-        html_message_for_customer = render_to_string('cart/message_for_customer.html', context)
+        html_message_for_nda = render_to_string('cart/../templates/cart/message_for_nda.html', context)
+        html_message_for_customer = render_to_string('cart/../templates/cart/message_for_customer.html', context)
 
         storaged_file = None
         if file is not None:
@@ -155,8 +155,8 @@ class CallFormEmailSender:  # Renamed class
             'customer_message': customer_message,
         }
 
-        html_message_for_nda = render_to_string('cart/message_for_nda.html', context)
-        html_message_for_customer = render_to_string('cart/message_for_customer.html', context)
+        html_message_for_nda = render_to_string('cart/../templates/cart/message_for_nda.html', context)
+        html_message_for_customer = render_to_string('cart/../templates/cart/message_for_customer.html', context)
 
         storaged_file = None
         if file is not None:

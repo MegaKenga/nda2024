@@ -21,7 +21,7 @@
                     <li class="nav-item">
                         <a href="{% url 'work' %}">
                             <div class="el">
-                                <img src="{% static 'images/Условия работы.svg'%}" alt="Условия Работы" class="me-2">
+                                <img src="{% static 'images/Условия работы.svg' %}" alt="Условия Работы" class="me-2">
                                 <div>Условия работы</div>
                             </div>
                         </a>
@@ -29,7 +29,7 @@
                     <li class="nav-item">
                         <a class="" href="/#catalog">
                             <div class="el">
-                                <img src="{% static 'images/catalog.svg'%}" alt="Каталог" class="me-2">
+                                <img src="{% static 'images/catalog.svg' %}" alt="Каталог" class="me-2">
                                 <div>Каталог</div>
                             </div>
                         </a>
@@ -37,7 +37,7 @@
                     <li class="nav-item">
                         <a href="{% url 'brands_with_certificates' %}">
                             <div class="el ">
-                                <img src="{% static 'images/Сертификаты.svg'%}" alt="РУ и Сертификаты" class="me-2">
+                                <img src="{% static 'images/Сертификаты.svg' %}" alt="РУ и Сертификаты" class="me-2">
                                 <div>РУ и Сертификаты</div>
                             </div>
                         </a>
@@ -45,22 +45,19 @@
                     <li class="nav-item">
                         <a href="{% url 'contacts' %}">
                             <div class="el ">
-                                <img src="{% static 'images/контакты.svg'%}" alt="Контакты" class="me-2">
+                                <img src="{% static 'images/контакты.svg' %}" alt="Контакты" class="me-2">
                                 <div>Контакты</div>
                             </div>
                         </a>
                     </li>
                 </ul>
             </div>
-
-
             <div class="rightSideInner">
                 <div class="search">
                     <div class="formInner">
                         {% include 'core/components/search_field.html' %}
                     </div>
                 </div>
-
                 <div class="info">
                     <div class="time">
                         Пн-Пт: 10:00 - 18.00
@@ -70,15 +67,13 @@
                     </div>
                 </div>
             </div>
-       
-
             <div class="searchSmallScreen">
                 <div class="formInner">
                     <form action="{% url 'search_page' %}" class="formInner">
                         <input type="text" placeholder="Поиск" name='q' value="{% search_query request %}">
                         <button type="submit">
                             <div class="searchButton button"><img src="{% static 'images/SearchButton.svg' %}" alt="Поиск"
-                                class="searchImg"></div>
+                                                                  class="searchImg"></div>
                         </button>
                     </form>
                 </div>
@@ -88,7 +83,6 @@
                 <label class="menu__btn" for="menu__toggle">
                     <span></span>
                 </label>
-
                 <div class="menu__box">
                     <div class="bd-links">
                         <ul>
@@ -133,11 +127,9 @@
                                 </div>
                             </div>
                         </ul>
-
                     </div>
                 </div>
             </div>
-
         </div>
     </nav>
 </div>

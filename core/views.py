@@ -1,9 +1,12 @@
 from django.views.generic import TemplateView, ListView, DetailView
 from django.urls import resolve
 
-from catalog.models import Brand, Product
+
+from catalog.models import Brand, Product, Offer
 from files.models import ModelFile
+
 import datetime
+
 
 class BrandsWithCertificatesView(ListView):
     model = Brand
