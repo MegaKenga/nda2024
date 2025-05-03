@@ -58,8 +58,6 @@
                 {% if brand %}
                     <h1>{{ brand.name }}</h1>
                     <h2>{{ product.name }}</h2>
-                {% comment %} {% else %}
-                    <h1>{{ category.name }}</h1> {% endcomment %}
                 {% endif %}
                 </div>
             </div>
@@ -112,7 +110,6 @@
                 </div>
                 <div class="productTitle">
                     <div class="productTitleText">
-                        {% comment %} <h3>{{brand}}</h3> {% endcomment %}
                         <h2>{{ product.name }}</h2>
                         {{ product.short_description|safe }}
                     
@@ -210,7 +207,7 @@
                     </div>
                     <div class="tab-pane fade" id="pills-order" role="tabpanel" aria-labelledby="pills-order-tab">
                         <div class="placeOrder">
-                            <form action=""></form>
+                            <form action="">
                             <div class="container1">
                                 <table class="table table-responsive table-borderless custom-table">
                                     <thead>
@@ -262,6 +259,9 @@
                             </div>
                             </form>
                         </div>
+                    {% if user.is_authenticated %}
+                        {% include 'core/components/excel_input.html' %}
+                    {% endif %}
                     </div>
                     <div class="tab-pane fade" id="pills-catalogs" role="tabpanel" aria-labelledby="pills-catalogs-tab">
                         <div class="catalogTutorial">
@@ -271,7 +271,6 @@
                                         <a href="{{ instruction.file.url }}">
                                             <div class="catalogTutorialEl">
                                                 <div class="catalogTutorialElText">Скачать инструкцию</div>
-                                            {% comment %} <div class="catalogTutorialElText">Скачать Каталог {{catalog.get_filename}}</div> {% endcomment %}
                                                 <div class="catalogTutorialElImg instructionDownload"></div>
                                             </div>
                                         </a>
@@ -284,7 +283,6 @@
                                     <a href="{{ certificate.file.url }}">
                                         <div class="catalogTutorialEl">
                                             <div class="catalogTutorialElText">Скачать РУ</div>
-                                            {% comment %} <div class="catalogTutorialElText">Скачать Каталог {{catalog.get_filename}}</div> {% endcomment %}
                                             <div class="catalogTutorialElImg ruDownload"></div>
                                         </div>
                                     </a>
@@ -297,7 +295,6 @@
                                     <a href="{{ catalog.file.url }}">
                                         <div class="catalogTutorialEl">
                                             <div class="catalogTutorialElText">Скачать Каталог</div>
-                                            {% comment %} <div class="catalogTutorialElText">Скачать Каталог {{catalog.get_filename}}</div> {% endcomment %}
                                             <div class="catalogTutorialElImg catalogDownload"></div>
                                         </div>
                                     </a>
@@ -372,15 +369,9 @@
                                                             hx-target="#cart" hx-swap="outerHTML" style="width: 100%;">
                                                             <div class="offerCount">
                                                                 <div class="inputCount">
-                                                                    {% comment %} <div class="inputCountBtn1"
-                                                                        onclick="changeQuantity(event, this, -1)">-</div> {% endcomment %}
                                                                     <input class="form-control" type="number"
                                                                         name="quantity" value="0" required=""
                                                                         id="id_quantity" min="1"/>
-{% comment %}     
-                                                                    <div class="inputCountBtn2"
-                                                                        onclick="changeQuantity(event, this, 1)">+</div>
-     {% endcomment %}
                                                                 </div>
                                                                     <button class="btn btn-primary quantityFormBtn" id="addButton"type="submit"
                                                                     value="">Добавить</button>

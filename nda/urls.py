@@ -39,6 +39,7 @@ urlpatterns = [
     path('work/', core.views.WorkView.as_view(), name='work'),
     path('certificates/', core.views.BrandsWithCertificatesView.as_view(), name='brands_with_certificates'),
     path('brand/<int:pk>/certificates/', core.views.BrandCertificatesDetailView.as_view(),name='brand_certificates'),
+    path('files/', include('files.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

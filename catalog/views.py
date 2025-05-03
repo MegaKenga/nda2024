@@ -4,6 +4,7 @@ from django.urls import resolve
 from django.db.models import Q, Prefetch, Count
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
+from files.views import import_from_excel
 
 from core.models import MainPageInfoBlock
 from catalog.models import Category, Brand, Offer, Product
@@ -107,6 +108,9 @@ class OfferView(TemplateView):
         context = super().get_context_data(**kwargs)
 
         product = Product.objects.select_related('brand', 'specialist').get(slug=self.kwargs['product_slug'])
+        uploaded_file = None
+        if self.request.method == 'POST':
+            uploaded_file = import_from_excel(self.request, product_id=product.id)
         context['product'] = product
         context['brand'] = product.brand
         context['offers'] = Offer.visible.filter(product=product).order_by('place')
@@ -122,6 +126,7 @@ class OfferView(TemplateView):
         context['title'] = product.title
         context['instructions'] = InstructionsFile.objects.filter(product=product)
         context['catalogs'] = CatalogFile.objects.filter(product=product)
+        context['uploaded_file'] = uploaded_file
 
         return context
 
