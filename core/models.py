@@ -22,14 +22,6 @@ class MainPageInfoBlock(models.Model):
         verbose_name='Заголовок рекламного блока | Отображается на странице',
         default='',
     )
-    block_brand = models.CharField(
-        max_length=128,
-        null=True,
-        blank=True,
-        verbose_name='Название бренда | Поле над заголовком | Опционально',
-        default='',
-    )
-
     block_category = models.ForeignKey(
         Product,
         on_delete=models.SET_NULL,
@@ -37,7 +29,6 @@ class MainPageInfoBlock(models.Model):
         blank=False,
         verbose_name='Товар для рекламы на главной странице'
     )
-
     block_text = models.TextField(
         default='''<ul>
                     <li><span>Особенность 1</span> </li>
@@ -47,7 +38,6 @@ class MainPageInfoBlock(models.Model):
         blank=True,
         verbose_name='Описание'
     )
-
     block_image = models.ImageField(
         upload_to='main_page/infoblock',
         default='',
