@@ -10,6 +10,6 @@
     <form method="post" action="{% url 'offers_add' product_id=product.id%}" enctype="multipart/form-data">
         {% csrf_token %}
         <input type="file" name="excel_file">
-        <button type="submit" style="color: red">Import</button>
+        <button type="submit">Загрузить коды</button>
     </form>
 </div>

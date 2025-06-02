@@ -3,6 +3,10 @@ from django.contrib.admin import AdminSite
 from django.contrib.auth.models import Group, User
 from django.contrib.auth.admin import GroupAdmin, UserAdmin
 from django.db.models.fields.files import FieldFile
+from django.db import models
+from django.forms import Textarea
+from django_ckeditor_5.widgets import CKEditor5Widget
+from django_ckeditor_5.fields import CKEditor5Field
 
 from catalog.models import Brand, Category, Offer, Specialist, Product
 from files.models import ModelImage, ModelFile, InstructionsFile, CatalogFile
@@ -47,28 +51,34 @@ class OfferInline(admin.TabularInline):
 
 class ProductImageInline(admin.TabularInline):
     model = ModelImage
+    extra = 0
     readonly_fields = ("image_preview",)
 
 
 class ProductFileInline(admin.TabularInline):
     model = ModelFile
+    extra = 0
 
 
 class CategoryImageInline(admin.TabularInline):
     model = ModelImage
+    extra = 0
     readonly_fields = ("image_preview",)
 
 
 class CategoryFileInline(admin.TabularInline):
     model = ModelFile
+    extra = 0
 
 
 class InstructionsFileInline(admin.TabularInline):
     model = InstructionsFile
+    extra = 0
 
 
 class CatalogFileInline(admin.TabularInline):
     model = CatalogFile
+    extra = 0
 
 
 """"Классы админки"""
@@ -91,6 +101,9 @@ class BrandAdmin(admin.ModelAdmin):
         "slug",
         "status",
     ]
+    formfield_overrides = {
+        models.TextField: {'widget': Textarea(attrs={'rows': 3, 'cols': 80})},
+    }
     save_as = True
     view_on_site = True
     actions_on_bottom = True
@@ -121,6 +134,10 @@ class CategoryAdmin(admin.ModelAdmin):
         "slug",
         "status",
     ]
+    formfield_overrides = {
+        models.TextField: {'widget': Textarea(attrs={'rows': 3, 'cols': 80})},
+
+    }
     filter_horizontal = ("parents",)
     autocomplete_fields = ("brand",)
     view_on_site = True
@@ -170,6 +187,9 @@ class ProductAdmin(admin.ModelAdmin):
         "slug",
         "status",
     ]
+    formfield_overrides = {
+        models.TextField: {'widget': Textarea(attrs={'rows': 3, 'cols': 80})},
+    }
     filter_horizontal = ("parents",)
     autocomplete_fields = ("brand",)
     view_on_site = True
@@ -220,6 +240,9 @@ class OfferAdmin(admin.ModelAdmin):
         "place",
         "status",
     ]
+    formfield_overrides = {
+        models.TextField: {'widget': Textarea(attrs={'rows': 3, 'cols': 80})},
+    }
     autocomplete_fields = ["product"]
     actions_on_bottom = True
     list_per_page = 25
