@@ -52,7 +52,7 @@
           {% endfor %}
         {% for product in products %}
             <div class="catalogBrandItem">
-                <a href="{% url 'offer' brand_slug=brand.slug product_slug=product.slug %}">
+                <a href="{% url 'offer' brand_slug=product.brand.slug product_slug=product.slug %}">
                   <div class="catalogBrandItemImg">
                     {% if product.logo %}
                       <img src="{{ product.logo.url }}" alt="Логотип категории" />

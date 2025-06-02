@@ -244,14 +244,13 @@ class Product(BaseFields):
         verbose_name='Ссылка Rutube'
     )
 
-
     class Meta:
         ordering = ['place']
         verbose_name = 'Товар'
         verbose_name_plural = 'Товары'
 
     def get_absolute_url(self):
-        return reverse('product', kwargs={'product_slug': self.slug})
+        return reverse('offer', kwargs={'brand_slug': self.brand.slug, 'product_slug': self.slug})
 
     def __str__(self):
         return str(self.brand).upper() + '----' + self.name.upper()
