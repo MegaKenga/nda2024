@@ -125,32 +125,6 @@
                 </table>
               </td>
             </tr>
-          </table> <!-- /record --> <!-- record_mail --> <table id="rec878857837" style="width:100%; border-collapse:collapse; border-spacing:0; margin:0; border:0;" cellpadding="0" cellspacing="0" data-record-type="644">
-            <tr>
-              <td style="padding-left:15px; padding-right:15px; background-color:#f5f5f5;">
-                <table id="recin878857837" class="r" style="margin: 0 auto;background-color:#ffffff;border-spacing: 0;width:600px;" align="center">
-                  <tr>
-                    <td style="padding-top:15px;padding-bottom:15px;padding-left:30px;padding-right:30px;">
-                      <table border="0" cellpadding="0" cellspacing="0" width="100%" style="width: 100%;">
-                        <tr>
-                          <td style="border-radius: 15px; text-align: left; padding-top: 8px; padding-bottom: 8px; padding-left: 20px; padding-right: 20px; background-color:#f5f5f5;">
-                            <div style="margin-right: auto; font-family: Helvetica Neue, Helvetica, Arial, sans-serif; font-size:16px;line-height:1.5;padding-top:8px;padding-bottom:8px;">
-                              <strong style="color: rgb(51, 145, 197);">Товар</strong><br/>
-                              {% if offers %}
-                                  {% for offer in offers %}
-                                      <div class=""><strong>{{ offer.name }}</strong> - {{ offer.quantity }} шт.</div>
-                                  {% endfor %}
-                            {% endif %}
-                            </div>
-                          </td>
-                        </tr>
-                      </table>
-                    </td>
-                  </tr>
-                </table>
-              </td>
-            </tr>
-          </table> <!-- /record --> <!-- record_mail --> <table id="rec878867587" style="width:100%; border-collapse:collapse; border-spacing:0; margin:0; border:0;" cellpadding="0" cellspacing="0" data-record-type="644">
             <tr>
               <td style="padding-left:15px; padding-right:15px; background-color:#f5f5f5;">
                 <table id="recin878867587" class="r" style="margin: 0 auto;background-color:#ffffff;border-spacing: 0;width:600px;" align="center">
@@ -164,19 +138,6 @@
                               {% if name %}
                                 <strong>ФИО:</strong> {{name}}<br />
                               {% endif %}
-                              
-                              {% if company_name %}
-                                <strong>Компания:</strong> {{ company_name }}<br />
-                              {% endif %}
-                              
-                              {% if  inn%}
-                                <strong>ИНН:</strong> {{ inn }} <br />
-                              {% endif %}
-                              
-                              {% if customer_email %}
-                                <strong>E-mail:</strong> {{ customer_email }}<br />
-                              {% endif %}
-                             
                               {% if customer_phone %}
                                 <strong>Телефон:</strong> {{ customer_phone }} <br />
                               {% endif %}

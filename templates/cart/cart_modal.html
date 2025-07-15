@@ -4,69 +4,55 @@
 <div class="modal-custom">
     <div class="modal-content">
         <div class="modal-header">
-          <h1 class="modal-title" id="cartModalLabel">Оформить заказ</h1>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="location.reload();"></button>
+            <h1 class="modal-title" id="cartModalLabel">Оформить заказ</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="location.reload();"></button>
         </div>
         <div class="modal-body mainFormContainer" >
-          <div class="mainForm">
-            <div class="mainFormHeader">
-              <ul class="nav nav-tabs" id="myTab" role="tablist">
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link active" id="legal-tab" data-bs-toggle="tab" data-bs-target="#legal" type="button" role="tab" aria-controls="legal"aria-selected="true" >Юридическое лицо</button>
-                </li>
-                <li class="nav-item" role="presentation">
-                  <button class="nav-link" id="physical-tab" data-bs-toggle="tab" data-bs-target="#physical" type="button" role="tab" aria-controls="physical" aria-selected="false">Физическое лицо</button>
-                </li>
-              </ul>
-              {% comment %} <div class="order_list order_list_less_800">
-
+            <div class="mainForm">
+                <div class="mainFormHeader">
+                    <ul class="nav nav-tabs" id="myTab" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="legal-tab" data-bs-toggle="tab" data-bs-target="#legal" type="button" role="tab" aria-controls="legal"aria-selected="true" >Юридическое лицо</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="physical-tab" data-bs-toggle="tab" data-bs-target="#physical" type="button" role="tab" aria-controls="physical" aria-selected="false">Физическое лицо</button>
+                        </li>
+                    </ul>
+                </div>
+                <div class="tab-content" id="myTabContent">
+                    <!-- Форма для юридического лица -->
+                    <div class="tab-pane fade show active" id="legal" role="tabpanel" aria-labelledby="legal-tab">
+                        <p class="formDescr">
+                            Уважаемые коллеги!<br/>
+                            При оформлении заказа, пожалуйста, укажите Ваш ИНН (для автоматического перенаправления Вашего запроса сотруднику, закрепленному за Вашей организацией) и наименование организации или прикрепите карточку клиента. Это ускорит обработку Вашей заявки.
+                            Без указания реквизитов мы не сможем выставить Вам коммерческое предложение.
+                        </p>
+                        <div class="physicalForm">
+                            <div class="formEl">
+                                {% include 'nda_email/contactform.html' %}
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            {% if contact_form.company_details.errors %}
+                                <span style="color: #FF4343">{{ contact_form.details.errors }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <!-- Форма для физического лица -->
+                    <div class="tab-pane fade" id="physical" role="tabpanel" aria-labelledby="physical-tab">
+                        <div class="physicalForm">
+                            <div class="formEl">
+                                {% include 'nda_email/physical_contact_form.html' %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="order_list">
+                <h3 class="offersList">Ваш выбор:</h3>
                 {% include 'cart/cart_popup.html' %}
-
-              </div> {% endcomment %}
-              
             </div>
-         
-
-          <div class="tab-content" id="myTabContent">
-            <!-- Форма для юридического лица -->
-            <div class="tab-pane fade show active" id="legal" role="tabpanel" aria-labelledby="legal-tab">
-              <p class="formDescr">
-                Уважаемые коллеги!<br/>
-                При оформлении заказа, пожалуйста, укажите Ваш ИНН (для автоматического перенаправления Вашего запроса сотруднику, закрепленному за Вашей организацией) и наименование организации или прикрепите карточку клиента. Это ускорит обработку Вашей заявки.
-                Без указания реквизитов мы не сможем выставить Вам коммерческое предложение.
-              </p>
-              <div class="physicalForm">
-                <div class="formEl">
-                  {% include 'nda_email/contactform.html' %}
-                </div>
-              </div>
-              <div class="mb-3">
-                {% if contact_form.company_details.errors %}
-                  <span style="color: #FF4343">{{ contact_form.details.errors }}</span>
-                {% endif %}
-              </div> 
-            </div>
-            <!-- Форма для физического лица -->
-            <div class="tab-pane fade" id="physical" role="tabpanel" aria-labelledby="physical-tab">
-              <div class="physicalForm">
-                <div class="formEl">
-                  {% include 'nda_email/physical_contact_form.html' %}
-                </div>
-              </div>
-            </div>
-          </div>
-          </div>
-          
-
-        
-
-          <div class="order_list">
-            <h3 class="offersList">Ваш выбор:</h3>
-            {% include 'cart/cart_popup.html' %}
-
-          </div>
-
         </div>
-      </div>
+    </div>
 </div>
 

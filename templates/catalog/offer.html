@@ -58,8 +58,6 @@
                 {% if brand %}
                     <h1>{{ brand.name }}</h1>
                     <h2>{{ product.name }}</h2>
-                {% comment %} {% else %}
-                    <h1>{{ category.name }}</h1> {% endcomment %}
                 {% endif %}
                 </div>
             </div>
@@ -112,7 +110,6 @@
                 </div>
                 <div class="productTitle">
                     <div class="productTitleText">
-                        {% comment %} <h3>{{brand}}</h3> {% endcomment %}
                         <h2>{{ product.name }}</h2>
                         {{ product.short_description|safe }}
 
@@ -277,7 +274,6 @@
                                         <a href="{{ instruction.file.url }}">
                                             <div class="catalogTutorialEl">
                                                 <div class="catalogTutorialElText">Скачать инструкцию</div>
-                                            {% comment %} <div class="catalogTutorialElText">Скачать Каталог {{catalog.get_filename}}</div> {% endcomment %}
                                                 <div class="catalogTutorialElImg instructionDownload"></div>
                                             </div>
                                         </a>
@@ -290,7 +286,6 @@
                                     <a href="{{ certificate.file.url }}">
                                         <div class="catalogTutorialEl">
                                             <div class="catalogTutorialElText">Скачать РУ</div>
-                                            {% comment %} <div class="catalogTutorialElText">Скачать Каталог {{catalog.get_filename}}</div> {% endcomment %}
                                             <div class="catalogTutorialElImg ruDownload"></div>
                                         </div>
                                     </a>
@@ -303,7 +298,6 @@
                                     <a href="{{ catalog.file.url }}">
                                         <div class="catalogTutorialEl">
                                             <div class="catalogTutorialElText">Скачать Каталог</div>
-                                            {% comment %} <div class="catalogTutorialElText">Скачать Каталог {{catalog.get_filename}}</div> {% endcomment %}
                                             <div class="catalogTutorialElImg catalogDownload"></div>
                                         </div>
                                     </a>
@@ -465,7 +459,7 @@
                     </details>
                     {% endif %}
                  </div>
-                 {% include 'core/components/offer2ButtonCart.html' %}
+                 {% include 'core/components/offer_button_cart.html' %}
             </div>
         </div>
         <!-- Placeholder for the modal -->

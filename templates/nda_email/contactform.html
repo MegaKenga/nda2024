@@ -23,20 +23,9 @@
                 <div class="oneLine">
                     <div class="form-floating mb-3 w-50">
                         {{ contact_form.phone_number }}
-                        {% comment %} <label for="validationPhoneNumber">Номер телефона</label> {% endcomment %}
-                        {% comment %} {% if contact_form.phone_number.errors %}
-                            <div style="color: red">
-                                {{ contact_form.phone_number.errors }}
-                            </div>
-                        {% endif %} {% endcomment %}
                     </div>
                     <div class="form-floating mb-3 w-50">
                         {{ contact_form.email }}
-                        {% comment %} {% if contact_form.email.errors %}
-                            <span class="invalid-feedback">
-                                {{ contact_form.email.errors }}
-                            </span>
-                        {% endif %} {% endcomment %}
                         <label for="email">Email</label>
                     </div>
                 </div>
@@ -61,31 +50,17 @@
                     </label>
                     
                 </div>
-
-           <div
+                <div
                     id="captcha-container"
                     class="smart-captcha mb-3"
                     data-sitekey="ysc1_sxny6cNZmnvhyJKrojDDLNxj0nvkGnTleldHzqEo9d9475ca"
                 >
                 </div>   
-                
-                {% comment %} <div 
-                    id="captcha-container"
-                    class="smart-captcha"
-                    data-sitekey="ysc1_VyMk6kFwNVLym6k3ga8J4WyDeBNRooy4hPhYe2tr9d2736aa"
-                ></div>   {% endcomment %}
 
                 {% if captchaError %}
                     <div class="text-danger mb-3">{{ captchaError }}</div>
                 {% endif %} 
-        
 
-                {% comment %} <div class="form-check mb-3">
-                    <input class="form-check-input" type="checkbox" id="policyCheckLegal" required />
-                    <label class="form-check-label" for="policyCheckLegal">
-                        Я прочитал(а) уведомление о <a href="{% url 'privacy' %}">политике конфиденциальности</a>
-                    </label>
-                </div> {% endcomment %}
                 {% if emailError %}
                     <div class="text-danger mb-3">{{ emailError }}</div>
                 {% endif %}
@@ -112,25 +87,22 @@
 <script src="https://smartcaptcha.yandexcloud.net/captcha.js" defer></script> 
 <script>
     document.addEventListener('htmx:afterSwap', function(event) {
-         if (event.detail.xhr.getResponseHeader('HX-Trigger')) {
-             const trigger = JSON.parse(event.detail.xhr.getResponseHeader('HX-Trigger'));
-             if (trigger && trigger.resetCaptcha) {
+        if (event.detail.xhr.getResponseHeader('HX-Trigger')) {
+            const trigger = JSON.parse(event.detail.xhr.getResponseHeader('HX-Trigger'));
+            if (trigger && trigger.resetCaptcha) {
                 // Переинициализируем Яндекс Капчу
-                 let captchaContainer = document.getElementById('captcha-container');
-                 captchaContainer.innerHTML = '<div class="smart-captcha" data-sitekey="ysc1_VyMk6kFwNVLym6k3ga8J4WyDeBNRooy4hPhYe2tr9d2736aa"></div>';
-                 ymaps.ready(function(){
+                let captchaContainer = document.getElementById('captcha-container');
+                captchaContainer.innerHTML = '<div class="smart-captcha" data-sitekey="ysc1_sxny6cNZmnvhyJKrojDDLNxj0nvkGnTleldHzqEo9d9475ca"></div>';
+                ymaps.ready(function(){
                     var smartCaptcha = new yaSmartCaptcha({
-                       k: 'ysc1_VyMk6kFwNVLym6k3ga8J4WyDeBNRooy4hPhYe2tr9d2736aa',
-                       invisible: false,
-                       callback: function(token){
-                          console.log(token);
-                       }
+                        k: 'ysc1_sxny6cNZmnvhyJKrojDDLNxj0nvkGnTleldHzqEo9d9475ca',
+                        invisible: false,
+                        callback: function(token){
+                            console.log(token);
+                        }
                     })
-                 })
-
-
-             }
-         }
-     });
-  </script>
-  
+                })
+            }
+        }
+    });
+</script>
