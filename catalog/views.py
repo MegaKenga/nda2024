@@ -27,10 +27,7 @@ def breadcrumbs_path(category):
             parents = parents_path[0].parents.all()
         else:
             parents_path = [parent for parent in parents if parent.brand is None]
-            if len(parents_path) > 1:
-                raise ValueError('We don\'t expect multiple brand parents')
-            if len(parents_path) == 1:
-                breadcrumbs.insert(0, parents_path[0])
+            breadcrumbs.insert(0, parents_path[0])
             parents = parents_path[0].parents.all()
     return breadcrumbs
 
@@ -69,8 +66,8 @@ class CategoryView(TemplateView):
         category = Category.visible.select_related('brand').order_by('place').get(slug=self.kwargs['category_slug'])
         context['brand'] = category.brand
         context['category'] = category
-        context['categories'] = Category.visible.filter(parents=category).order_by('place')
-        context['products'] = Product.visible.filter(parents=category).order_by('place')
+        context['categories'] = Category.visible.filter(parents=category).select_related('brand').order_by('place')
+        context['products'] = Product.visible.filter(parents=category).select_related('brand').order_by('place')
         context['breadcrumbs'] = breadcrumbs_path(category)
         context['brands'] = Brand.visible.all().order_by('name')
 
@@ -92,8 +89,8 @@ class BrandView(TemplateView):
         context['current_url_name'] = current_url_name
 
         brand = get_object_or_404(Brand.visible, slug=self.kwargs['brand_slug'])
-        context['categories'] = Category.visible.filter(parents=None, brand=brand).select_related('brand')
-        context['products'] = Product.visible.filter(parents=None, brand=brand).select_related('brand')
+        context['categories'] = Category.visible.filter(parents=None, brand=brand).select_related('brand').order_by('place')
+        context['products'] = Product.visible.filter(brand=brand).exclude(parents__brand=brand).select_related('brand').order_by('place')
         context['brand'] = brand
         context['brands'] = Brand.visible.all().order_by('name')
 
@@ -108,7 +105,7 @@ class OfferView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        product = Product.objects.select_related('brand', 'specialist').get(slug=self.kwargs['product_slug'])
+        product = Product.visible.select_related('brand', 'specialist').get(slug=self.kwargs['product_slug'])
         uploaded_file = None
         if self.request.method == 'POST':
             uploaded_file = import_from_excel(self.request, product_id=product.id)

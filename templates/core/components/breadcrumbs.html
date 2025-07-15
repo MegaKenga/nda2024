@@ -22,13 +22,15 @@
         {% endif %}
     {% else %}
       {% for breadcrumb in breadcrumbs %}
+          {% if breadcrumb and breadcrumb.brand%}
         <li class="breadcrumb-item">
           <a href="{% url 'category' category_slug=breadcrumb.slug %}">{{ breadcrumb.name.upper }}</a>
         </li>
+          {% endif %}
       {% endfor %}
       {% if product %}
         <li class="breadcrumb-item breadcrumb-item-active" aria-current="page">{{ product.name.upper }}</li>
-      {% else %} 
+      {% else %}
         <li class="breadcrumb-item breadcrumb-item-active" aria-current="page">{{ category.name.upper }}</li>
       {% endif %}
       

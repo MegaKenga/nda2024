@@ -29,8 +29,8 @@
 {% endblock %}
 
 {% block styles %}
-<link rel="stylesheet" href="{% static 'css/styleOffer.css' %}" type="text/css">
-<link rel="stylesheet" href="{% static 'css/styleCarousel.css' %}" type="text/css">
+<link rel="stylesheet" href="{% static 'css/styleOffer.css'%}" type="text/css">
+<link rel="stylesheet" href="{% static 'css/styleCarousel.css'%}" type="text/css">
 
 {% endblock %}
 
@@ -48,16 +48,18 @@
         {% cache 600 brand.pk product.pk %}
             <div class="brandBanner" style="background: linear-gradient(135deg, {{ brand.banner_color }}, white);">
                 <div class="brandLogo">
-                {% if brand.logo %}  
+                {% if brand.logo %}
                         <img src="{{ brand.logo.url }}" alt="{{ brand.name }}" />
                         {% else %}
-                            <img src="{% static 'images/noImage.jpg' %}" alt="Default logo" />  
+                            <img src="{% static 'images/noImage.jpg' %}" alt="Default logo" />
                         {% endif %}
                 </div>
                 <div class="brandInfo">
                 {% if brand %}
                     <h1>{{ brand.name }}</h1>
                     <h2>{{ product.name }}</h2>
+                {% comment %} {% else %}
+                    <h1>{{ category.name }}</h1> {% endcomment %}
                 {% endif %}
                 </div>
             </div>
@@ -66,7 +68,7 @@
             <div class="productHead">
                 <div class="productCarousel">
                     <div class="carouselWrapper">
-                        <div id="carouselExampleIndicators" class="carousel slide" data-bs-interval="false" data-ride="carousel" data-pause="hover"> 
+                        <div id="carouselExampleIndicators" class="carousel slide" data-bs-interval="false" data-ride="carousel" data-pause="hover">
                             <div class="carousel-inner">
                                 {% for image in images %}
                                     {% cache 600 image.pk %}
@@ -80,11 +82,11 @@
                             </div>
                             {% if images|length > 1 %}
                                 <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
-                                    <span class="carousel-control-prev-icon slick-prev1" aria-hidden="true" style="background-image: url('{% static "images/offer/left.svg" %}')" ></span>
+                                    <span class="carousel-control-prev-icon slick-prev1" aria-hidden="true" style="background-image: url('{% static "images/offer/left.svg"%}')" ></span>
                                     <span class="visually-hidden">Previous</span>
                                 </button>
                                 <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
-                                    <span class="carousel-control-next-icon slick-next1" aria-hidden="true" style="background-image: url('{% static "images/offer/right.svg" %}')"></span>
+                                    <span class="carousel-control-next-icon slick-next1" aria-hidden="true" style="background-image: url('{% static "images/offer/right.svg"%}')"></span>
                                     <span class="visually-hidden">Next</span>
                                 </button>
                             {% endif %}
@@ -110,9 +112,10 @@
                 </div>
                 <div class="productTitle">
                     <div class="productTitleText">
+                        {% comment %} <h3>{{brand}}</h3> {% endcomment %}
                         <h2>{{ product.name }}</h2>
                         {{ product.short_description|safe }}
-                    
+
                     </div>
                     <div class="productTitleConnect">
                         <div class="linkText">
@@ -139,50 +142,51 @@
             <div class="productInfo">
                 <div class="productInfoChoice">
                     <ul class="nav nav-pills" id="pills-tab" role="tablist">
-                        <li {% if not youtube_link and not rutube_link and product.characteristics %} style="width: 25%;"{% endif %}
+                        <li {% if product.characteristics and not youtube_link and not rutube_link %} style="width: 24.99%;"{% endif %}
                             {% if not youtube_link and not rutube_link and not product.characteristics %} style="width: 33.3%;"{% endif %}
                             {% if youtube_link or rutube_link %}
-                                {% if not product.characteristics %} style="width: 25%;"{% endif %}
-                                {% if product.characteristics %} style="width: 20%;"{% endif %}
-                            {% endif %}
+			    	{% if not product.characteristics %} style="width: 25%;"{% endif %}
+                            	{% if product.characteristics %} style="width: 20%;"{% endif %}
+			    {% endif %}
                         class="nav-item" role="presentation">
                             <button class="nav-link first active" id="pills-description-tab" data-bs-toggle="pill"
                                 data-bs-target="#pills-description" type="button" role="tab"
                                 aria-controls="pills-description" aria-selected="true">Описание</button>
                         </li>
                         {% if product.characteristics %}
-                        <li {% if not youtube_link and not rutube_link %} style="width: 25%;"{% endif %} class="nav-item" role="presentation">
-                        <li {% if youtube_link or rutube_link %} style="width: 20%;"{% endif %} class="nav-item" role="presentation">
+                        <li {% if not youtube_link and not rutube_link %} style="width: 25%;"{% endif %}
+			     {% if youtube_link or rutube_link %} style="width: 20%;"{% endif %}
+			     class="nav-item" role="presentation">
                             <button class="nav-link" id="pills-characteristics-tab" data-bs-toggle="pill"
                                 data-bs-target="#pills-characteristics" type="button" role="tab"
                                 aria-controls="pills-characteristics" aria-selected="false">Характеристики</button>
                         </li>
                         {% endif%}
-                        <li {% if not youtube_link and not rutube_link and product.characteristics %} style="width: 25%;"{% endif %}
+                        <li {% if product.characteristics and not youtube_link and not rutube_link %} style="width: 24.99%;"{% endif %}
                             {% if not youtube_link and not rutube_link and not product.characteristics%} style="width: 33.3%;"{% endif %}
                             {% if youtube_link or rutube_link %}
-                                {% if not product.characteristics %} style="width: 25%;"{% endif %}
-                                {% if product.characteristics %} style="width: 20%;"{% endif %}
-                            {% endif %}
+	 			    {% if not product.characteristics %} style="width: 25%;"{% endif %}
+        	                    {% if product.characteristics %} style="width: 20%;"{% endif %}
+			    {% endif %}
                         class="nav-item" role="presentation">
                             <button class="nav-link" id="pills-order-tab" data-bs-toggle="pill"
                                 data-bs-target="#pills-order" type="button" role="tab" aria-controls="pills-order"
                                 aria-selected="false">Оформить заказ</button>
                         </li>
-                        <li {% if not youtube_link and not rutube_link and product.characteristics %} style="width: 25%;"{% endif %}
+                        <li {% if product.characteristics and not youtube_link and not rutube_link %} style="width: 24.99%;"{% endif %}
                             {% if not youtube_link and not rutube_link and not product.characteristics%} style="width: 33.4%;"{% endif %}
                             {% if youtube_link or rutube_link %}
-                                {% if not product.characteristics %} style="width: 25%;"{% endif %}
-                                {% if product.characteristics %} style="width: 20%;"{% endif %}
-                            {% endif %}
+			    	{% if not product.characteristics %} style="width: 25%;"{% endif %}
+			    	{% if product.characteristics %} style="width: 20%;"{% endif %}
+			    {% endif %}
                         class="nav-item" role="presentation">
                             <button class="nav-link" id="pills-catalogs-tab" data-bs-toggle="pill"
                                 data-bs-target="#pills-catalogs" type="button" role="tab" aria-controls="pills-catalogs"
                                 aria-selected="false">Каталоги и РУ</button>
                         </li>
                         {% if youtube_link or rutube_link %}
-                        <li {% if not product.characteristics %} style="width: 25%;" {% endif %}
-                            {% if product.characteristics %} style="width: 20%;"{% endif %}
+                        <li {% if not product.characteristics %} style="width: 25%;"{% endif %}
+		            {% if product.characteristics %} style="width: 20%;" {% endif %}
                         class="nav-item" role="presentation">
                             <button class="nav-link last" id="pills-video-tab" data-bs-toggle="pill"
                                 data-bs-target="#pills-video" type="button" role="tab" aria-controls="pills-video"
@@ -207,7 +211,7 @@
                     </div>
                     <div class="tab-pane fade" id="pills-order" role="tabpanel" aria-labelledby="pills-order-tab">
                         <div class="placeOrder">
-                            <form action="">
+                            <form action=""></form>
                             <div class="container1">
                                 <table class="table table-responsive table-borderless custom-table">
                                     <thead>
@@ -259,6 +263,7 @@
                             </div>
                             </form>
                         </div>
+
                     {% if user.is_authenticated %}
                         {% include 'core/components/excel_input.html' %}
                         {% include 'core/components/delete_offers.html' %}
@@ -272,6 +277,7 @@
                                         <a href="{{ instruction.file.url }}">
                                             <div class="catalogTutorialEl">
                                                 <div class="catalogTutorialElText">Скачать инструкцию</div>
+                                            {% comment %} <div class="catalogTutorialElText">Скачать Каталог {{catalog.get_filename}}</div> {% endcomment %}
                                                 <div class="catalogTutorialElImg instructionDownload"></div>
                                             </div>
                                         </a>
@@ -284,6 +290,7 @@
                                     <a href="{{ certificate.file.url }}">
                                         <div class="catalogTutorialEl">
                                             <div class="catalogTutorialElText">Скачать РУ</div>
+                                            {% comment %} <div class="catalogTutorialElText">Скачать Каталог {{catalog.get_filename}}</div> {% endcomment %}
                                             <div class="catalogTutorialElImg ruDownload"></div>
                                         </div>
                                     </a>
@@ -296,6 +303,7 @@
                                     <a href="{{ catalog.file.url }}">
                                         <div class="catalogTutorialEl">
                                             <div class="catalogTutorialElText">Скачать Каталог</div>
+                                            {% comment %} <div class="catalogTutorialElText">Скачать Каталог {{catalog.get_filename}}</div> {% endcomment %}
                                             <div class="catalogTutorialElImg catalogDownload"></div>
                                         </div>
                                     </a>
@@ -370,9 +378,15 @@
                                                             hx-target="#cart" hx-swap="outerHTML" style="width: 100%;">
                                                             <div class="offerCount">
                                                                 <div class="inputCount">
+                                                                    {% comment %} <div class="inputCountBtn1"
+                                                                        onclick="changeQuantity(event, this, -1)">-</div> {% endcomment %}
                                                                     <input class="form-control" type="number"
                                                                         name="quantity" value="0" required=""
                                                                         id="id_quantity" min="1"/>
+{% comment %}
+                                                                    <div class="inputCountBtn2"
+                                                                        onclick="changeQuantity(event, this, 1)">+</div>
+     {% endcomment %}
                                                                 </div>
                                                                     <button class="btn btn-primary quantityFormBtn" id="addButton"type="submit"
                                                                     value="">Добавить</button>
@@ -385,6 +399,7 @@
                                         </tbody>
                                     </table>
                                 </div>
+                                </form>
                             </div>
                         </div>
                     </details>
@@ -443,13 +458,13 @@
                                         {% elif youtube_link %}
                                             <!-- Видео с Ютуб -->
                                             <iframe width="100%" height="100%" src="" frameBorder="0" allow="clipboard-write; autoplay" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>
-                                        {% endif %} 
+                                        {% endif %}
                                 </div>
                             </div>
                         </div>
                     </details>
                     {% endif %}
-                 </div>   
+                 </div>
                  {% include 'core/components/offer2ButtonCart.html' %}
             </div>
         </div>
