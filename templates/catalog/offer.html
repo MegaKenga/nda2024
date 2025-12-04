@@ -72,7 +72,7 @@
                                     {% cache 600 image.pk %}
                                         {% thumbnail image.image '600x800' format="PNG" as im %}
                                             <div class="carousel-item {% if forloop.first %}active{% endif %}">
-                                                <img src="{{ im.url }}" class="d-block" alt="Product Image">
+                                                <img src="{{ im.url }}" class="d-block" alt="{{ product.name }} image">
                                             </div>
                                         {% endthumbnail %}
                                     {% endcache %}
@@ -98,7 +98,7 @@
                                         {% with forloop.counter0 as index %}
                                             {% thumbnail image.image '150x150' format="PNG" as im %}
                                                 <div class="thumbnailContainer" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="{{index}}" {% if forloop.second %}class="active"{% endif %}>
-                                                    <img src="{{ im.url }}" class="d-block  thumbnail-image" aria-label="Slide {{ index }}">
+                                                    <img src="{{ im.url }}" class="d-block  thumbnail-image" aria-label="Slide {{ index }}" alt="{{ product.name }} image">
                                                 </div>
                                             {% endthumbnail %}
                                         {% endwith %}
@@ -112,7 +112,6 @@
                     <div class="productTitleText">
                         <h2>{{ product.name }}</h2>
                         {{ product.short_description|safe }}
-
                     </div>
                     <div class="productTitleConnect">
                         <div class="linkText">
@@ -137,54 +136,39 @@
                 </div>
             </div>
             <div class="productInfo">
-                <div class="productInfoChoice">
+              {% if product.full_description != "<p>&nbsp;</p>" and product.full_description != "<p> </p>" or product.characteristics != "<p>&nbsp;</p>" and product.characteristics != "<p> </p>" or offers or instructions or certificates or catalogs or youtube_link or rutube_link %}
+              <div class="productInfoChoice">
                     <ul class="nav nav-pills" id="pills-tab" role="tablist">
-                        <li {% if product.characteristics and not youtube_link and not rutube_link %} style="width: 24.99%;"{% endif %}
-                            {% if not youtube_link and not rutube_link and not product.characteristics %} style="width: 33.3%;"{% endif %}
-                            {% if youtube_link or rutube_link %}
-			    	{% if not product.characteristics %} style="width: 25%;"{% endif %}
-                            	{% if product.characteristics %} style="width: 20%;"{% endif %}
-			    {% endif %}
-                        class="nav-item" role="presentation">
+                      {% if product.full_description != "<p>&nbsp;</p>" and product.full_description != "<p> </p>" %}
+                        <li class="nav-item" role="presentation">
                             <button class="nav-link first active" id="pills-description-tab" data-bs-toggle="pill"
                                 data-bs-target="#pills-description" type="button" role="tab"
                                 aria-controls="pills-description" aria-selected="true">Описание</button>
                         </li>
-                        {% if product.characteristics %}
-                        <li {% if not youtube_link and not rutube_link %} style="width: 25%;"{% endif %}
-			     {% if youtube_link or rutube_link %} style="width: 20%;"{% endif %}
-			     class="nav-item" role="presentation">
+                        {% endif%}
+                        {% if product.characteristics != "<p>&nbsp;</p>" and product.characteristics != "<p> </p>" %}
+                        <li class="nav-item" role="presentation">
                             <button class="nav-link" id="pills-characteristics-tab" data-bs-toggle="pill"
                                 data-bs-target="#pills-characteristics" type="button" role="tab"
                                 aria-controls="pills-characteristics" aria-selected="false">Характеристики</button>
                         </li>
                         {% endif%}
-                        <li {% if product.characteristics and not youtube_link and not rutube_link %} style="width: 24.99%;"{% endif %}
-                            {% if not youtube_link and not rutube_link and not product.characteristics%} style="width: 33.3%;"{% endif %}
-                            {% if youtube_link or rutube_link %}
-	 			    {% if not product.characteristics %} style="width: 25%;"{% endif %}
-        	                    {% if product.characteristics %} style="width: 20%;"{% endif %}
-			    {% endif %}
-                        class="nav-item" role="presentation">
+                        {% if offers %}
+                        <li class="nav-item" role="presentation">
                             <button class="nav-link" id="pills-order-tab" data-bs-toggle="pill"
                                 data-bs-target="#pills-order" type="button" role="tab" aria-controls="pills-order"
                                 aria-selected="false">Оформить заказ</button>
                         </li>
-                        <li {% if product.characteristics and not youtube_link and not rutube_link %} style="width: 24.99%;"{% endif %}
-                            {% if not youtube_link and not rutube_link and not product.characteristics%} style="width: 33.4%;"{% endif %}
-                            {% if youtube_link or rutube_link %}
-			    	{% if not product.characteristics %} style="width: 25%;"{% endif %}
-			    	{% if product.characteristics %} style="width: 20%;"{% endif %}
-			    {% endif %}
-                        class="nav-item" role="presentation">
+                        {% endif%}
+                        {% if instructions or certificates or catalogs %}
+                        <li class="nav-item" role="presentation">
                             <button class="nav-link" id="pills-catalogs-tab" data-bs-toggle="pill"
                                 data-bs-target="#pills-catalogs" type="button" role="tab" aria-controls="pills-catalogs"
                                 aria-selected="false">Каталоги и РУ</button>
                         </li>
+                      {% endif%}
                         {% if youtube_link or rutube_link %}
-                        <li {% if not product.characteristics %} style="width: 25%;"{% endif %}
-		            {% if product.characteristics %} style="width: 20%;" {% endif %}
-                        class="nav-item" role="presentation">
+                        <li class="nav-item" role="presentation">
                             <button class="nav-link last" id="pills-video-tab" data-bs-toggle="pill"
                                 data-bs-target="#pills-video" type="button" role="tab" aria-controls="pills-video"
                                 aria-selected="false">Видео</button>
@@ -192,20 +176,27 @@
                         {% endif%}
                     </ul>
                 </div>
+              {% endif%}
+              {% if product.full_description != "<p>&nbsp;</p>" and product.full_description != "<p> </p>" or product.characteristics != "<p>&nbsp;</p>" and product.characteristics != "<p> </p>" or offers or instructions or certificates or catalogs or youtube_link or rutube_link %}
                 <div class="tab-content productTabContent" id="pills-tabContent">
                     <!-- Описание товара/услуги -->
+                  {% if product.full_description != "<p>&nbsp;</p>" and product.full_description != "<p> </p>" %}
                     <div class="tab-pane fade show active" id="pills-description" role="tabpanel"
                         aria-labelledby="pills-description-tab">
                         <div class="productDescription">
                             {{ product.full_description|safe }}
                         </div>
                     </div>
+                  {% endif%}
+                  {% if product.characteristics != "<p>&nbsp;</p>" and product.characteristics != "<p> </p>" %}
                     <div class="tab-pane fade" id="pills-characteristics" role="tabpanel"
                         aria-labelledby="pills-characteristics-tab">
                         <div class="productDescription characteristics_table" >
                             {{ product.characteristics|safe }}
                         </div>
                     </div>
+                  {% endif%}
+                  {% if offers %}
                     <div class="tab-pane fade" id="pills-order" role="tabpanel" aria-labelledby="pills-order-tab">
                         <div class="placeOrder">
                             <form action=""></form>
@@ -266,6 +257,8 @@
                         {% include 'core/components/delete_offers.html' %}
                     {% endif %}
                     </div>
+                  {% endif%}
+                  {% if instructions or certificates or catalogs %}
                     <div class="tab-pane fade" id="pills-catalogs" role="tabpanel" aria-labelledby="pills-catalogs-tab">
                         <div class="catalogTutorial">
                             {% if instructions %}
@@ -306,6 +299,7 @@
                             {% endif %}
                         </div>
                     </div>
+                  {% endif%}
                     {% if youtube_link or rutube_link %}
                     <div class="tab-pane fade" id="pills-video" role="tabpanel" aria-labelledby="pills-video-tab">
                         <div class="productVideo">
@@ -322,7 +316,10 @@
                     </div>
                     {% endif %}
                 </div>
-                 <div class="dropDown">
+              {% endif %}
+              {% if product.full_description != "<p>&nbsp;</p>" and product.full_description != "<p> </p>" or product.characteristics != "<p>&nbsp;</p>" and product.characteristics != "<p> </p>" or offers or instructions or certificates or catalogs or youtube_link or rutube_link %}
+              <div class="dropDown">
+                {% if product.full_description != "<p>&nbsp;</p>" and product.full_description != "<p> </p>" %}
                     <details>
                         <summary>Описание</summary>
                         <div class="dropDownEl">
@@ -331,12 +328,16 @@
                             </div>
                         </div>
                     </details>
+                {% endif %}
+                {% if product.characteristics != "<p>&nbsp;</p>" and product.characteristics != "<p> </p>" %}
                     <details>
                         <summary>Характеристики</summary>
                         <div class="dropDownEl characteristics_table">
                             {{ product.characteristics|safe }}
                         </div>
                     </details>
+                {% endif %}
+                {% if offers %}
                     <details>
                         <summary>Оформить заказ</summary>
                         <div class="dropDownEl">
@@ -363,9 +364,9 @@
                                         <tbody class="">
                                             {% for offer in offers|dictsort:'place'%}
                                             <tr class="table-row">
-                                                <td class="text-center align-middle">{{ offer.name | safe}}</td>
-                                                <td class="text-center align-middle">{{ offer.text_description | safe}}</td>
-                                                <td class="text-center align-middle">{{ offer.shipping_pack | safe}}</td>
+                                                <td class="text-center align-middle"><span>{{ offer.name | safe}}</span></td>
+                                                <td class="text-center align-middle"><span>{{ offer.text_description | safe}}</span></td>
+                                                <td class="text-center align-middle"><span>{{ offer.shipping_pack | safe}}</span></td>
                                                 <td class="text-center align-middle">
                                                     <div class="quantity-input">
                                                         <form hx-post="{% url 'cart_add' offer_id=offer.pk %}"
@@ -374,9 +375,13 @@
                                                                 <div class="inputCount">
                                                                     {% comment %} <div class="inputCountBtn1"
                                                                         onclick="changeQuantity(event, this, -1)">-</div> {% endcomment %}
+                                                                  <div class="inputCountBtn1"
+                                                                       onclick="changeQuantity(event, this, -1)">-</div>
                                                                     <input class="form-control" type="number"
                                                                         name="quantity" value="0" required=""
                                                                         id="id_quantity" min="1"/>
+                                                                  <div class="inputCountBtn2"
+                                                                       onclick="changeQuantity(event, this, 1)">+</div>
 {% comment %}
                                                                     <div class="inputCountBtn2"
                                                                         onclick="changeQuantity(event, this, 1)">+</div>
@@ -397,6 +402,8 @@
                             </div>
                         </div>
                     </details>
+                {% endif %}
+                {% if instructions or certificates or catalogs %}
                     <details>
                         <summary>Каталоги и РУ</summary>
                         <div class="dropDownEl">
@@ -416,7 +423,7 @@
                                 {% if certificates %}
                                     {% for certificate in certificates %}
                                     <div class="catalogTutorialLink">
-                                        <a href="{{ certificate.flie.url }}">
+                                        <a href="{{ certificate.file.url }}">
                                             <div class="catalogTutorialEl">
                                                 <div class="catalogTutorialElText">Скачать сертификат</div>
                                                 <div class="catalogTutorialElImg ruDownload"></div>
@@ -440,30 +447,35 @@
                             </div>
                         </div>
                     </details>
-                    {% if video_file or youtube_link or rt_link %}
+                {% endif %}
+                    {% if video_file or youtube_link or rt_link or rutube_link %}
                     <details>
                         <summary>Видео</summary>
                         <div class="dropDownEl">
                             <div class="productVideo">
                                 <div class="productVideoContainer">
-                                        {% if rutube_link %}
-                                            <!-- Видео с RuTube -->
-                                            <iframe width="100%" height="100%" src="https://rutube.ru/play/embed/{{ rt_link|slice:'23:' }}" frameBorder="0" allow="clipboard-write; autoplay" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>
-                                        {% elif youtube_link %}
-                                            <!-- Видео с Ютуб -->
-                                            <iframe width="100%" height="100%" src="" frameBorder="0" allow="clipboard-write; autoplay" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>
-                                        {% endif %}
+                                  {% if rt_link %}
+                                    <!-- Видео с RuTube -->
+                                    <iframe width="100%" height="100%" src="https://rutube.ru/play/embed/{{ rt_link|slice:'23:' }}" frameBorder="0" allow="clipboard-write; autoplay" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>
+                                  {% elif rutube_link %}
+                                    <!-- Видео с RuTube -->
+                                    <iframe width="100%" height="100%" src="{{ rutube_link }}" frameBorder="0" allow="clipboard-write; autoplay" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>
+                                  {% elif youtube_link %}
+                                    <!-- Видео с Ютуб -->
+                                    <iframe width="100%" height="100%" src="{{ youtube_link }}" frameBorder="0" allow="clipboard-write; autoplay" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>
+                                  {% endif %}
                                 </div>
                             </div>
                         </div>
                     </details>
                     {% endif %}
                  </div>
+              {% endif %}
                  {% include 'core/components/offer_button_cart.html' %}
             </div>
         </div>
-        <!-- Placeholder for the modal -->
-        <div id="modal" class="modal fade" onclick="modalClickHandler(event)">
+        <!-- Placeholder for the modal --> {# onclick="modalClickHandler(event)" #}
+        <div id="modal" class="modal fade" >
             <div id="dialog" class="modal-dialog modal-xl" hx-target="this" ></div>
         </div>
     </div>

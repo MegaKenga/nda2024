@@ -36,7 +36,7 @@
                 <a href="{% url 'category' category_slug=category.slug %}">
                   <div class="catalogBrandItemImg">
                     {% if category.logo %}
-                      <img src="{{ category.logo.url }}" alt="Логотип категории" />
+                      <img src="{{ category.logo.url }}" alt="{{category.name}}" />
                     {% else %}
                     <img src="{% static "/images/noImage.jpg" %}" alt="Нет логотипа" />
                     {% endif %}
@@ -50,7 +50,7 @@
                 <a href="{% url 'offer' brand_slug=brand.slug product_slug=product.slug %}">
                   <div class="catalogBrandItemImg">
                     {% if product.logo %}
-                      <img src="{{ product.logo.url }}" alt="Логотип категории" />
+                      <img src="{{ product.logo.url }}" alt="{{product.name}}" />
                     {% else %}
                     <img src="{% static "/images/noImage.jpg" %}" alt="Нет логотипа" />
                     {% endif %}

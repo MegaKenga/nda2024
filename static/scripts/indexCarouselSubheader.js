@@ -1,7 +1,7 @@
 // Карусель с рекламой на главной
 
 $(document).ready(function(){
-    $('.slider').slick({
+    $('.subheaderSlider.slider').slick({
       autoplay: true,
       autoplaySpeed: 5000, 
       speed: 500,          

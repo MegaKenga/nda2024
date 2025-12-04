@@ -5,6 +5,9 @@
 {% block styles %}
 
 <link rel="stylesheet" href="{% static 'css/styleIndex.css' %}" type="text/css">
+<link rel="preload" type="text/css" href="{% static 'bootstrap/css/bootstrap.min.css' %}" />
+<script src="{% static 'bootstrap/js/bootstrap.min.js' %}" defer></script>
+<link rel="stylesheet" href="{% static 'custom/css/custom.css' %}" type="text/css">
 {% endblock %}
 
 
@@ -33,16 +36,16 @@
     <main>
       {% include 'core/components/catalog.html' %}
       <!-- формы на странице -->
-  
+
       <!-- плавающий элемент с формами связи -->
       {% include 'core/components/formsContainer.html' %}
-  
+
       <!-- плавающий элемент с формами связи -->
       <!-- формы на странице -->
     </main>
 
     {% cache 600 index_page %}
-        
+
     {% endcache %}
 
-{% endblock %}      
+{% endblock %}

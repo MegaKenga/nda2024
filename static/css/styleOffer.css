@@ -661,7 +661,7 @@
         position: fixed;
         right: 15px;
         bottom: 180px;
-
+        box-shadow: 0px 2px 15px 0px black;
     }
 
     .placeResult {

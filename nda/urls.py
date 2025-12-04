@@ -21,7 +21,7 @@ from django.contrib.sitemaps.views import sitemap
 
 from nda.sitemaps import sitemaps
 from nda import settings
-from nda.views import custom_404
+from nda.views import custom_404, custom_500
 import catalog.views, core.views
 
 
@@ -48,3 +48,4 @@ if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 handler404 = custom_404
+handler500 = custom_500
