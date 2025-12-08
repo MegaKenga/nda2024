@@ -1,41 +1,31 @@
-# A simple online catalog for NDA company
-This is a small django application, introducing online catalog
-of products with categories and brands. In plans: a cart and mail notifications services
+# Простой сайт-каталог компании НДА
 
-## Pre-requisites
-- python 3.8+ installed
-- psql connection available
+## Требования
+- python 3.8+ 
+- postgresql
+- redis
+- celery
 
-## Installation:
+## Создание виртуального окружения и установка зависимостей:
 ```shell
 python3 -m virtualenv venv
 source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-## Configuration:
-1. Create .env file and populate it with values. Please check .env.example for reference
-2. Run initial database commands: 
+## Конфигурация:
+1. Создать файл .env и заполнить по подобию env.example
+2. Создать миграции: 
     ```shell
     python3 manage.py migrate
     python3 manage.py createsuperuser
     ```
-3. Run collect static command
+3. Собрать статику на продакшн сервере:
     ```shell
     python3 manage.py collectstatic
     ```
-4. How to sync migrations and database
-   ```shell
-   pg_restore -U postgres -h 0.0.0.0 -d xxxx < dump.dump --disable-triggers
-   rm -rf catalog/migrations
-   rm -rf files/migrations
-   python manage.py makemigrations
-   python manage.py migrate
-   pg_dump --column-inserts --data-only -h 0.0.0.0 -U postgres -W -Fc xxxx > dump.dump
-   ```
-replace "xxxx" with DB_NAME and "postgres" with your DB_USER
 
-5. Redis
+4. Redis
    start
    ```shell
    redis-server
@@ -49,7 +39,7 @@ replace "xxxx" with DB_NAME and "postgres" with your DB_USER
    redis-cli flushall
    ```
 
-## Run the app
+## Запустить приложение:
 ```shell
 python3 manage.py runserver
 ```

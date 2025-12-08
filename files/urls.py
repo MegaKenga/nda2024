@@ -2,7 +2,7 @@ from django.urls import path
 
 from files import views
 
-
 urlpatterns = [
-    path('instructions/<file_path>', views.serve_file, name='serve_file'),
+    path('<int:product_id>/add/', views.import_from_excel, name='offers_add'),
+    path('<int:product_id>/delete/', views.delete_offers, name='offers_delete'),
 ]

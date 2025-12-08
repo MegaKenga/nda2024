@@ -4,8 +4,8 @@ import os
 from catalog.models import Product
 
 class ModelImage(models.Model):
-    product = models.ForeignKey(Product, null=True, blank=True, on_delete=models.SET_NULL, verbose_name='Продукт')
-    image = models.ImageField(upload_to='category/images', null=True, blank=True, verbose_name='Изображение')
+    product = models.ForeignKey(Product, null=True, blank=True, on_delete=models.SET_NULL, verbose_name='Товар')
+    image = models.ImageField(upload_to='product/images', null=True, blank=True, verbose_name='Изображение')
 
     class Meta:
         verbose_name_plural = 'Изображения'
@@ -26,8 +26,8 @@ class ModelImage(models.Model):
         return os.path.basename(self.file.name)
 
 class ModelFile(models.Model):
-    product = models.ForeignKey(Product, null=True, blank=True, on_delete=models.SET_NULL, verbose_name='Продукт')
-    file = models.FileField(upload_to='category/certificates', null=True, blank=True, verbose_name='Файл')
+    product = models.ForeignKey(Product, null=True, blank=True, on_delete=models.SET_NULL, verbose_name='Товар')
+    file = models.FileField(upload_to='product/certificates', null=True, blank=True, verbose_name='Файл')
 
     class Meta:
         verbose_name_plural = 'РУ и Сертификаты'
@@ -43,8 +43,8 @@ class ModelFile(models.Model):
     
 
 class InstructionsFile(models.Model):
-    product = models.ForeignKey(Product, null=True, blank=True, on_delete=models.SET_NULL, verbose_name='Продукт')
-    file = models.FileField(upload_to='category/instructions', null=True, blank=True, verbose_name='Файл')
+    product = models.ForeignKey(Product, null=True, blank=True, on_delete=models.SET_NULL, verbose_name='Товар')
+    file = models.FileField(upload_to='product/instructions', null=True, blank=True, verbose_name='Файл')
 
     class Meta:
         verbose_name_plural = 'Инструкции'
@@ -59,8 +59,8 @@ class InstructionsFile(models.Model):
            return os.path.basename(self.file.name)
     
 class CatalogFile(models.Model):
-    product = models.ForeignKey(Product, null=True, blank=True, on_delete=models.SET_NULL, verbose_name='Продукт')
-    file = models.FileField(upload_to='category/catalog', null=True, blank=True, verbose_name='Файл')
+    product = models.ForeignKey(Product, null=True, blank=True, on_delete=models.SET_NULL, verbose_name='Товар')
+    file = models.FileField(upload_to='product/catalog', null=True, blank=True, verbose_name='Файл')
 
     class Meta:
         verbose_name_plural = 'Каталог'

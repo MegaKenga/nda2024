@@ -1,0 +1,33 @@
+{% load static %}
+
+<div class="brandBanner"
+  style="background: linear-gradient(135deg,
+  {% if category %}
+    {{ category.banner_color }}
+  {% elif brand %}
+    {{ brand.banner_color }}
+  {% endif %}, white); ">
+  <div class="brandLogo">
+    {% if brand.logo %}
+      <img src="{{ brand.logo.url }}" alt="{{ brand.name }}" />
+    {% elif category.logo %}
+      <img src="{{ category.logo.url }}" alt="{{ category.name }}" />
+    {% else %}
+      <img src="{% static 'images/noImage.jpg' %}" alt="Default logo" />
+    {% endif %}
+  </div>
+
+  <div class="brandInfo">
+    {% if brand %}
+      <h1>{{ brand.name|safe|striptags }}</h1>
+      {% if category %}
+        <h2>{{ category.name|safe|striptags }}</h2>
+      {% elif brand %}
+        <h2>{{ brand.description|safe|striptags }}</h2>
+      {% endif %}
+    {% elif category %}
+      <h1>{{ category.name|safe|striptags }}</h1>
+      <h2>{{ category.description|safe|striptags }}</h2>
+    {% endif %}
+  </div>
+</div>

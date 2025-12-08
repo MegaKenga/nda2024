@@ -1,0 +1,75 @@
+{% extends 'core/base.html' %}
+{% load cache %}
+{% load static %}
+
+{% block title %}
+  <title>{{ category.title }}</title>
+{% endblock %}
+
+{% block metatag %}
+  <meta name="keywords" content="{{ category.keywords }}" />
+  <meta property="og:url" content="https://nda.ru{% url 'category' category_slug=category.slug %}" />
+  <meta property="og:title" content="{{ category.title }}" />
+  <meta property="og:type" content="website" />
+  <meta property="og:description" content="{{ category.description|striptags }}" />
+  <meta name="description" content="{{ category.description|striptags }}" />
+{% endblock %}
+
+{% block content %}
+  <header style="height: 0px;">
+    <!-- летающая шапка -->
+    {% include 'core/components/flyingHeader.html' %}
+    <!-- летающая шапка -->
+  </header>
+  <main class="main">
+    <div class="container1">
+      {% cache 86400 'breadcrumbs_cache' %}
+      {% include 'core/components/breadcrumbs.html' %}
+      {% endcache %}
+
+      {% cache 86400 'banner_cache' %}
+      {% include 'core/components/banner.html' %}
+      {% endcache %}
+
+      <!-- каталог -->
+      <div class="catalogBrand">
+        <!-- Выбор по производителям -->
+
+        <div class="catalogBrandItems">
+          {% for category in categories %}
+              <div class="catalogBrandItem">
+              <a href="{% url 'category' category_slug=category.slug %}">
+                <div class="catalogBrandItemImg">
+                  {% if category.logo %}
+                    <img src="{{ category.logo.url }}" alt="{{category.name}}" />
+                  {% else %}
+                    <img src="{% static '/images/noImage.jpg' %}" alt="Нет логотипа" />
+                  {% endif %}
+                </div>
+                <div class="catalogBrandItemTitle">{{ category.name }}</div>
+              </a>
+            </div>
+          {% endfor %}
+        {% for product in products %}
+            <div class="catalogBrandItem">
+                <a href="{% url 'offer' brand_slug=product.brand.slug product_slug=product.slug %}">
+                  <div class="catalogBrandItemImg">
+                    {% if product.logo %}
+                      <img src="{{ product.logo.url }}" alt="{{product.name}}" />
+                    {% else %}
+                    <img src="{% static "/images/noImage.jpg" %}" alt="Нет логотипа" />
+                    {% endif %}
+                  </div>
+                  <div class="catalogBrandItemTitle">{{ product.name }}</div>
+                </a>
+              </div>
+        {% endfor %}
+        </div>
+      </div>
+      <!-- конец каталога -->
+    </div>
+
+    {% include 'core/components/formsContainer.html' %}
+
+  </main>
+{% endblock %}

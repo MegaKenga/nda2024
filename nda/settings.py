@@ -13,8 +13,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 from pathlib import Path
 import os
 from dotenv import load_dotenv
-import logging
-from django.utils.log import DEFAULT_LOGGING
+
 
 load_dotenv()
 
@@ -26,15 +25,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-# SECRET_KEY = os.getenv('SECRET_KEY')
-SECRET_KEY = 'django-insecure-=j#*b5xl1dgzvmdrf9zc+qae3z7^uqie)rao-_*okz+=tboh2-'
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 
-logging.basicConfig(level=logging.INFO)
 # Application definition
 
 INSTALLED_APPS = [
@@ -51,12 +48,10 @@ INSTALLED_APPS = [
     'cart.apps.CartConfig',
     'nda_email.apps.NdaEmailConfig',
     'django_cleanup',
-    'django_sendfile',
     'django_celery_results',
     'core.apps.CoreConfig',
     'sorl.thumbnail',
     'phonenumber_field',
-    # 'ckeditor',
     'django.contrib.sitemaps',
     'django_ckeditor_5',
 ]
@@ -84,7 +79,7 @@ ROOT_URLCONF = 'nda.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'core/templates'],
+        'DIRS': [BASE_DIR / 'templates/'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -120,17 +115,18 @@ DATABASES = {
         'PASSWORD': os.getenv('DB_USER_PASSWORD', 'root'),
         'HOST': os.getenv('DB_HOST', 'localhost'),
         'PORT': os.getenv('DB_PORT', '5432'),
-     
     }
 }
 
 CACHES = {
     "default": {
-        "BACKEND": "django.core.cache.backends.redis.RedisCache",
+        # "BACKEND": "django.core.cache.backends.redis.RedisCache",
         "BACKEND": 'django.core.cache.backends.dummy.DummyCache',
         "LOCATION": "redis://127.0.0.1:6379",
     }
 }
+
+DATA_UPLOAD_MAX_NUMBER_FIELDS = None
 
 # CELERY SETTINGS
 CELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL', 'redis://localhost:6379')
@@ -173,7 +169,7 @@ LOGOUT_URL = 'logout'
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 LANGUAGE_CODE = 'ru-ru'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Moscow'
 
 USE_I18N = True
 
@@ -184,7 +180,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = '/static/'
-STATICFILES_DIRS = ('static',)
+STATICFILES_DIRS = ( BASE_DIR / "static",)
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 
 # Default primary key field type
@@ -196,12 +192,6 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
 
-# DJANGO_SENDFILE SETTINGS
-PRIVATE_ROOT = os.getenv('PRIVATE_PATH', os.path.join(BASE_DIR, 'private')) 
-SENDFILE_ROOT = 'private/'
-SENDFILE_BACKEND = 'django_sendfile.backends.simple'
-
-
 SESSION_ENGINE = 'django.contrib.sessions.backends.signed_cookies'
 
 MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
@@ -209,7 +199,7 @@ MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 
 # EMAIL_SENDER SETTINGS
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST = os.getenv('HOST')
 EMAIL_HOST_USER = os.getenv('HOST_USER')
 EMAIL_HOST_PASSWORD = os.getenv('HOST_PASSWORD')
 RECIPIENT_EMAIL = os.getenv('RECIPIENT')
@@ -222,51 +212,7 @@ SECURE_REFERRER_POLICY = 'no-referrer-when-downgrade'
 YACAPTCHA_SERVER = os.getenv('SERVER_KEY')
 
 
-
 # Конфигурация CKEditor
-CKEDITOR_CONFIGS = {
-    'default': {
-        'toolbar': 'full',
-        'height': 300,
-        'width': '100%',
-    },
-}
-
-
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'formatters': {
-        'verbose': {
-            'format': '{levelname} {asctime} {module} {process:d} {thread:d} {message}',
-            'style': '{',
-        },
-        'simple': {
-            'format': '{levelname} {message}',
-            'style': '{',
-        },
-    },
-    'handlers': {
-        'file': {
-            'level': 'DEBUG',  
-            'class': 'logging.FileHandler',
-            'filename': 'nda_email.log',  
-            'formatter': 'verbose',
-        },
-        'console': {
-            'level': 'INFO',
-            'class': 'logging.StreamHandler',
-            'formatter': 'simple',
-        },
-    },
-    'loggers': {
-        'nda_email': {  
-            'handlers': ['file', 'console'],
-            'level': 'DEBUG',  
-            'propagate': True,
-        },
-    },
-}
 
 customColorPalette = [
     {
@@ -303,7 +249,6 @@ customColorPalette = [
     }
 ]
 
-CKEDITOR_5_CUSTOM_CSS = 'path_to.css'  # optional
 CKEDITOR_5_CUSTOM_CSS = 'css/admin_dark_mode_fix.css'
 CKEDITOR_5_CONFIGS = {
     "default": {
@@ -379,6 +324,5 @@ CKEDITOR_5_CONFIGS = {
 }
 
 # Custom CSS for Dark Mode Fix
-CKEDITOR_5_CUSTOM_CSS = 'css/admin_dark_mode_fix.css'
 
-ADMINS = [("Ivan", "terryjj0@gmail.com")]
+#ADMINS = [("Ivan", "terryjj0@gmail.com")]

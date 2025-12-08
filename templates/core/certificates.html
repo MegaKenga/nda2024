@@ -1,0 +1,72 @@
+{% extends 'core/base.html' %}
+{% load static cache %}
+
+{% block title %}
+<title> РУ и сертификаты</title>
+{% endblock %}
+
+{% block metatag %}
+  <meta name="keywords" content="РУ Минздрава">
+  {% comment %} <meta property="og:url" content="https://nda.ru{{ request.path }}">
+  <meta property="og:title" content="РУ и сертификаты">
+  <meta property="og:type" content="website">
+  <meta property="og:description" content="Регистрационные удостоверения и сертификаты"> {% endcomment %}
+  <meta name="description" content="Регистрационные удостоверения и сертификаты">
+{% endblock %}
+
+{% block content %}
+  <header style="height: 0px;">
+    <!-- летающая шапка -->
+    {% include 'core/components/flyingHeader.html' %}
+    <!-- летающая шапка -->
+  </header>
+  <main class="main">
+    <div class="container1">
+      <div class="breadCrumbs">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item">
+            <a href="{% url 'home' %}">ГЛАВНАЯ</a>
+          </li>
+          <li class="breadcrumb-item breadcrumb-item-active" aria-current="page">СЕРТИФИКАТЫ</li>
+        </ol>
+      </div>
+      <div class="brandBanner">
+        <div class="brandLogo">
+          <img src="{% static 'images/certificates/certificates.svg' %}" alt="" />
+        </div>
+        <div class="brandInfo">
+          <h1>ру и сертификаты</h1>
+        </div>
+      </div>
+       {% cache 86400 'certificate_brands' %}
+      <div class="catalogItems">
+        {% for brand in brands %}
+          <a href="{% url 'brand_certificates' brand.pk %}">
+            <div class="catalogItem">
+              <div class="catalogItemImg">
+                {% if brand.logo %}  
+                <img src="{{ brand.logo.url }}" alt="{{ brand.name }}" />
+                {% else %}
+                    <img src="{% static 'images/noImage.jpg' %}" alt="Default logo" />  
+                {% endif %}
+              </div>
+              <h3>{{ brand.name }}</h3>
+            </div>
+          </a>
+        {% endfor %}
+        <!-- 3 пустых дива - для ровной сетки flex -->
+        <div class="emptyEl"></div>
+        <div class="emptyEl"></div>
+        <div class="emptyEl"></div>
+        <!-- 3 пустых дива - для ровной сетки flex -->
+      </div>
+     {% endcache %}
+      <ul></ul>
+      <!-- плавающий элемент с формами связи -->
+      {% include 'core/components/formsContainer.html' %}
+      <!-- плавающий элемент с формами связи -->
+      <!-- формы на странице -->
+    </div>
+  </main>
+{% endblock %}
+

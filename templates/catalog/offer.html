@@ -1,0 +1,497 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% load thumbnail %}
+{% load thumbnail cache %}
+{% load static cache %}
+{% block title %}
+    <title>{{ product.title }}</title>
+{% endblock %}
+
+{% block metatag %}
+  <meta name="keywords" content="{{product.keywords}}">
+  <meta property="og:url" content="https://nda.ru{{ request.path }}">
+  <meta property="og:title" content="{{product.title}}">
+  <meta property="og:type" content="website">
+  <meta property="og:description" content="{{product.description|striptags}}">
+  <meta name="description" content="{{product.description|striptags}}">
+{% endblock %}
+
+
+
+{% block links %}
+<link rel="stylesheet" type="text/css" href="{% static 'bootstrap/css/bootstrap.css' %}" />
+<link rel="stylesheet" type="text/css" href="{% static 'custom/css/custom.css' %}" />
+<script src="{% static 'bootstrap/js/bootstrap.js' %}"></script>
+
+<script src="https://www.google.com/recaptcha/api.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@glidejs/glide/dist/css/glide.core.min.css"/>
+<script src="https://cdn.jsdelivr.net/npm/@glidejs/glide/dist/glide.min.js"></script>
+{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="{% static 'css/styleOffer.css'%}" type="text/css">
+<link rel="stylesheet" href="{% static 'css/styleCarousel.css'%}" type="text/css">
+
+{% endblock %}
+
+{% block content %}
+<header style="height: 0px;">
+    <!-- летающая шапка -->
+    {% include 'core/components/flyingHeader.html' %}
+
+    <!-- летающая шапка -->
+</header>
+
+<main class="main">
+    <div class="container1">
+        {% include 'core/components/breadcrumbs.html' %}
+        {% cache 600 brand.pk product.pk %}
+            <div class="brandBanner" style="background: linear-gradient(135deg, {{ brand.banner_color }}, white);">
+                <div class="brandLogo">
+                {% if brand.logo %}
+                        <img src="{{ brand.logo.url }}" alt="{{ brand.name }}" />
+                        {% else %}
+                            <img src="{% static 'images/noImage.jpg' %}" alt="Default logo" />
+                        {% endif %}
+                </div>
+                <div class="brandInfo">
+                {% if brand %}
+                    <h1>{{ brand.name }}</h1>
+                    <h2>{{ product.name }}</h2>
+                {% endif %}
+                </div>
+            </div>
+        {% endcache %}
+        <div class="product">
+            <div class="productHead">
+                <div class="productCarousel">
+                    <div class="carouselWrapper">
+                        <div id="carouselExampleIndicators" class="carousel slide" data-bs-interval="false" data-ride="carousel" data-pause="hover">
+                            <div class="carousel-inner">
+                                {% for image in images %}
+                                    {% cache 600 image.pk %}
+                                        {% thumbnail image.image '600x800' format="PNG" as im %}
+                                            <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                                                <img src="{{ im.url }}" class="d-block" alt="{{ product.name }} image">
+                                            </div>
+                                        {% endthumbnail %}
+                                    {% endcache %}
+                                {% endfor %}
+                            </div>
+                            {% if images|length > 1 %}
+                                <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+                                    <span class="carousel-control-prev-icon slick-prev1" aria-hidden="true" style="background-image: url('{% static "images/offer/left.svg"%}')" ></span>
+                                    <span class="visually-hidden">Previous</span>
+                                </button>
+                                <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+                                    <span class="carousel-control-next-icon slick-next1" aria-hidden="true" style="background-image: url('{% static "images/offer/right.svg"%}')"></span>
+                                    <span class="visually-hidden">Next</span>
+                                </button>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% if images|length > 1 %}
+                        <div class="tumbnailsWrapper">
+                            <div class="carousel-indicators tumbnails-list">
+                                {% for image in images %}
+                                    {% cache 600 image.pk %}
+                                        {% with forloop.counter0 as index %}
+                                            {% thumbnail image.image '150x150' format="PNG" as im %}
+                                                <div class="thumbnailContainer" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="{{index}}" {% if forloop.second %}class="active"{% endif %}>
+                                                    <img src="{{ im.url }}" class="d-block  thumbnail-image" aria-label="Slide {{ index }}" alt="{{ product.name }} image">
+                                                </div>
+                                            {% endthumbnail %}
+                                        {% endwith %}
+                                    {% endcache %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="productTitle">
+                    <div class="productTitleText">
+                        <h2>{{ product.name }}</h2>
+                        {{ product.short_description|safe }}
+                    </div>
+                    <div class="productTitleConnect">
+                        <div class="linkText">
+                            Связаться со специалистом по продукции {{brand}} {{specialist.name}}:
+                        </div>
+                        <div class="linkContacts">
+                            <a href="tel:{{specialist.phone}}" aria-label="Позвонить специалисту по номеру {{specialist.phone}}">
+                                <div class="linkContactsEl">
+                                    <img src="{% static "images/productCall.svg" %}" alt="Иконка телефона">
+                                    <div>{{specialist.phone}}</div>
+                                </div>
+                            </a>
+                            <a href="mailto:{{specialist.email}}" aria-label="Написать специалисту на почту {{specialist.email}}">
+                                <div class="linkContactsEl">
+                                    <img src="{% static "images/productMail.svg" %}" alt="Иконка электронной почты">
+                                    <div>{{specialist.email}}</div>
+                                </div>
+                            </a>
+                        </div>
+                        {{vk_link}}
+                    </div>
+                </div>
+            </div>
+            <div class="productInfo">
+              {% if product.full_description != "<p>&nbsp;</p>" and product.full_description != "<p> </p>" or product.characteristics != "<p>&nbsp;</p>" and product.characteristics != "<p> </p>" or offers or instructions or certificates or catalogs or youtube_link or rutube_link %}
+              <div class="productInfoChoice">
+                    <ul class="nav nav-pills" id="pills-tab" role="tablist">
+                      {% if product.full_description != "<p>&nbsp;</p>" and product.full_description != "<p> </p>" %}
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link first active" id="pills-description-tab" data-bs-toggle="pill"
+                                data-bs-target="#pills-description" type="button" role="tab"
+                                aria-controls="pills-description" aria-selected="true">Описание</button>
+                        </li>
+                        {% endif%}
+                        {% if product.characteristics != "<p>&nbsp;</p>" and product.characteristics != "<p> </p>" %}
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="pills-characteristics-tab" data-bs-toggle="pill"
+                                data-bs-target="#pills-characteristics" type="button" role="tab"
+                                aria-controls="pills-characteristics" aria-selected="false">Характеристики</button>
+                        </li>
+                        {% endif%}
+                        {% if offers %}
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="pills-order-tab" data-bs-toggle="pill"
+                                data-bs-target="#pills-order" type="button" role="tab" aria-controls="pills-order"
+                                aria-selected="false">Оформить заказ</button>
+                        </li>
+                        {% endif%}
+                        {% if instructions or certificates or catalogs %}
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="pills-catalogs-tab" data-bs-toggle="pill"
+                                data-bs-target="#pills-catalogs" type="button" role="tab" aria-controls="pills-catalogs"
+                                aria-selected="false">Каталоги и РУ</button>
+                        </li>
+                      {% endif%}
+                        {% if youtube_link or rutube_link %}
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link last" id="pills-video-tab" data-bs-toggle="pill"
+                                data-bs-target="#pills-video" type="button" role="tab" aria-controls="pills-video"
+                                aria-selected="false">Видео</button>
+                        </li>
+                        {% endif%}
+                    </ul>
+                </div>
+              {% endif%}
+              {% if product.full_description != "<p>&nbsp;</p>" and product.full_description != "<p> </p>" or product.characteristics != "<p>&nbsp;</p>" and product.characteristics != "<p> </p>" or offers or instructions or certificates or catalogs or youtube_link or rutube_link %}
+                <div class="tab-content productTabContent" id="pills-tabContent">
+                    <!-- Описание товара/услуги -->
+                  {% if product.full_description != "<p>&nbsp;</p>" and product.full_description != "<p> </p>" %}
+                    <div class="tab-pane fade show active" id="pills-description" role="tabpanel"
+                        aria-labelledby="pills-description-tab">
+                        <div class="productDescription">
+                            {{ product.full_description|safe }}
+                        </div>
+                    </div>
+                  {% endif%}
+                  {% if product.characteristics != "<p>&nbsp;</p>" and product.characteristics != "<p> </p>" %}
+                    <div class="tab-pane fade" id="pills-characteristics" role="tabpanel"
+                        aria-labelledby="pills-characteristics-tab">
+                        <div class="productDescription characteristics_table" >
+                            {{ product.characteristics|safe }}
+                        </div>
+                    </div>
+                  {% endif%}
+                  {% if offers %}
+                    <div class="tab-pane fade" id="pills-order" role="tabpanel" aria-labelledby="pills-order-tab">
+                        <div class="placeOrder">
+                            <form action=""></form>
+                            <div class="container1">
+                                <table class="table table-responsive table-borderless custom-table">
+                                    <thead>
+                                        <tr class="table-header">
+                                            <th class="col-2 text-center">
+                                                Код
+                                            </th>
+                                            <th class="col-8 text-start">
+                                                Описание
+                                            </th>
+                                            <th class="col-1 text-center">
+                                                Уп/шт.
+                                            </th>
+                                            <th class="col-3">
+                                                Количество
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="">
+                                        {% for offer in offers %}
+                                        <tr class="table-row">
+                                            <td class="text-center align-middle">{{ offer.name | safe}}</td>
+                                            <td class="text-start align-middle">{{ offer.text_description | safe}}</td>
+                                            <td class="text-center align-middle">{{ offer.shipping_pack | safe}}</td>
+                                            <td class="text-start">
+                                                <div class="quantity-input">
+                                                    <form hx-post="{% url 'cart_add' offer_id=offer.pk %}"
+                                                        hx-target="#cart" hx-swap="outerHTML" style="width: 100%;">
+                                                        <div class="offerCount">
+                                                            <div class="inputCount">
+                                                                <div class="inputCountBtn1"
+                                                                    onclick="changeQuantity(event, this, -1)">-</div>
+                                                                <input class="form-control" type="number"
+                                                                    name="quantity" value="0" required=""
+                                                                    id="id_quantity" min="1"/>
+                                                                <div class="inputCountBtn2"
+                                                                    onclick="changeQuantity(event, this, 1)">+</div>
+                                                            </div>
+                                                                <button class="quantityFormBtn" id="addButton"type="submit"
+                                                                value="">Добавить</button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            </form>
+                        </div>
+
+                    {% if user.is_authenticated %}
+                        {% include 'core/components/excel_input.html' %}
+                        {% include 'core/components/delete_offers.html' %}
+                    {% endif %}
+                    </div>
+                  {% endif%}
+                  {% if instructions or certificates or catalogs %}
+                    <div class="tab-pane fade" id="pills-catalogs" role="tabpanel" aria-labelledby="pills-catalogs-tab">
+                        <div class="catalogTutorial">
+                            {% if instructions %}
+                                {% for instruction in instructions %}
+                                    <div class="catalogTutorialLink">
+                                        <a href="{{ instruction.file.url }}">
+                                            <div class="catalogTutorialEl">
+                                                <div class="catalogTutorialElText">Скачать инструкцию</div>
+                                                <div class="catalogTutorialElImg instructionDownload"></div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                {% endfor %}
+                            {% endif %}
+                            {% if certificates %}
+                                {% for certificate in certificates %}
+                                <div class="catalogTutorialLink">
+                                    <a href="{{ certificate.file.url }}">
+                                        <div class="catalogTutorialEl">
+                                            <div class="catalogTutorialElText">Скачать РУ</div>
+                                            <div class="catalogTutorialElImg ruDownload"></div>
+                                        </div>
+                                    </a>
+                                </div>
+                                {% endfor %}
+                            {% endif %}
+                            {% if catalogs %}
+                                {% for catalog in catalogs %}
+                                <div class="catalogTutorialLink">
+                                    <a href="{{ catalog.file.url }}">
+                                        <div class="catalogTutorialEl">
+                                            <div class="catalogTutorialElText">Скачать Каталог</div>
+                                            <div class="catalogTutorialElImg catalogDownload"></div>
+                                        </div>
+                                    </a>
+                                </div>
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                    </div>
+                  {% endif%}
+                    {% if youtube_link or rutube_link %}
+                    <div class="tab-pane fade" id="pills-video" role="tabpanel" aria-labelledby="pills-video-tab">
+                        <div class="productVideo">
+                            <div class="productVideoContainer">
+                                    {% if rutube_link %}
+                                        <!-- Видео с RuTube -->
+                                        <iframe width="100%" height="100%" src="https://rutube.ru/play/embed/{{ rt_link|slice:'23:' }}" frameBorder="0" allow="clipboard-write; autoplay" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>
+                                    {% elif youtube_link %}
+                                        <!-- Видео с Ютуб -->
+                                        <iframe width="100%" height="100%" src="{{youtube_link}}" frameBorder="0" allow="clipboard-write; autoplay" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>
+                                    {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+              {% endif %}
+              {% if product.full_description != "<p>&nbsp;</p>" and product.full_description != "<p> </p>" or product.characteristics != "<p>&nbsp;</p>" and product.characteristics != "<p> </p>" or offers or instructions or certificates or catalogs or youtube_link or rutube_link %}
+              <div class="dropDown">
+                {% if product.full_description != "<p>&nbsp;</p>" and product.full_description != "<p> </p>" %}
+                    <details>
+                        <summary>Описание</summary>
+                        <div class="dropDownEl">
+                            <div class="productDescription">
+                                {{ product.full_description|safe }}
+                            </div>
+                        </div>
+                    </details>
+                {% endif %}
+                {% if product.characteristics != "<p>&nbsp;</p>" and product.characteristics != "<p> </p>" %}
+                    <details>
+                        <summary>Характеристики</summary>
+                        <div class="dropDownEl characteristics_table">
+                            {{ product.characteristics|safe }}
+                        </div>
+                    </details>
+                {% endif %}
+                {% if offers %}
+                    <details>
+                        <summary>Оформить заказ</summary>
+                        <div class="dropDownEl">
+                            <div class="placeOrder">
+                                <form action=""></form>
+                                <div class="container1">
+                                    <table class="table table-responsive table-borderless">
+                                        <thead>
+                                            <tr class="table-header">
+                                                <th class="col-3 text-center align-middle">
+                                                    Код
+                                                </th>
+                                                <th class="col-6 text-center align-middle">
+                                                    Описание
+                                                </th>
+                                                <th class="col-2 text-center align-middle">
+                                                    Уп/шт.
+                                                </th>
+                                                <th class="col-5 text-center align-middle">
+                                                    Количество
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="">
+                                            {% for offer in offers|dictsort:'place'%}
+                                            <tr class="table-row">
+                                                <td class="text-center align-middle"><span>{{ offer.name | safe}}</span></td>
+                                                <td class="text-center align-middle"><span>{{ offer.text_description | safe}}</span></td>
+                                                <td class="text-center align-middle"><span>{{ offer.shipping_pack | safe}}</span></td>
+                                                <td class="text-center align-middle">
+                                                    <div class="quantity-input">
+                                                        <form hx-post="{% url 'cart_add' offer_id=offer.pk %}"
+                                                            hx-target="#cart" hx-swap="outerHTML" style="width: 100%;">
+                                                            <div class="offerCount">
+                                                                <div class="inputCount">
+                                                                    {% comment %} <div class="inputCountBtn1"
+                                                                        onclick="changeQuantity(event, this, -1)">-</div> {% endcomment %}
+                                                                  <div class="inputCountBtn1"
+                                                                       onclick="changeQuantity(event, this, -1)">-</div>
+                                                                    <input class="form-control" type="number"
+                                                                        name="quantity" value="0" required=""
+                                                                        id="id_quantity" min="1"/>
+                                                                  <div class="inputCountBtn2"
+                                                                       onclick="changeQuantity(event, this, 1)">+</div>
+{% comment %}
+                                                                    <div class="inputCountBtn2"
+                                                                        onclick="changeQuantity(event, this, 1)">+</div>
+     {% endcomment %}
+                                                                </div>
+                                                                    <button class="btn btn-primary quantityFormBtn" id="addButton"type="submit"
+                                                                    value="">Добавить</button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                                </form>
+                            </div>
+                        </div>
+                    </details>
+                {% endif %}
+                {% if instructions or certificates or catalogs %}
+                    <details>
+                        <summary>Каталоги и РУ</summary>
+                        <div class="dropDownEl">
+                            <div class="catalogTutorial">
+                                {% if instructions %}
+                                    {% for instruction in instructions %}
+                                        <div class="catalogTutorialLink">
+                                            <a href="{{ instruction.file.url }}">
+                                                <div class="catalogTutorialEl">
+                                                    <div class="catalogTutorialElText">Скачать инструкцию</div>
+                                                    <div class="catalogTutorialElImg instructionDownload"></div>
+                                                </div>
+                                            </a>
+                                        </div>
+                                    {% endfor %}
+                                {% endif %}
+                                {% if certificates %}
+                                    {% for certificate in certificates %}
+                                    <div class="catalogTutorialLink">
+                                        <a href="{{ certificate.file.url }}">
+                                            <div class="catalogTutorialEl">
+                                                <div class="catalogTutorialElText">Скачать сертификат</div>
+                                                <div class="catalogTutorialElImg ruDownload"></div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    {% endfor %}
+                                {% endif %}
+                                {% if catalogs %}
+                                    {% for catalog in catalogs %}
+                                    <div class="catalogTutorialLink">
+                                        <a href="{{ catalog.file.url }}">
+                                            <div class="catalogTutorialEl">
+                                                <div class="catalogTutorialElText">Скачать Каталог</div>
+                                                <div class="catalogTutorialElImg catalogDownload"></div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    {% endfor %}
+                                {% endif %}
+                            </div>
+                        </div>
+                    </details>
+                {% endif %}
+                    {% if video_file or youtube_link or rt_link or rutube_link %}
+                    <details>
+                        <summary>Видео</summary>
+                        <div class="dropDownEl">
+                            <div class="productVideo">
+                                <div class="productVideoContainer">
+                                  {% if rt_link %}
+                                    <!-- Видео с RuTube -->
+                                    <iframe width="100%" height="100%" src="https://rutube.ru/play/embed/{{ rt_link|slice:'23:' }}" frameBorder="0" allow="clipboard-write; autoplay" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>
+                                  {% elif rutube_link %}
+                                    <!-- Видео с RuTube -->
+                                    <iframe width="100%" height="100%" src="{{ rutube_link }}" frameBorder="0" allow="clipboard-write; autoplay" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>
+                                  {% elif youtube_link %}
+                                    <!-- Видео с Ютуб -->
+                                    <iframe width="100%" height="100%" src="{{ youtube_link }}" frameBorder="0" allow="clipboard-write; autoplay" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>
+                                  {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </details>
+                    {% endif %}
+                 </div>
+              {% endif %}
+                 {% include 'core/components/offer_button_cart.html' %}
+            </div>
+        </div>
+        <!-- Placeholder for the modal --> {# onclick="modalClickHandler(event)" #}
+        <div id="modal" class="modal fade" >
+            <div id="dialog" class="modal-dialog modal-xl" hx-target="this" ></div>
+        </div>
+    </div>
+    <!-- плавающий элемент с формами связи -->
+    {% include 'core/components/formsContainer.html' %}
+
+    <!-- плавающий элемент с формами связи -->
+</main>
+{% endblock %}
+
+{% block script %}
+<script src="{% static 'scripts/tumbnailActiveElCarousel.js' %}"></script>
+<script src="{% static 'scripts/offers-htmx-handlers.js' %}"></script>
+<script src="{% static 'scripts/offerButton.js' %}"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@glidejs/glide/dist/css/glide.core.min.css"/>
+<script src="https://cdn.jsdelivr.net/npm/@glidejs/glide/dist/glide.min.js"></script>
+
+
+{% endblock %}

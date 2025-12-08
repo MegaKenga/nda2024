@@ -1,14 +1,6 @@
 from django.db import models
-from django.forms import ValidationError
 from django.urls import reverse
-from django.core.files.storage import FileSystemStorage
-from django.core.validators import URLValidator, ValidationError
-from django.utils.text import slugify
-from nda.settings import PRIVATE_ROOT, SENDFILE_ROOT
-# from ckeditor.fields import RichTextField
-from django.core.cache import cache
 from django_ckeditor_5.fields import CKEditor5Field
-private_storage = FileSystemStorage(location=PRIVATE_ROOT + SENDFILE_ROOT, base_url='/files')
 
 
 """Общие классы и миксины"""
@@ -25,21 +17,6 @@ class BaseFields(models.Model):
         PUBLISHED = 'PUBLISHED', 'Активен'
         ARCHIVED = 'ARCHIVED', 'В архиве'
 
-    description = CKEditor5Field(
-        default='',
-        null=True,
-        blank=True,
-        verbose_name='Краткое описание',
-        config_name='default'  # Используем конфигурацию по умолчанию
-    )
-
-    full_description = CKEditor5Field(
-        default='',
-        null=True,
-        blank=True,
-        verbose_name='Полное описание',
-        config_name='default'
-    )
     place = models.IntegerField(
         blank=True,
         null=True,
@@ -51,6 +28,32 @@ class BaseFields(models.Model):
         default=Status.DRAFT,
         verbose_name='Статус показа на страницах'
     )
+    title = models.TextField(
+        default='',
+        null=True,
+        blank=True,
+        verbose_name='Title'
+    )
+    ceo_description = models.TextField(
+        default='',
+        null=True,
+        blank=True,
+        verbose_name='CEO Description'
+    )
+    keywords = models.TextField(
+        default='',
+        null=True,
+        blank=True,
+        verbose_name='Keywords'
+    )
+    slug = models.SlugField(
+        unique=True,
+        max_length=128,
+        db_index=True,
+        null=True,
+        blank=True,
+        verbose_name='url-адрес'
+    )
 
     objects = models.Manager()
     visible = NotHidden()
@@ -60,63 +63,6 @@ class BaseFields(models.Model):
 
 
 """Модели"""
-
-
-class Brand(BaseFields):
-    name = models.CharField(
-        max_length=128,
-        unique=True,
-        verbose_name='Бренд')
-    logo = models.ImageField(
-        upload_to='brand/logo',
-        default='',
-        blank=True,
-        verbose_name='Логотип бренда'
-    )
-    banner = models.ImageField(
-        upload_to='brand/banner',
-        default='',
-        blank=True,
-        verbose_name='Баннер бренда',
-    )
-    banner_color = models.CharField(
-        max_length=32,
-        default='#3391c5',
-        null=True,
-        verbose_name='Цвет баннера бренда'
-    )
-    slug = models.SlugField(
-        unique=True,
-        max_length=128,
-        db_index=True,
-        verbose_name='url-адрес'
-    )
-
-    class Meta:
-        ordering = ['place']
-        verbose_name = 'Бренд'
-        verbose_name_plural = 'Бренды'
-
-    def get_absolute_url(self):
-        return reverse('brand', kwargs={'brand_slug': self.slug})
-
-    def __str__(self):  
-        return self.name.upper()
-
-    def save(self, *args, **kwargs):
-        cache_key_breadcrumbs = f'brand_breadcrumbs {self.slug}'
-        cache_key_banner = f'brand_banner {self.slug}'
-        cache.delete(cache_key_breadcrumbs)
-        cache.delete(cache_key_banner)
-        super().save(*args, **kwargs)  # Сначала сохраняем, потом инвалидируем кэш
-
-    def delete(self, *args, **kwargs):
-        cache_key_breadcrumbs = f'brand_breadcrumbs {self.slug}'
-        cache_key_banner = f'brand_banner {self.slug}'
-        cache.delete(cache_key_breadcrumbs)
-        cache.delete(cache_key_banner)
-        super().delete(*args, **kwargs)  # Сначала удаляем, потом инвалидируем кэш
-
 
 
 class Specialist(models.Model):
@@ -131,75 +77,28 @@ class Specialist(models.Model):
     def __str__(self):
         return self.name
 
-    def save(self, *args, **kwargs):
-        cache_key = f'specialist_{self.pk}' 
-        cache.delete(cache_key)  # Инвалидируем кэш
-        super().save(*args, **kwargs)  # Сохраняем объект
 
-    def delete(self, *args, **kwargs):
-        cache_key = f'specialist_{self.pk}' 
-        cache.delete(cache_key)  # Инвалидируем кэш
-        super().delete(*args, **kwargs)  # Удаляем объект
-
-
-
-
-class Category(BaseFields):
+class Brand(BaseFields):
     name = models.CharField(
-        max_length=256,
-        verbose_name='Название | Заголовок'
-    )
-
-    characteristics = CKEditor5Field(
-        default='',
-        null=True,
-        blank=True,
-        verbose_name='Характеристики',
-        config_name='default'
-    )
-
-    brand = models.ForeignKey(
-        Brand,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        verbose_name='Бренд, к которому относится категория'
-    )
- 
-    parents = models.ManyToManyField(
-        'self',
-        blank=True,
-        verbose_name='Родительские категории',
-        related_name='children',
-        symmetrical=False
-    )
-    
-    logo = models.ImageField(
-        upload_to='category/logo',
-        default='',
-        null=True,
-        blank=True,
-        verbose_name='Логотип'
-    )
-    banner = models.ImageField(
-        upload_to='category/banner',
-        default='',
-        blank=True,
-        verbose_name='Баннер'
-    )
-    slug = models.SlugField(
-        unique=True,
         max_length=128,
-        db_index=True,
-        verbose_name='url-адрес'
+        unique=True,
+        null=True,
+        blank=True,
+        verbose_name='Бренд',
     )
-    title = models.TextField(
+    description = models.TextField(
         default='',
         null=True,
         blank=True,
-        verbose_name='Title страницы'
+        verbose_name='Описание бренда'
     )
-
+    logo = models.ImageField(
+        upload_to='brand/logo',
+        default='',
+        null=True,
+        blank=True,
+        verbose_name='Логотип бренда'
+    )
     banner_color = models.CharField(
         max_length=32,
         default='#3391c5',
@@ -207,55 +106,60 @@ class Category(BaseFields):
         verbose_name='Цвет баннера бренда'
     )
 
-    keywords = models.TextField(
+    class Meta:
+        ordering = ['place']
+        verbose_name = 'Бренд'
+        verbose_name_plural = 'Бренды'
+
+    def get_absolute_url(self):
+        return reverse('brand', kwargs={'brand_slug': self.slug})
+
+    def __str__(self):  
+        return self.name.upper()
+
+
+class Category(BaseFields):
+    name = models.TextField(
         default='',
         null=True,
         blank=True,
-        verbose_name='Ключевые слова'
+        verbose_name='Название категории'
     )
-        
-    is_final = models.BooleanField(
-        default=False,
-        verbose_name='Отметка о том, что категория является финальной и в ней содержатся товары'
-    )
-
-    video_file = models.FileField(
-        upload_to='category/videos',
-        null=True,
-        blank=True,
-        verbose_name='Видео файл'
-    )
-    youtube_link = models.CharField(
-        max_length=255,
-        null=True,
-        blank=True,
-        verbose_name='Ссылка на YouTube'
-    )
-    rt_link = models.CharField(
-        max_length=255,
-        null=True,
-        blank=True,
-        verbose_name='Ссылка Rutube'
-    )
-
-    specialist = models.ForeignKey(
-        Specialist,
+    brand = models.ForeignKey(
+        Brand,
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        verbose_name='Специалист, ответственный за категорию'
+        verbose_name='Бренд, к которому относится категория'
     )
-
-    ru = models.CharField(
-        max_length=255,
+    parents = models.ManyToManyField(
+        'self',
+        blank=True,
+        verbose_name='Родительские категории',
+        related_name='children',
+        symmetrical=False
+    )
+    logo = models.ImageField(
+        upload_to='category/logo',
+        default='',
         null=True,
         blank=True,
-        verbose_name='Номер РУ'
+        verbose_name='Логотип'
+    )
+    banner_color = models.CharField(
+        max_length=32,
+        default='',
+        null=True,
+        verbose_name='Цвет баннера категории'
     )
 
-    def save(self, *args, **kwargs):
-        self.full_clean()
-        super().save(*args, **kwargs)
+    @property
+    def colour(self):
+        if not self.brand:
+            self.banner_color = '#3391c5'
+        self.banner_color = self.brand.banner_color
+        return self.banner_color
+
 
     class Meta:
         ordering = ['place']
@@ -270,31 +174,109 @@ class Category(BaseFields):
             return str(self.brand).upper() + '----' + self.name.upper()
         return 'ПОДБОРКА' + '----' + self.name.upper()
     
-    
-class ProductManager(models.Manager):
-    def get_queryset(self):
-      return super().get_queryset().filter(is_final=True)
 
-
-class Product(Category):
-    objects = ProductManager()
-
-    def save(self, *args, **kwargs):
-        self.is_final = True  
-        super().save(*args, **kwargs)
+class Product(BaseFields):
+    name = models.TextField(
+        default='',
+        null=True,
+        blank=True,
+        verbose_name='Название товара'
+    )
+    brand = models.ForeignKey(
+        Brand,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name='Бренд, к которому относится товар'
+    )
+    logo = models.ImageField(
+        upload_to='product/logo',
+        default='',
+        null=True,
+        blank=True,
+        verbose_name='Логотип'
+    )
+    parents = models.ManyToManyField(
+        'Category',
+        blank=True,
+        verbose_name='Родительские категории',
+        related_name='children_products',
+        symmetrical=False
+    )
+    short_description = CKEditor5Field(
+        default='',
+        null=True,
+        blank=True,
+        verbose_name='Краткое описание',
+        config_name='default'  # Используем конфигурацию по умолчанию
+    )
+    full_description = CKEditor5Field(
+        default='',
+        null=True,
+        blank=True,
+        verbose_name='Полное описание',
+        config_name='default'
+    )
+    characteristics = CKEditor5Field(
+        default='',
+        null=True,
+        blank=True,
+        verbose_name='Характеристики',
+        config_name='default'
+    )
+    specialist = models.ForeignKey(
+        Specialist,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name='Специалист, ответственный за категорию'
+    )
+    youtube_link = models.CharField(
+        max_length=255,
+        null=True,
+        blank=True,
+        verbose_name='Ссылка на YouTube'
+    )
+    rutube_link = models.CharField(
+        max_length=255,
+        null=True,
+        blank=True,
+        verbose_name='Ссылка Rutube'
+    )
 
     class Meta:
-        proxy = True
+        ordering = ['place']
         verbose_name = 'Товар'
         verbose_name_plural = 'Товары'
 
     def get_absolute_url(self):
-        return super().get_absolute_url()
+        return reverse('offer', kwargs={'brand_slug': self.brand.slug, 'product_slug': self.slug})
+
+    def __str__(self):
+        return str(self.brand).upper() + '----' + self.name.upper()
 
 
-class Offer(BaseFields):
+class Offer(models.Model):
+    class Status(models.TextChoices):
+        DRAFT = 'DRAFT', 'Черновик'
+        PUBLISHED = 'PUBLISHED', 'Активен'
+        ARCHIVED = 'ARCHIVED', 'В архиве'
+
+    place = models.IntegerField(
+        blank=True,
+        null=True,
+        default=0,  # Добавлено значение по умолчанию
+        verbose_name='Место в списке'
+    )
+    status = models.CharField(
+        choices=Status.choices,
+        default=Status.DRAFT,
+        verbose_name='Статус показа на страницах'
+    )
     name = models.CharField(
         max_length=128,
+        null=True,
+        blank=True,
         verbose_name='Артикул'
     )
     text_description = models.TextField(
@@ -303,19 +285,13 @@ class Offer(BaseFields):
         blank=True,
         verbose_name='Краткое описание (текст)',
     )
-    text_full_description = models.TextField(
-        default='',
-        null=True,
-        blank=True,
-        verbose_name='Полное описание (текст)',
-    )
     shipping_pack = models.CharField(
         max_length=10,
-        verbose_name="Количество в упаковке",
         null=True,
         blank=True,
+        verbose_name="Количество в упаковке",
     )
-    category = models.ForeignKey(
+    product = models.ForeignKey(
         Product,
         on_delete=models.SET_NULL,
         null=True,
@@ -324,25 +300,8 @@ class Offer(BaseFields):
         verbose_name='Товар, к которому принадлежит код'
     )
 
-    characteristics = models.FileField(
-        upload_to='characteristics/',  # Папка для сохранения файлов характеристик
-        default='',
-        null=True,
-        blank=True,
-        verbose_name='Характеристики',
-    )
-    tech_info = models.FileField(
-        upload_to='files/instructions',
-        null=True,
-        blank=True,
-        verbose_name='Техзадание'
-    )
-    ctru = models.CharField(
-        max_length=64,
-        null=True,
-        blank=True,
-        verbose_name='КТРУ'
-    )
+    objects = models.Manager()
+    visible = NotHidden()
 
     class Meta:
         ordering = ['place']
@@ -351,28 +310,3 @@ class Offer(BaseFields):
 
     def __str__(self): # __str__
         return self.name
-
-    def save(self, *args, **kwargs):
-        # Инвалидируем кэш, связанный с этим Offer
-        cache_key_offer = f'offer_{self.pk}'
-        cache.delete(cache_key_offer)
-
-        # Также инвалидируем кэш, связанный с категорией этого Offer
-        if self.category:
-            cache_key_category = f'category_{self.category.slug}'
-            cache.delete(cache_key_category)
-
-        super().save(*args, **kwargs)  # Сначала сохраняем, потом инвалидируем кэш
-
-    def delete(self, *args, **kwargs):
-        # Инвалидируем кэш, связанный с этим Offer
-        cache_key_offer = f'offer_{self.pk}'
-        cache.delete(cache_key_offer)
-
-        # Также инвалидируем кэш, связанный с категорией этого Offer
-        if self.category:
-            cache_key_category = f'category_{self.category.slug}'
-            cache.delete(cache_key_category)
-
-        super().delete(*args, **kwargs)  # Сначала удаляем, потом инвалидируем кэш
-

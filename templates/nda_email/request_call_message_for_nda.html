@@ -1,0 +1,249 @@
+{% load static %}
+
+
+
+<!DOCTYPE html> <html>
+  <head>
+    <meta charset="utf-8" /> <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> <meta name="viewport" content="width=400" /> <title>Welcome Email</title> <link rel="shortcut icon" href="https://tilda.ws/img/tildafavicon.ico" /> <style type="text/css">
+                                                                                                                                                                                                                                                         .ExternalClass {
+                                                                                                                                                                                                                                                           width: 100%;
+                                                                                                                                                                                                                                                         }
+                                                                                                                                                                                                                                                         
+                                                                                                                                                                                                                                                         img {
+                                                                                                                                                                                                                                                           border: 0 none;
+                                                                                                                                                                                                                                                           height: auto;
+                                                                                                                                                                                                                                                           line-height: 100%;
+                                                                                                                                                                                                                                                           outline: none;
+                                                                                                                                                                                                                                                           text-decoration: none;
+                                                                                                                                                                                                                                                           -ms-interpolation-mode: bicubic;
+                                                                                                                                                                                                                                                         }
+                                                                                                                                                                                                                                                         
+                                                                                                                                                                                                                                                         a img {
+                                                                                                                                                                                                                                                           border: 0 none;
+                                                                                                                                                                                                                                                         }
+                                                                                                                                                                                                                                                         
+                                                                                                                                                                                                                                                         #outlook a {
+                                                                                                                                                                                                                                                           padding: 0;
+                                                                                                                                                                                                                                                         }
+                                                                                                                                                                                                                                                         
+                                                                                                                                                                                                                                                         #allrecords {
+                                                                                                                                                                                                                                                           height: 100% !important;
+                                                                                                                                                                                                                                                           margin: 0;
+                                                                                                                                                                                                                                                           padding: 0;
+                                                                                                                                                                                                                                                           width: 100% !important;
+                                                                                                                                                                                                                                                           -webkit-font-smoothing: antialiased;
+                                                                                                                                                                                                                                                           line-height: 1.45;
+                                                                                                                                                                                                                                                         }
+                                                                                                                                                                                                                                                         
+                                                                                                                                                                                                                                                         #allrecords td {
+                                                                                                                                                                                                                                                           margin: 0;
+                                                                                                                                                                                                                                                           padding: 0;
+                                                                                                                                                                                                                                                         }
+                                                                                                                                                                                                                                                         
+                                                                                                                                                                                                                                                         #allrecords ul {
+                                                                                                                                                                                                                                                           -webkit-padding-start: 30px;
+                                                                                                                                                                                                                                                         }
+                                                                                                                                                                                                                                                         
+                                                                                                                                                                                                                                                         .t-records ol,
+                                                                                                                                                                                                                                                         .t-records ul {
+                                                                                                                                                                                                                                                           padding-left: 20px;
+                                                                                                                                                                                                                                                           margin-top: 0px;
+                                                                                                                                                                                                                                                           margin-bottom: 10px;
+                                                                                                                                                                                                                                                         }
+                                                                                                                                                                                                                                                         
+                                                                                                                                                                                                                                                         @media only screen and (max-width: 600px) {
+                                                                                                                                                                                                                                                           .r {
+                                                                                                                                                                                                                                                             width: 100% !important;
+                                                                                                                                                                                                                                                             min-width: 400px !important;
+                                                                                                                                                                                                                                                             margin-top: -1px !important;
+                                                                                                                                                                                                                                                           }
+                                                                                                                                                                                                                                                         }
+                                                                                                                                                                                                                                                         
+                                                                                                                                                                                                                                                         @media only screen and (max-width: 480px) {
+                                                                                                                                                                                                                                                           .t-emailBlock {
+                                                                                                                                                                                                                                                             display: block !important;
+                                                                                                                                                                                                                                                             padding-left: 0 !important;
+                                                                                                                                                                                                                                                             padding-right: 0 !important;
+                                                                                                                                                                                                                                                             width: 100% !important;
+                                                                                                                                                                                                                                                           }
+                                                                                                                                                                                                                                                         
+                                                                                                                                                                                                                                                           .t-emailBlockPadding {
+                                                                                                                                                                                                                                                             padding-top: 15px !important;
+                                                                                                                                                                                                                                                           }
+                                                                                                                                                                                                                                                         
+                                                                                                                                                                                                                                                           .t-emailBlockPadding30 {
+                                                                                                                                                                                                                                                             padding-top: 30px !important;
+                                                                                                                                                                                                                                                           }
+                                                                                                                                                                                                                                                         
+                                                                                                                                                                                                                                                           .t-emailAlignLeft {
+                                                                                                                                                                                                                                                             text-align: left !important;
+                                                                                                                                                                                                                                                             margin-left: 0 !important;
+                                                                                                                                                                                                                                                           }
+                                                                                                                                                                                                                                                         
+                                                                                                                                                                                                                                                           .t-emailAlignCenter {
+                                                                                                                                                                                                                                                             text-align: center !important;
+                                                                                                                                                                                                                                                             margin-left: auto !important;
+                                                                                                                                                                                                                                                             margin-right: auto !important;
+                                                                                                                                                                                                                                                           }
+                                                                                                                                                                                                                                                         }
+                                                                                                                                                                                                                                                       </style>
+  </head> <body cellpadding="0" cellspacing="0" style="padding: 0; margin: 0; border: 0; width:100%; -webkit-text-size-adjust:100%; -ms-text-size-adjust:100%; background-color: #efefef;">
+    <!-- allrecords --> <table id="allrecords" class="t-records" data-tilda-email="yes" data-tilda-project-id="12389411" data-tilda-page-id="64282435" data-tilda-page-alias="" cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse; border-spacing:0; padding:0; margin:0; border:0;">
+      <tr>
+        <td style="background-color: #efefef; ">
+          <!-- record_mail --> <table id="rec878814304" style="width:100%; border-collapse:collapse; border-spacing:0; margin:0; border:0;" cellpadding="0" cellspacing="0" data-record-type="619">
+            <tr>
+              <td style="padding-left:15px; padding-right:15px; background-color:#f5f5f5;">
+                <table id="recin878814304" class="r" style="margin: 0 auto;border-spacing: 0;width:600px;" align="center">
+                  <tr>
+                    <td style="padding-top:0px;padding-bottom:0px;padding-left:0;padding-right:0;">
+                      <table valign="top" border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;">
+                        <tr>
+                          <td style="height:30px;" height="30px"></td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+          </table> <!-- /record --> <!-- record_mail --> <table id="rec878814310" style="width:100%; border-collapse:collapse; border-spacing:0; margin:0; border:0;" cellpadding="0" cellspacing="0" data-record-type="322">
+            <tr>
+              <td style="padding-left:15px; padding-right:15px; background-color:#f5f5f5;">
+                <table id="recin878814310" class="r" style="margin: 0 auto;background-color:#ffffff;border-spacing: 0;width:600px;" align="center">
+                  <tr>
+                    <td style="padding-top:15px;padding-bottom:15px;padding-left:30px;padding-right:30px;">
+                      <table border="0" cellpadding="0" cellspacing="0" width="100%" style="width:100%;">
+                        <tr>
+                          <td style="width:100%; text-align: center;">
+                            <img width="540" align="center" style="display: block; width: 100%; height: auto;" src="{% static 'images/mailHead.png' %}" imgfield="img" />
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding-left:15px; padding-right:15px; background-color:#f5f5f5;">
+                <table id="recin878867587" class="r" style="margin: 0 auto;background-color:#ffffff;border-spacing: 0;width:600px;" align="center">
+                  <tr>
+                    <td style="padding-top:15px;padding-bottom:15px;padding-left:30px;padding-right:30px;">
+                      <table border="0" cellpadding="0" cellspacing="0" width="100%" style="width: 100%; border-radius: 15px;">
+                        <tr>
+                          <td style="border-radius: 15px; text-align: left; padding-top: 8px; padding-bottom: 8px; padding-left: 20px; padding-right: 20px; background-color:#f5f5f5;">
+                            <div style="margin-right: auto; font-family: Helvetica Neue, Helvetica, Arial, sans-serif; font-size:16px;line-height:1.5;padding-top:8px;padding-bottom:8px;">
+                              <strong style="color: rgb(51, 145, 197);">Контактные данные</strong><br />
+                              {% if name %}
+                                <strong>ФИО:</strong> {{name}}<br />
+                              {% endif %}
+                              {% if customer_phone %}
+                                <strong>Телефон:</strong> {{ customer_phone }} <br />
+                              {% endif %}
+
+                              {% if customer_message %}
+                                <strong>Сообщение:</strong> {{ customer_message }}
+                              {% endif %}
+                             
+                            </div>
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+          </table> <!-- /record --> <!-- record_mail --> <table id="rec878814316" style="width:100%; border-collapse:collapse; border-spacing:0; margin:0; border:0;" cellpadding="0" cellspacing="0" data-record-type="618">
+            <tr>
+              <td style="padding-left:15px; padding-right:15px; background-color:#f5f5f5;">
+                <table id="recin878814316" class="r" style="margin: 0 auto;background-color:#ffffff;border-spacing: 0;width:600px;" align="center">
+                  <tr>
+                    <td style="padding-top:30px;padding-bottom:30px;padding-left:30px;padding-right:30px;">
+                      <!-- Workaround: Calculate border radius for Outlook --> <table border="0" cellpadding="0" cellspacing="0" width="100%" style="width:100%;" style="margin: 0 auto;table-layout: fixed;">
+                        <tr>
+                          <td>
+                            <table border="0" cellpadding="0" cellspacing="0" style="margin: 0 auto;" align="center">
+                              <tr>
+                                <td>
+                                  <!-- [if mso]> <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word"
+href="http://notarealnda.ru/"
+style="height:58px;v-text-anchor:middle;mso-wrap-style:none;mso-position-horizontal:center;"
+arcsize="9%" stroke="f"
+fillcolor="#3391c5"> <w:anchorlock/> <center style="text-decoration: none; padding: 17px 36px; font-size: 17px; text-align: center; font-weight: bold; font-family:Helvetica Neue, Helvetica, Arial, sans-serif; width: 100%;color:#ffffff;">
+Вернуться на сайт
+</center> </v:roundrect> <![endif] --> <!-- [if !mso] --> <a style="display: table-cell; text-decoration: none; padding: 17px 36px; font-size: 17px; text-align: center; font-weight: bold; font-family:Helvetica Neue, Helvetica, Arial, sans-serif; width: 100%;color:#ffffff; border:0px solid ; background-color:#3391c5; border-radius: 3px;" href="http://notarealnda.ru/">Вернуться на сайт</a> <!-- [endif] -->
+                                </td>
+                              </tr>
+                            </table>
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+          </table> <!-- /record --> <!-- record_mail --> <table id="rec878814319" style="width:100%; border-collapse:collapse; border-spacing:0; margin:0; border:0;" cellpadding="0" cellspacing="0" data-record-type="637">
+            <tr>
+              <td style="padding-left:15px; padding-right:15px; background-color:#f5f5f5;">
+                <table id="recin878814319" class="r" style="margin: 0 auto;background-color:#ffffff;border-spacing: 0;width:600px;" align="center">
+                  <tr>
+                    <td style="padding-top:0px;padding-bottom:0px;padding-left:30px;padding-right:30px;">
+                      <table valign="top" border="0" cellpadding="0" cellspacing="0" width="100%">
+                        <tr>
+                          <td style="height:15px;" height="15px"></td>
+                        </tr> <tr>
+                          <td style="height:1px; background-color:#e8e8e8;" height="1px"></td>
+                        </tr> <tr>
+                          <td style="height:15px;" height="15px"></td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+          </table> <!-- /record --> <!-- record_mail --> <table id="rec878814322" style="width:100%; border-collapse:collapse; border-spacing:0; margin:0; border:0;" cellpadding="0" cellspacing="0" data-record-type="617">
+            <tr>
+              <td style="padding-left:15px; padding-right:15px; background-color:#f5f5f5;">
+                <table id="recin878814322" class="r" style="margin: 0 auto;background-color:#ffffff;border-spacing: 0;width:600px;" align="center">
+                  <tr>
+                    <td style="padding-top:30px;padding-bottom:45px;padding-left:30px;padding-right:30px;">
+                      <table valign="top" border="0" cellpadding="0" cellspacing="0" width="100%" style="width: 100%;">
+                        <tr>
+                          <td style="text-align: center; padding: 0 0 0;">
+                            <div style="margin: 0 auto; font-weight: normal; font-family: Helvetica Neue, Helvetica, Arial, sans-serif; color:#8c8c8c;max-width:350px;">
+                              Адресс: Санкт-Петербург, ул.Перевозная, 6<br />Телефон: +7 (812) 714 - 06 -14<br />E-mail: nda@nda.ru
+                            </div>
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+          </table> <!-- /record --> <!-- record_mail --> <table id="rec878814325" style="width:100%; border-collapse:collapse; border-spacing:0; margin:0; border:0;" cellpadding="0" cellspacing="0" data-record-type="619">
+            <tr>
+              <td style="padding-left:15px; padding-right:15px; background-color:#f5f5f5;">
+                <table id="recin878814325" class="r" style="margin: 0 auto;border-spacing: 0;width:600px;" align="center">
+                  <tr>
+                    <td style="padding-top:0px;padding-bottom:0px;padding-left:0;padding-right:0;">
+                      <table valign="top" border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;">
+                        <tr>
+                          <td style="height:30px;" height="30px"></td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+          </table> <!-- /record -->
+        </td>
+      </tr>
+    </table> <!-- /allrecords -->
+  </body>
+</html>

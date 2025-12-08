@@ -6,7 +6,7 @@ from django.contrib.admin.filters import (
     RelatedOnlyFieldListFilter
 )
 
-from catalog.models import Category
+from catalog.models import Category, Product
 
 
 class SimpleDropdownFilter(SimpleListFilter):
@@ -35,4 +35,13 @@ class CategoryRelatedOnlyDropdownFilter(RelatedOnlyDropdownFilter):
             (category.pk, str(category))
             for category
             in Category.visible.select_related('brand')
+        ]
+
+
+class ProductRelatedOnlyDropdownFilter(RelatedOnlyDropdownFilter):
+    def field_choices(self, field, request, model_admin):
+        return [
+            (product.pk, str(product))
+            for product
+            in Product.visible.select_related('brand')
         ]

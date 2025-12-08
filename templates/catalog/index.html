@@ -1,0 +1,51 @@
+{% extends 'core/base.html' %}
+{% load cache %}
+{% load static %}
+
+{% block styles %}
+
+<link rel="stylesheet" href="{% static 'css/styleIndex.css' %}" type="text/css">
+<link rel="preload" type="text/css" href="{% static 'bootstrap/css/bootstrap.min.css' %}" />
+<script src="{% static 'bootstrap/js/bootstrap.min.js' %}" defer></script>
+<link rel="stylesheet" href="{% static 'custom/css/custom.css' %}" type="text/css">
+{% endblock %}
+
+
+{% block title %}
+  <title> ООО НДА Деловая медицинская компания</title>
+{% endblock%}
+
+{% block metatag %}
+  <meta name="keywords" content="Продажа изделий медицинского назначения - общероссийский поставщик.">
+  <meta property="og:url" content="https://nda.ru/">
+  <meta property="og:title" content="ООО &quot;НДА Деловая медицинская компания&quot;">
+  <meta property="og:type" content="website">
+  <meta property="og:description" content="Официальный сайт ООО &quot;НДА Деловая медицинская компания&quot; -  продажа изделий медицинского назначения от мировых лидеров.">
+  <meta name="description" content="Официальный сайт ООО &quot;НДА Деловая медицинская компания&quot; -  продажа изделий медицинского назначения от мировых лидеров.">
+{% endblock %}
+
+
+{% block content %}
+
+    <header>
+      {% include 'core/components/flyingHeader.html' %}
+
+      {% include 'core/components/subheader.html' %}
+    </header>
+
+    <main>
+      {% include 'core/components/catalog.html' %}
+      <!-- формы на странице -->
+
+      <!-- плавающий элемент с формами связи -->
+      {% include 'core/components/formsContainer.html' %}
+
+      <!-- плавающий элемент с формами связи -->
+      <!-- формы на странице -->
+    </main>
+
+    {% cache 600 index_page %}
+
+    {% endcache %}
+
+{% endblock %}

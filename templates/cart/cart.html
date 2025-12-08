@@ -1,0 +1,12 @@
+<div class="placeResult" id="cart">
+    {% if offers_in_cart|length > 0 %}
+    <button type="button" class="orderButton" hx-get="{% url 'cart_modal' %}" hx-target="#dialog">Оформить заказ</button>
+    {% endif %}
+    <div class="countItems">
+        <div class="countText">Всего изделий в заказе::</div>
+        <div class="count">{{ offers_in_cart|length }}</div>
+    </div>
+</div>
+<script>
+  htmxHandlers();
+</script>

@@ -1,0 +1,109 @@
+<script src="https://smartcaptcha.yandexcloud.net/captcha.js" defer></script> 
+
+<div class="modal fade" id="emailModal" tabindex="-1" aria-labelledby="emailModalLabel" aria-hidden="true" onclick="modalClickHandler(event)">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="emailModalLabel">Написать письмо</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="location.reload();"></button>
+            </div>
+            <div class="modal-body">
+                    <form
+                    id="mail_form"
+                    action="{% url 'mail_submit' %}"
+                    method="post"
+                    enctype="multipart/form-data"
+                    hx-post="{% url 'mail_submit' %}"
+                    hx-target="#mail_form"
+                    hx-swap="none"
+                    novalidate
+                >
+                    {% csrf_token %}
+                    <div id="mail_form_container">
+                        <div class="form-floating mb-2">
+                            {{ mail_form.name }}
+                            <label for="fullNameLegal">Ваше имя</label>
+                            {% if mail_form.name.errors %}
+                                <div class="text-danger">
+                                    {{ mail_form.name.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="form-floating mb-2 w-100">
+                            {{ mail_form.phone_number }}
+                            {% comment %} <label for="phone">Ваш телефон</label> {% endcomment %}
+                            {% if mail_form.phone_number.errors %}
+                                <div class="text-danger">
+                                    {{ mail_form.phone_number.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="form-floating mb-2">
+                            {{ mail_form.email }}
+                            <label for="email">Ваш Email</label>
+                            {% if mail_form.email.errors %}
+                                <div class="text-danger">
+                                    {{ mail_form.email.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="form-floating mb-2">
+                            {{mail_form.company_name}}
+                            <label for="companyName">Название организации</label>
+                            {% if mail_form.company_name.errors %}
+                                <div class="text-danger">
+                                    {{ mail_form.company_name.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="form-floating mb-2">
+                            {{mail_form.inn}}
+                            <label for="inn">ИНН</label>
+                            {% if mail_form.inn.errors %}
+                                <div class="text-danger">
+                                    {{ mail_form.inn.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="form-floating mb-2">
+                            {{ mail_form.message }}
+                            <label for="message">Текст письма</label>
+                            {% if mail_form.message.errors %}
+                                <div class="text-danger">
+                                    {{ mail_form.message.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="mb-2">
+                            <label class="input-file">
+                                {{mail_form.company_details}}
+                                <span>Прикрепить файл</span>
+                                {% if mail_form.company_details.errors %}
+                                    <div class="text-danger">
+                                        {{ mail_form.company_details.errors }}
+                                    </div>
+                                {% endif %}
+                            </label>
+                        </div>
+                        <div
+                                id="captcha-container"
+                                class="smart-captcha"
+                                data-sitekey="ysc1_sxny6cNZmnvhyJKrojDDLNxj0nvkGnTleldHzqEo9d9475ca"
+                        >
+                        </div>
+                        <button type="submit" class="btn btn-success mt-3" form="mail_form">Отправить</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('htmx:afterOnLoad', function(event) {
+        const response = event.detail.xhr.response;
+        if (response && response.resetCaptcha) {
+            SmartCaptcha.reset();
+        }
+    });
+</script>

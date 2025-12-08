@@ -19,8 +19,8 @@
     width: 100vw;
 }
 
-.subheaderInfo{
-    margin-top: 80px;
+.subheaderInfo {
+    margin-top: 40px;
 }
 
 .tab-content{
@@ -36,7 +36,7 @@
 @media (min-width:  1920px){
     .slider .subheaderInfo {
         padding: 20px;
-        height: 1080px;
+        height: auto;
         display: flex;
         flex-direction: column;
         align-items: flex-start;
@@ -45,7 +45,7 @@
         width: 65%;
     }
     .subheader{
-        height: 1080px;
+        height: auto;
     }
 
     .subheaderImage img{
@@ -65,6 +65,23 @@
 
     .productCarousel{
         width: 30vw;
+    }
+}
+
+@media screen and (max-width: 1440px) {
+    .slider .subheaderInfo {
+        margin-top: 0;
+    }
+    .subheaderInfo ul {
+        margin-bottom: 0;
+    }
+    .subheaderImage {
+        margin-top: 0;
+        height: auto;
+    }
+    .subheaderImage img {
+        margin-top: 0;
+        height: 100%;
     }
 }
 
@@ -92,7 +109,7 @@
 @media (max-width: 800px){
 
     .subheader{
-        height: 100vh;
+        height: 100%;
        
     }
     .subheaderInfo{
@@ -105,7 +122,7 @@
     }
 
     .subheader{
-        height: 100vh;
+        height: 100%;
     }
  
 }
@@ -114,22 +131,27 @@
 
 @media (min-width: 900px ) and (max-width: 2500px){
     .slider .subheaderInfo {
-        padding: 20px;
+        padding: 60px;
         height: 100%;
         display: flex;
         flex-direction: column;
         align-items: flex-start;
-        justify-content: start;
+        justify-content: space-evenly;
         text-align: left;
         /* width: 50vw; */
     
     }
 
     .subheader{
-        height: 100vh;
+        height: auto;
     }
 }
 
+@media (max-width: 1440px) {
+    .slider .subheaderInfo {
+        padding: 20px;
+    }
+}
 
 @media (width < 550px){
     .buttonInfo{
@@ -148,7 +170,7 @@
   
 
     header{
-        height: 75vh;
+        height: auto;
     }
 
     .product_bg{
@@ -179,8 +201,9 @@
     }
 
     .subheader{
-        height: 80vh;
+        height: 100%;
     }
+    
     .slider .buttonInfo {
         justify-content: center;
     }
@@ -190,7 +213,7 @@
         width: 100%;
     }
     .subheaderInfo{
-        height: 120px;
+        height: 40px;
         margin-top: 0;
     }
 
@@ -198,13 +221,27 @@
         width: 100%;
         display: flex;
         flex-direction: column;
+        height: 300px;
+        justify-content: flex-start;
+        margin-top: 13px;
+        gap: 24px;
+    }
+    .subheaderImage img {
+        margin-bottom: 0;
+        min-height: 200px;
+    }
+
+    .subheaderInfo {
 
     }
+
     .subheaderImage img{
         width: 100%;
-        height: auto;
-        margin-bottom:10px;
-        object-fit: cover;
+        /*height: auto;
+        margin-bottom:10px;*/
+        /* margin-bottom:auto; */
+        object-fit: contain;
+        /*object-fit: cover;*/
     }
 
     .subheaderImage a{
@@ -212,7 +249,8 @@
     }
 
     .slick-initialized .slick-slide{
-        justify-content: flex-start;
+        justify-content: space-between;
+        padding: 20px 10px;
     }
 
     .subheaderImage{
@@ -251,7 +289,7 @@
 
 
     .buttonInfo{
-        width: 94vw;
+        width: 100%;
     }
 }
 @media (width < 400px) and (height < 700px){

@@ -1,0 +1,15 @@
+<div style="
+  border: 2px solid rgb(75 70 74);
+  border-radius: 0.5em;
+  font: 1.2em sans-serif;
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;"
+>
+    <form method="post" action="{% url 'offers_add' product_id=product.id%}" enctype="multipart/form-data">
+        {% csrf_token %}
+        <input type="file" name="excel_file">
+        <button type="submit">Загрузить коды</button>
+    </form>
+</div>
