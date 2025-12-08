@@ -5,8 +5,6 @@ from django.contrib.auth.admin import GroupAdmin, UserAdmin
 from django.db.models.fields.files import FieldFile
 from django.db import models
 from django.forms import Textarea
-from django_ckeditor_5.widgets import CKEditor5Widget
-from django_ckeditor_5.fields import CKEditor5Field
 
 from catalog.models import Brand, Category, Offer, Specialist, Product
 from files.models import ModelImage, ModelFile, InstructionsFile, CatalogFile

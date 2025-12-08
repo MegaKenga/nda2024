@@ -1,3 +1,5 @@
+from pydoc import visiblename
+
 from django.shortcuts import get_object_or_404
 from django.views.generic import TemplateView, ListView
 from django.urls import resolve
@@ -149,7 +151,7 @@ class SiteSearchView(ListView):
             qs.filter(Q(name__icontains=query) | Q(offer__name__icontains=query) | Q(offer__text_description__icontains=query))
             .prefetch_related(related_offers).distinct()
         )
-        return qs
+        return qs.filter(status='PUBLISHED')
 
 
 class DuplicatesView(LoginRequiredMixin, TemplateView):

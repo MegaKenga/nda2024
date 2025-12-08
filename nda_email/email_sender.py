@@ -32,7 +32,7 @@ def check_if_offers_and_generate_messages(offers, file, context, customer_email)
     storaged_file = None
     if file is not None:
         storaged_file = temporary_storage.save(file.name, file)
-    send_order_emails_task.delay(html_order_message_for_nda, html_order_message_for_customer, customer_email, storaged_file)
+    send_order_emails_task(html_order_message_for_nda, html_order_message_for_customer, customer_email, storaged_file)
 
 
 class CompanyOrderEmailSender:  # Класс для отправки писем от имени юридических лиц
@@ -110,7 +110,7 @@ class MailRequestFormEmailSender:
         if file is not None:
             storaged_file = temporary_storage.save(file.name, file)
 
-        send_request_for_email_task.delay(html_message_for_nda, html_message_for_customer, customer_email, storaged_file)
+        send_request_for_email_task(html_message_for_nda, html_message_for_customer, customer_email, storaged_file)
 
 
 class CallRequestFormEmailSender:  # Renamed class
@@ -136,4 +136,4 @@ class CallRequestFormEmailSender:  # Renamed class
             'customer_message': customer_message,
         }
         html_message_for_nda = render_to_string('nda_email/request_call_message_for_nda.html', context)
-        send_request_for_call_task.delay(html_message_for_nda)
+        send_request_for_call_task(html_message_for_nda)
