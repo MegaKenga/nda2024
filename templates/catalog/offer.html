@@ -12,8 +12,8 @@
   <meta property="og:url" content="https://nda.ru{{ request.path }}">
   <meta property="og:title" content="{{product.title}}">
   <meta property="og:type" content="website">
-  <meta property="og:description" content="{{product.description|striptags}}">
-  <meta name="description" content="{{product.description|striptags}}">
+  <meta property="og:description" content="{{product.ceo_description|striptags}}">
+  <meta name="description" content="{{product.ceo_description|striptags}}">
 {% endblock %}
 
 
@@ -110,7 +110,11 @@
                 </div>
                 <div class="productTitle">
                     <div class="productTitleText">
-                        <h2>{{ product.name }}</h2>
+                        {% if user.is_authenticated %}
+                            <a href="https://nda.ru/admin/catalog/product/{{ product.id }}/change/"><h2>{{ product.name }}</h2></a>
+                        {% else %}
+                            <h2>{{ product.name }}</h2>
+                        {% endif %}
                         {{ product.short_description|safe }}
                     </div>
                     <div class="productTitleConnect">

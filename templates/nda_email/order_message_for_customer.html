@@ -116,7 +116,7 @@
                       <table border="0" cellpadding="0" cellspacing="0" width="100%" style="width:100%;">
                         <tr>
                           <td style="width:100%; text-align: center;">
-                            <img width="540" align="center" style="display: block; width: 100%; height: auto;" src="{% static 'images/mailHead.png' %}" imgfield="img" />
+                            <img width="540" align="center" style="display: block; width: 100%; height: auto;" src="https://nda.ru/static/images/mailHead.png" >
                           </td>
                         </tr>
                       </table>
@@ -135,12 +135,54 @@
                         <tr>
                           <td style="border-radius: 15px; text-align: left; padding-top: 8px; padding-bottom: 8px; padding-left: 20px; padding-right: 20px; background-color:#f5f5f5;">
                             <div style="margin-right: auto; font-family: Helvetica Neue, Helvetica, Arial, sans-serif; font-size:16px;line-height:1.5;padding-top:8px;padding-bottom:8px;">
+                              <div class="">
+                                  <strong>Спасибо за ваш запрос. Мы получили его и свяжемся с вами по указанным контактам в ближайшее время</strong>
+                              </div>
+                            </div>
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+            <tr>
+            <tr>
+              <td style="padding-left:15px; padding-right:15px; background-color:#f5f5f5;">
+                <table id="recin878857837" class="r" style="margin: 0 auto;background-color:#ffffff;border-spacing: 0;width:600px;" align="center">
+                  <tr>
+                    <td style="padding-top:15px;padding-bottom:15px;padding-left:30px;padding-right:30px;">
+                      <table border="0" cellpadding="0" cellspacing="0" width="100%" style="width: 100%;">
+                        <tr>
+                          <td style="border-radius: 15px; text-align: left; padding-top: 8px; padding-bottom: 8px; padding-left: 20px; padding-right: 20px; background-color:#f5f5f5;">
+                            <div style="margin-right: auto; font-family: Helvetica Neue, Helvetica, Arial, sans-serif; font-size:16px;line-height:1.5;padding-top:8px;padding-bottom:8px;">
                               <strong style="color: rgb(51, 145, 197);">Товар</strong><br/>
                               {% if offers %}
                                   {% for offer in offers %}
-                                      <div class=""><strong>{{ offer.name }}</strong> - {{ offer.quantity }} шт.</div>
+                                      <div class=""><strong>{{ offer.name }} {{ offer.text_description }}</strong> - {{ offer.quantity }} </div>
                                   {% endfor %}
                             {% endif %}
+                            </div>
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding-left:15px; padding-right:15px; background-color:#f5f5f5;">
+                <table id="recin878857837" class="r" style="margin: 0 auto;background-color:#ffffff;border-spacing: 0;width:600px;" align="center">
+                  <tr>
+                    <td style="padding-top:15px;padding-bottom:15px;padding-left:30px;padding-right:30px;">
+                      <table border="0" cellpadding="0" cellspacing="0" width="100%" style="width: 100%;">
+                        <tr>
+                          <td style="border-radius: 15px; text-align: left; padding-top: 8px; padding-bottom: 8px; padding-left: 20px; padding-right: 20px; background-color:#f5f5f5;">
+                            <div style="margin-right: auto; font-family: Helvetica Neue, Helvetica, Arial, sans-serif; font-size:16px;line-height:1.5;padding-top:8px;padding-bottom:8px;">
+                              <strong style="color: rgb(51, 145, 197);">Ссылка на страницу</strong><br/>
+                                  <div class=""><strong>https://nda.ru/catalog/{{ product.brand.slug }}/{{ product.slug }}</strong></div>
                             </div>
                           </td>
                         </tr>
@@ -207,12 +249,12 @@
                               <tr>
                                 <td>
                                   <!-- [if mso]> <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word"
-href="http://notarealnda.ru/"
+href="https://nda.ru/"
 style="height:58px;v-text-anchor:middle;mso-wrap-style:none;mso-position-horizontal:center;"
 arcsize="9%" stroke="f"
 fillcolor="#3391c5"> <w:anchorlock/> <center style="text-decoration: none; padding: 17px 36px; font-size: 17px; text-align: center; font-weight: bold; font-family:Helvetica Neue, Helvetica, Arial, sans-serif; width: 100%;color:#ffffff;">
 Вернуться на сайт
-</center> </v:roundrect> <![endif] --> <!-- [if !mso] --> <a style="display: table-cell; text-decoration: none; padding: 17px 36px; font-size: 17px; text-align: center; font-weight: bold; font-family:Helvetica Neue, Helvetica, Arial, sans-serif; width: 100%;color:#ffffff; border:0px solid ; background-color:#3391c5; border-radius: 3px;" href="http://notarealnda.ru/">Вернуться на сайт</a> <!-- [endif] -->
+</center> </v:roundrect> <![endif] --> <!-- [if !mso] --> <a style="display: table-cell; text-decoration: none; padding: 17px 36px; font-size: 17px; text-align: center; font-weight: bold; font-family:Helvetica Neue, Helvetica, Arial, sans-serif; width: 100%;color:#ffffff; border:0px solid ; background-color:#3391c5; border-radius: 3px;" href="https://nda.ru/">Вернуться на сайт</a> <!-- [endif] -->
                                 </td>
                               </tr>
                             </table>
@@ -256,6 +298,23 @@ fillcolor="#3391c5"> <w:anchorlock/> <center style="text-decoration: none; paddi
                             <div style="margin: 0 auto; font-weight: normal; font-family: Helvetica Neue, Helvetica, Arial, sans-serif; color:#8c8c8c;max-width:350px;">
                               Адресс: Санкт-Петербург, ул.Перевозная, 6<br />Телефон: +7 (812) 714 - 06 -14<br />E-mail: nda@nda.ru
                             </div>
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding-left:15px; padding-right:15px; background-color:#f5f5f5;">
+                <table id="recin878814310" class="r" style="margin: 0 auto;background-color:#ffffff;border-spacing: 0;width:600px;" align="center">
+                  <tr>
+                    <td style="padding-top:15px;padding-bottom:15px;padding-left:30px;padding-right:30px;">
+                      <table border="0" cellpadding="0" cellspacing="0" width="100%" style="width:100%;">
+                        <tr>
+                          <td style="width:100%; text-align: center;">
+                              {% include 'output_banner.html' %}
                           </td>
                         </tr>
                       </table>

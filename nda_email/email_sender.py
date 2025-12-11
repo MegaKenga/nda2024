@@ -1,5 +1,6 @@
 from django.template.loader import render_to_string
 
+from catalog.models import Product
 from nda_email.temporary_storage import temporary_storage
 from nda_email.forms import ContactForm, PhysicalContactForm, MailForm, CallForm
 from nda_email.tasks import send_order_emails_task, send_request_for_email_task, send_request_for_call_task
@@ -21,6 +22,9 @@ def check_if_form_is_valid_and_get_data(form, request):
 def check_if_offers_and_generate_messages(offers, file, context, customer_email):
     if offers:
         context['offers'] = offers
+        product_id = offers[0].product_id # product нужен для сохранения ссылки на страницу товара в письме
+        product = Product.objects.get(id=product_id)
+        context['product'] = product
     html_order_message_for_nda = render_to_string(
         'nda_email/order_message_for_nda.html',
         context

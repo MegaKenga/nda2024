@@ -11,8 +11,8 @@
   <meta property="og:url" content="https://nda.ru{% url 'category' category_slug=category.slug %}" />
   <meta property="og:title" content="{{ category.title }}" />
   <meta property="og:type" content="website" />
-  <meta property="og:description" content="{{ category.description|striptags }}" />
-  <meta name="description" content="{{ category.description|striptags }}" />
+  <meta property="og:description" content="{{ category.ceo_description|striptags }}" />
+  <meta name="description" content="{{ category.ceo_description|striptags }}" />
 {% endblock %}
 
 {% block content %}
