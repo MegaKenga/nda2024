@@ -1,12 +1,12 @@
-<script src="https://smartcaptcha.yandexcloud.net/captcha.js" defer></script> 
-
-<!-- Модальное окно для заказа звонка -->
-<div class="modal fade" id="callModal" tabindex="-1" aria-labelledby="callModalLabel" aria-hidden="true" onclick="modalClickHandler(event)">
+<!--<script src="https://smartcaptcha.yandexcloud.net/captcha.js" defer></script> -->
+{# onclick="modalClickHandler(event)" #}
+<div class="modal fade" id="callModal" tabindex="-1" aria-labelledby="callModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="callModalLabel">Заказать звонок</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="location.reload();"></button>
+        {# data-bs-dismiss="modal" onclick="location.reload();" #}
+        <button type="button" class="btn-close"  aria-label="Close" ></button>
       </div>
       <div class="modal-body">
         <form 
@@ -62,3 +62,224 @@
     </div>
   </div>
 </div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Обработка всех HTMX ответов
+    let userName = document.getElementById('fullNameLegal').value,
+      userPhone = document.querySelector('input[name = "phone_number"]').value
+
+    document.body.addEventListener('htmx:afterRequest', function(evt) {
+      if (evt.detail.elt.id === 'call_form') {
+        const responseContainer = document.getElementById('form-response');
+        responseContainer.innerHTML = '';
+
+        try {
+          // Пытаемся распарсить JSON
+          const response = JSON.parse(evt.detail.xhr.responseText);
+          const blockElement = document.querySelector('.container1 .toast-container')
+
+          if (response.success === true) {
+
+            const toastElement = document.getElementById("toast")
+            const toastBody = document.getElementById("toast-body")
+
+            userName = userName ? userName : 'Уважаемый клиент';
+            // Устанавливаем текст сообщения
+            toastBody.innerHTML = '<h4>Уважаемые коллеги!</h4><p>Спасибо за обращение в ООО «НДА Деловая медицинская компания». Наш специалист позвонит по номеру '+userPhone+'с 10 до 18 часов по московскому времени в ближайший рабочий день. </p><p>С уважением,\n' +
+              'ООО «НДА Деловая медицинская компания»</p>';
+            // Показываем тост
+            toastElement.classList.add('show','modal')
+            blockElement.style.display = 'block';
+            responseContainer.innerHTML = `
+                        <div class="alert alert-success mt-3">
+                            ${response.message}
+                        </div>`;
+            const fileInput = document.getElementById('call_form').querySelector('input[type="file"] + span');
+            if (fileInput) {
+              // Способ 1: Создание нового элемента (надежнее)
+              fileInput.innerHTML = 'Прикрепить файл';
+            }
+            // Сброс формы и капчи
+            document.getElementById('call_form').reset();
+
+            // if (window.SmartCaptcha) {
+            //   SmartCaptcha.reset();
+            // }
+            // } else {
+            //   evt.stopPropagation()
+            //   // Обработка ошибок
+            //   let errorHtml = '<div class="alert alert-danger mt-3"><ul>';
+            //
+            //   for (const field in response.errors) {
+            //     const errors = response.errors[field];
+            //     errors.forEach(err => {
+            //       errorHtml += `<li>${err}</li>`;
+            //     });
+            //   }
+            //   errorHtml += '</ul></div>';
+            //   responseContainer.innerHTML = errorHtml;
+            // }
+          } else {
+
+            // Проверяем, есть ли ошибки валидации полей
+            if (response.errors) {
+              let errorFields = [];
+              let errorMessages = [];
+
+              for (const field in response.errors) {
+                const errors = response.errors[field];
+                errors.forEach(err => {
+                  errorFields.push(field);
+                  errorMessages.push(err);
+                });
+              }
+              console.log(errorMessages);
+              // Показываем модалку с предупреждением
+              const warningToast = document.getElementById("toast-warning");
+              const warningBody = document.getElementById("toast-warning-body");
+              if (warningToast && warningBody) {
+                // Формируем HTML с перечнем ошибок
+                let warningHtml = '<h4 style="margin-bottom: 10px">Ошибка заполнения формы</h4>';
+                warningHtml += '<p style="text-align: left">Здравствуйте '+userName+'!<br>К сожалению, мы не можем обработать Вашу заявку на обратный звонок, так как в ней отсутствует или некорректно указана необходимая информация.<br> Пожалуйста, проверьте и заполните следующие поля:</p>';
+                warningHtml += '<ul style="list-style: none;padding: 0px;text-align: left;">';
+                console.log(response.errors);
+                errorMessages.forEach((msg, index) => {
+                  let name = '';
+                  switch (errorFields[index]) {
+                    case 'email':
+                      name = 'Ваш Email';
+                      break;
+                    case 'name':
+                      name = 'Ваше имя';
+                      break;
+                    case 'message':
+                      name = 'Тема звонка';
+                      break;
+                    case 'phone_number':
+                      name = 'Номер телефона';
+                      break;
+                    default:
+                      name = errorFields[index]; // на случай других полей
+                  }
+
+                  // Добавляем пункт в список ошибок
+                  warningHtml += `<li><strong>${name}</strong></li>`;
+
+                  // Подсвечиваем поле с ошибкой
+                  const errorFieldElement = document.querySelector('#callModal input[name=' + errorFields[index] + '], #callModal textarea[name=' + errorFields[index] + ']');
+                  if (errorFieldElement) {
+                    errorFieldElement.style.border = '1px solid red';
+                  }
+                  // warningHtml += `<li><strong>${errorFields[index]}:</strong> ${msg}</li>`;
+                });
+
+                warningHtml += '</ul><p style="text-align: left">После заполнения этих данных отправьте запрос повторно.<br> С уважением,<br>ООО «НДА Деловая медицинская компания»</p>';
+                blockElement.style.display = 'block';
+                warningBody.innerHTML = warningHtml;
+                warningToast.classList.add('show', 'modal');
+
+                // Показываем блок с тостом
+                const warningBlock = document.querySelector('.container1 .toast-warning-container');
+                if (warningBlock) {
+                  warningBlock.style.display = 'block';
+                }
+              }
+              // if (warningToast && warningBody) {
+              //   // Формируем HTML с перечнем ошибок
+              //   let warningHtml = '<h4>Ошибка заполнения формы</h4><ul>';
+              //
+              //   errorMessages.forEach((msg, index) => {
+              //     warningHtml += `<li><strong>${errorFields[index]}:</strong> ${msg}</li>`;
+              //   });
+              //
+              //   warningHtml += '</ul><p>Пожалуйста, заполните Имя, Телефон и Captha правильно. 1</p>';
+              //   blockElement.style.display = 'block';
+              //   warningBody.innerHTML = warningHtml;
+              //   warningToast.classList.add('show', 'modal');
+              //
+              //   // Показываем блок с тостом
+              //   const warningBlock = document.querySelector('.container1 .toast-warning-container');
+              //   if (warningBlock) {
+              //     warningBlock.style.display = 'block';
+              //   }
+              // }
+
+              // // Также выводим ошибки под формой
+              // let errorHtml = '<div class="alert alert-danger mt-3"><ul>';
+              // errorMessages.forEach((msg, index) => {
+              //   errorHtml += `<li><strong>${errorFields[index]}:</strong> ${msg}</li>`;
+              // });
+              // errorHtml += '</ul></div>';
+              //
+              // responseContainer.innerHTML = errorHtml;
+            } else {
+              // Если нет ошибок полей, но success=false
+              responseContainer.innerHTML = `
+                <div class="alert alert-danger mt-3">
+                  ${response.message || 'Произошла ошибка при обработке формы'}
+                </div>`;
+            }
+          }
+        } catch (e) {
+          // Если не JSON, показываем raw response
+          responseContainer.innerHTML = `
+                    <div class="alert alert-danger mt-3">
+                        Ошибка сервера: ${evt.detail.xhr.responseText.substring(0, 100)}
+                    </div>`;
+          console.error('Error:', e);
+        }
+      }
+    });
+    document.getElementById('call_form')?.addEventListener('submit', function(e) {
+      const requiredFields = this.querySelectorAll('[required]');
+      let emptyFields = [];
+
+      requiredFields.forEach(field => {
+        if (!field.value.trim()) {
+          emptyFields.push({
+            name: field.name || field.id || field.placeholder || 'Неизвестное поле',
+            element: field
+          });
+        }
+      });
+
+      if (emptyFields.length > 0) {
+        e.preventDefault();
+
+        // Показываем модалку с предупреждением
+        const warningToast = document.getElementById("toast-warning");
+        const warningBody = document.getElementById("toast-warning-body");
+
+        if (warningToast && warningBody) {
+          let warningHtml = '<h4>Не заполнены обязательные поля</h4><ul>';
+
+          emptyFields.forEach(field => {
+            warningHtml += `<li><strong>${field.name}</strong></li>`;
+            // Добавляем подсветку незаполненного поля
+            field.element.classList.add('is-invalid');
+          });
+
+          warningHtml += '</ul><p>Пожалуйста, заполните все обязательные поля.</p>';
+
+          warningBody.innerHTML = warningHtml;
+          warningToast.classList.add('show', 'modal');
+
+          const warningBlock = document.querySelector('.container1 .toast-warning-container');
+          if (warningBlock) {
+            warningBlock.style.display = 'block';
+          }
+        }
+      }
+    });
+
+    // Убираем подсветку при начале ввода
+    document.querySelectorAll('#call_form [required]').forEach(field => {
+      field.addEventListener('input', function() {
+        if (this.value.trim()) {
+          this.classList.remove('is-invalid');
+        }
+      });
+    });
+  });
+</script>

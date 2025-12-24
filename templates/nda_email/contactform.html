@@ -1,6 +1,6 @@
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.13/css/intlTelInput.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.13/js/intlTelInput.min.js"></script>
+<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.13/css/intlTelInput.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.13/js/intlTelInput.min.js"></script> -->
 
 <form
     id="cart_modal_form"
@@ -9,7 +9,7 @@
     enctype="multipart/form-data"
     hx-post="{% url 'cart_submit' %}"
     hx-target="#modal_form_container"
-    hx-swap="outerHTML"  
+    hx-swap="none"  
     novalidate
 >
     {% csrf_token %}
@@ -23,6 +23,7 @@
                 <div class="oneLine">
                     <div class="form-floating mb-3 w-50">
                         {{ contact_form.phone_number }}
+                        <!-- <label for="phone_number">Номер телефона</label> -->
                     </div>
                     <div class="form-floating mb-3 w-50">
                         {{ contact_form.email }}
@@ -84,7 +85,7 @@
 </form>
 
 
-<script src="https://smartcaptcha.yandexcloud.net/captcha.js" defer></script> 
+<!--<script src="https://smartcaptcha.yandexcloud.net/captcha.js" defer></script> -->
 <script>
     document.addEventListener('htmx:afterSwap', function(event) {
         if (event.detail.xhr.getResponseHeader('HX-Trigger')) {
@@ -105,4 +106,227 @@
             }
         }
     });
+</script>
+<script>
+  // document.addEventListener('DOMContentLoaded', function() {
+    // Обработка всех HTMX ответов
+    var userName = document.getElementById('fullNameLegal').value;
+    userName = userName ? userName : 'Уважаемый клиент';
+    console.log("addEventListener");
+    document.body.addEventListener('htmx:afterRequest', function(evt) {
+      console.log(evt);
+      if (evt.detail.elt.id === 'cart_modal_form' || evt.detail.elt.id === 'physical_modal_form') {
+        const responseContainer = document.getElementById('form-response');
+        responseContainer.innerHTML = '';
+
+        try {
+          // Пытаемся распарсить JSON
+          const response = JSON.parse(evt.detail.xhr.responseText);
+          console.log(response);
+          const blockElement = document.querySelector('.container1 .toast-container')
+
+          if (response.success === true) {
+
+            const toastElement = document.getElementById("toast")
+            const toastBody = document.getElementById("toast-body")
+
+            // Устанавливаем текст сообщения
+            toastBody.innerHTML = '<h4>Ваш заказ принят!</h4><p style="text-align: left">Здравствуйте, '+userName+'! <br>Спасибо за обращение в ООО «НДА Деловая медицинская компания».<br>Ваш заказ поступил в обработку. В течение одного рабочего дня мы подготовим для Вас Коммерческое предложение. Наш менеджер может связаться с Вами для уточнения деталей.<br><i>Обращаем Ваше внимание:</i> коммерческое предложение носит информационный характер и не является официальным счетом.<br>Счет будет выставлен отдельно, после согласования скидок и условий оплаты.</p><p style="text-align: left">С уважением, <br>ООО «НДА Деловая медицинская компания»</p>';
+            // Показываем тост
+            toastElement.classList.add('show','modal')
+            blockElement.style.display = 'block';
+            responseContainer.innerHTML = `
+                        <div class="alert alert-success mt-3">
+                            ${response.message}
+                        </div>`;
+            const fileInput = document.getElementById('call_form').querySelector('input[type="file"] + span');
+            if (fileInput) {
+              // Способ 1: Создание нового элемента (надежнее)
+              fileInput.innerHTML = 'Прикрепить файл';
+            }
+            // Сброс формы и капчи
+            document.getElementById('call_form').reset();
+
+            // if (window.SmartCaptcha) {
+            //   SmartCaptcha.reset();
+            // }
+            // } else {
+            //   evt.stopPropagation()
+            //   // Обработка ошибок
+            //   let errorHtml = '<div class="alert alert-danger mt-3"><ul>';
+            //
+            //   for (const field in response.errors) {
+            //     const errors = response.errors[field];
+            //     errors.forEach(err => {
+            //       errorHtml += `<li>${err}</li>`;
+            //     });
+            //   }
+            //   errorHtml += '</ul></div>';
+            //   responseContainer.innerHTML = errorHtml;
+            // }
+          } else {
+
+            // Проверяем, есть ли ошибки валидации полей
+            if (response.errors) {
+              let errorFields = [];
+              let errorMessages = [];
+
+              for (const field in response.errors) {
+                const errors = response.errors[field];
+                errors.forEach(err => {
+                  errorFields.push(field);
+                  errorMessages.push(err);
+                });
+              }
+              console.log(errorMessages);
+              // Показываем модалку с предупреждением
+              const warningToast = document.getElementById("toast-warning");
+              const warningBody = document.getElementById("toast-warning-body");
+              if (warningToast && warningBody) {
+                // Формируем HTML с перечнем ошибок
+                let warningHtml = '<h4 style="margin-bottom: 10px">Ошибка заполнения формы</h4>';
+                warningHtml += '<p style="text-align: left">Здравствуйте!<br>К сожалению, мы не можем обработать Ваш заказ, так как в нем отсутствует или некорректно указана необходимая информация.<br> Пожалуйста, проверьте и заполните следующие поля:</p>';
+                warningHtml += '<ul style="list-style: none;padding: 0px;text-align: left;">';
+                console.log(response.errors);
+                errorMessages.forEach((msg, index) => {
+                  let name = '';
+                  switch (errorFields[index]) {
+                    case 'email':
+                      name = 'Ваш Email';
+                      break;
+                    case 'name':
+                      name = 'Ваше имя';
+                      break;
+                    case 'message':
+                      name = 'Тема звонка';
+                      break;
+                    case 'phone_number':
+                      name = 'Номер телефона';
+                      break;
+                    case 'inn':
+                      name = 'ИНН';
+                      break;
+                    default:
+                      name = errorFields[index]; // на случай других полей
+                  }
+
+                  // Добавляем пункт в список ошибок
+                  warningHtml += `<li><strong>${name}</strong></li>`;
+
+                  // Подсвечиваем поле с ошибкой
+                  const errorFieldElement = document.querySelector('#callModal input[name=' + errorFields[index] + '], #callModal textarea[name=' + errorFields[index] + ']');
+                  if (errorFieldElement) {
+                    errorFieldElement.style.border = '1px solid red';
+                  }
+                  // warningHtml += `<li><strong>${errorFields[index]}:</strong> ${msg}</li>`;
+                });
+
+                warningHtml += '</ul><p style="text-align: left">После заполнения этих данных отправьте запрос повторно.<br> С уважением,<br>ООО «НДА Деловая медицинская компания»</p>';
+                blockElement.style.display = 'block';
+                warningBody.innerHTML = warningHtml;
+                warningToast.classList.add('show', 'modal');
+
+                // Показываем блок с тостом
+                const warningBlock = document.querySelector('.container1 .toast-warning-container');
+                if (warningBlock) {
+                  warningBlock.style.display = 'block';
+                }
+              }
+              // if (warningToast && warningBody) {
+              //   // Формируем HTML с перечнем ошибок
+              //   let warningHtml = '<h4>Ошибка заполнения формы</h4><ul>';
+              //
+              //   errorMessages.forEach((msg, index) => {
+              //     warningHtml += `<li><strong>${errorFields[index]}:</strong> ${msg}</li>`;
+              //   });
+              //
+              //   warningHtml += '</ul><p>Пожалуйста, заполните Имя, Телефон и Captha правильно. 1</p>';
+              //   blockElement.style.display = 'block';
+              //   warningBody.innerHTML = warningHtml;
+              //   warningToast.classList.add('show', 'modal');
+              //
+              //   // Показываем блок с тостом
+              //   const warningBlock = document.querySelector('.container1 .toast-warning-container');
+              //   if (warningBlock) {
+              //     warningBlock.style.display = 'block';
+              //   }
+              // }
+
+              // // Также выводим ошибки под формой
+              // let errorHtml = '<div class="alert alert-danger mt-3"><ul>';
+              // errorMessages.forEach((msg, index) => {
+              //   errorHtml += `<li><strong>${errorFields[index]}:</strong> ${msg}</li>`;
+              // });
+              // errorHtml += '</ul></div>';
+              //
+              // responseContainer.innerHTML = errorHtml;
+            } else {
+              // Если нет ошибок полей, но success=false
+              responseContainer.innerHTML = `
+                <div class="alert alert-danger mt-3">
+                  ${response.message || 'Произошла ошибка при обработке формы'}
+                </div>`;
+            }
+          }
+        } catch (e) {
+          // Если не JSON, показываем raw response
+          responseContainer.innerHTML = `
+                    <div class="alert alert-danger mt-3">
+                        Ошибка сервера: ${evt.detail.xhr.responseText.substring(0, 100)}
+                    </div>`;
+          console.error('Error:', e);
+        }
+      }
+    });
+    document.getElementById('call_form')?.addEventListener('submit', function(e) {
+      const requiredFields = this.querySelectorAll('[required]');
+      let emptyFields = [];
+
+      requiredFields.forEach(field => {
+        if (!field.value.trim()) {
+          emptyFields.push({
+            name: field.name || field.id || field.placeholder || 'Неизвестное поле',
+            element: field
+          });
+        }
+      });
+
+      if (emptyFields.length > 0) {
+        e.preventDefault();
+
+        // Показываем модалку с предупреждением
+        const warningToast = document.getElementById("toast-warning");
+        const warningBody = document.getElementById("toast-warning-body");
+
+        if (warningToast && warningBody) {
+          let warningHtml = '<h4>Не заполнены обязательные поля</h4><ul>';
+
+          emptyFields.forEach(field => {
+            warningHtml += `<li><strong>${field.name}</strong></li>`;
+            // Добавляем подсветку незаполненного поля
+            field.element.classList.add('is-invalid');
+          });
+
+          warningHtml += '</ul><p>Пожалуйста, заполните все обязательные поля.</p>';
+
+          warningBody.innerHTML = warningHtml;
+          warningToast.classList.add('show', 'modal');
+
+          const warningBlock = document.querySelector('.container1 .toast-warning-container');
+          if (warningBlock) {
+            warningBlock.style.display = 'block';
+          }
+        }
+      }
+    });
+
+    // Убираем подсветку при начале ввода
+    document.querySelectorAll('#call_form [required]').forEach(field => {
+      field.addEventListener('input', function() {
+        if (this.value.trim()) {
+          this.classList.remove('is-invalid');
+        }
+      });
+    });
+  // });
 </script>

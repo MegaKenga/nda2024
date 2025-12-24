@@ -2,10 +2,10 @@
 
 <div class="brandBanner"
   style="background: linear-gradient(135deg,
-  {% if category %}
-    {{ category.banner_color }}
-  {% elif brand %}
+  {% if brand %}
     {{ brand.banner_color }}
+  {% else %}
+    {{ category.banner_color }}
   {% endif %}, white); ">
   <div class="brandLogo">
     {% if brand.logo %}

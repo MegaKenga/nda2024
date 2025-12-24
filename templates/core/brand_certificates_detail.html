@@ -14,6 +14,14 @@
   <meta name="description" content="Регистрационные удостоверения продукции {{brand}}">
 {% endblock %}
 
+{% block styles %}
+
+<link rel="stylesheet" href="{% static 'css/styleIndex.css' %}" type="text/css">
+<link rel="preload" type="text/css" href="{% static 'bootstrap/css/bootstrap.min.css' %}" />
+<script src="{% static 'bootstrap/js/bootstrap.min.js' %}" defer></script>
+<link rel="stylesheet" href="{% static 'custom/css/custom.css' %}" type="text/css">
+{% endblock %}
+
 {% block content %}
   <header style="height: 0px;">
     <!-- летающая шапка -->
@@ -58,8 +66,10 @@
                       <td class="text-center align-middle">{{ certificate.product.name }}</td>
                       <td class="text-center align-middle">{{ certificate.get_filename|slice:"3:12" }}</td>
                       <td class="text-center align-middle" id="certificateDownload">
+                        <a href="{{ certificate.file.url }}">
                         <img src="{% static 'images/certificates/downloadCertificates.svg' %}" alt="" />  
-                        <a href="{{ certificate.file.url }}">Скачать</a>
+                        Скачать
+                        </a>
                       </td>
                     </tr>
                   {% endfor %}
@@ -84,9 +94,10 @@
             <tbody>
                   {% for certificate in certificates %}
                     <tr class="table-row">
-                      <td class="text-center align-middle">{{ forloop.counter }}</td>
-                      <td class="text-start align-middle p-2">Устройство для дренирования ран в наборах и отдельных упаковках</td>
-                      <td class="text-center align-middle">{{ certificate.get_filename|slice:"3:12" }}</td>
+                      <td class="text-center align-middle"><span>{{ forloop.counter }}</span></td>
+                      <td class="text-start align-middle p-2"><span>{{ certificate.product.name }}</span></td>
+<!--                      <td class="text-start align-middle p-2">Устройство для дренирования ран в наборах и отдельных упаковках</td>-->
+                      <td class="text-center align-middle"><span>{{ certificate.get_filename|slice:"3:12" }}</span></td>
                       <td class="text-center align-middle" id= "certificateDownload">
                         <a href="{{ certificate.file.url }}">Скачать</a>
                       </td>

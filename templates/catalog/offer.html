@@ -110,7 +110,7 @@
                 </div>
                 <div class="productTitle">
                     <div class="productTitleText">
-                        {% if user.is_authenticated %}
+			{% if user.is_authenticated %}
                             <a href="https://nda.ru/admin/catalog/product/{{ product.id }}/change/"><h2>{{ product.name }}</h2></a>
                         {% else %}
                             <h2>{{ product.name }}</h2>
@@ -366,7 +366,7 @@
                                             </tr>
                                         </thead>
                                         <tbody class="">
-                                            {% for offer in offers|dictsort:'place'%}
+                                            {% for offer in offers %}
                                             <tr class="table-row">
                                                 <td class="text-center align-middle"><span>{{ offer.name | safe}}</span></td>
                                                 <td class="text-center align-middle"><span>{{ offer.text_description | safe}}</span></td>

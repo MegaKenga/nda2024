@@ -15,6 +15,13 @@
   <meta name="keywords" content="Условия поставок">
 {% endblock %}
 
+{% block styles %}
+
+<link rel="stylesheet" href="{% static 'css/styleIndex.css' %}" type="text/css">
+<link rel="preload" type="text/css" href="{% static 'bootstrap/css/bootstrap.min.css' %}" />
+<script src="{% static 'bootstrap/js/bootstrap.min.js' %}" defer></script>
+<link rel="stylesheet" href="{% static 'custom/css/custom.css' %}" type="text/css">
+{% endblock %}
 
 
 {% block content%}
@@ -24,7 +31,7 @@
        
     <!-- летающая шапка -->
 </header>
-<main class="main">
+<main class="main 123">
     <div class="container1">
         <div class="breadCrumbs">
             <ol class="breadcrumb">

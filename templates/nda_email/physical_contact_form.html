@@ -1,6 +1,6 @@
-<script src="https://smartcaptcha.yandexcloud.net/captcha.js" defer></script> 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.13/css/intlTelInput.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.13/js/intlTelInput.min.js"></script>
+<!--<script src="https://smartcaptcha.yandexcloud.net/captcha.js" defer></script> -->
+<!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.13/css/intlTelInput.css">-->
+<!--    <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.13/js/intlTelInput.min.js"></script>-->
 
 <form
     id="physical_modal_form"
@@ -9,7 +9,7 @@
     enctype="multipart/form-data"
     hx-post="{% url 'physical_cart_submit' %}?random={{ timestamp }}%}"
     hx-target="#physical_modal_form_container"  
-    hx-swap="innerHTML"  
+    hx-swap="none"  
     novalidate
 >
     {% csrf_token %}

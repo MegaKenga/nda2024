@@ -24,7 +24,7 @@
                 <div class="catalogItem">
                   <div class="catalogItemImg">
                     {% if brand.logo %}
-                      <img src="{{ brand.logo.url }}" alt="{{ brand.name }}" />
+                      <img src="data:image/jpg;base64, {{ brand.logo.url }}" data-src="{{ brand.logo.url }}" alt="{{ brand.name }}" class="lazyload blur-up"/>
                     {% else %}
                       <img src="{% static 'images/noImage.jpg' %}" />
                     {% endif %}
@@ -52,7 +52,7 @@
                   <div class="catalogItem">
                     <div class="catalogItemImg">
                       {% if category.logo %}
-                        <img src="{{ category.logo.url }}" alt="{{ category.name }}" />
+                        <img src="data:image/jpg;base64, {{ category.logo.url }}" data-src="{{ category.logo.url }}" alt="{{ category.name }}" class="lazyload blur-up"/>
                       {% else %}
                         <img src="{% static 'images/noImage.jpg' %}" alt="No Image" />
                       {% endif %}
@@ -78,13 +78,13 @@
       <div class="slider-container sliderInfo">
         <div class="slider sliderInfo">
           <div class="sliderImg">
-            <img src="{% static 'images/Sklad_NDA.webp' %}" alt="" />
+            <img src="data:image/webp;base64, {% static 'images/Sklad_NDA.webp' %}" data-src="{% static 'images/Sklad_NDA.webp' %}" alt="" class="lazyload blur-up"/>
           </div>
           <div class="sliderImg">
-            <img src="{% static 'images/Sklad_NDA_2.webp' %}" alt="" />
+            <img src="data:image/webp;base64, {% static 'images/Sklad_NDA_2.webp' %}" data-src="{% static 'images/Sklad_NDA_2.webp' %}" alt="" class="lazyload blur-up" />
           </div>
           <div class="sliderImg">
-            <img src="{% static 'images/Sklad_NDA_5.webp' %}" alt="" />
+            <img src="data:image/webp;base64, {% static 'images/Sklad_NDA_5.webp' %}" data-src="{% static 'images/Sklad_NDA_5.webp' %}" alt=""  class="lazyload blur-up"/>
           </div>
         </div>
         <div class="slick-dots"></div>
@@ -100,9 +100,44 @@
     </div>
   </div>
   <div class="place">
-    <h2>Офис и склад</h2>
+    <h2>Наш офис и склад</h2>
     <div class="map">
-      <iframe src="https://yandex.ru/map-widget/v1/?um=constructor%3A483b0761fd50f52fa933af3311c796503d73aaca44becb79b973a587356fa263&amp;source=constructor&theme=dark&scroll=false" width="100%" height="100%" frameborder="0"></iframe>
+      <!-- <iframe loading="lazy" src="https://yandex.ru/map-widget/v1/?um=constructor%3A483b0761fd50f52fa933af3311c796503d73aaca44becb79b973a587356fa263&amp;source=constructor&theme=dark&scroll=false" width="100%" height="100%" frameborder="0" ></iframe> -->
+      <div class="yandex-map" style="width:100%; height:100%;" data-src="https://yandex.ru/map-widget/v1/?um=constructor%3A483b0761fd50f52fa933af3311c796503d73aaca44becb79b973a587356fa263&source=constructor&theme=dark&scroll=false"></div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const mapDiv = document.querySelector(".yandex-map");
+    function loadMap() {
+        if (!mapDiv.dataset.loaded) {
+            const iframe = document.createElement("iframe");
+            iframe.src = mapDiv.dataset.src;
+            iframe.width = "100%";
+            iframe.height = "100%";
+            iframe.frameBorder = "0";
+            mapDiv.appendChild(iframe);
+            mapDiv.dataset.loaded = "true";
+        }
+    }
+
+    // Определяем, когда элемент виден
+    if ('IntersectionObserver' in window) {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    loadMap();
+                    observer.unobserve(entry.target);
+                }
+            });
+        });
+        observer.observe(mapDiv);
+    } else {
+        // fallback — просто загрузим после 2 секунд
+        setTimeout(loadMap, 2000);
+    }
+});
+</script>
+
     </div>
   </div>
 </div>
