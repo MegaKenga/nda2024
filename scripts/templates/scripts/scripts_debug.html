@@ -1,0 +1,38 @@
+{% comment %}
+Шаблон для отладки скриптов (можно включить в DEBUG режиме)
+Показывает какие скрипты загружены и где они размещены
+{% endcomment %}
+
+{% if debug %}
+<div style="position: fixed; top: 10px; right: 10px; background: #f0f0f0; padding: 10px; border: 1px solid #ccc; font-size: 12px; z-index: 9999;">
+    <strong>Загруженные скрипты:</strong><br>
+    
+    <strong>HEAD:</strong><br>
+    {% for script in scripts_head %}
+        ✓ {{ script.name }}<br>
+    {% empty %}
+        - нет скриптов<br>
+    {% endfor %}
+    
+    <strong>BODY START:</strong><br>
+    {% for script in scripts_body_start %}
+        ✓ {{ script.name }}<br>
+    {% empty %}
+        - нет скриптов<br>
+    {% endfor %}
+    
+    <strong>BODY END:</strong><br>
+    {% for script in scripts_body_end %}
+        ✓ {{ script.name }}<br>
+    {% empty %}
+        - нет скриптов<br>
+    {% endfor %}
+    
+    <strong>FOOTER:</strong><br>
+    {% for script in scripts_footer %}
+        ✓ {{ script.name }}<br>
+    {% empty %}
+        - нет скриптов<br>
+    {% endfor %}
+</div>
+{% endif %}

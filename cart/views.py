@@ -8,7 +8,6 @@ import logging
 
 from catalog.models import Offer
 from cart.forms import CartAddProductForm
-
 from nda_email.forms import ContactForm, PhysicalContactForm, MailForm, CallForm
 from nda_email.email_sender import CompanyOrderEmailSender, PhysicalPersonOrderSender, CallRequestFormEmailSender, MailRequestFormEmailSender
 from nda_email.captcha import get_client_ip, yandex_captcha_validation
@@ -181,7 +180,7 @@ def cart_modal(request):
     offers = get_cart_offers(request)
     return render(request, 'cart/cart_modal.html', {'offers': offers, 'form': form})
 
-
+@require_POST
 def cart_submit(request):
     captcha_response = validate_captcha(request)
     captcha_valid = captcha_response is True

@@ -4,6 +4,24 @@
 {% block title %}
   <title>{{ brand.name }}</title>
 {% endblock %}
+
+{% block styles %}
+
+<link rel="stylesheet" href="{% static 'css/styleIndex.css' %}" type="text/css">
+<link rel="preload" type="text/css" href="{% static 'bootstrap/css/bootstrap.min.css' %}" />
+<script src="{% static 'bootstrap/js/bootstrap.min.js' %}" defer></script>
+<link rel="stylesheet" href="{% static 'custom/css/custom.css' %}" type="text/css">
+{% endblock %}
+
+{% block metatag %}
+  <meta name="keywords" content="{{ brand.keywords }}" />
+  <meta property="og:url" content="https://nda.ru{% url 'brand' brand_slug=brand.slug %}" />
+  <meta property="og:title" content="{{ brand.title }}" />
+  <meta property="og:type" content="website" />
+  <meta property="og:description" content="{{ brand.ceo_description|striptags }}" />
+  <meta name="description" content="{{ brand.ceo_description|striptags }}" />
+{% endblock %}
+
 {% block content %}
   <header style="height: 0px;">
     <!-- летающая шапка -->

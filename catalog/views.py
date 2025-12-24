@@ -1,5 +1,3 @@
-from pydoc import visiblename
-
 from django.shortcuts import get_object_or_404
 from django.views.generic import TemplateView, ListView
 from django.urls import resolve
@@ -65,7 +63,7 @@ class CategoryView(TemplateView):
         current_url_name = match.url_name
         context['current_url_name'] = current_url_name
 
-        category = Category.visible.select_related('brand').order_by('place').get(slug=self.kwargs['category_slug'])
+        category = get_object_or_404(Category.visible.select_related('brand').order_by('place'),slug=self.kwargs['category_slug'])
         context['brand'] = category.brand
         context['category'] = category
         context['categories'] = Category.visible.filter(parents=category).select_related('brand').order_by('place')
@@ -107,7 +105,7 @@ class OfferView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        product = Product.visible.select_related('brand', 'specialist').get(slug=self.kwargs['product_slug'])
+        product = get_object_or_404(Product.visible.select_related('brand', 'specialist'), slug=self.kwargs['product_slug'])
         uploaded_file = None
         if self.request.method == 'POST':
             uploaded_file = import_from_excel(self.request, product_id=product.id)
@@ -137,7 +135,7 @@ class SiteSearchView(ListView):
     paginate_by = 10
 
     def get_queryset(self):
-        query = self.request.GET.get(SEARCH_QUERY_PARAM, '')
+        query = self.request.GET.get(SEARCH_QUERY_PARAM, '').strip()
         qs = super().get_queryset()
         if len(query) < 3:
             messages.error(self.request, message='Слишком короткий запрос. Попробуйте увеличить количество символов в запросе')

@@ -1,0 +1,30 @@
+[
+  {
+    "model": "scripts.script",
+    "pk": 2,
+    "fields": {
+      "name": "Яндекс.Метрика",
+      "description": "Система веб-аналитики от Яндекс для анализа трафика сайта",
+      "code": "<!-- Yandex.Metrika counter -->\n<script type=\"text/javascript\" >\n   (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};\n   m[i].l=1*new Date();\n   for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}\n   k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})\n   (window, document, \"script\", \"https://mc.yandex.ru/metrika/tag.js\", \"ym\");\n\n   ym(XXXXXX, \"init\", {\n        clickmap:true,\n        trackLinks:true,\n        accurateTrackBounce:true,\n        webvisor:true\n   });\n</script>\n<noscript><div><img src=\"https://mc.yandex.ru/watch/XXXXXX\" style=\"position:absolute; left:-9999px;\" alt=\"\" /></div></noscript>\n<!-- /Yandex.Metrika counter -->",
+      "position": "head",
+      "is_active": false,
+      "order": 20,
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "scripts.script",
+    "pk": 4,
+    "fields": {
+      "name": "Jivosite чат",
+      "description": "Виджет онлайн-чата для связи с посетителями сайта",
+      "code": "<!-- BEGIN JIVOSITE CODE {literal} -->\n<script type='text/javascript'>\n(function(){ var widget_id = 'YOUR_WIDGET_ID';\nvar d=document;var w=window;function l(){\nvar s = document.createElement('script'); s.type = 'text/javascript'; s.async = true;\ns.src = '//code.jivosite.com/script/widget/'+widget_id\n; var ss = document.getElementsByTagName('script')[0]; ss.parentNode.insertBefore(s, ss);}\nif(d.readyState=='complete'){l();}else{if(w.attachEvent){w.attachEvent('onload',l);}\nelse{w.addEventListener('load',l,false);}}})()\n</script>\n<!-- {/literal} END JIVOSITE CODE -->",
+      "position": "body_end",
+      "is_active": false,
+      "order": 10,
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z"
+    }
+  }
+]
