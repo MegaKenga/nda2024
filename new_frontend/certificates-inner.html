@@ -5,6 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>LOHMANN & RAUSCHER — РУ и Сертификаты — НДА</title>
+  <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="css/reset.css">
   <link rel="stylesheet" href="css/fonts.css">
   <link rel="stylesheet" href="css/styles.css">
@@ -20,7 +21,7 @@
             <p class="header__slogan t-18-25">ДЕЛОВАЯ МЕДИЦИНСКАЯ КОМПАНИЯ</p>
           </a>
           <nav class="header__nav">
-            <a class="header__nav-link t-18" href="#"><svg width="15" height="15" viewBox="0 0 15 15" fill="none"
+            <a class="header__nav-link t-18" href="usloviya.html"><svg width="15" height="15" viewBox="0 0 15 15" fill="none"
                 xmlns="http://www.w3.org/2000/svg">
                 <path fill-rule="evenodd" clip-rule="evenodd"
                   d="M0.907958 1.46243C0 2.56878 0 4.21252 0 7.5C0 10.7875 0 12.4312 0.907958 13.5376C1.07418 13.7401 1.25989 13.9258 1.46243 14.092C2.56878 15 4.21252 15 7.5 15C8.18256 15 8.79426 15 9.345 14.9919C8.5199 14.2591 8 13.1903 8 12C8 9.79086 9.79086 8 12 8C13.1903 8 14.2591 8.5199 14.9919 9.345C15 8.79426 15 8.18256 15 7.5C15 4.21252 15 2.56878 14.092 1.46243C13.9258 1.25989 13.7401 1.07418 13.5376 0.907958C12.4312 0 10.7875 0 7.5 0C4.21252 0 2.56878 0 1.46243 0.907958C1.25989 1.07418 1.07418 1.25989 0.907958 1.46243ZM3 4C3 3.44772 3.44772 3 4 3H11C11.5523 3 12 3.44772 12 4C12 4.55228 11.5523 5 11 5H4C3.44772 5 3 4.55228 3 4ZM4 6C3.44772 6 3 6.44772 3 7C3 7.55228 3.44772 8 4 8H8C8.55228 8 9 7.55228 9 7C9 6.44772 8.55228 6 8 6H4Z"
@@ -52,7 +53,7 @@
               </svg>Контакты</a>
           </nav>
           <div class="header__actions">
-            <form class="header__search" action="#" method="get" role="search">
+            <form class="header__search" action="search.html" method="get" role="search">
               <input class="header__search-input t-16" type="search" name="q" placeholder="Искать по артиклу"
                 aria-label="Поиск по артикулу" autocomplete="off">
               <button class="header__search-btn" type="submit" aria-label="Искать"><svg width="14" height="14"
@@ -85,26 +86,17 @@
       <div class="mobile-menu__panel">
         <nav class="mobile-menu__nav">
           <a class="mobile-menu__link t-18" href="/">Главная</a>
-          <a class="mobile-menu__link t-18" href="#">Условия работы</a>
+          <a class="mobile-menu__link t-18" href="usloviya.html">Условия работы</a>
           <div class="mobile-menu__dropdown" data-dropdown>
             <button type="button" class="mobile-menu__dropdown-heading t-18" data-dropdown-toggle
               aria-expanded="false">Каталог</button>
             <div class="mobile-menu__dropdown-list">
               <a class="mobile-menu__sublink t-14-light" href="catalog-inner.html">JOHNSON &amp; JOHNSON</a>
               <a class="mobile-menu__sublink t-14-light" href="catalog-inner.html">MEDTRONIC</a>
-              <a class="mobile-menu__sublink t-14-light" href="catalog-inner.html">PORTEX SMITHS MEDICAL</a>
-              <a class="mobile-menu__sublink t-14-light" href="catalog-inner.html">PHILIPS</a>
-              <a class="mobile-menu__sublink t-14-light" href="catalog-inner.html">GE HEALTHCARE</a>
-              <a class="mobile-menu__sublink t-14-light" href="catalog-inner.html">LOHMANN &amp; RAUSCHER</a>
-              <a class="mobile-menu__sublink t-14-light" href="catalog-inner.html">LOHMANN &amp; RAUSCHER</a>
-              <a class="mobile-menu__sublink t-14-light" href="catalog-inner.html">LOHMANN &amp; RAUSCHER</a>
-              <a class="mobile-menu__sublink t-14-light" href="catalog-inner.html">LOHMANN &amp; RAUSCHER</a>
-              <a class="mobile-menu__sublink t-14-light" href="catalog-inner.html">LOHMANN &amp; RAUSCHER</a>
-              <a class="mobile-menu__sublink t-14-light" href="catalog-inner.html">LOHMANN &amp; RAUSCHER</a>
               <a class="mobile-menu__sublink t-14-light" href="catalog-inner.html">LOHMANN &amp; RAUSCHER</a>
             </div>
           </div>
-          <a class="mobile-menu__link mobile-menu__link_active-page t-18" href="certificates.html">РУ и Сертификаты</a>
+          <a class="mobile-menu__link t-18" href="certificates.html">РУ и Сертификаты</a>
           <a class="mobile-menu__link t-18" href="contacts.html">Контакты</a>
           <p class="mobile-menu__schedule t-16">Пн-Пт: 10:00 - 18.00</p>
           <a class="mobile-menu__phone t-18" href="tel:+78127140614">+ 7 (812) 714-06-14</a>
@@ -137,13 +129,13 @@
               fill="white" />
           </svg>
         </a>
-        <a class="contact-bar__item contact-bar__item_green" href="tel:+78127140614" aria-label="Позвонить">
+        <button type="button" class="contact-bar__item contact-bar__item_green" data-callback-popup-open aria-label="Заказать звонок">
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path
               d="M18.3 14.4l-4.2-1.8a1.5 1.5 0 00-1.6.3l-1.5 1.5a11.5 11.5 0 01-5.2-5.2l1.5-1.5c.4-.4.5-1 .3-1.6L5.6 1.7A1.5 1.5 0 003.8 1L1.5 2.2a1.5 1.5 0 00-1 1.4c.7 8.6 7.4 15.3 16 16a1.5 1.5 0 001.4-1l1.2-2.3a1.5 1.5 0 00-.8-2z"
               fill="white" />
           </svg>
-        </a>
+        </button>
       </div>
     </div>
 
@@ -408,10 +400,10 @@
             <nav class="footer__nav">
               <p class="footer__heading t-22">Ссылки</p>
               <a class="footer__link t-20 text-muted" href="/">Главная</a>
-              <a class="footer__link t-20 text-muted" href="#">Условия работы</a>
-              <a class="footer__link footer__link_active" href="certificates.html">РУ и сертификаты</a>
+              <a class="footer__link t-20 text-muted" href="usloviya.html">Условия работы</a>
+              <a class="footer__link footer__link_active t-20" href="certificates.html">РУ и сертификаты</a>
               <a class="footer__link t-20 text-muted" href="contacts.html">Контакты</a>
-              <a class="footer__link t-20 text-muted" href="#">Политика конфиденциальности</a>
+              <a class="footer__link t-20 text-muted" href="politika.html">Политика конфиденциальности</a>
             </nav>
             <div class="footer__schedule">
               <p class="footer__heading t-22">График работы:</p>
@@ -428,6 +420,69 @@
         </div>
       </div>
     </footer>
+
+    <div class="callback-popup" id="callbackPopup" role="dialog" aria-modal="true" aria-labelledby="callbackPopupTitle"
+      aria-hidden="true" hidden>
+      <div class="callback-popup__backdrop" aria-label="Закрыть"></div>
+      <div class="callback-popup-wrapper">
+        <div class="callback-popup__modal">
+          <button type="button" class="callback-popup__close" data-callback-popup-close aria-label="Закрыть">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M15 5L5 15M5 5l10 10" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                stroke-linejoin="round" />
+            </svg>
+          </button>
+          <h2 class="callback-popup__title t-50" id="callbackPopupTitle">Заказать звонок</h2>
+          <form class="order-popup__form callback-popup__form" id="callbackPopupForm" action="#" method="post" novalidate>
+            <div class="order-popup__form-panel order-popup__form-panel_physical">
+              <div class="order-popup__field order-popup__field_full">
+                <input type="text" class="order-popup__input" name="callback_fio" placeholder="Иванов Иван Иванович"
+                  autocomplete="name" aria-label="ФИО" required>
+              </div>
+              <div class="order-popup__row">
+                <div class="order-popup__field">
+                  <input type="tel" class="order-popup__input" name="callback_phone" placeholder="+7 (999) 999 - 99 - 99"
+                    autocomplete="tel" aria-label="Телефон" required>
+                </div>
+                <div class="order-popup__field">
+                  <input type="email" class="order-popup__input" name="callback_email" placeholder="E-mail"
+                    autocomplete="email" aria-label="E-mail">
+                </div>
+              </div>
+              <div class="order-popup__field order-popup__field_full">
+                <textarea class="order-popup__textarea" name="callback_message" rows="4" placeholder="Комментарий"
+                  aria-label="Комментарий"></textarea>
+              </div>
+              <div class="order-popup__captcha">
+                <input type="checkbox" class="order-popup__captcha-checkbox" name="callback_captcha" id="callbackPopupCaptcha"
+                  aria-label="Я не робот">
+                <label class="order-popup__captcha-label" for="callbackPopupCaptcha">Я не робот</label>
+                <div class="order-popup__captcha-placeholder" aria-hidden="true">
+                  <img src="img/capcha.png" alt="">
+                </div>
+              </div>
+              <button type="submit" class="order-popup__submit">Отправить запрос</button>
+              <div class="order-popup__checkbox-wrap order-popup__checkbox-wrap_cookie">
+                <input type="checkbox" class="order-popup__checkbox" name="callback_privacy" id="callbackPopupPrivacy"
+                  required>
+                <label class="order-popup__checkbox-label" for="callbackPopupPrivacy">Я прочел (прочла) Уведомление о
+                  <a href="politika.html" class="order-popup__privacy-link">политики конфиденциальности</a></label>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="cookie-bar" id="cookie-bar" role="dialog" aria-label="Уведомление об использовании файлов cookie">
+      <div class="cookie-bar__inner container">
+        <p class="cookie-bar__text">
+          Наш сайт использует куки. Продолжая им пользоваться, вы соглашаетесь с нашей
+          <a class="cookie-bar__link" href="politika.html">политикой конфиденциальности</a>.
+        </p>
+        <button type="button" class="cookie-bar__btn" data-cookie-accept aria-label="Принять">Согласен!</button>
+      </div>
+    </div>
   </div>
   <script src="js/main.js"></script>
 </body>

@@ -34,6 +34,7 @@ textarea,
 select {
   font: inherit;
   color: inherit;
+  border: 0;
 }
 
 button {
