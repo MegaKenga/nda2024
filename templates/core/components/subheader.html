@@ -1,49 +1,33 @@
 {% load static %}
 
-<div class="container1">
-    <div class="product_bg" style="background-image: url('{% static "images/header_bg.svg" %}')"></div>
-    <div class="slider subheaderSlider">
-        {% for ad in ads%}
-            {% if ad.block_category%}
-           <div class="subheader" id="top" style="width: 100%!important;">
-               <div class="subheaderInfo">
-                    <div class="subheaderTitle">
-                        <h1>{{ad.block_header|safe}}</h1>
-                    </div>
-                    {{ad.block_text|safe}}
-                   <div class="more550">
-                        <a href="{% url 'offer' brand_slug=ad.block_category.brand.slug product_slug=ad.block_category.slug %}">
-                            <div class="buttonInfo button">
-                                <div class="subheaderProductText">Подробнее</div>
-                                <svg width="19" height="11" viewBox="0 0 19 11" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M18.0557 0.949219L9.50232 9.50256L0.499821 0.500065" stroke="white" stroke-linecap="round"/>
-                                </svg>
+<section class="hero">
+    <div class="container">
+        <div class="hero__inner swiper hero-swiper">
+            <div class="swiper-wrapper">
+                {% for ad in ads%}
+                    {% if ad.block_category%}
+                        <div class="swiper-slide">
+                            <div class="hero__slide-inner">
+                                <div class="hero__left">
+                                    <div class="hero__content">
+                                        <h1 class="hero__title t-hero-title">{{ad.block_header|safe}}</h1>
+                                        <ul class="hero__list">
+                                            {{ad.block_text|safe}}
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="hero__media">
+                                    <img class="hero__img, lazyload blur-up" src="{{ad.block_image.url}}" alt="">
+                                </div>
+                                <a class="hero__btn t-20" href="{% url 'offer' brand_slug=ad.block_category.brand.slug product_slug=ad.block_category.slug %}">Подробнее <svg width="19" height="11" viewBox="0 0 19 11" fill="none"
+                                                                                  xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M18.0557 0.949219L9.50232 9.50256L0.499821 0.500065" stroke="white" stroke-linecap="round" />
+                                </svg></a>
                             </div>
-                        </a>
-                   </div>
-                </div>
-                <div class="subheaderImage">
-                    <img src="data:image/jpeg;base64, {{ad.block_image.url}}" data-src="{{ad.block_image.url}}" alt="" class="lazyload blur-up">
-                    <div class="less550">
-                        <a href="{% url 'offer' brand_slug=ad.block_category.brand.slug product_slug=ad.block_category.slug %}">
-                            <div class="buttonInfo button">
-                                    <div class="subheaderProductText">Подробнее</div>
-                                    <svg width="19" height="11" viewBox="0 0 19 11" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M18.0557 0.949219L9.50232 9.50256L0.499821 0.500065" stroke="white" stroke-linecap="round"/>
-                                    </svg>
-                            </div>
-                        </a>
-                    </div>
-
-                </div>
-            <!-- фон для товара -->
-
-            <!-- фон для товара -->
-
-            <!-- subheader1 -->
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
         </div>
-           {% endif %}
-        {% endfor %}
     </div>
-
-</div>
+</section>

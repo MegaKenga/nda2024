@@ -30,10 +30,9 @@ class MainPageInfoBlock(models.Model):
         verbose_name='Товар для рекламы на главной странице'
     )
     block_text = models.TextField(
-        default='''<ul>
-                    <li><span>Особенность 1</span> </li>
-                    <li><span>Особенность 2</span></li>
-                </ul>''',
+        default= '''<li class="hero__list-item t-25">Особенность 1</li>
+                    <li class="hero__list-item t-25">Особенность 2</li>
+                    ''',
         null=True,
         blank=True,
         verbose_name='Описание'

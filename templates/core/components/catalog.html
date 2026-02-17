@@ -1,5 +1,51 @@
 {% load static %}
 
+<section class="catalog">
+      <div class="container">
+        <h2 class="catalog__title t-section-title">Каталог</h2>
+        <div class="catalog__tabs-wrap">
+          <div class="catalog__tabs">
+            <button class="catalog__tab catalog__tab_active t-25" type="button" data-tab="manufacturer">Выбор по
+              производителю</button>
+            <button class="catalog__tab t-25" type="button" data-tab="category">Выбор по категориям</button>
+          </div>
+        </div>
+        <div class="catalog__panel catalog__panel_active" data-panel="manufacturer">
+            <ul class="catalog__grid">
+                {% for brand in brands|dictsort:'place' %}
+                    <a href="{% url 'brand' brand_slug=brand.slug %}">
+                        <li class="catalog__card">
+                            {% if brand.logo %}
+                                <div class="catalog__card-image"><img src="{{ brand.logo.url }}" alt="{{ brand.name }}" width="262"
+                                                                      height="140"></div>
+                            {% endif %}
+                            <h3 class="catalog__card-title t-20-29">{{ brand.name }}</h3>
+                            <p class="catalog__card-desc t-16">{{ brand.description|safe|striptags }}</p>
+                        </li>
+                    </a>
+                {% endfor %}
+          </ul>
+        </div>
+      </div>
+</section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--
 <div class="container1">
   <div id="catalog"></div>
   <div class="catalog">
@@ -16,8 +62,8 @@
     </div>
     <div class="tab-content" id="pills-tabContent">
       <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
-        <!-- Выбор по производителям -->
-        <!-- каталог -->
+        <#!-- Выбор по производителям --#>
+        <#!-- каталог --#>
         <div class="catalogItems">
           {% for brand in brands|dictsort:'place' %}
               <a href="{% url 'brand' brand_slug=brand.slug %}">
@@ -35,16 +81,16 @@
               </a>
           {% endfor %}
 
-          <!-- 3 пустых дива - для ровной сетки flex -->
+          <#!-- 3 пустых дива - для ровной сетки flex --#>
           <div class="emptyEl"></div>
           <div class="emptyEl"></div>
           <div class="emptyEl"></div>
-          <!-- 3 пустых дива - для ровной сетки flex -->
+          <#!-- 3 пустых дива - для ровной сетки flex --#>
         </div>
-        <!-- конец каталога -->
+        <#!-- конец каталога --#>
       </div>
       <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
-        <!-- Выбор по категориям -->
+        <#!-- Выбор по категориям --#>
         <div class="catalogItems">
           {% for category in categories|dictsort:'place' %}
               {% if not category.brand %}
@@ -64,11 +110,11 @@
               {% endif %}
           {% endfor %}
 
-          <!-- 3 пустых дива - для ровной сетки flex -->
+          <#!-- 3 пустых дива - для ровной сетки flex --#>
           <div class="emptyEl"></div>
           <div class="emptyEl"></div>
           <div class="emptyEl"></div>
-          <!-- 3 пустых дива - для ровной сетки flex -->
+          <#!-- 3 пустых дива - для ровной сетки flex --#>
         </div>
       </div>
     </div>
@@ -102,7 +148,7 @@
   <div class="place">
     <h2>Наш офис и склад</h2>
     <div class="map">
-      <!-- <iframe loading="lazy" src="https://yandex.ru/map-widget/v1/?um=constructor%3A483b0761fd50f52fa933af3311c796503d73aaca44becb79b973a587356fa263&amp;source=constructor&theme=dark&scroll=false" width="100%" height="100%" frameborder="0" ></iframe> -->
+      <$!-- <iframe loading="lazy" src="https://yandex.ru/map-widget/v1/?um=constructor%3A483b0761fd50f52fa933af3311c796503d73aaca44becb79b973a587356fa263&amp;source=constructor&theme=dark&scroll=false" width="100%" height="100%" frameborder="0" ></iframe> --$>
       <div class="yandex-map" style="width:100%; height:100%;" data-src="https://yandex.ru/map-widget/v1/?um=constructor%3A483b0761fd50f52fa933af3311c796503d73aaca44becb79b973a587356fa263&source=constructor&theme=dark&scroll=false"></div>
 
 <script>
@@ -140,4 +186,4 @@ document.addEventListener("DOMContentLoaded", function() {
 
     </div>
   </div>
-</div>
+-->
