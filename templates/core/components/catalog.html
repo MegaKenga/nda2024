@@ -2,30 +2,51 @@
 
 <section class="catalog">
       <div class="container">
-        <h2 class="catalog__title t-section-title">Каталог</h2>
-        <div class="catalog__tabs-wrap">
-          <div class="catalog__tabs">
-            <button class="catalog__tab catalog__tab_active t-25" type="button" data-tab="manufacturer">Выбор по
-              производителю</button>
-            <button class="catalog__tab t-25" type="button" data-tab="category">Выбор по категориям</button>
+          <h2 class="catalog__title t-section-title">Каталог</h2>
+          <div class="catalog__tabs-wrap">
+              <div class="catalog__tabs">
+                  <button class="catalog__tab catalog__tab_active t-25" type="button" data-tab="manufacturer">Выбор по
+                  производителю</button>
+                  <button class="catalog__tab t-25" type="button" data-tab="category">Выбор по категориям</button>
+              </div>
           </div>
-        </div>
-        <div class="catalog__panel catalog__panel_active" data-panel="manufacturer">
-            <ul class="catalog__grid">
-                {% for brand in brands|dictsort:'place' %}
-                    <a href="{% url 'brand' brand_slug=brand.slug %}">
-                        <li class="catalog__card">
-                            {% if brand.logo %}
-                                <div class="catalog__card-image"><img src="{{ brand.logo.url }}" alt="{{ brand.name }}" width="262"
+          <div class="catalog__panel catalog__panel_active" data-panel="manufacturer">
+              <ul class="catalog__grid">
+                  {% for brand in brands|dictsort:'place' %}
+                      <a href="{% url 'brand' brand_slug=brand.slug %}">
+                          <li class="catalog__card">
+                              {% if brand.logo %}
+                                  <div class="catalog__card-image"><img src="{{ brand.logo.url }}" alt="{{ brand.name }}" width="262"
                                                                       height="140"></div>
-                            {% endif %}
-                            <h3 class="catalog__card-title t-20-29">{{ brand.name }}</h3>
-                            <p class="catalog__card-desc t-16">{{ brand.description|safe|striptags }}</p>
-                        </li>
-                    </a>
-                {% endfor %}
-          </ul>
-        </div>
+                              {% else %}
+                                  <img src="{% static 'img/noImage.jpg' %}" alt="No Image" />
+                              {% endif %}
+                              <h3 class="catalog__card-title t-20-29">{{ brand.name }}</h3>
+                              <p class="catalog__card-desc t-16">{{ brand.description|safe|striptags }}</p>
+                          </li>
+                      </a>
+                  {% endfor %}
+              </ul>
+          </div>
+          <div class="catalog__panel" data-panel="category">
+              <ul class="catalog__grid">
+                  {% for category in categories|dictsort:'place' %}
+                      {% if not category.brand %}
+                          <a href="{% url 'category' category_slug=category.slug %}">
+                              <li class="catalog__card">
+                                  {% if brand.logo %}
+                                      <div class="catalog__card-image"><img src="{{ category.logo.url }}" alt="{{ category.name }}" width="262" height="140"></div>
+                                  {% else %}
+                                      <img src="{% static 'img/noImage.jpg' %}" alt="No Image" />
+                                  {% endif %}
+                                  <h3 class="catalog__card-title t-20-29">{{ category.name }}</h3>
+                                  <p class="catalog__card-desc t-16">{{ category.description|safe|striptags }}</p>
+                              </li>
+                          </a>
+                      {% endif %}
+                  {% endfor %}
+              </ul>
+          </div>
       </div>
 </section>
 

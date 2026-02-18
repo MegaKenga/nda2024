@@ -1,115 +1,43 @@
 {% load static %}
 {% load script_tags %}
 
-<footer>
-    <div class="container1">
-        <div class="footerInner" style=" background-image: url('{% static "images/footerBg.png" %}');">
-            <div class="footerInfo">
-                <div class="footerLogo">
-                    <div class="footerLogoCustom">
-                        <img src="{% static 'images/companyLogo.svg' %}" alt="">
-                        <div class="footerLogoCustomText">
-                            НДА <br>
-                            Деловая медицинская компания
-                        </div>
-                    </div>
-                    
-                    <div class="footerLogoText">
-                        ООО "НДА Деловая медицинская компания".
-                        Все права защищены © {{ current_year }} год. Использование любых материалов возможно только с письменного
-                        разрешения
-                    </div>
-                </div>
-                <div class="footerData">
-                    <div class="footerDataEls">
-                        <h4>Ссылки</h4>
-                        <ul>
-                            <a href={% url "home" %}>
-                                {% if current_url_name == 'home' %}
-                                    <span>
-                                        <li><span style="color:#3494c8">Главная</span></li>
-                                    </span>
-                                {% else %}
-                                    <span>
-                                        <li style="color:#bebebe"><span>Главная</span></li>
-                                    </span>
-                                {% endif %}
-                            </a>
-                            
-                            <a href={% url "work" %}>
-                                {% if current_url_name == 'work' %}
-                                    <span>
-                                        <li><span style="color:#3494c8">Условия работы</span></li>
-                                    </span>
-                                {% else %}
-                                    <span>
-                                        <li style="color:#bebebe"><span>Условия работы</span></li>
-                                    </span>
-                                {% endif %}
-                            </a>
-                           
-                            <a href={% url "brands_with_certificates" %}>
-                                {% if current_url_name == 'brands_with_certificates' %}
-                                    <span>
-                                        <li><span style="color:#3494c8">РУ и сертификаты</span></li>
-                                    </span>
-                                {% else %}
-                                    <span>
-                                        <li style="color:#bebebe"><span>РУ и сертификаты</span></li>
-                                    </span>
-                                {% endif %}
-                            </a>
-
-                            <a href={% url "contacts" %}>
-                                {% if current_url_name == 'contacts' %}
-                                    <span>
-                                        <li><span style="color:#3494c8">Контакты</span></li>
-                                    </span>
-                                {% else %}
-                                    <span>
-                                        <li style="color:#bebebe"><span>Контакты</span></li>
-                                    </span>
-                                {% endif %}
-                            </a>
-
-                            <a href={% url "privacy" %}>
-                                {% if current_url_name == 'privacy' %}
-                                    <span>
-                                        <li><span style="color:#3494c8">Политика <br> конфиденциальности</span></li>
-                                    </span>
-                                {% else %}
-                                    <span>
-                                        <li style="color:#bebebe"><span>Политика <br> конфиденциальности</span></li>
-                                    </span>
-                                {% endif %}
-                            </a>
-                        </ul>
-                    </div>
-                    <div class="footerDataEls contacts more550">
-                        <ul>
-                            <h4>График работы:</h4>
-                            <li>Пн-Пт:10:00 - 18:00</li>
-                        </ul>
-                    </div>
-                    <div class="footerDataEls address">
-                        <h4>Адрес офиса:</h4>
-                        <ul>
-                            <li>г. Санкт-Петербург,<br> ул.Перевозная, 6</li>
-                        </ul>
-                        <h4>Адрес склада:</h4>
-                        <ul>
-                            <li>198095, г. Санкт-Петербург, <br>Михайловский  пер., д.4 Лит. АН</li>
-                        </ul>
-
-                        <h4 class="less550">График работы:</h4>
-                        <ul class="less550">
-                            <li>Пн-Пт:10:00 - 18:00</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
+<footer class="footer">
+  <div class="container">
+    <div class="footer__inner">
+      <div class="footer__brand">
+        <div class="footer-logo_content">
+          <img class="footer__logo" src="{% static 'img/logo-header.png' %}" alt="НДА">
+          <div class="footer__brand">
+            <p class="footer__name t-22">НДА</p>
+            <p class="footer__slogan t-20">Деловая медицинская компания</p>
+          </div>
         </div>
+        <p class="footer__copyright t-20 text-muted">ООО "НДА Деловая медицинская компания". Все права защищены
+          © 2024 год. Использование любых материалов возможно только с письменного разрешения</p>
+      </div>
+      <div class="footer-content">
+        <nav class="footer__nav">
+          <p class="footer__heading t-22">Ссылки</p>
+          <a class="footer__link footer__link_active t-20" href="/">Главная</a>
+          <a class="footer__link t-20 text-muted" href="usloviya.html">Условия работы</a>
+          <a class="footer__link t-20 text-muted" href="certificates.html">РУ и сертификаты</a>
+          <a class="footer__link t-20 text-muted" href="contacts.html">Контакты</a>
+          <a class="footer__link t-20 text-muted" href="politika.html">Политика конфиденциальности</a>
+        </nav>
+        <div class="footer__schedule">
+          <p class="footer__heading t-22">График работы:</p>
+          <p class="footer__schedule-text t-20 text-muted">Пн-Пт: 10:00 – 18:00</p>
+        </div>
+        <div class="footer__address">
+          <p class="footer__heading t-22">Адрес офиса:</p>
+          <p class="footer__address-text t-20 text-muted">190121, г. Санкт-Петербург, ул.Перевозная, 6</p>
+          <p class="footer__heading t-22">Адрес склада:</p>
+          <p class="footer__address-text t-20 text-muted">198095, г. Санкт-Петербург, Михайловский пер., д.4 Лит. АН
+          </p>
+        </div>
+      </div>
     </div>
+  </div>
 </footer>
 
 {% render_scripts 'footer' %}
