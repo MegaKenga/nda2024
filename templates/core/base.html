@@ -7,28 +7,32 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-    {% block title %}
-    {% endblock%}
+  {% block title %}
+  {% endblock%}
 
-    {% block styles %}
-    {% endblock %}
+  <link rel="icon" href="{% static 'img/favicon.svg' %}" type="image/svg+xml">
+  <link rel="stylesheet" href="{% static 'css/reset.css' %}">
+  <link rel="stylesheet" href="{% static 'css/fonts.css' %}">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
+  <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+  <link rel="shortcut icon" href="{% static 'img/favicon.svg' %}" type="image/x-icon">
 
-    <link rel="shortcut icon" href="{% static 'img/favicon.svg' %}" type="image/x-icon">
+  {% block metatag %}
+  {% endblock %}
 
-    {% block metatag %}
-    {% endblock %}
+  <!-- Скрипты в HEAD -->
+  {% render_scripts 'head' %}
 
-    <!-- Скрипты в HEAD -->
-    {% render_scripts 'head' %}
-
-    {% block links %}
-    {% endblock  %}
+  {% block links %}
+  {% endblock  %}
 </head>
 
 <body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
     <!-- Скрипты после открытия BODY -->
     {% render_scripts 'body_start' %}
 <div class="page">
+    {% include 'core/components/header.html' %}
+
     {% block content%}
     {% endblock %}
 

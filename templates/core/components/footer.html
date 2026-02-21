@@ -12,17 +12,18 @@
             <p class="footer__slogan t-20">Деловая медицинская компания</p>
           </div>
         </div>
-        <p class="footer__copyright t-20 text-muted">ООО "НДА Деловая медицинская компания". Все права защищены
-          © 2024 год. Использование любых материалов возможно только с письменного разрешения</p>
+        <p class="footer__copyright t-20 text-muted">Все права защищены
+          © Использование любых материалов возможно только с письменного разрешения</p>
+        <p class="footer__copyright t-20 text-muted"> {{ current_year }} год.</p>
       </div>
       <div class="footer-content">
         <nav class="footer__nav">
           <p class="footer__heading t-22">Ссылки</p>
-          <a class="footer__link footer__link_active t-20" href="/">Главная</a>
-          <a class="footer__link t-20 text-muted" href="usloviya.html">Условия работы</a>
-          <a class="footer__link t-20 text-muted" href="certificates.html">РУ и сертификаты</a>
-          <a class="footer__link t-20 text-muted" href="contacts.html">Контакты</a>
-          <a class="footer__link t-20 text-muted" href="politika.html">Политика конфиденциальности</a>
+          <a class="footer__link footer__link_active t-20" href="{% url 'home' %}">Главная</a>
+          <a class="footer__link t-20 text-muted" href="{% url 'work' %}">Условия работы</a>
+          <a class="footer__link t-20 text-muted" href="{% url 'brands_with_certificates' %}">РУ и сертификаты</a>
+          <a class="footer__link t-20 text-muted" href="{% url 'contacts' %}">Контакты</a>
+          <a class="footer__link t-20 text-muted" href="{% url 'privacy' %}">Политика конфиденциальности</a>
         </nav>
         <div class="footer__schedule">
           <p class="footer__heading t-22">График работы:</p>

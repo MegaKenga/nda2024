@@ -5,16 +5,6 @@
 <title> Условия работы</title>
 {% endblock%}
 
-
-{% block styles %}
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Условия работы — НДА Деловая медицинская компания</title>
-    <link rel="icon" href="{% static 'img/favicon.svg' %}" type="image/svg+xml">
-    <link rel="stylesheet" href="{% static 'css/reset.css' %}">
-    <link rel="stylesheet" href="{% static 'css/fonts.css' %}">
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
-{% endblock %}
 {% block metatag %}
     <meta name="keywords" content="Контакты с компанией">
     <meta name="description" content="Указаны условия работы с  ООО &quot;НДА Деловая медицинская компания&quot;">
@@ -22,8 +12,6 @@
 {% endblock %}
 
 {% block content%}
-
-{% include "core/components/header.html" %}
 
 <main class="usloviya">
   <div class="container">

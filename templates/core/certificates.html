@@ -2,79 +2,45 @@
 {% load static cache %}
 
 {% block title %}
-<title> РУ и сертификаты</title>
+    <title> РУ и сертификаты</title>
 {% endblock %}
 
-{% block metatag %}
-  <meta name="keywords" content="РУ Минздрава">
-  {% comment %} <meta property="og:url" content="https://nda.ru{{ request.path }}">
-  <meta property="og:title" content="РУ и сертификаты">
-  <meta property="og:type" content="website">
-  <meta property="og:description" content="Регистрационные удостоверения и сертификаты"> {% endcomment %}
-  <meta name="description" content="Регистрационные удостоверения и сертификаты">
-{% endblock %}
+{% block content%}
 
-{% block styles %}
 
-<link rel="stylesheet" href="{% static 'css/styleIndex.css' %}" type="text/css">
-<link rel="preload" type="text/css" href="{% static 'bootstrap/css/bootstrap.min.css' %}" />
-<script src="{% static 'bootstrap/js/bootstrap.min.js' %}" defer></script>
-<link rel="stylesheet" href="{% static 'custom/css/custom.css' %}" type="text/css">
-{% endblock %}
+<main class="certificates">
+  <div class="container">
+    <nav class="breadcrumbs" aria-label="Хлебные крошки">
+      <a class="breadcrumbs__link t-18" href="{% url 'home' %}">Главная</a>
+      <span class="breadcrumbs__sep" aria-hidden="true">/</span>
+      <span class="breadcrumbs__current t-18 breadcrumbs__current_weight_medium">РУ и сертификаты</span>
+    </nav>
 
-{% block content %}
-  <header style="height: 0px;">
-    <!-- летающая шапка -->
-    {% include 'core/components/header.html' %}
-    <!-- летающая шапка -->
-  </header>
-  <main class="main">
-    <div class="container1">
-      <div class="breadCrumbs">
-        <ol class="breadcrumb">
-          <li class="breadcrumb-item">
-            <a href="{% url 'home' %}">ГЛАВНАЯ</a>
-          </li>
-          <li class="breadcrumb-item breadcrumb-item-active" aria-current="page">СЕРТИФИКАТЫ</li>
-        </ol>
+    <section class="hero-page hero-page_theme_blue">
+      <div class="hero-page__card"><img class="hero-page__logo" src="{% static 'img/card/Vector.png' %}" alt="РУ и сертификаты"
+          width="183" height="122"></div>
+      <div class="hero-page__content">
+        <h1 class="hero-page__title t-70-101">РУ И СЕРТИФИКАТЫ</h1>
       </div>
-      <div class="brandBanner">
-        <div class="brandLogo">
-          <img src="{% static 'images/certificates/certificates.svg' %}" alt="" />
-        </div>
-        <div class="brandInfo">
-          <h1>ру и сертификаты</h1>
-        </div>
-      </div>
-       {% cache 86400 'certificate_brands' %}
-      <div class="catalogItems">
+    </section>
+
+    {% cache 86400 'certificate_brands' %}
+    <section class="brand-grid">
         {% for brand in brands %}
-          <a href="{% url 'brand_certificates' brand.pk %}">
-            <div class="catalogItem">
-              <div class="catalogItemImg">
-                {% if brand.logo %}  
-                <img src="{{ brand.logo.url }}" alt="{{ brand.name }}" />
-                {% else %}
-                    <img src="{% static 'images/noImage.jpg' %}" alt="Default logo" />  
-                {% endif %}
-              </div>
-              <h3>{{ brand.name }}</h3>
-            </div>
-          </a>
+            <a href="{% url 'brand_certificates' brand.pk %}" class="brand-card">
+                <div class="brand-card__img-wrap">
+                    {% if brand.logo %}
+                        <img class="brand-card__img" src="{{ brand.logo.url }}" alt="РУ {{ brand.name }}" width="280" height="160">
+                    {% else %}
+                        <img src="{% static 'img/noImage.jpg' %}" alt="РУ {{ brand.name }}" />
+                    {% endif %}
+                </div>
+                <span class="brand-card__title t-20-29">{{ brand.name }}</span>
+            </a>
         {% endfor %}
-        <!-- 3 пустых дива - для ровной сетки flex -->
-        <div class="emptyEl"></div>
-        <div class="emptyEl"></div>
-        <div class="emptyEl"></div>
-        <!-- 3 пустых дива - для ровной сетки flex -->
-      </div>
-     {% endcache %}
-      <ul></ul>
-      <!-- плавающий элемент с формами связи -->
-      {% include 'core/components/formsContainer.html' %}
-      <!-- плавающий элемент с формами связи -->
-      <!-- формы на странице -->
-    </div>
-  </main>
-{% endblock %}
+    </section>
+    {% endcache %}
+  </div>
+</main>
 
+{% endblock %}
