@@ -1,39 +1,52 @@
 {% load static %}
 
-<div class="breadCrumbs">
-  <ol class="breadcrumb">
-    <li class="breadcrumb-item">
-      <a href="{% url 'home' %}">ГЛАВНАЯ</a>
-    </li>
+<nav class="breadcrumbs" aria-label="Хлебные крошки">
+    <a class="breadcrumbs__link t-18" href="{% url 'home' %}">Главная</a>
+    <span class="breadcrumbs__sep" aria-hidden="true">/</span>
     {% if category.brand %}
-      <li class="breadcrumb-item ">
-        <a href="{% url 'brand' brand_slug=category.brand.slug %}">{{ category.brand.name.upper }}</a>
-      </li>
+        <a href="{% url 'brand' brand_slug=category.brand.slug %}">
+            <span class="breadcrumbs__link t-18">
+                {{ category.brand.name }}
+            </span>
+        </a>
+        <span class="breadcrumbs__sep" aria-hidden="true">/</span>
     {% elif product.brand %}
-    <li class="breadcrumb-item ">
-      <a href="{% url 'brand' brand_slug=product.brand.slug %}">{{ product.brand.name.upper }}</a>
-    </li>
+        <a href="{% url 'brand' brand_slug=product.brand.slug %}">
+            <span class="breadcrumbs__link t-18">
+                {{ product.brand.name }}
+            </span>
+        </a>
+        <span class="breadcrumbs__sep" aria-hidden="true">/</span>
     {% endif %}
     {% if not breadcrumbs %}
         {% if category %}
-            <li class="breadcrumb-item breadcrumb-item-active" aria-current="page">{{ category.name.upper }}</li>
+            <span class="breadcrumbs__current t-18 breadcrumbs__current_weight_medium">
+                {{ category.name }}
+            </span>
         {% elif product %}
-            <li class="breadcrumb-item breadcrumb-item-active" aria-current="page">{{ product.name.upper }}</li>
+            <span class="breadcrumbs__current t-18 breadcrumbs__current_weight_medium">
+                {{ product.name }}
+            </span>
         {% endif %}
     {% else %}
-      {% for breadcrumb in breadcrumbs %}
-          {% if breadcrumb and breadcrumb.brand%}
-        <li class="breadcrumb-item">
-          <a href="{% url 'category' category_slug=breadcrumb.slug %}">{{ breadcrumb.name.upper }}</a>
-        </li>
-          {% endif %}
-      {% endfor %}
-      {% if product %}
-        <li class="breadcrumb-item breadcrumb-item-active" aria-current="page">{{ product.name.upper }}</li>
-      {% else %}
-        <li class="breadcrumb-item breadcrumb-item-active" aria-current="page">{{ category.name.upper }}</li>
-      {% endif %}
-      
+        {% for breadcrumb in breadcrumbs %}
+            {% if breadcrumb and breadcrumb.brand%}
+                <a href="{% url 'category' category_slug=breadcrumb.slug %}">
+                    <span class="breadcrumbs__link t-18">
+                        {{ breadcrumb.name }}
+                    </span>
+                </a>
+                <span class="breadcrumbs__sep" aria-hidden="true">/</span>
+            {% endif %}
+        {% endfor %}
+        {% if product %}
+            <span class="breadcrumbs__current t-18 breadcrumbs__current_weight_medium">
+                {{ product.name }}
+            </span>
+        {% else %}
+            <span class="breadcrumbs__current t-18 breadcrumbs__current_weight_medium">
+                {{ category.name }}
+            </span>
+        {% endif %}
     {% endif %}
-  </ol>
-</div>
+</nav>

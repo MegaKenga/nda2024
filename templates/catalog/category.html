@@ -1,9 +1,8 @@
 {% extends 'core/base.html' %}
-{% load cache %}
 {% load static %}
 
 {% block title %}
-  <title>{{ category.title }}</title>
+  <title>{{ category.name }}</title>
 {% endblock %}
 
 {% block metatag %}
@@ -16,61 +15,38 @@
 {% endblock %}
 
 {% block content %}
-  <header style="height: 0px;">
-    <!-- летающая шапка -->
-    {% include 'core/components/header.html' %}
-    <!-- летающая шапка -->
-  </header>
-  <main class="main">
-    <div class="container1">
-      {% cache 86400 'breadcrumbs_cache' %}
-      {% include 'core/components/breadcrumbs.html' %}
-      {% endcache %}
+    <main class="catalog-inner">
+        <div class="container">
 
-      {% cache 86400 'banner_cache' %}
-      {% include 'core/components/banner.html' %}
-      {% endcache %}
+            {% include 'core/components/breadcrumbs.html' %}
+            {% include 'core/components/banner.html' %}
 
-      <!-- каталог -->
-      <div class="catalogBrand">
-        <!-- Выбор по производителям -->
-
-        <div class="catalogBrandItems">
-          {% for category in categories %}
-              <div class="catalogBrandItem">
-              <a href="{% url 'category' category_slug=category.slug %}">
-                <div class="catalogBrandItemImg">
-                  {% if category.logo %}
-                    <img src="{{ category.logo.url }}" alt="{{category.name}}" />
-                  {% else %}
-                    <img src="{% static '/images/noImage.jpg' %}" alt="Нет логотипа" />
-                  {% endif %}
-                </div>
-                <div class="catalogBrandItemTitle">{{ category.name }}</div>
-              </a>
-            </div>
-          {% endfor %}
-        {% for product in products %}
-            <div class="catalogBrandItem">
-                <a href="{% url 'offer' brand_slug=product.brand.slug product_slug=product.slug %}">
-                  <div class="catalogBrandItemImg">
-                    {% if product.logo %}
-                      <img src="{{ product.logo.url }}" alt="{{product.name}}" />
-                    {% else %}
-                    <img src="{% static "/images/noImage.jpg" %}" alt="Нет логотипа" />
-                    {% endif %}
-                  </div>
-                  <div class="catalogBrandItemTitle">{{ product.name }}</div>
-                </a>
-              </div>
-        {% endfor %}
+            <section class="catalog-grid">
+                {% for category in categories %}
+                    <a href="{% url 'category' category_slug=category.slug %}" class="catalog-card">
+                        <div class="catalog-card__img-wrap">
+                            {% if category.logo %}
+                                <img class="catalog-card__img" src="{{ category.logo.url }}" alt="{{category.name}}" width="150" height="150">
+                            {% else %}
+                                <img class="catalog-card__img" src="{% static '/img/noImage.jpg' %}" alt="Нет логотипа" width="150" height="150">
+                            {% endif %}
+                        </div>
+                        <h2 class="catalog-card__title t-20-29">{{ category.name }}</h2>
+                    </a>
+                {% endfor %}
+                {% for product in products %}
+                    <a href="{% url 'offer' brand_slug=product.brand.slug product_slug=product.slug %}" class="catalog-card">
+                        <div class="catalog-card__img-wrap">
+                            {% if product.logo %}
+                                <img class="catalog-card__img" src="{{ product.logo.url }}" alt="{{product.name}}" width="150" height="150">
+                            {% else %}
+                                <img class="catalog-card__img" src="{% static '/img/noImage.jpg' %}" alt="Нет логотипа" width="150" height="150">
+                            {% endif %}
+                        </div>
+                        <h2 class="catalog-card__title t-20-29">{{ product.name }}</h2>
+                    </a>
+                {% endfor %}
+            </section>
         </div>
-      </div>
-      <!-- конец каталога -->
-    </div>
-
-    {% include 'core/components/formsContainer.html' %}
-
-
-  </main>
+    </main>
 {% endblock %}

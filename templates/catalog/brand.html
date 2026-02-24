@@ -1,16 +1,8 @@
 {% extends 'core/base.html' %}
-{% load cache %}
 {% load static %}
+
 {% block title %}
   <title>{{ brand.name }}</title>
-{% endblock %}
-
-{% block styles %}
-
-<link rel="stylesheet" href="{% static 'css/styleIndex.css' %}" type="text/css">
-<link rel="preload" type="text/css" href="{% static 'bootstrap/css/bootstrap.min.css' %}" />
-<script src="{% static 'bootstrap/js/bootstrap.min.js' %}" defer></script>
-<link rel="stylesheet" href="{% static 'custom/css/custom.css' %}" type="text/css">
 {% endblock %}
 
 {% block metatag %}
@@ -23,64 +15,44 @@
 {% endblock %}
 
 {% block content %}
-  <header style="height: 0px;">
-    <!-- летающая шапка -->
-    {% include 'core/components/header.html' %}
-    <!-- летающая шапка -->
-  </header>
+    <main class="catalog-inner">
+        <div class="container">
+            <nav class="breadcrumbs" aria-label="Хлебные крошки">
+                <a class="breadcrumbs__link t-18" href="{% url 'home' %}">Главная</a>
+                <span class="breadcrumbs__sep" aria-hidden="true">/</span>
+                <span class="breadcrumbs__current t-18 breadcrumbs__current_weight_medium">
+                    {{ brand.name }}
+                </span>
+            </nav>
 
-  <main class="main">
-    <div class="container1">
-    {% cache 86400 'brand_breadcrumbs' brand.slug %}
-      <div class="breadCrumbs">
-        <ol class="breadcrumb">
-          <li class="breadcrumb-item">
-            <a href="{% url 'home' %}">ГЛАВНАЯ</a>
-          </li>
-          <li class="breadcrumb-item breadcrumb-item-active" aria-current="page">{{ brand.name.upper }}</li>
-        </ol>
-      </div>
-      {% endcache %}
-    {% cache 86400 'brand_banner' brand.slug %}
-     {% include 'core/components/banner.html' %}
-    {% endcache %}
+            {% include 'core/components/banner.html' %}
 
-      <div class="catalogBrand">
-        <!-- Выбор по производителям -->
-        <div class="catalogBrandItems">
-            {% cache 3600 'brand_categories' brand.slug %}
-          {% for category in categories %}
-            <div class="catalogBrandItem">
-                <a href="{% url 'category' category_slug=category.slug %}">
-                  <div class="catalogBrandItemImg">
-                    {% if category.logo %}
-                      <img src="{{ category.logo.url }}" alt="{{category.name}}" />
-                    {% else %}
-                    <img src="{% static "/images/noImage.jpg" %}" alt="Нет логотипа" />
-                    {% endif %}
-                  </div>
-                  <div class="catalogBrandItemTitle">{{ category.name }}</div>
-                </a>
-              </div>
-          {% endfor %}
-          {% for product in products %}
-            <div class="catalogBrandItem">
-                <a href="{% url 'offer' brand_slug=brand.slug product_slug=product.slug %}">
-                  <div class="catalogBrandItemImg">
-                    {% if product.logo %}
-                      <img src="{{ product.logo.url }}" alt="{{product.name}}" />
-                    {% else %}
-                    <img src="{% static "/images/noImage.jpg" %}" alt="Нет логотипа" />
-                    {% endif %}
-                  </div>
-                  <div class="catalogBrandItemTitle">{{ product.name }}</div>
-                </a>
-              </div>
-          {% endfor %}
-          {% endcache %}
+            <section class="catalog-grid">
+                {% for category in categories %}
+                    <a href="{% url 'category' category_slug=category.slug %}" class="catalog-card">
+                        <div class="catalog-card__img-wrap">
+                            {% if category.logo %}
+                                <img class="catalog-card__img" src="{{ category.logo.url }}" alt="{{category.name}}" width="150" height="150">
+                            {% else %}
+                                <img class="catalog-card__img" src="{% static '/img/noImage.jpg' %}" alt="Нет логотипа" width="150" height="150">
+                            {% endif %}
+                        </div>
+                        <h2 class="catalog-card__title t-20-29">{{ category.name }}</h2>
+                    </a>
+                {% endfor %}
+                {% for product in products %}
+                    <a href="{% url 'offer' brand_slug=product.brand.slug product_slug=product.slug %}" class="catalog-card">
+                        <div class="catalog-card__img-wrap">
+                            {% if product.logo %}
+                                <img class="catalog-card__img" src="{{ product.logo.url }}" alt="{{product.name}}" width="150" height="150">
+                            {% else %}
+                                <img class="catalog-card__img" src="{% static '/img/noImage.jpg' %}" alt="Нет логотипа" width="150" height="150">
+                            {% endif %}
+                        </div>
+                        <h2 class="catalog-card__title t-20-29">{{ product.name }}</h2>
+                    </a>
+                {% endfor %}
+            </section>
         </div>
-      </div>
-    </div>
-    {% include 'core/components/formsContainer.html' %}
-  </main>
+    </main>
 {% endblock %}
