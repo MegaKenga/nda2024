@@ -149,7 +149,11 @@ class SiteSearchView(ListView):
             qs.filter(Q(name__icontains=query) | Q(offer__name__icontains=query) | Q(offer__text_description__icontains=query))
             .prefetch_related(related_offers).distinct()
         )
+        if len(qs) == 0:
+            messages.error(self.request, message='По вашему запросу ничего не найдено. Попробуйте изменить запрос и попробовать снова')
+            return qs.none()
         return qs.filter(status='PUBLISHED')
+
 
 
 class DuplicatesView(LoginRequiredMixin, TemplateView):

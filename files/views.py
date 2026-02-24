@@ -47,5 +47,3 @@ def import_from_excel(request, product_id):
             return redirect('offer', product_slug=product.slug, brand_slug=product.brand.slug)
 
     return render(request, 'core/components/excel_input.html')
-
-
