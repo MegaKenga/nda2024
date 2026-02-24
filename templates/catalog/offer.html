@@ -1,8 +1,6 @@
 {% extends 'core/base.html' %}
 {% load static %}
-{% load thumbnail %}
-{% load thumbnail cache %}
-{% load static cache %}
+
 {% block title %}
     <title>{{ product.title }}</title>
 {% endblock %}
@@ -16,486 +14,836 @@
   <meta name="description" content="{{product.ceo_description|striptags}}">
 {% endblock %}
 
-
-
-{% block links %}
-<link rel="stylesheet" type="text/css" href="{% static 'bootstrap/css/bootstrap.css' %}" />
-<link rel="stylesheet" type="text/css" href="{% static 'custom/css/custom.css' %}" />
-<script src="{% static 'bootstrap/js/bootstrap.js' %}"></script>
-
-<script src="https://www.google.com/recaptcha/api.js"></script>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@glidejs/glide/dist/css/glide.core.min.css"/>
-<script src="https://cdn.jsdelivr.net/npm/@glidejs/glide/dist/glide.min.js"></script>
-{% endblock %}
-
-{% block styles %}
-<link rel="stylesheet" href="{% static 'css/styleOffer.css'%}" type="text/css">
-<link rel="stylesheet" href="{% static 'css/styleCarousel.css'%}" type="text/css">
-
-{% endblock %}
-
 {% block content %}
-<header style="height: 0px;">
-    <!-- летающая шапка -->
-    {% include 'core/components/header.html' %}
 
-    <!-- летающая шапка -->
-</header>
+    <main class="product-page">
+      <div class="container">
+        <nav class="breadcrumbs" aria-label="Хлебные крошки">
+          <a class="breadcrumbs__link t-18" href="/">Главная</a>
+          <span class="breadcrumbs__sep" aria-hidden="true">/</span>
+          <a class="breadcrumbs__link t-18" href="catalog-inner.html">Шовный хирургический материал</a>
+          <span class="breadcrumbs__sep" aria-hidden="true">/</span>
+          <span class="breadcrumbs__current t-18 breadcrumbs__current_weight_medium">Полисорб (Polysorb)</span>
+        </nav>
 
-<main class="main">
-    <div class="container1">
-        {% include 'core/components/breadcrumbs.html' %}
-        {% cache 600 brand.pk product.pk %}
-            <div class="brandBanner" style="background: linear-gradient(135deg, {{ brand.banner_color }}, white);">
-                <div class="brandLogo">
-                {% if brand.logo %}
-                        <img src="{{ brand.logo.url }}" alt="{{ brand.name }}" />
-                        {% else %}
-                            <img src="{% static 'images/noImage.jpg' %}" alt="Default logo" />
-                        {% endif %}
-                </div>
-                <div class="brandInfo">
-                {% if brand %}
-                    <h1>{{ brand.name }}</h1>
-                    <h2>{{ product.name }}</h2>
-                {% endif %}
-                </div>
-            </div>
-        {% endcache %}
-        <div class="product">
-            <div class="productHead">
-                <div class="productCarousel">
-                    <div class="carouselWrapper">
-                        <div id="carouselExampleIndicators" class="carousel slide" data-bs-interval="false" data-ride="carousel" data-pause="hover">
-                            <div class="carousel-inner">
-                                {% for image in images %}
-                                    {% cache 600 image.pk %}
-                                        {% thumbnail image.image '600x800' format="PNG" as im %}
-                                            <div class="carousel-item {% if forloop.first %}active{% endif %}">
-                                                <img src="{{ im.url }}" class="d-block" alt="{{ product.name }} image">
-                                            </div>
-                                        {% endthumbnail %}
-                                    {% endcache %}
-                                {% endfor %}
-                            </div>
-                            {% if images|length > 1 %}
-                                <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
-                                    <span class="carousel-control-prev-icon slick-prev1" aria-hidden="true" style="background-image: url('{% static "images/offer/left.svg"%}')" ></span>
-                                    <span class="visually-hidden">Previous</span>
-                                </button>
-                                <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
-                                    <span class="carousel-control-next-icon slick-next1" aria-hidden="true" style="background-image: url('{% static "images/offer/right.svg"%}')"></span>
-                                    <span class="visually-hidden">Next</span>
-                                </button>
-                            {% endif %}
-                        </div>
-                    </div>
-                    {% if images|length > 1 %}
-                        <div class="tumbnailsWrapper">
-                            <div class="carousel-indicators tumbnails-list">
-                                {% for image in images %}
-                                    {% cache 600 image.pk %}
-                                        {% with forloop.counter0 as index %}
-                                            {% thumbnail image.image '150x150' format="PNG" as im %}
-                                                <div class="thumbnailContainer" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="{{index}}" {% if forloop.second %}class="active"{% endif %}>
-                                                    <img src="{{ im.url }}" class="d-block  thumbnail-image" aria-label="Slide {{ index }}" alt="{{ product.name }} image">
-                                                </div>
-                                            {% endthumbnail %}
-                                        {% endwith %}
-                                    {% endcache %}
-                                {% endfor %}
-                            </div>
-                        </div>
-                    {% endif %}
-                </div>
-                <div class="productTitle">
-                    <div class="productTitleText">
-			{% if user.is_authenticated %}
-                            <a href="https://nda.ru/admin/catalog/product/{{ product.id }}/change/"><h2>{{ product.name }}</h2></a>
-                        {% else %}
-                            <h2>{{ product.name }}</h2>
-                        {% endif %}
-                        {{ product.short_description|safe }}
-                    </div>
-                    <div class="productTitleConnect">
-                        <div class="linkText">
-                            Связаться со специалистом по продукции {{brand}} {{specialist.name}}:
-                        </div>
-                        <div class="linkContacts">
-                            <a href="tel:{{specialist.phone}}" aria-label="Позвонить специалисту по номеру {{specialist.phone}}">
-                                <div class="linkContactsEl">
-                                    <img src="{% static "images/productCall.svg" %}" alt="Иконка телефона">
-                                    <div>{{specialist.phone}}</div>
-                                </div>
-                            </a>
-                            <a href="mailto:{{specialist.email}}" aria-label="Написать специалисту на почту {{specialist.email}}">
-                                <div class="linkContactsEl">
-                                    <img src="{% static "images/productMail.svg" %}" alt="Иконка электронной почты">
-                                    <div>{{specialist.email}}</div>
-                                </div>
-                            </a>
-                        </div>
-                        {{vk_link}}
-                    </div>
-                </div>
-            </div>
-            <div class="productInfo">
-              {% if product.full_description != "<p>&nbsp;</p>" and product.full_description != "<p> </p>" or product.characteristics != "<p>&nbsp;</p>" and product.characteristics != "<p> </p>" or offers or instructions or certificates or catalogs or youtube_link or rutube_link %}
-              <div class="productInfoChoice">
-                    <ul class="nav nav-pills" id="pills-tab" role="tablist">
-                      {% if product.full_description != "<p>&nbsp;</p>" and product.full_description != "<p> </p>" %}
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link first active" id="pills-description-tab" data-bs-toggle="pill"
-                                data-bs-target="#pills-description" type="button" role="tab"
-                                aria-controls="pills-description" aria-selected="true">Описание</button>
-                        </li>
-                        {% endif%}
-                        {% if product.characteristics != "<p>&nbsp;</p>" and product.characteristics != "<p> </p>" %}
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="pills-characteristics-tab" data-bs-toggle="pill"
-                                data-bs-target="#pills-characteristics" type="button" role="tab"
-                                aria-controls="pills-characteristics" aria-selected="false">Характеристики</button>
-                        </li>
-                        {% endif%}
-                        {% if offers %}
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="pills-order-tab" data-bs-toggle="pill"
-                                data-bs-target="#pills-order" type="button" role="tab" aria-controls="pills-order"
-                                aria-selected="false">Оформить заказ</button>
-                        </li>
-                        {% endif%}
-                        {% if instructions or certificates or catalogs %}
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="pills-catalogs-tab" data-bs-toggle="pill"
-                                data-bs-target="#pills-catalogs" type="button" role="tab" aria-controls="pills-catalogs"
-                                aria-selected="false">Каталоги и РУ</button>
-                        </li>
-                      {% endif%}
-                        {% if youtube_link or rutube_link %}
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link last" id="pills-video-tab" data-bs-toggle="pill"
-                                data-bs-target="#pills-video" type="button" role="tab" aria-controls="pills-video"
-                                aria-selected="false">Видео</button>
-                        </li>
-                        {% endif%}
-                    </ul>
-                </div>
-              {% endif%}
-              {% if product.full_description != "<p>&nbsp;</p>" and product.full_description != "<p> </p>" or product.characteristics != "<p>&nbsp;</p>" and product.characteristics != "<p> </p>" or offers or instructions or certificates or catalogs or youtube_link or rutube_link %}
-                <div class="tab-content productTabContent" id="pills-tabContent">
-                    <!-- Описание товара/услуги -->
-                  {% if product.full_description != "<p>&nbsp;</p>" and product.full_description != "<p> </p>" %}
-                    <div class="tab-pane fade show active" id="pills-description" role="tabpanel"
-                        aria-labelledby="pills-description-tab">
-                        <div class="productDescription">
-                            {{ product.full_description|safe }}
-                        </div>
-                    </div>
-                  {% endif%}
-                  {% if product.characteristics != "<p>&nbsp;</p>" and product.characteristics != "<p> </p>" %}
-                    <div class="tab-pane fade" id="pills-characteristics" role="tabpanel"
-                        aria-labelledby="pills-characteristics-tab">
-                        <div class="productDescription characteristics_table" >
-                            {{ product.characteristics|safe }}
-                        </div>
-                    </div>
-                  {% endif%}
-                  {% if offers %}
-                    <div class="tab-pane fade" id="pills-order" role="tabpanel" aria-labelledby="pills-order-tab">
-                        <div class="placeOrder">
-                            <form action=""></form>
-                            <div class="container1">
-                                <table class="table table-responsive table-borderless custom-table">
-                                    <thead>
-                                        <tr class="table-header">
-                                            <th class="col-2 text-center">
-                                                Код
-                                            </th>
-                                            <th class="col-8 text-start">
-                                                Описание
-                                            </th>
-                                            <th class="col-1 text-center">
-                                                Уп/шт.
-                                            </th>
-                                            <th class="col-3">
-                                                Количество
-                                            </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody class="">
-                                        {% for offer in offers %}
-                                        <tr class="table-row">
-                                            <td class="text-center align-middle">{{ offer.name | safe}}</td>
-                                            <td class="text-start align-middle">{{ offer.text_description | safe}}</td>
-                                            <td class="text-center align-middle">{{ offer.shipping_pack | safe}}</td>
-                                            <td class="text-start">
-                                                <div class="quantity-input">
-                                                    <form hx-post="{% url 'cart_add' offer_id=offer.pk %}"
-                                                        hx-target="#cart" hx-swap="outerHTML" style="width: 100%;">
-                                                        <div class="offerCount">
-                                                            <div class="inputCount">
-                                                                <div class="inputCountBtn1"
-                                                                    onclick="changeQuantity(event, this, -1)">-</div>
-                                                                <input class="form-control" type="number"
-                                                                    name="quantity" value="0" required=""
-                                                                    id="id_quantity" min="1"/>
-                                                                <div class="inputCountBtn2"
-                                                                    onclick="changeQuantity(event, this, 1)">+</div>
-                                                            </div>
-                                                                <button class="quantityFormBtn" id="addButton"type="submit"
-                                                                value="">Добавить</button>
-                                                        </div>
-                                                    </form>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        {% endfor %}
-                                    </tbody>
-                                </table>
-                            </div>
-                            </form>
-                        </div>
+        <section class="hero-page hero-page_theme_product">
+          <div class="product-hero__card">
+            <img class="product-hero__logo" src="img/card/2.png" alt="MEDTRONIC" width="233" height="131">
+          </div>
+          <div class="product-hero__content">
+            <h1 class="hero-page__title t-70-101">MEDTRONIC</h1>
+            <p class="hero-page__subtitle t-30-43">ПОЛИСОРБ (POLYSORB)</p>
+          </div>
+        </section>
 
-                    {% if user.is_authenticated %}
-                        {% include 'core/components/excel_input.html' %}
-                        {% include 'core/components/delete_offers.html' %}
-                    {% endif %}
-                    </div>
-                  {% endif%}
-                  {% if instructions or certificates or catalogs %}
-                    <div class="tab-pane fade" id="pills-catalogs" role="tabpanel" aria-labelledby="pills-catalogs-tab">
-                        <div class="catalogTutorial">
-                            {% if instructions %}
-                                {% for instruction in instructions %}
-                                    <div class="catalogTutorialLink">
-                                        <a href="{{ instruction.file.url }}">
-                                            <div class="catalogTutorialEl">
-                                                <div class="catalogTutorialElText">Скачать инструкцию</div>
-                                                <div class="catalogTutorialElImg instructionDownload"></div>
-                                            </div>
-                                        </a>
-                                    </div>
-                                {% endfor %}
-                            {% endif %}
-                            {% if certificates %}
-                                {% for certificate in certificates %}
-                                <div class="catalogTutorialLink">
-                                    <a href="{{ certificate.file.url }}">
-                                        <div class="catalogTutorialEl">
-                                            <div class="catalogTutorialElText">Скачать РУ</div>
-                                            <div class="catalogTutorialElImg ruDownload"></div>
-                                        </div>
-                                    </a>
-                                </div>
-                                {% endfor %}
-                            {% endif %}
-                            {% if catalogs %}
-                                {% for catalog in catalogs %}
-                                <div class="catalogTutorialLink">
-                                    <a href="{{ catalog.file.url }}">
-                                        <div class="catalogTutorialEl">
-                                            <div class="catalogTutorialElText">Скачать Каталог</div>
-                                            <div class="catalogTutorialElImg catalogDownload"></div>
-                                        </div>
-                                    </a>
-                                </div>
-                                {% endfor %}
-                            {% endif %}
-                        </div>
-                    </div>
-                  {% endif%}
-                    {% if youtube_link or rutube_link %}
-                    <div class="tab-pane fade" id="pills-video" role="tabpanel" aria-labelledby="pills-video-tab">
-                        <div class="productVideo">
-                            <div class="productVideoContainer">
-                                    {% if rutube_link %}
-                                        <!-- Видео с RuTube -->
-                                        <iframe width="100%" height="100%" src="https://rutube.ru/play/embed/{{ rt_link|slice:'23:' }}" frameBorder="0" allow="clipboard-write; autoplay" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>
-                                    {% elif youtube_link %}
-                                        <!-- Видео с Ютуб -->
-                                        <iframe width="100%" height="100%" src="{{youtube_link}}" frameBorder="0" allow="clipboard-write; autoplay" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>
-                                    {% endif %}
-                            </div>
-                        </div>
-                    </div>
-                    {% endif %}
+        <section class="product-card">
+          <div class="product-gallery" data-product-gallery>
+            <div class="product-galery_slider">
+              <div class="product-gallery__main-wrap swiper product-gallery-main">
+                <div class="swiper-wrapper">
+                  <div class="swiper-slide product-gallery__slide"><img src="img/product.png" alt="Полисорб" width="285"
+                      height="504"></div>
+
+                  <div class="swiper-slide product-gallery__slide"><img src="img/product.png" alt="Полисорб" width="285"
+                      height="504"></div>
+
+                  <div class="swiper-slide product-gallery__slide"><img src="img/product.png" alt="Полисорб" width="285"
+                      height="504"></div>
+
+                  <div class="swiper-slide product-gallery__slide"><img src="img/product.png" alt="Полисорб" width="285"
+                      height="504"></div>
+
                 </div>
-              {% endif %}
-              {% if product.full_description != "<p>&nbsp;</p>" and product.full_description != "<p> </p>" or product.characteristics != "<p>&nbsp;</p>" and product.characteristics != "<p> </p>" or offers or instructions or certificates or catalogs or youtube_link or rutube_link %}
-              <div class="dropDown">
-                {% if product.full_description != "<p>&nbsp;</p>" and product.full_description != "<p> </p>" %}
-                    <details>
-                        <summary>Описание</summary>
-                        <div class="dropDownEl">
-                            <div class="productDescription">
-                                {{ product.full_description|safe }}
-                            </div>
-                        </div>
-                    </details>
-                {% endif %}
-                {% if product.characteristics != "<p>&nbsp;</p>" and product.characteristics != "<p> </p>" %}
-                    <details>
-                        <summary>Характеристики</summary>
-                        <div class="dropDownEl characteristics_table">
-                            {{ product.characteristics|safe }}
-                        </div>
-                    </details>
-                {% endif %}
-                {% if offers %}
-                    <details>
-                        <summary>Оформить заказ</summary>
-                        <div class="dropDownEl">
-                            <div class="placeOrder">
-                                <form action=""></form>
-                                <div class="container1">
-                                    <table class="table table-responsive table-borderless">
-                                        <thead>
-                                            <tr class="table-header">
-                                                <th class="col-3 text-center align-middle">
-                                                    Код
-                                                </th>
-                                                <th class="col-6 text-center align-middle">
-                                                    Описание
-                                                </th>
-                                                <th class="col-2 text-center align-middle">
-                                                    Уп/шт.
-                                                </th>
-                                                <th class="col-5 text-center align-middle">
-                                                    Количество
-                                                </th>
-                                            </tr>
-                                        </thead>
-                                        <tbody class="">
-                                            {% for offer in offers %}
-                                            <tr class="table-row">
-                                                <td class="text-center align-middle"><span>{{ offer.name | safe}}</span></td>
-                                                <td class="text-center align-middle"><span>{{ offer.text_description | safe}}</span></td>
-                                                <td class="text-center align-middle"><span>{{ offer.shipping_pack | safe}}</span></td>
-                                                <td class="text-center align-middle">
-                                                    <div class="quantity-input">
-                                                        <form hx-post="{% url 'cart_add' offer_id=offer.pk %}"
-                                                            hx-target="#cart" hx-swap="outerHTML" style="width: 100%;">
-                                                            <div class="offerCount">
-                                                                <div class="inputCount">
-                                                                    {% comment %} <div class="inputCountBtn1"
-                                                                        onclick="changeQuantity(event, this, -1)">-</div> {% endcomment %}
-                                                                  <div class="inputCountBtn1"
-                                                                       onclick="changeQuantity(event, this, -1)">-</div>
-                                                                    <input class="form-control" type="number"
-                                                                        name="quantity" value="0" required=""
-                                                                        id="id_quantity" min="1"/>
-                                                                  <div class="inputCountBtn2"
-                                                                       onclick="changeQuantity(event, this, 1)">+</div>
-{% comment %}
-                                                                    <div class="inputCountBtn2"
-                                                                        onclick="changeQuantity(event, this, 1)">+</div>
-     {% endcomment %}
-                                                                </div>
-                                                                    <button class="btn btn-primary quantityFormBtn" id="addButton"type="submit"
-                                                                    value="">Добавить</button>
-                                                            </div>
-                                                        </form>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                            {% endfor %}
-                                        </tbody>
-                                    </table>
-                                </div>
-                                </form>
-                            </div>
-                        </div>
-                    </details>
-                {% endif %}
-                {% if instructions or certificates or catalogs %}
-                    <details>
-                        <summary>Каталоги и РУ</summary>
-                        <div class="dropDownEl">
-                            <div class="catalogTutorial">
-                                {% if instructions %}
-                                    {% for instruction in instructions %}
-                                        <div class="catalogTutorialLink">
-                                            <a href="{{ instruction.file.url }}">
-                                                <div class="catalogTutorialEl">
-                                                    <div class="catalogTutorialElText">Скачать инструкцию</div>
-                                                    <div class="catalogTutorialElImg instructionDownload"></div>
-                                                </div>
-                                            </a>
-                                        </div>
-                                    {% endfor %}
-                                {% endif %}
-                                {% if certificates %}
-                                    {% for certificate in certificates %}
-                                    <div class="catalogTutorialLink">
-                                        <a href="{{ certificate.file.url }}">
-                                            <div class="catalogTutorialEl">
-                                                <div class="catalogTutorialElText">Скачать сертификат</div>
-                                                <div class="catalogTutorialElImg ruDownload"></div>
-                                            </div>
-                                        </a>
-                                    </div>
-                                    {% endfor %}
-                                {% endif %}
-                                {% if catalogs %}
-                                    {% for catalog in catalogs %}
-                                    <div class="catalogTutorialLink">
-                                        <a href="{{ catalog.file.url }}">
-                                            <div class="catalogTutorialEl">
-                                                <div class="catalogTutorialElText">Скачать Каталог</div>
-                                                <div class="catalogTutorialElImg catalogDownload"></div>
-                                            </div>
-                                        </a>
-                                    </div>
-                                    {% endfor %}
-                                {% endif %}
-                            </div>
-                        </div>
-                    </details>
-                {% endif %}
-                    {% if video_file or youtube_link or rt_link or rutube_link %}
-                    <details>
-                        <summary>Видео</summary>
-                        <div class="dropDownEl">
-                            <div class="productVideo">
-                                <div class="productVideoContainer">
-                                  {% if rt_link %}
-                                    <!-- Видео с RuTube -->
-                                    <iframe width="100%" height="100%" src="https://rutube.ru/play/embed/{{ rt_link|slice:'23:' }}" frameBorder="0" allow="clipboard-write; autoplay" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>
-                                  {% elif rutube_link %}
-                                    <!-- Видео с RuTube -->
-                                    <iframe width="100%" height="100%" src="{{ rutube_link }}" frameBorder="0" allow="clipboard-write; autoplay" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>
-                                  {% elif youtube_link %}
-                                    <!-- Видео с Ютуб -->
-                                    <iframe width="100%" height="100%" src="{{ youtube_link }}" frameBorder="0" allow="clipboard-write; autoplay" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>
-                                  {% endif %}
-                                </div>
-                            </div>
-                        </div>
-                    </details>
-                    {% endif %}
-                 </div>
-              {% endif %}
-                 {% include 'core/components/offer_button_cart.html' %}
+                <button type="button" class="product-gallery__arrow product-gallery__arrow_prev swiper-button-prev"
+                  aria-label="Предыдущее фото"><svg width="13" height="21" viewBox="0 0 13 21" fill="none"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path
+                      d="M11.3477 0.75L0.920556 9.87371C0.692893 10.0729 0.692893 10.4271 0.920557 10.6263L11.3477 19.75"
+                      stroke="black" stroke-width="1.5" stroke-linecap="round" />
+                  </svg>
+                </button>
+                <button type="button" class="product-gallery__arrow product-gallery__arrow_next swiper-button-next"
+                  aria-label="Следующее фото"><svg width="13" height="21" viewBox="0 0 13 21" fill="none"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path d="M0.75 19.75L11.1771 10.6263C11.4048 10.4271 11.4048 10.0729 11.1771 9.87371L0.75 0.749997"
+                      stroke="black" stroke-width="1.5" stroke-linecap="round" />
+                  </svg>
+                </button>
+              </div>
             </div>
+            <div class="product-thunb_slider">
+              <div class="product-gallery__thumbs swiper product-gallery-thumbs">
+                <div class="swiper-wrapper">
+                  <div class="swiper-slide product-gallery__thumb"><img src="img/product.png" alt="" width="77"
+                      height="138"></div>
+
+                  <div class="swiper-slide product-gallery__thumb"><img src="img/product.png" alt="" width="77"
+                      height="138"></div>
+
+                  <div class="swiper-slide product-gallery__thumb"><img src="img/product.png" alt="" width="77"
+                      height="138"></div>
+
+                  <div class="swiper-slide product-gallery__thumb"><img src="img/product.png" alt="" width="77"
+                      height="138"></div>
+
+
+                </div>
+              </div>
+            </div>
+
+          </div>
+          <div class="product-info">
+            <div class="product-info_content">
+              <h2 class="product-info__title">СИСТЕМА ДЛЯ КАЧЕСТВЕННОГО ОПРЕДЕЛЕНИЯ КАРДИОСПЕЦИФИЧЕСКОГО ПОЛИПЕПТИДА
+                ТРОПОНИНА Т (TROP T SENSITIVE)</h2>
+              <p class="product-info__short"><span class="desc-bold">Плетеный синтетический
+                  рассасывающийся шовный материал Polysorb™</span> <br>Состоит из
+                LACTOMER™ 9-1 кополимера гликолид/лактида, который представляет собой синтетический полиэфир, состоящий
+                из
+                гликолида и лактида (полученного из гликолевой и молочной кислот). Его получают путем покрытия шовной
+                нити
+                смесью сополимера капролактона / гликолида и стеароиллактилата кальция.</p>
+              <div class="product-info__features">
+                <p class="product-info__features-title">Особенности:</p>
+                <ul class="product-info__list">
+                  <li>Превосходная прочность в период критического поддержания раны.</li>
+                  <li>Потрясающая прочность узла.</li>
+                  <li>Прекрасные манипуляционные свойства.</li>
+                  <li>Предсказуемые сроки рассасывания.</li>
+                </ul>
+              </div>
+            </div>
+            <div class="product-contact">
+              <p class="product-contact__title">Связаться со специалистом по продукции Medtronic Александр Гарцуев:</p>
+              <div class="product-contact__row">
+                <a class="product-contact__link" href="tel:+79816967084"> <span
+                    class="product-contact__icon product-contact__icon_phone"><svg width="17" height="7"
+                      viewBox="0 0 17 7" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path
+                        d="M16.5649 5.34124L16.5649 6.06652C16.5648 6.28836 16.4767 6.5011 16.3198 6.65797C16.1629 6.81483 15.9502 6.90298 15.7284 6.90301L12.6687 6.90301C12.4469 6.90298 12.2341 6.81483 12.0773 6.65797C11.9204 6.5011 11.8323 6.28836 11.8322 6.06652V3.94512C11.8323 3.77275 11.778 3.60475 11.6771 3.46499C11.5762 3.32523 11.4339 3.22082 11.2702 3.1666C9.33095 2.52068 7.23457 2.52068 5.29529 3.1666C5.13168 3.22095 4.98937 3.32549 4.88859 3.46536C4.7878 3.60523 4.73367 3.77331 4.73388 3.94571L4.73329 6.06652C4.73326 6.28836 4.64512 6.5011 4.48825 6.65797C4.33139 6.81483 4.11864 6.90298 3.8968 6.90301L0.83716 6.90301C0.615319 6.90297 0.402572 6.81483 0.245707 6.65797C0.0888408 6.5011 0.000701285 6.28836 0.000667567 6.06652V5.34124C0.00051921 4.13285 0.436287 2.96495 1.22796 2.052C2.01963 1.13905 3.11407 0.542327 4.31031 0.371395L5.5615 0.193328C7.36651 -0.06453 9.19901 -0.0645291 11.004 0.19333L12.2552 0.371395C13.4515 0.542328 14.5459 1.13905 15.3376 2.052C16.1292 2.96495 16.565 4.13285 16.5649 5.34124Z"
+                        fill="white" />
+                    </svg>
+                  </span>+7 (981) 696 - 70 - 84</a>
+                <a class="product-contact__link" href="mailto:221@nda.ru"><span
+                    class="product-contact__icon product-contact__icon_mail"><svg width="13" height="11"
+                      viewBox="0 0 13 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path fill-rule="evenodd" clip-rule="evenodd"
+                        d="M0 2.65736V6.40786L3.16157 4.14959L0 2.65736ZM2 10.0959C0.946319 10.0959 0.0829502 9.2811 0.00563458 8.24719L4.71547 4.88302L5.23127 5.12647C6.03455 5.50561 6.96529 5.50561 7.76857 5.12647L8.28446 4.88297L12.9944 8.24719C12.917 9.2811 12.0537 10.0959 11 10.0959H2ZM13 6.40786V2.65729L9.83837 4.14955L13 6.40786ZM5.87153 3.76998L0.438592 1.20569C0.564012 0.519838 1.16467 0 1.88675 0H11.1131C11.8352 0 12.4358 0.519839 12.5612 1.20569L7.12832 3.76998C6.73043 3.95777 6.26941 3.95777 5.87153 3.76998Z"
+                        fill="white" />
+                    </svg>
+                  </span>221@nda.ru</a>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <div class="product-tabs-accordion">
+          <div class="product-tabs" role="tablist">
+            <button type="button" class="product-tabs__btn product-tabs__btn_active t-25-36" role="tab"
+              aria-selected="true" data-product-tab="description"><span
+                class="product-tabs__btn-text">Описание</span><span class="product-tabs__btn-arrow"
+                aria-hidden="true"><svg width="13" height="8" viewBox="0 0 13 8" fill="none">
+                  <path d="M0.5 6.49414L6.266 0.707178L12.3568 6.77596" stroke="currentColor" stroke-linecap="round" />
+                </svg></span></button>
+            <button type="button" class="product-tabs__btn t-25-36" role="tab" aria-selected="false"
+              data-product-tab="specs"><span class="product-tabs__btn-text">Характеристики</span><span
+                class="product-tabs__btn-arrow" aria-hidden="true"><svg width="13" height="8" viewBox="0 0 13 8"
+                  fill="none">
+                  <path d="M0.5 6.49414L6.266 0.707178L12.3568 6.77596" stroke="currentColor" stroke-linecap="round" />
+                </svg></span></button>
+            <button type="button" class="product-tabs__btn t-25-36" role="tab" aria-selected="false"
+              data-product-tab="order"><span class="product-tabs__btn-text">Оформить заказ</span><span
+                class="product-tabs__btn-arrow" aria-hidden="true"><svg width="13" height="8" viewBox="0 0 13 8"
+                  fill="none">
+                  <path d="M0.5 6.49414L6.266 0.707178L12.3568 6.77596" stroke="currentColor" stroke-linecap="round" />
+                </svg></span></button>
+            <button type="button" class="product-tabs__btn t-25-36" role="tab" aria-selected="false"
+              data-product-tab="catalogs"><span class="product-tabs__btn-text">Каталоги и РУ</span><span
+                class="product-tabs__btn-arrow" aria-hidden="true"><svg width="13" height="8" viewBox="0 0 13 8"
+                  fill="none">
+                  <path d="M0.5 6.49414L6.266 0.707178L12.3568 6.77596" stroke="currentColor" stroke-linecap="round" />
+                </svg></span></button>
+            <button type="button" class="product-tabs__btn t-25-36" role="tab" aria-selected="false"
+              data-product-tab="video"><span class="product-tabs__btn-text">Видео</span><span
+                class="product-tabs__btn-arrow" aria-hidden="true"><svg width="13" height="8" viewBox="0 0 13 8"
+                  fill="none">
+                  <path d="M0.5 6.49414L6.266 0.707178L12.3568 6.77596" stroke="currentColor" stroke-linecap="round" />
+                </svg></span></button>
+          </div>
+
+          <div class="product-panels">
+            <section class="product-panel product-panel_active" id="panel-description" data-product-panel="description"
+              role="tabpanel">
+              <h3 class="product-panel__title">ПОЛИСОРБ</h3>
+              <div class="product-panel__text">
+                <p><span class="desc-bold">Применение:</span> для сшивания или для лигирования тканей в общей,
+                  торакальной
+                  хирургии, урологии,
+                  гинекологии и офтальмохирургии. Ограничено применение в ССХ и на нервных тканях.</p>
+                <p><span class="desc-bold">Действие:</span> Polysorb™ вызывает минимальную воспалительную реакцию в
+                  тканях, быстро инкапсулируется.
+                  Прогрессирующая потеря прочности и окончательное рассасывание происходит путем гидролиза, когда
+                  Lactomer™ 9-1 распадается на гликолиевую и молочную кислоты, которые впоследствии рассасываются и
+                  метаболизируются в организме.</p>
+                <p><span class="desc-bold">Прочность:</span> первоначальная прочность в узле оценивается как 140%
+                  стандарта USP и EP. 80% прочности
+                  сохраняется в первые 2 недели и 30% сохраняется по истечению 3 недель после имплантации шовного
+                  материала.</p>
+                <p><span class="desc-bold">Рассасывание:</span> начинается как потеря прочности без потери массы и
+                  заканчивается между 56 и 70 днями.
+                  Стерилизация: оксид этилена.</p>
+                <p><span class="desc-bold">Упаковка:</span> Polysorb™ окрашен в фиолетовый цвет для большей наглядности
+                  и
+                  также доступен неокрашенный.
+                  Возможные варианты размеров от 2 (метрический размер 5) до 8-0 (М 0.4). Стерильный шовный материал
+                  поставляется в отрезках, катушках, безыгольном исполнении или с различными видами игл, как перманентно
+                  зафиксированных, так и отсоединяемых. Формируется в коробках по 12, 24 и 36 шт.</p>
+              </div>
+            </section>
+            <section class="product-panel" id="panel-specs" data-product-panel="specs" role="tabpanel" hidden>
+              <div class="tab-content productTabContent">
+                <div class="productDescription characteristics_table">
+                  <table class="table">
+                    <tbody>
+                      <tr>
+                        <td>СПОСОБ ПРИМЕНЕНИЯ:</td>
+                        <td>
+                          <table class="characteristics_table__nested-table">
+                            <tbody>
+                              <tr>
+                                <td>Следует выбирать и накладывать швы, учитывая следующие факторы: состояние больного,
+                                  хирургический опыт, технику хирургического вмешательства и размер раны.</td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>ПОКАЗАНИЯ:</td>
+                        <td>
+                          <table class="characteristics_table__nested-table">
+                            <tbody>
+                              <tr>
+                                <td>Шовный материал ВИКРИЛ предназначается для аппроксимации мягких тканей, включая
+                                  использование в глазной хирургии, при анастомозе периферических нервов и в
+                                  микрохирургии на сосудах менее 2 мм диаметром. Безопасность и эффективность применения
+                                  шовных материалов ВИКРИЛ в сердечно-сосудистой хирургии не установлена.</td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>РЕАКЦИЯ ТКАНЕЙ:</td>
+                        <td>
+                          <table class="characteristics_table__nested-table">
+                            <tbody>
+                              <tr>
+                                <td>Шовный материал ВИКРИЛ вызывает минимальную первоначальную воспалительную реакцию в
+                                  тканях с последующей инкапсуляцией соединительной тканью. Нарастающая потеря прочности
+                                  на растяжение и окончательное рассасывание шовного материала ВИКРИЛ происходит
+                                  посредством гидролиза: сополимер разлагается на гликолевую и молочную кислоты, которые
+                                  затем всасываются и ассимилируют в организме. Рассасывание начинается с потери
+                                  прочности на растяжение, за которой следует потеря массы. Вся первоначальная прочность
+                                  на растяжение утрачивается через 4–5 недель после имплантации. Полное рассасывание
+                                  шовного материала ВИКРИЛ обычно наступает через 56–70 дней.</td>
+                              </tr>
+                              <tr>
+                                <td>Количество дней / Остаточный процент первоначальной прочности:</td>
+                              </tr>
+                              <tr>
+                                <td>14 (6–0 и больше) / 65%</td>
+                              </tr>
+                              <tr>
+                                <td>21 (6–0 и больше) / 40%</td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>ПРОТИВОПОКАЗАНИЯ:</td>
+                        <td>
+                          <table class="characteristics_table__nested-table">
+                            <tbody>
+                              <tr>
+                                <td>Поскольку эти шовные материалы являются рассасывающимися, они не должны применяться
+                                  там, где требуется длительное сопоставление тканей под натяжением.</td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>ПРЕДУПРЕЖДЕНИЯ И МЕРЫ ПРЕДОСТОРОЖНОСТИ:</td>
+                        <td>
+                          <table class="characteristics_table__nested-table">
+                            <tbody>
+                              <tr>
+                                <td>Как и в случае с любыми другими инородными телами, длительный контакт любого шовного
+                                  материала с солевым раствором (например, в мочевыводящих или желчевыводящих путях)
+                                  может привести к образованию конкрементов. Шовные материалы, которые остаются на коже
+                                  более 7 дней, могут вызвать локальное раздражение. Они должны быть сняты согласно
+                                  инструкции. В тканях с недостаточным кровоснабжением следует использовать
+                                  рассасывающиеся шовные материалы с осторожностью, так как может произойти отторжение
+                                  шовного материала и замедленное рассасывание. Подкожные швы должны быть наложены как
+                                  можно глубже, для уменьшения эритемы и индурации, которые обычно связаны с процессом
+                                  рассасывания. Применение данного шовного материала не рекомендуется у пожилых,
+                                  истощенных и ослабленных больных или при условиях, замедляющих заживление раны.</td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>ПОБОЧНЫЕ РЕАКЦИИ:</td>
+                        <td>
+                          <table class="characteristics_table__nested-table">
+                            <tbody>
+                              <tr>
+                                <td>Связанные с использованием этого материала, включают временное локальное раздражение
+                                  в месте раны, временную воспалительную реакцию на инородные тела, покраснение,
+                                  отечность и уплотнение в процессе рассасывания внутрикожных швов. Как и любое другое
+                                  инородное тело, ВИКРИЛ может обострять существующую инфекцию.</td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>СТЕРИЛИЗАЦИЯ:</td>
+                        <td>
+                          <table class="characteristics_table__nested-table">
+                            <tbody>
+                              <tr>
+                                <td>Шовный материал ВИКРИЛ стерилизуют газообразной окисью этилена.</td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </section>
+            <section class="product-panel" id="panel-order" data-product-panel="order" role="tabpanel" hidden>
+              <div class="product-panel__order-inner">
+                <section class="ru-table-wrap ru-table-wrap_order">
+                  <div class="ru-table">
+                    <ol class="ru-table__head">
+                      <li class="ru-table__th ru-table__th_num">Код</li>
+                      <li class="ru-table__th ru-table__th_doc">Описание</li>
+                      <li class="ru-table__th ru-table__th_ru-num">Уп/шт.</li>
+                      <li class="ru-table__th ru-table__th_ru">Количество</li>
+                    </ol>
+                    <ol class="ru-table__ru-blue">
+                      <li class="ru-table__th ru-table__th_num">Код</li>
+                      <li class="ru-table__td ru-table__td_num">EL-415</li>
+                      <li class="ru-table__th ru-table__th_doc">Описание</li>
+                      <li class="ru-table__td ru-table__td_doc">Polysorb™ шовный материал</li>
+                      <li class="ru-table__th ru-table__th_ru-num">Уп/шт.</li>
+                      <li class="ru-table__td ru-table__td_ru-num">36</li>
+                      <li class="ru-table__th ru-table__th_ru">Кол-во</li>
+                      <li class="ru-table__td ru-table__td_action">
+                        <form class="ru-table__qty-control" action="#" method="post">
+                          <div class="ru-table__qty-group">
+                            <button type="button" class="ru-table__qty-btn ru-table__qty-btn_minus"
+                              aria-label="Уменьшить">−</button>
+                            <input class="ru-table__qty-input" type="number" name="qty" value="0" min="0"
+                              aria-label="Количество">
+                            <button type="button" class="ru-table__qty-btn ru-table__qty-btn_plus"
+                              aria-label="Увеличить">+</button>
+                          </div>
+                          <button type="submit" class="ru-table__qty-add">Добавить</button>
+                        </form>
+                      </li>
+                    </ol>
+                    <ol class="ru-table__ru-gray">
+                      <li class="ru-table__th ru-table__th_num">Код</li>
+                      <li class="ru-table__td ru-table__td_num">EL-415</li>
+                      <li class="ru-table__th ru-table__th_doc">Описание</li>
+                      <li class="ru-table__td ru-table__td_doc">Polysorb™ шовный материал</li>
+                      <li class="ru-table__th ru-table__th_ru-num">Уп/шт.</li>
+                      <li class="ru-table__td ru-table__td_ru-num">36</li>
+                      <li class="ru-table__th ru-table__th_ru">Кол-во</li>
+                      <li class="ru-table__td ru-table__td_action">
+                        <form class="ru-table__qty-control" action="#" method="post">
+                          <div class="ru-table__qty-group">
+                            <button type="button" class="ru-table__qty-btn ru-table__qty-btn_minus"
+                              aria-label="Уменьшить">−</button>
+                            <input class="ru-table__qty-input" type="number" name="qty" value="0" min="0"
+                              aria-label="Количество">
+                            <button type="button" class="ru-table__qty-btn ru-table__qty-btn_plus"
+                              aria-label="Увеличить">+</button>
+                          </div>
+                          <button type="submit" class="ru-table__qty-add">Добавить</button>
+                        </form>
+                      </li>
+                    </ol>
+                    <ol class="ru-table__ru-blue">
+                      <li class="ru-table__th ru-table__th_num">Код</li>
+                      <li class="ru-table__td ru-table__td_num">EL-415</li>
+                      <li class="ru-table__th ru-table__th_doc">Описание</li>
+                      <li class="ru-table__td ru-table__td_doc">Polysorb™ шовный материал</li>
+                      <li class="ru-table__th ru-table__th_ru-num">Уп/шт.</li>
+                      <li class="ru-table__td ru-table__td_ru-num">36</li>
+                      <li class="ru-table__th ru-table__th_ru">Кол-во</li>
+                      <li class="ru-table__td ru-table__td_action">
+                        <form class="ru-table__qty-control" action="#" method="post">
+                          <div class="ru-table__qty-group">
+                            <button type="button" class="ru-table__qty-btn ru-table__qty-btn_minus"
+                              aria-label="Уменьшить">−</button>
+                            <input class="ru-table__qty-input" type="number" name="qty" value="0" min="0"
+                              aria-label="Количество">
+                            <button type="button" class="ru-table__qty-btn ru-table__qty-btn_plus"
+                              aria-label="Увеличить">+</button>
+                          </div>
+                          <button type="submit" class="ru-table__qty-add">Добавить</button>
+                        </form>
+                      </li>
+                    </ol>
+                    <ol class="ru-table__ru-gray">
+                      <li class="ru-table__th ru-table__th_num">Код</li>
+                      <li class="ru-table__td ru-table__td_num">EL-415</li>
+                      <li class="ru-table__th ru-table__th_doc">Описание</li>
+                      <li class="ru-table__td ru-table__td_doc">Polysorb™ шовный материал</li>
+                      <li class="ru-table__th ru-table__th_ru-num">Уп/шт.</li>
+                      <li class="ru-table__td ru-table__td_ru-num">36</li>
+                      <li class="ru-table__th ru-table__th_ru">Кол-во</li>
+                      <li class="ru-table__td ru-table__td_action">
+                        <form class="ru-table__qty-control" action="#" method="post">
+                          <div class="ru-table__qty-group">
+                            <button type="button" class="ru-table__qty-btn ru-table__qty-btn_minus"
+                              aria-label="Уменьшить">−</button>
+                            <input class="ru-table__qty-input" type="number" name="qty" value="0" min="0"
+                              aria-label="Количество">
+                            <button type="button" class="ru-table__qty-btn ru-table__qty-btn_plus"
+                              aria-label="Увеличить">+</button>
+                          </div>
+                          <button type="submit" class="ru-table__qty-add">Добавить</button>
+                        </form>
+                      </li>
+                    </ol>
+                    <ol class="ru-table__ru-blue">
+                      <li class="ru-table__th ru-table__th_num">Код</li>
+                      <li class="ru-table__td ru-table__td_num">EL-415</li>
+                      <li class="ru-table__th ru-table__th_doc">Описание</li>
+                      <li class="ru-table__td ru-table__td_doc">Polysorb™ шовный материал</li>
+                      <li class="ru-table__th ru-table__th_ru-num">Уп/шт.</li>
+                      <li class="ru-table__td ru-table__td_ru-num">36</li>
+                      <li class="ru-table__th ru-table__th_ru">Кол-во</li>
+                      <li class="ru-table__td ru-table__td_action">
+                        <form class="ru-table__qty-control" action="#" method="post">
+                          <div class="ru-table__qty-group">
+                            <button type="button" class="ru-table__qty-btn ru-table__qty-btn_minus"
+                              aria-label="Уменьшить">−</button>
+                            <input class="ru-table__qty-input" type="number" name="qty" value="0" min="0"
+                              aria-label="Количество">
+                            <button type="button" class="ru-table__qty-btn ru-table__qty-btn_plus"
+                              aria-label="Увеличить">+</button>
+                          </div>
+                          <button type="submit" class="ru-table__qty-add">Добавить</button>
+                        </form>
+                      </li>
+                    </ol>
+                    <ol class="ru-table__ru-gray">
+                      <li class="ru-table__th ru-table__th_num">Код</li>
+                      <li class="ru-table__td ru-table__td_num">EL-415</li>
+                      <li class="ru-table__th ru-table__th_doc">Описание</li>
+                      <li class="ru-table__td ru-table__td_doc">Polysorb™ шовный материал</li>
+                      <li class="ru-table__th ru-table__th_ru-num">Уп/шт.</li>
+                      <li class="ru-table__td ru-table__td_ru-num">36</li>
+                      <li class="ru-table__th ru-table__th_ru">Кол-во</li>
+                      <li class="ru-table__td ru-table__td_action">
+                        <form class="ru-table__qty-control" action="#" method="post">
+                          <div class="ru-table__qty-group">
+                            <button type="button" class="ru-table__qty-btn ru-table__qty-btn_minus"
+                              aria-label="Уменьшить">−</button>
+                            <input class="ru-table__qty-input" type="number" name="qty" value="0" min="0"
+                              aria-label="Количество">
+                            <button type="button" class="ru-table__qty-btn ru-table__qty-btn_plus"
+                              aria-label="Увеличить">+</button>
+                          </div>
+                          <button type="submit" class="ru-table__qty-add">Добавить</button>
+                        </form>
+                      </li>
+                    </ol>
+                    <ol class="ru-table__ru-blue">
+                      <li class="ru-table__th ru-table__th_num">Код</li>
+                      <li class="ru-table__td ru-table__td_num">EL-415</li>
+                      <li class="ru-table__th ru-table__th_doc">Описание</li>
+                      <li class="ru-table__td ru-table__td_doc">Polysorb™ шовный материал</li>
+                      <li class="ru-table__th ru-table__th_ru-num">Уп/шт.</li>
+                      <li class="ru-table__td ru-table__td_ru-num">36</li>
+                      <li class="ru-table__th ru-table__th_ru">Кол-во</li>
+                      <li class="ru-table__td ru-table__td_action">
+                        <form class="ru-table__qty-control" action="#" method="post">
+                          <div class="ru-table__qty-group">
+                            <button type="button" class="ru-table__qty-btn ru-table__qty-btn_minus"
+                              aria-label="Уменьшить">−</button>
+                            <input class="ru-table__qty-input" type="number" name="qty" value="0" min="0"
+                              aria-label="Количество">
+                            <button type="button" class="ru-table__qty-btn ru-table__qty-btn_plus"
+                              aria-label="Увеличить">+</button>
+                          </div>
+                          <button type="submit" class="ru-table__qty-add">Добавить</button>
+                        </form>
+                      </li>
+                    </ol>
+                    <ol class="ru-table__ru-gray">
+                      <li class="ru-table__th ru-table__th_num">Код</li>
+                      <li class="ru-table__td ru-table__td_num">EL-415</li>
+                      <li class="ru-table__th ru-table__th_doc">Описание</li>
+                      <li class="ru-table__td ru-table__td_doc">Polysorb™ шовный материал</li>
+                      <li class="ru-table__th ru-table__th_ru-num">Уп/шт.</li>
+                      <li class="ru-table__td ru-table__td_ru-num">36</li>
+                      <li class="ru-table__th ru-table__th_ru">Кол-во</li>
+                      <li class="ru-table__td ru-table__td_action">
+                        <form class="ru-table__qty-control" action="#" method="post">
+                          <div class="ru-table__qty-group">
+                            <button type="button" class="ru-table__qty-btn ru-table__qty-btn_minus"
+                              aria-label="Уменьшить">−</button>
+                            <input class="ru-table__qty-input" type="number" name="qty" value="0" min="0"
+                              aria-label="Количество">
+                            <button type="button" class="ru-table__qty-btn ru-table__qty-btn_plus"
+                              aria-label="Увеличить">+</button>
+                          </div>
+                          <button type="submit" class="ru-table__qty-add">Добавить</button>
+                        </form>
+                      </li>
+                    </ol>
+                  </div>
+                </section>
+              </div>
+            </section>
+            <section class="product-panel" id="panel-catalogs" data-product-panel="catalogs" role="tabpanel" hidden>
+              <div class="tab-content productTabContent">
+                <div class="productCatalogs">
+                  <ul class="productCatalogs__list">
+                    <li class="productCatalogs__item">
+                      <a class="productCatalogs__link" href="#" download>
+                        <span class="productCatalogs__text">Скачать РУ</span>
+                        <span class="productCatalogs__icon" aria-hidden="true">
+                          <svg width="25" height="28" viewBox="0 0 25 28" fill="none"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" clip-rule="evenodd"
+                              d="M1.75736 1.75736C0 3.51472 0 6.34315 0 12V12.9707C0 18.6276 0 21.456 1.75736 23.2134C3.51472 24.9707 6.34315 24.9707 12 24.9707H12.9707L13.3772 24.9707V20.066C13.3772 16.372 16.3717 13.3774 20.0658 13.3774C21.9997 13.3774 23.742 14.1982 24.9632 15.5105C24.9707 14.7335 24.9707 13.8894 24.9707 12.9707V12C24.9707 6.34315 24.9707 3.51472 23.2134 1.75736C21.456 0 18.6276 0 12.9707 0H12C6.34315 0 3.51472 0 1.75736 1.75736ZM4.45905 5.79702C4.45905 5.05822 5.05796 4.4593 5.79676 4.4593H19.1739C19.9127 4.4593 20.5117 5.05822 20.5117 5.79702C20.5117 6.53582 19.9127 7.13473 19.1739 7.13473H5.79677C5.05796 7.13473 4.45905 6.53582 4.45905 5.79702ZM5.79676 8.91836C5.05796 8.91836 4.45905 9.51727 4.45905 10.2561C4.45905 10.9949 5.05796 11.5938 5.79676 11.5938H13.8231C14.5619 11.5938 15.1608 10.9949 15.1608 10.2561C15.1608 9.51727 14.5619 8.91836 13.8231 8.91836H5.79676Z"
+                              fill="white" />
+                            <path fill-rule="evenodd" clip-rule="evenodd"
+                              d="M15.1801 20.5117C15.1669 20.3648 15.1602 20.2161 15.1602 20.0659C15.1602 17.3569 17.3562 15.1609 20.0651 15.1609C22.7741 15.1609 24.9701 17.3569 24.9701 20.0659C24.9701 20.2161 24.9633 20.3648 24.9501 20.5117H24.9702V26.895C24.9702 27.2335 24.6079 27.4485 24.3108 27.2865L20.4923 25.2037C20.2261 25.0585 19.9044 25.0585 19.6382 25.2037L15.8197 27.2865C15.5226 27.4485 15.1603 27.2335 15.1603 26.895V20.5117H15.1801ZM21.7013 18.2808C21.8843 18.4455 21.8992 18.7275 21.7344 18.9105L20.2934 20.5117L19.9212 20.9252C19.899 20.9498 19.8749 20.9714 19.8491 20.9898C19.669 21.119 19.4133 21.0975 19.2583 20.9252L18.8861 20.5117L18.3517 19.9179C18.1869 19.7348 18.2018 19.4529 18.3848 19.2881C18.5679 19.1234 18.8498 19.1382 19.0146 19.3213L19.5897 19.9604L21.0715 18.3139C21.2363 18.1309 21.5182 18.116 21.7013 18.2808Z"
+                              fill="white" />
+                          </svg>
+
+
+                        </span>
+                      </a>
+                    </li>
+                    <li class="productCatalogs__item">
+                      <a class="productCatalogs__link" href="#" download>
+                        <span class="productCatalogs__text">Скачать инструкцию</span>
+                        <span class="productCatalogs__icon" aria-hidden="true">
+                          <svg width="27" height="29" viewBox="0 0 27 29" fill="none"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path
+                              d="M21.1953 9.89233H25.5979C26.2883 9.89233 26.8479 10.452 26.8479 11.1423V24.9752C26.8479 26.0108 26.0085 26.8502 24.9729 26.8502H23.0703C22.0348 26.8502 21.1953 26.0108 21.1953 24.9752V9.89233Z"
+                              fill="#3391C5" />
+                            <path fill-rule="evenodd" clip-rule="evenodd"
+                              d="M0 2.5C0 1.11929 1.11929 0 2.5 0H17.2842C18.6649 0 19.7842 1.11929 19.7842 2.5V11.3055H19.7839V26.3884C19.7839 27.4143 20.6078 28.2477 21.63 28.2632H2.5C1.11929 28.2632 0 27.1439 0 25.7632V2.5ZM4.23937 8.89233C3.68708 8.89233 3.23937 9.34005 3.23937 9.89233C3.23937 10.4446 3.68708 10.8923 4.23937 10.8923H15.5446C16.0969 10.8923 16.5446 10.4446 16.5446 9.89233C16.5446 9.34005 16.0969 8.89233 15.5446 8.89233H4.23937ZM3.23937 14.1313C3.23937 13.5791 3.68708 13.1313 4.23937 13.1313H15.5446C16.0969 13.1313 16.5446 13.5791 16.5446 14.1313C16.5446 14.6836 16.0969 15.1313 15.5446 15.1313H4.23937C3.68708 15.1313 3.23937 14.6836 3.23937 14.1313ZM4.23937 17.3709C3.68708 17.3709 3.23937 17.8186 3.23937 18.3709C3.23937 18.9232 3.68708 19.3709 4.23937 19.3709H15.5446C16.0969 19.3709 16.5446 18.9232 16.5446 18.3709C16.5446 17.8186 16.0969 17.3709 15.5446 17.3709H4.23937Z"
+                              fill="#3391C5" />
+                          </svg>
+
+                        </span>
+                      </a>
+                    </li>
+                    <li class="productCatalogs__item">
+                      <a class="productCatalogs__link" href="#" download>
+                        <span class="productCatalogs__text">Скачать каталог</span>
+                        <span class="productCatalogs__icon" aria-hidden="true">
+                          <svg width="24" height="28" viewBox="0 0 24 28" fill="none"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path
+                              d="M15.2395 20.8694L17.5415 23.1303L22.4996 18.2607L23.7392 19.4781L17.5415 25.5651L14 22.0868L15.2395 20.8694Z"
+                              fill="#3391C5" />
+                            <path fill-rule="evenodd" clip-rule="evenodd"
+                              d="M14.8319 28.0001C12.8636 26.6915 11.5664 24.4538 11.5663 21.9131H3.65286C1.97199 21.9131 0.609375 23.2757 0.609375 24.9566C0.609375 26.6374 1.97199 28.0001 3.65287 28.0001H14.8319Z"
+                              fill="#3391C5" />
+                            <path fill-rule="evenodd" clip-rule="evenodd"
+                              d="M0 2C0 0.895431 0.895431 0 2 0H3.04371V8.52176L5.4785 6.08697L7.91329 8.52176V0H22.5218V15.5857C21.4474 14.9642 20.2001 14.6085 18.8697 14.6085C15.2503 14.6085 12.2458 17.241 11.6663 20.6957H3.0715C1.93518 20.6957 0.896391 21.3377 0.388215 22.3541L0 23.1305V2Z"
+                              fill="#3391C5" />
+                          </svg>
+
+                        </span>
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </section>
+            <section class="product-panel" id="panel-video" data-product-panel="video" role="tabpanel" hidden>
+              <h3 class="product-panel__title">Видео</h3>
+              <p class="product-panel__text">Видеоматериалы по продукту.</p>
+            </section>
+          </div>
+          <div class="product-order__total-panel" id="orderTotalPanel" role="status" aria-live="polite" hidden>
+            <button class="product-order__total-caption">Оформить заказ</button>
+            <div class="product-order__total-info">
+              <span class="product-order__total-label">Всего изделий в заказе:</span>
+              <span class="product-order__total-count" id="orderTotalCount">0</span>
+            </div>
+          </div>
+          <div class="product-order__actions product-order__desktop-only">
+            <button type="button" class="product-order__action-btn product-order__action-btn_file">Выбрать файл</button>
+            <button type="button" class="product-order__action-btn product-order__action-btn_upload">Загрузить
+              коды</button>
+            <button type="button" class="product-order__action-btn product-order__action-btn_delete">Удалить
+              все</button>
+          </div>
         </div>
-        <!-- Placeholder for the modal --> {# onclick="modalClickHandler(event)" #}
-        <div id="modal" class="modal fade" >
-            <div id="dialog" class="modal-dialog modal-xl" hx-target="this" ></div>
+      </div>
+    </main>
+
+
+
+
+    <div class="order-popup" id="orderPopup" role="dialog" aria-modal="true" aria-labelledby="orderPopupTitle"
+      aria-hidden="true" hidden>
+      <div class="order-popup__backdrop" data-order-popup-close aria-label="Закрыть"></div>
+      <div class="order-popup-wrapper">
+        <div class="order-popup__modal">
+          <button type="button" class="order-popup__close" data-order-popup-close aria-label="Закрыть">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M15 5L5 15M5 5l10 10" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                stroke-linejoin="round" />
+            </svg>
+          </button>
+          <h2 class="order-popup__title t-50" id="orderPopupTitle">Оформить заказ</h2>
+
+          <div class="order-popup__tabs" role="tablist">
+            <button type="button" class="order-popup__tab order-popup__tab_active" role="tab" aria-selected="true"
+              data-order-tab="physical">Физическое лицо</button>
+            <button type="button" class="order-popup__tab" role="tab" aria-selected="false"
+              data-order-tab="legal">Юридическое лицо</button>
+          </div>
+
+          <p class="order-popup__legal-intro" id="orderPopupLegalIntro" hidden>Уважаемые коллеги! При оформлении заказа,
+            пожалуйста, укажите Ваш ИНН (для автоматического перенаправления Вашего запроса сотруднику, закрепленному за
+            Вашей организацией) и наименование организации или прикрепите карточку клиента. Это ускорит обработку Вашей
+            заявки. Без указания реквизитов мы не сможем выставить Вам коммерческое предложение.</p>
+
+          <div class="order-popup__body">
+            <form class="order-popup__form" id="orderPopupForm" action="#" method="post" novalidate>
+              <div class="order-popup__form-panel order-popup__form-panel_physical" data-order-panel="physical"
+                role="tabpanel">
+                <div class="order-popup__field order-popup__field_full">
+                  <input type="text" class="order-popup__input" name="fio" placeholder="Иванов Иван Иванович"
+                    autocomplete="name" aria-label="ФИО" required>
+                </div>
+                <div class="order-popup__row">
+                  <div class="order-popup__field">
+                    <input type="tel" class="order-popup__input" name="phone" placeholder="+7 (999) 999 - 99 - 99"
+                      autocomplete="tel" aria-label="Телефон" required>
+                  </div>
+                  <div class="order-popup__field">
+                    <input type="email" class="order-popup__input" name="email" placeholder="E-mail"
+                      autocomplete="email" aria-label="E-mail" required>
+                  </div>
+                </div>
+                <div class="order-popup__field order-popup__field_full">
+                  <textarea class="order-popup__textarea" name="message" rows="5" placeholder="Текст письма"
+                    aria-label="Текст письма"></textarea>
+                </div>
+                <div class="order-popup__field order-popup__field_full">
+                  <label class="order-popup__file-label">
+                    <span class="order-popup__file-text">Прикрепить файл</span>
+                    <input type="file" class="order-popup__file" name="file" multiple hidden>
+                  </label>
+                </div>
+                <div class="order-popup__captcha">
+                  <input type="checkbox" class="order-popup__captcha-checkbox" name="captcha" id="orderPopupCaptcha"
+                    aria-label="Я не робот">
+                  <label class="order-popup__captcha-label" for="orderPopupCaptcha">Я не робот</label>
+                  <div class="order-popup__captcha-placeholder" aria-hidden="true">
+                    <img src="img/capcha.png" alt="">
+                  </div>
+                </div>
+                <button type="submit" class="order-popup__submit">Отправить запрос</button>
+                <div class="order-popup__checkbox-wrap order-popup__checkbox-wrap_cookie">
+                  <input type="checkbox" class="order-popup__checkbox" name="privacy" id="orderPopupPrivacy"
+                    aria-describedby="orderPopupPrivacyText" required>
+                  <label class="order-popup__checkbox-label" for="orderPopupPrivacy" id="orderPopupPrivacyText">Я прочел
+                    (прочла) Уведомление о <a href="politika.html" class="order-popup__privacy-link">политики
+                      конфиденциальности</a></label>
+                </div>
+              </div>
+
+              <div class="order-popup__form-panel order-popup__form-panel_legal" data-order-panel="legal"
+                role="tabpanel" hidden>
+                <div class="order-popup__field order-popup__field_full">
+                  <input type="text" class="order-popup__input" name="fio_legal" placeholder="Иванов Иван Иванович"
+                    autocomplete="name" aria-label="ФИО">
+                </div>
+                <div class="order-popup__row">
+                  <div class="order-popup__field">
+                    <input type="tel" class="order-popup__input" name="phone_legal" placeholder="+7 (999) 999 - 99 - 99"
+                      autocomplete="tel" aria-label="Телефон">
+                  </div>
+                  <div class="order-popup__field">
+                    <input type="email" class="order-popup__input" name="email_legal" placeholder="E-mail"
+                      autocomplete="email" aria-label="E-mail">
+                  </div>
+                </div>
+                <div class="order-popup__row">
+                  <div class="order-popup__field">
+                    <input type="text" class="order-popup__input" name="inn" placeholder="ИНН" aria-label="ИНН"
+                      inputmode="numeric" maxlength="12">
+                  </div>
+                  <div class="order-popup__field">
+                    <input type="text" class="order-popup__input" name="company_name" placeholder="Наименование"
+                      aria-label="Наименование организации">
+                  </div>
+                </div>
+                <div class="order-popup__field order-popup__field_full">
+                  <textarea class="order-popup__textarea" name="comment_legal" rows="5"
+                    placeholder="Комментарий к заказу" aria-label="Комментарий к заказу"></textarea>
+                </div>
+                <div class="order-popup__field order-popup__field_full">
+                  <label class="order-popup__file-label">
+                    <span class="order-popup__file-text">Прикрепить файл</span>
+                    <input type="file" class="order-popup__file" name="file_legal" multiple hidden>
+                  </label>
+                </div>
+                <div class="order-popup__captcha">
+                  <input type="checkbox" class="order-popup__captcha-checkbox" name="captcha_legal"
+                    id="orderPopupCaptchaLegal" aria-label="Я не робот">
+                  <label class="order-popup__captcha-label" for="orderPopupCaptchaLegal">Я не робот</label>
+                  <div class="order-popup__captcha-placeholder" aria-hidden="true">
+                    <img src="img/capcha.png" alt="">
+                  </div>
+                </div>
+                <button type="submit" class="order-popup__submit">Отправить запрос</button>
+                <div class="order-popup__checkbox-wrap order-popup__checkbox-wrap_cookie">
+                  <input type="checkbox" class="order-popup__checkbox" name="privacy_legal" id="orderPopupPrivacyLegal"
+                    aria-describedby="orderPopupPrivacyLegalText" required>
+                  <label class="order-popup__checkbox-label" for="orderPopupPrivacyLegal"
+                    id="orderPopupPrivacyLegalText">Я прочел (прочла) Уведомление о <a href="politika.html"
+                      class="order-popup__privacy-link">политики конфиденциальности</a></label>
+                </div>
+              </div>
+            </form>
+            <div class="order-popup__summary">
+              <p class="order-popup__summary-title order-popup__summary-title_legal" data-order-summary-title-legal
+                hidden>Ваш выбор:</p>
+              <ul class="order-popup__summary-list" id="orderPopupSummaryList">
+                <li class="order-popup__summary-empty" id="orderPopupSummaryEmpty">Добавьте товары в заказ</li>
+              </ul>
+            </div>
+          </div>
         </div>
+      </div>
     </div>
-    <!-- плавающий элемент с формами связи -->
-    {% include 'core/components/formsContainer.html' %}
 
-    <!-- плавающий элемент с формами связи -->
-</main>
-{% endblock %}
+    <div class="callback-popup" id="callbackPopup" role="dialog" aria-modal="true" aria-labelledby="callbackPopupTitle"
+      aria-hidden="true" hidden>
+      <div class="callback-popup__backdrop" aria-label="Закрыть"></div>
+      <div class="callback-popup-wrapper">
+        <div class="callback-popup__modal">
+          <button type="button" class="callback-popup__close" data-callback-popup-close aria-label="Закрыть">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M15 5L5 15M5 5l10 10" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                stroke-linejoin="round" />
+            </svg>
+          </button>
+          <h2 class="callback-popup__title t-50" id="callbackPopupTitle">Заказать звонок</h2>
+          <form class="callback-form callback-popup__form" id="callbackPopupForm" action="#" method="post" novalidate>
+            <div class="callback-form__panel">
+              <div class="callback-form__field callback-form__field_full">
+                <input type="text" class="callback-form__input" name="callback_fio" placeholder="Иванов Иван Иванович"
+                  autocomplete="name" aria-label="ФИО" required>
+              </div>
+              <div class="callback-form__row">
+                <div class="callback-form__field">
+                  <input type="tel" class="callback-form__input" name="callback_phone" placeholder="+7 (999) 999 - 99 - 99"
+                    autocomplete="tel" aria-label="Телефон" required>
+                </div>
+                <div class="callback-form__field">
+                  <input type="email" class="callback-form__input" name="callback_email" placeholder="E-mail"
+                    autocomplete="email" aria-label="E-mail">
+                </div>
+              </div>
+              <div class="callback-form__field callback-form__field_full">
+                <textarea class="callback-form__textarea" name="callback_message" rows="4" placeholder="Комментарий"
+                  aria-label="Комментарий"></textarea>
+              </div>
+              <div class="callback-form__captcha">
+                <input type="checkbox" class="callback-form__captcha-checkbox" name="callback_captcha" id="callbackPopupCaptcha"
+                  aria-label="Я не робот">
+                <label class="callback-form__captcha-label" for="callbackPopupCaptcha">Я не робот</label>
+                <div class="callback-form__captcha-placeholder" aria-hidden="true">
+                  <img src="img/capcha.png" alt="">
+                </div>
+              </div>
+              <button type="submit" class="callback-form__submit">Отправить запрос</button>
+              <div class="callback-form__checkbox-wrap callback-form__checkbox-wrap_cookie">
+                <input type="checkbox" class="callback-form__checkbox" name="callback_privacy" id="callbackPopupPrivacy"
+                  aria-describedby="callbackPopupPrivacyText" required>
+                <label class="callback-form__checkbox-label" for="callbackPopupPrivacy" id="callbackPopupPrivacyText">Я прочел
+                  (прочла) Уведомление о <a href="politika.html" class="callback-form__privacy-link">политики
+                    конфиденциальности</a></label>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
 
-{% block script %}
-<script src="{% static 'scripts/tumbnailActiveElCarousel.js' %}"></script>
-<script src="{% static 'scripts/offers-htmx-handlers.js' %}"></script>
-<script src="{% static 'scripts/offerButton.js' %}"></script>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@glidejs/glide/dist/css/glide.core.min.css"/>
-<script src="https://cdn.jsdelivr.net/npm/@glidejs/glide/dist/glide.min.js"></script>
+    <div class="success-popup" id="successPopup" role="dialog" aria-modal="true" aria-labelledby="successPopupTitle"
+      aria-hidden="true" hidden>
+      <div class="success-popup__backdrop" data-success-popup-close aria-label="Закрыть"></div>
+      <div class="success-popup-wrapper">
+        <div class="success-popup__modal">
 
+          <div class="success-popup__icon" aria-hidden="true">
+            <svg width="213" height="213" viewBox="0 0 213 213" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M53.0078 101.375L101.201 146L208.008 20.0005" stroke="#65CCA5" stroke-width="10" />
+              <path
+                d="M194.44 55.7805C203.387 71.2588 208.358 89.2986 207.985 108.477C206.893 164.524 160.573 209.073 104.527 207.981C48.4809 206.89 3.93143 160.57 5.02319 104.524C6.11495 48.4774 52.4345 3.92802 108.481 5.01978C134.966 5.53571 158.884 16.1518 176.632 33.1216"
+                stroke="#65CCA5" stroke-width="10" />
+            </svg>
+          </div>
+          <p class="success-popup__text" id="successPopupTitle">Уважаемые коллеги! Мы благодарны Вам, что Вы обратились
+            в ООО «НДА Деловая медицинская компания». Ваш заказ получен и поступил в обработку. В течение одного
+            рабочего дня Вы получите от нас коммерческое предложение. Или наши сотрудники свяжутся с Вами для уточнения
+            деталей заказа. Обращаем Ваше внимание, что Коммерческое предложение не является официальным счетом!!! Счет
+            будет выставлен Вам отдельно после согласования скидок и условий оплаты. Отдел продаж ООО «НДА Деловая
+            медицинская компания».</p>
+          <button type="button" class="success-popup__btn" data-success-popup-close>Закрыть</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="error-popup" id="errorPopup" role="alertdialog" aria-modal="true" aria-labelledby="errorPopupTitle"
+      aria-hidden="true" hidden>
+      <div class="error-popup__backdrop" data-error-popup-close aria-label="Закрыть"></div>
+      <div class="error-popup-wrapper">
+        <div class="error-popup__modal">
+          <button type="button" class="error-popup__close" data-error-popup-close aria-label="Закрыть">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M15 5L5 15M5 5l10 10" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                stroke-linejoin="round" />
+            </svg>
+          </button>
+          <div class="error-popup__icon" aria-hidden="true">
+            <svg width="207" height="207" viewBox="0 0 207 207" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="103.46" cy="103.46" r="98.46" stroke="#DB5B5D" stroke-width="10" />
+              <path d="M61.8984 61L145.398 144.5" stroke="#DB5B5D" stroke-width="10" />
+              <path d="M146.102 61L62.6016 143.798" stroke="#DB5B5D" stroke-width="10" />
+            </svg>
+          </div>
+          <p class="error-popup__text" id="errorPopupTitle">Ошибка при отправки!<br>Попробуйте снова, через пару минут
+          </p>
+        </div>
+      </div>
+    </div>
 
 {% endblock %}
