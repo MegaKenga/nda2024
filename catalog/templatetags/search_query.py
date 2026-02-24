@@ -1,8 +1,8 @@
 from django import template
 from catalog.views import SEARCH_QUERY_PARAM
 
-register = template.Library()
 
+register = template.Library()
 
 @register.simple_tag()
 def search_query(request):

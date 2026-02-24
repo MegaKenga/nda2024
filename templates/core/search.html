@@ -1,186 +1,282 @@
 {% extends 'core/base.html' %}
 {% load pagination_tags %}
 {% load static %}
-{% load cache %}
 
 {% block title %}
   <title>Результаты поиска</title>
 {% endblock %}
 
 {% block content %}
-  <header style="height: 0px;">
-    <!-- летающая шапка -->
-    {% include 'core/components/header.html' %}
-
-    <!-- летающая шапка -->
-  </header>
-  <main class="main">
-    <div class="container1">
-      <div class="searchResultHeader">
-        <h1>Результат поиска</h1>
-        <div class="searchPagination">
-            {% if page_obj.has_previous %}
-              <a href="{% url_with_query_params request %}">В начало</a>
-              <a href="{% url_with_query_params request page_obj.previous_page_number %}" class="pagPrevBtn">
-                <svg width="8" height="14" viewBox="0 0 8 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M0.75 12.3214L7.17857 6.53573L0.75 0.750014" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-              </a>
-            {% else %}
-              <a href="javascript:void(false)">В начало</a>
-                <a href="javascript:void(false)" class="pagPrevBtn disabled">
-                  <svg width="8" height="14" viewBox="0 0 8 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M0.75 12.3214L7.17857 6.53573L0.75 0.750014" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                  </svg>
-                </a>
-            {% endif %}
-            {% if page_obj.paginator.num_pages > 1 %}
-              <div class="pagination-numbers">
-                  {% if page_obj.number > 3 %}
-                      <a href="{% url_with_query_params request 1 %}">1</a>
-                      {% if page_obj.number > 4 %}
-                          <span class="pagination-ellipsis">...</span>
-                      {% endif %}
-                  {% endif %}
-
-                  {% for num in page_obj.paginator.page_range %}
-                      {% if num > page_obj.number|add:-3 and num < page_obj.number|add:3 %}
-                          {% if num == page_obj.number %}
-                              <span class="current-page">{{ num }}</span>
-                          {% else %}
-                              <a href="{% url_with_query_params request num %}">{{ num }}</a>
-                          {% endif %}
-                      {% endif %}
-                  {% endfor %}
-
-                  {% if page_obj.number < page_obj.paginator.num_pages|add:-2 %}
-                      {% if page_obj.number < page_obj.paginator.num_pages|add:-3 %}
-                          <span class="pagination-ellipsis">...</span>
-                      {% endif %}
-                      <a href="{% url_with_query_params request page_obj.paginator.num_pages %}">{{ page_obj.paginator.num_pages }}</a>
-                  {% endif %}
-              </div>
-            {% endif %}
-            {% if page_obj.has_next %}
-              <a href="{% url_with_query_params request page_obj.next_page_number %}" class="pagNextBtn">
-                <svg width="8" height="14" viewBox="0 0 8 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M0.75 12.3214L7.17857 6.53573L0.75 0.750014" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-              </a>
-              <a href="{% url_with_query_params request page_obj.paginator.num_pages %}">В конец</a>
-            {% else %}
-              <a href="javascript:void(false)" class="pagNextBtn disabled">
-                <svg width="8" height="14" viewBox="0 0 8 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M0.75 12.3214L7.17857 6.53573L0.75 0.750014" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-              </a>
-              <a href="javascript:void(false)">В конец</a>
-            {% endif %}
-        </div>
-      </div>
-      <div class="searchResult">
-        {% if messages %}
-          {% for message in messages %}
-            <div>{{ message }}</div>
-          {% endfor %}
-        {% elif object_list %}
-          {% cache 600 page_obj.number request.GET.urlencode %}
-            {% for product in object_list %}
-              {% cache 600 product.pk %}
-                <div class="searchResultEl">
-                  <a href="{% url 'offer' brand_slug=product.brand.slug product_slug=product.slug %}">
-                    <div class="searchResultName">
-                      {{ product.name.upper }}
-                    </div>
-
-                    {% for offer in product.related_offers %}
-                      <div class="searchResultArticle">
-                       <div class="searchResultArticleName">
-                        <div class="">Код товара: </div>
-                        <div class=""><b>{{ offer.name | safe}}</b> </div>
-                       </div>
-                       <div class="searchResultArticleDescription">
-                        <div class="">Описание: </div>
-                        <div class="innerDescription">{{ offer.text_description | safe}}</div>
-
-                       </div>
-                      </div>
-                    {% endfor %}
-                  </a>
+    <main class="search-page">
+        <div class="container">
+            <section class="search-results">
+                <div class="search-results__head">
+                    <h1 class="search-results__title">Результат поиска</h1>
+                    <nav class="search-pagination" aria-label="Пагинация">
+                        {% if page_obj.has_previous %}
+                            <a class="search-pagination__link" href="{% url_with_query_params request %}">
+                                <span class="search-pagination__link-text">В
+                                начало</span>
+                                <span class="search-pagination__link-icon search-pagination__link-icon_prev" aria-hidden="true">
+                                <svg width="14" height="11" viewBox="0 0 14 11" fill="none"
+                                     xmlns="http://www.w3.org/2000/svg">
+                                <path d="M7.75 9.75L12.75 5.25L7.75 0.75" stroke="currentColor" stroke-width="1.5"
+                                      stroke-linecap="round" stroke-linejoin="round" />
+                                <path d="M0.75 9.75L5.75 5.25L0.75 0.75" stroke="currentColor" stroke-width="1.5"
+                                      stroke-linecap="round" stroke-linejoin="round" />
+                                </svg>
+                                </span>
+                            </a>
+                            <a href="{% url_with_query_params request page_obj.previous_page_number %}">
+                                <button type="button" class="search-pagination__btn search-pagination__btn_prev"
+                                        style="background: #3391c5; color: #fff;"  aria-label="Предыдущая страница">
+                                    <svg class="search-pagination__btn-icon" width="7" height="11" viewBox="0 0 7 11" fill="none"
+                                         xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M0.75 9.75L5.75 5.25L0.75 0.75" stroke="currentColor" stroke-width="1.5"
+                                          stroke-linecap="round" stroke-linejoin="round" />
+                                    </svg>
+                                </button>
+                            </a>
+                        {% else %}
+                        <a class="search-pagination__link" href="javascript:void(false)"><span class="search-pagination__link-text">В
+                          начало</span>
+                            <span class="search-pagination__link-icon search-pagination__link-icon_prev" aria-hidden="true">
+                                <svg width="14" height="11" viewBox="0 0 14 11" fill="none"
+                                     xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M7.75 9.75L12.75 5.25L7.75 0.75" stroke="currentColor" stroke-width="1.5"
+                                          stroke-linecap="round" stroke-linejoin="round" />
+                                    <path d="M0.75 9.75L5.75 5.25L0.75 0.75" stroke="currentColor" stroke-width="1.5"
+                                          stroke-linecap="round" stroke-linejoin="round" />
+                                </svg>
+                            </span>
+                        </a>
+                            <button disabled class="search-pagination__btn search-pagination__btn_prev"
+                                    aria-label="Предыдущая страница">
+                                <svg class="search-pagination__btn-icon" width="7" height="11"
+                                     viewBox="0 0 7 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M0.75 9.75L5.75 5.25L0.75 0.75" stroke="currentColor" stroke-width="1.5"
+                                          stroke-linecap="round" stroke-linejoin="round" />
+                                </svg>
+                            </button>
+                        {% endif %}
+                        {% if page_obj.paginator.num_pages > 1 %}
+                            <div class="search-pagination__numbers">
+                                {% if page_obj.number > 3 %}
+                                    <a class="search-pagination__num " href="{% url_with_query_params request 1 %}">1</a>
+                                    {% if page_obj.number > 4 %}
+                                        <span class="search-pagination__ellipsis">...</span>
+                                    {% endif %}
+                                {% endif %}
+                                {% for num in page_obj.paginator.page_range %}
+                                    {% if num > page_obj.number|add:-3 and num < page_obj.number|add:3 %}
+                                        {% if num == page_obj.number %}
+                                            <a class = "search-pagination__num search-pagination__num_active">{{ num }}</a>
+                                        {% else %}
+                                            <a class="search-pagination__num" href="{% url_with_query_params request num %}">{{ num }}</a>
+                                        {% endif %}
+                                    {% endif %}
+                                {% endfor %}
+                                {% if page_obj.number < page_obj.paginator.num_pages|add:-2 %}
+                                    {% if page_obj.number < page_obj.paginator.num_pages|add:-3 %}
+                                        <span class="search-pagination__ellipsis">...</span>
+                                    {% endif %}
+                                    <a class="search-pagination__num" href="{% url_with_query_params request page_obj.paginator.num_pages %}">{{ page_obj.paginator.num_pages }}</a>
+                                {% endif %}
+                            </div>
+                        {% endif %}
+                    {% if page_obj.has_next %}
+                        <a href="{% url_with_query_params request page_obj.next_page_number %}">
+                            <button type="button" class="search-pagination__btn search-pagination__btn_next"
+                                    aria-label="Следующая страница">
+                                <svg class="search-pagination__btn-icon" width="7" height="11"
+                                     viewBox="0 0 7 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M0.75 9.75L5.75 5.25L0.75 0.75" stroke="currentColor" stroke-width="1.5"
+                                          stroke-linecap="round" stroke-linejoin="round" />
+                                </svg>
+                            </button>
+                        </a>
+                        <a class="search-pagination__link" href="{% url_with_query_params request page_obj.paginator.num_pages %}">
+                            <span class="search-pagination__link-text">В конец</span>
+                            <span class="search-pagination__link-icon" aria-hidden="true">
+                                <svg width="14" height="11"
+                                     viewBox="0 0 14 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M7.75 9.75L12.75 5.25L7.75 0.75" stroke="currentColor" stroke-width="1.5"
+                                          stroke-linecap="round" stroke-linejoin="round" />
+                                    <path d="M0.75 9.75L5.75 5.25L0.75 0.75" stroke="currentColor" stroke-width="1.5"
+                                          stroke-linecap="round" stroke-linejoin="round" />
+                                </svg>
+                            </span>
+                        </a>
+                    {% else %}
+                        <button type="button" disabled class="search-pagination__btn search-pagination__btn_next"
+                                style="background: rgba(51, 145, 197, 0.5); color: #3391c5;"
+                                aria-label="Следующая страница"><svg class="search-pagination__btn-icon" width="7" height="11"
+                                                                     viewBox="0 0 7 11" fill="none"
+                                                                     xmlns="http://www.w3.org/2000/svg">
+                          <path d="M0.75 9.75L5.75 5.25L0.75 0.75" stroke="currentColor" stroke-width="1.5"
+                                stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                        </button>
+                        <a class="search-pagination__link" href="javascript:void(false)">
+                            <span class="search-pagination__link-text">В конец</span>
+                            <span class="search-pagination__link-icon" aria-hidden="true">
+                                <svg width="14" height="11" viewBox="0 0 14 11" fill="none"
+                                     xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M7.75 9.75L12.75 5.25L7.75 0.75" stroke="currentColor" stroke-width="1.5"
+                                          stroke-linecap="round" stroke-linejoin="round" />
+                                    <path d="M0.75 9.75L5.75 5.25L0.75 0.75" stroke="currentColor" stroke-width="1.5"
+                                          stroke-linecap="round" stroke-linejoin="round" />
+                                </svg>
+                            </span>
+                        </a>
+                    {% endif %}
+                    </nav>
                 </div>
-              {% endcache %}
-            {% endfor %}
-
-          {% endcache %}
-        {% else %}
-          <div>По вашему запросу ничего не найдено. Попробуйте изменить запрос и попробовать снова</div>
-        {% endif %}
-
-        <div class="searchPagination --bottom">
-            {% if page_obj.has_previous %}
-              <a href="{% url_with_query_params request %}">В начало</a>
-              <a href="{% url_with_query_params request page_obj.previous_page_number %}" class="pagPrevBtn">
-                <svg width="8" height="14" viewBox="0 0 8 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M0.75 12.3214L7.17857 6.53573L0.75 0.750014" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-              </a>
-            {% else %}
-              <a href="javascript:void(false)">В начало</a>
-                <a href="javascript:void(false)" class="pagPrevBtn disabled">
-                  <svg width="8" height="14" viewBox="0 0 8 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M0.75 12.3214L7.17857 6.53573L0.75 0.750014" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                  </svg>
-                </a>
-            {% endif %}
-            {% if page_obj.paginator.num_pages > 1 %}
-              <div class="pagination-numbers">
-                  {% if page_obj.number > 3 %}
-                      <a href="{% url_with_query_params request 1 %}">1</a>
-                      {% if page_obj.number > 4 %}
-                          <span class="pagination-ellipsis">...</span>
-                      {% endif %}
-                  {% endif %}
-
-                  {% for num in page_obj.paginator.page_range %}
-                      {% if num > page_obj.number|add:-3 and num < page_obj.number|add:3 %}
-                          {% if num == page_obj.number %}
-                              <span class="current-page">{{ num }}</span>
-                          {% else %}
-                              <a href="{% url_with_query_params request num %}">{{ num }}</a>
-                          {% endif %}
-                      {% endif %}
-                  {% endfor %}
-
-                  {% if page_obj.number < page_obj.paginator.num_pages|add:-2 %}
-                      {% if page_obj.number < page_obj.paginator.num_pages|add:-3 %}
-                          <span class="pagination-ellipsis">...</span>
-                      {% endif %}
-                      <a href="{% url_with_query_params request page_obj.paginator.num_pages %}">{{ page_obj.paginator.num_pages }}</a>
-                  {% endif %}
-              </div>
-            {% endif %}
-            {% if page_obj.has_next %}
-              <a href="{% url_with_query_params request page_obj.next_page_number %}" class="pagNextBtn">
-                <svg width="8" height="14" viewBox="0 0 8 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M0.75 12.3214L7.17857 6.53573L0.75 0.750014" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-              </a>
-              <a href="{% url_with_query_params request page_obj.paginator.num_pages %}">В конец</a>
-            {% else %}
-              <a href="javascript:void(false)" class="pagNextBtn disabled">
-                <svg width="8" height="14" viewBox="0 0 8 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M0.75 12.3214L7.17857 6.53573L0.75 0.750014" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-              </a>
-              <a href="javascript:void(false)">В конец</a>
-            {% endif %}
+                <ul class="search-results__list">
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div>{{ message }}</div>
+                        {% endfor %}
+                    {% elif object_list %}
+                        {% for product in object_list %}
+                            <li>
+                                <a class="search-card" href="{% url 'offer' brand_slug=product.brand.slug product_slug=product.slug %}">
+                                    <h2 class="search-card__title">{{ product.name.upper }}</h2>
+                                    {% if product.related_offers %}
+                                        {% for offer in product.related_offers%}
+                                            <div class="search-card__meta">
+                                                <p class="search-card__art"><span class="search-card__label">Код товара</span>: {{ offer.name | safe}}</p>
+                                                <p class="search-card__desc"><span class="search-card__label">Описание</span>: {{ offer.text_description | safe}}</p>
+                                            </div>
+                                        {% endfor %}
+                                    {% endif %}
+                                </a>
+                            </li>
+                        {% endfor %}
+                        </ul>
+                    {% else %}
+                        <div>По вашему запросу ничего не найдено. Попробуйте изменить запрос и попробовать снова</div>
+                    {% endif %}
+                <nav class="search-pagination search-pagination_bottom" aria-label="Пагинация">
+                    {% if page_obj.has_previous %}
+                        <a class="search-pagination__link" href="{% url_with_query_params request %}">
+                            <span class="search-pagination__link-text">В
+                            начало</span>
+                            <span class="search-pagination__link-icon search-pagination__link-icon_prev" aria-hidden="true">
+                            <svg width="14" height="11" viewBox="0 0 14 11" fill="none"
+                                 xmlns="http://www.w3.org/2000/svg">
+                            <path d="M7.75 9.75L12.75 5.25L7.75 0.75" stroke="currentColor" stroke-width="1.5"
+                                  stroke-linecap="round" stroke-linejoin="round" />
+                            <path d="M0.75 9.75L5.75 5.25L0.75 0.75" stroke="currentColor" stroke-width="1.5"
+                                  stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                            </span>
+                        </a>
+                        <a href="{% url_with_query_params request page_obj.previous_page_number %}">
+                            <button type="button" class="search-pagination__btn search-pagination__btn_prev"
+                                    style="background: #3391c5; color: #fff;"  aria-label="Предыдущая страница">
+                                <svg class="search-pagination__btn-icon" width="7" height="11" viewBox="0 0 7 11" fill="none"
+                                     xmlns="http://www.w3.org/2000/svg">
+                                <path d="M0.75 9.75L5.75 5.25L0.75 0.75" stroke="currentColor" stroke-width="1.5"
+                                      stroke-linecap="round" stroke-linejoin="round" />
+                                </svg>
+                            </button>
+                        </a>
+                    {% else %}
+                    <a class="search-pagination__link" href="javascript:void(false)"><span class="search-pagination__link-text">В
+                      начало</span>
+                        <span class="search-pagination__link-icon search-pagination__link-icon_prev" aria-hidden="true">
+                            <svg width="14" height="11" viewBox="0 0 14 11" fill="none"
+                                 xmlns="http://www.w3.org/2000/svg">
+                                <path d="M7.75 9.75L12.75 5.25L7.75 0.75" stroke="currentColor" stroke-width="1.5"
+                                      stroke-linecap="round" stroke-linejoin="round" />
+                                <path d="M0.75 9.75L5.75 5.25L0.75 0.75" stroke="currentColor" stroke-width="1.5"
+                                      stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                        </span>
+                    </a>
+                        <button disabled class="search-pagination__btn search-pagination__btn_prev"
+                                aria-label="Предыдущая страница">
+                            <svg class="search-pagination__btn-icon" width="7" height="11"
+                                 viewBox="0 0 7 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M0.75 9.75L5.75 5.25L0.75 0.75" stroke="currentColor" stroke-width="1.5"
+                                      stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                        </button>
+                    {% endif %}
+                    {% if page_obj.paginator.num_pages > 1 %}
+                        <div class="search-pagination__numbers">
+                            {% if page_obj.number > 3 %}
+                                <a class="search-pagination__num " href="{% url_with_query_params request 1 %}">1</a>
+                                {% if page_obj.number > 4 %}
+                                    <span class="search-pagination__ellipsis">...</span>
+                                {% endif %}
+                            {% endif %}
+                            {% for num in page_obj.paginator.page_range %}
+                                {% if num > page_obj.number|add:-3 and num < page_obj.number|add:3 %}
+                                    {% if num == page_obj.number %}
+                                        <a class = "search-pagination__num search-pagination__num_active">{{ num }}</a>
+                                    {% else %}
+                                        <a class="search-pagination__num" href="{% url_with_query_params request num %}">{{ num }}</a>
+                                    {% endif %}
+                                {% endif %}
+                            {% endfor %}
+                            {% if page_obj.number < page_obj.paginator.num_pages|add:-2 %}
+                                {% if page_obj.number < page_obj.paginator.num_pages|add:-3 %}
+                                    <span class="search-pagination__ellipsis">...</span>
+                                {% endif %}
+                                <a class="search-pagination__num" href="{% url_with_query_params request page_obj.paginator.num_pages %}">{{ page_obj.paginator.num_pages }}</a>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                {% if page_obj.has_next %}
+                    <a href="{% url_with_query_params request page_obj.next_page_number %}">
+                        <button type="button" class="search-pagination__btn search-pagination__btn_next"
+                                aria-label="Следующая страница">
+                            <svg class="search-pagination__btn-icon" width="7" height="11"
+                                 viewBox="0 0 7 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M0.75 9.75L5.75 5.25L0.75 0.75" stroke="currentColor" stroke-width="1.5"
+                                      stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                        </button>
+                    </a>
+                    <a class="search-pagination__link" href="{% url_with_query_params request page_obj.paginator.num_pages %}">
+                        <span class="search-pagination__link-text">В конец</span>
+                        <span class="search-pagination__link-icon" aria-hidden="true">
+                            <svg width="14" height="11"
+                                 viewBox="0 0 14 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M7.75 9.75L12.75 5.25L7.75 0.75" stroke="currentColor" stroke-width="1.5"
+                                      stroke-linecap="round" stroke-linejoin="round" />
+                                <path d="M0.75 9.75L5.75 5.25L0.75 0.75" stroke="currentColor" stroke-width="1.5"
+                                      stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                        </span>
+                    </a>
+                {% else %}
+                    <button type="button" disabled class="search-pagination__btn search-pagination__btn_next"
+                            style="background: rgba(51, 145, 197, 0.5); color: #3391c5;"
+                            aria-label="Следующая страница"><svg class="search-pagination__btn-icon" width="7" height="11"
+                                                                 viewBox="0 0 7 11" fill="none"
+                                                                 xmlns="http://www.w3.org/2000/svg">
+                      <path d="M0.75 9.75L5.75 5.25L0.75 0.75" stroke="currentColor" stroke-width="1.5"
+                            stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                    </button>
+                    <a class="search-pagination__link" href="javascript:void(false)">
+                        <span class="search-pagination__link-text">В конец</span>
+                        <span class="search-pagination__link-icon" aria-hidden="true">
+                            <svg width="14" height="11" viewBox="0 0 7 11" fill="none"
+                                 xmlns="http://www.w3.org/2000/svg">
+                                <path d="M7.75 9.75L12.75 5.25L7.75 0.75" stroke="currentColor" stroke-width="1.5"
+                                      stroke-linecap="round" stroke-linejoin="round" />
+                                <path d="M0.75 9.75L5.75 5.25L0.75 0.75" stroke="currentColor" stroke-width="1.5"
+                                      stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                        </span>
+                    </a>
+                {% endif %}
+                </nav>
+            </section>
         </div>
-
-      </div>
-    </div>
-    <!-- плавающий элемент с формами связи -->
-    {% include 'core/components/formsContainer.html' %}
-    <!-- плавающий элемент с формами связи -->
-  </main>
-
+    </main>
 {% endblock %}

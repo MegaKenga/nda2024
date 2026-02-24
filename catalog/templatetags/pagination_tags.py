@@ -1,8 +1,8 @@
 from django import template
 from urllib.parse import urlencode
 
-register = template.Library()
 
+register = template.Library()
 
 @register.simple_tag
 def url_with_query_params(request, page_number=None):
