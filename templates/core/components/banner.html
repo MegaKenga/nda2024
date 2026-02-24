@@ -1,33 +1,33 @@
 {% load static %}
 
-<div class="brandBanner"
-  style="background: linear-gradient(135deg,
-  {% if brand %}
-    {{ brand.banner_color }}
-  {% else %}
-    {{ category.banner_color }}
-  {% endif %}, white); ">
-  <div class="brandLogo">
-    {% if brand.logo %}
-      <img src="{{ brand.logo.url }}" alt="{{ brand.name }}" />
-    {% elif category.logo %}
-      <img src="{{ category.logo.url }}" alt="{{ category.name }}" />
-    {% else %}
-      <img src="{% static 'images/noImage.jpg' %}" alt="Default logo" />
-    {% endif %}
-  </div>
-
-  <div class="brandInfo">
-    {% if brand %}
-      <h1>{{ brand.name|safe|striptags }}</h1>
-      {% if category %}
-        <h2>{{ category.name|safe|striptags }}</h2>
-      {% elif brand %}
-        <h2>{{ brand.description|safe|striptags }}</h2>
-      {% endif %}
-    {% elif category %}
-      <h1>{{ category.name|safe|striptags }}</h1>
-      <h2>{{ category.description|safe|striptags }}</h2>
-    {% endif %}
-  </div>
-</div>
+<section class="hero-page hero-page_theme_main"
+         style="background: linear-gradient(135deg,
+                 {% if brand %}
+                     {{ brand.banner_color }}
+                 {% else %}
+                     {{ category.banner_color }}
+                 {% endif %} 0%,
+                 #ffffff 100%);">
+    <div class="hero-page__card">
+        {% if brand.logo %}
+            <img class="hero-page__logo" src="{{ brand.logo.url }}" alt="{{ brand.name }}" width="183" height="122">
+        {% elif category.logo %}
+            <img class="hero-page__logo" src="{{ category.logo.url }}" alt="{{ category.name }}" width="183" height="122">
+        {% else %}
+            <img class="hero-page__logo" src="{% static 'img/noImage.jpg' %}" alt="Нет изображения" width="183" height="122">
+        {% endif %}
+    </div>
+    <div class="hero-page__content">
+        {% if brand %}
+            <h1 class="hero-page__title t-70-101">{{ brand.name|safe|striptags }}</h1>
+            {% if category %}
+                <p class="hero-page__subtitle t-30-43">{{ category.name|safe|striptags }}</p>
+            {% elif brand %}
+                <p class="hero-page__subtitle t-30-43">{{ brand.description|safe|striptags }}</p>
+            {% endif %}
+        {% elif category %}
+            <h1 class="hero-page__title t-70-101">{{ category.name|safe|striptags }}</h1>
+            <p class="hero-page__subtitle t-30-43">{{ category.description|safe|striptags }}</p>
+        {% endif %}
+    </div>
+</section>

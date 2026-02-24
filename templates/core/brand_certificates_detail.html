@@ -1,9 +1,8 @@
 {% extends 'core/base.html' %}
-{% load static cache %}
 {% load static %}
 
 {% block title %}
-<title> Регистрационные удостоверения {{brand}}</title>
+    <title> Регистрационные удостоверения {{brand}}</title>
 {% endblock %}
 
 {% block metatag %}
@@ -14,105 +13,45 @@
   <meta name="description" content="Регистрационные удостоверения продукции {{brand}}">
 {% endblock %}
 
-{% block styles %}
-
-<link rel="stylesheet" href="{% static 'css/styleIndex.css' %}" type="text/css">
-<link rel="preload" type="text/css" href="{% static 'bootstrap/css/bootstrap.min.css' %}" />
-<script src="{% static 'bootstrap/js/bootstrap.min.js' %}" defer></script>
-<link rel="stylesheet" href="{% static 'custom/css/custom.css' %}" type="text/css">
-{% endblock %}
-
 {% block content %}
-  <header style="height: 0px;">
-    <!-- летающая шапка -->
-    {% include 'core/components/header.html' %}
-    <!-- летающая шапка -->
-  </header>
-  <main class="main">
-    <div class="container1">
-    {% cache 86400 'brand_certificates_breadcrumbs' brand.slug %}
-      <div class="breadCrumbs">
-        <ol class="breadcrumb">
-          <li class="breadcrumb-item">
-            <a href="{% url 'home' %}">ГЛАВНАЯ</a>
-          </li>
-          <li class="breadcrumb-item">
-            <a href="{% url 'brands_with_certificates' %}">СЕРТИФИКАТЫ</a>
-          </li>
-          <li class="breadcrumb-item breadcrumb-item-active" aria-current="page">{{ brand.name }}</li>
-        </ol>
-      </div>
-      {% endcache %}
-     {% cache 86400 'brand_certificates_banner' brand.slug %}
-      {% include 'core/components/banner.html' %}
-      {% endcache %}
+    <main class="certificates-inner">
+      <div class="container">
+        <nav class="breadcrumbs" aria-label="Хлебные крошки">
+          <a class="breadcrumbs__link t-18" href="{% url 'home' %}">Главная</a>
+          <span class="breadcrumbs__sep" aria-hidden="true">/</span>
+          <a class="breadcrumbs__link t-18" href="{% url 'brands_with_certificates' %}">РУ и Сертификаты</a>
+          <span class="breadcrumbs__sep" aria-hidden="true">/</span>
+          <span class="breadcrumbs__current t-18 breadcrumbs__current_weight_medium">{{ brand.name }}</span>
+        </nav>
 
-      <div class="more550">
-        <div class="certificatesTable">
-          {% cache 3600 'brand_certificate_table' brand.slug %}
-          <table class="table table-responsive table-borderless">
-            <thead>
-              <tr class="table-header">
-                <th class="col-1 text-center">№</th>
-                <th class="col-11 text-center">Содержание документа</th>
-                <th class="col-2 text-center">Номер РУ</th>
-                <th class="col-2 text-center">РУ</th>
-              </tr>
-            </thead>
-            <tbody>
-                  {% for certificate in certificates %}
-                    <tr class="table-row">
-                      <td class="text-center align-middle">{{ forloop.counter }}</td>
-                      <td class="text-center align-middle">{{ certificate.product.name }}</td>
-                      <td class="text-center align-middle">{{ certificate.get_filename|slice:"3:12" }}</td>
-                      <td class="text-center align-middle" id="certificateDownload">
-                        <a href="{{ certificate.file.url }}">
-                        <img src="{% static 'images/certificates/downloadCertificates.svg' %}" alt="" />  
-                        Скачать
-                        </a>
-                      </td>
-                    </tr>
-                  {% endfor %}
-            </tbody>
-          </table>
-          {% endcache %}
-        </div>
-      </div>
+        {% include 'core/components/banner.html' %}
 
-      <div class="less550">
-        <div class="certificatesTable">
-          {% cache 3600 'brand_certificate_table' brand.slug %}
-          <table class="table table-responsive table-borderless">
-            <thead>
-              <tr class="table-header">
-                <th class="col-2 text-center">№</th>
-                <th class="col-9 text-center">Содержание документа</th>
-                <th class="col-4  text-center">Номер РУ</th>
-                <th class="col-3  text-center">РУ</th>
-              </tr>
-            </thead>
-            <tbody>
-                  {% for certificate in certificates %}
-                    <tr class="table-row">
-                      <td class="text-center align-middle"><span>{{ forloop.counter }}</span></td>
-                      <td class="text-start align-middle p-2"><span>{{ certificate.product.name }}</span></td>
-<!--                      <td class="text-start align-middle p-2">Устройство для дренирования ран в наборах и отдельных упаковках</td>-->
-                      <td class="text-center align-middle"><span>{{ certificate.get_filename|slice:"3:12" }}</span></td>
-                      <td class="text-center align-middle" id= "certificateDownload">
-                        <a href="{{ certificate.file.url }}">Скачать</a>
-                      </td>
-                    </tr>
-                  {% endfor %}
-            </tbody>
-          </table>
-          {% endcache %}
-        </div>
+        <section class="ru-table-wrap">
+          <div class="ru-table">
+            <ol class="ru-table__head">
+              <li class="ru-table__th ru-table__th_num">№</li>
+              <li class="ru-table__th ru-table__th_doc">Содержание документа (наименование продукции)</li>
+              <li class="ru-table__th ru-table__th_ru-num">Номер РУ</li>
+              <li class="ru-table__th ru-table__th_ru">РУ</li>
+            </ol>
+              {% for certificate in certificates %}
+            <ol class="ru-table__ru-blue">
+              <li class="ru-table__th ru-table__th_num">№</li>
+              <li class="ru-table__td ru-table__td_num">{{ forloop.counter }}</li>
+              <li class="ru-table__th ru-table__th_doc">Документ</li>
+              <li class="ru-table__td ru-table__td_doc">{{ certificate.product.name }}</li>
+              <li class="ru-table__th ru-table__th_ru-num">Номер РУ</li>
+              <li class="ru-table__td ru-table__td_ru-num">{{ certificate.get_filename|slice:"3:12" }}</li>
+              <li class="ru-table__th ru-table__th_ru">РУ</li>
+              <li class="ru-table__td ru-table__td_action"><a class="ru-table__link" href="{{ certificate.file.url }}"><span
+                    class="ru-table__link-text">Скачать</span><svg class="ru-table__link-icon" width="18" height="18"
+                    viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <path d="M8 11L3 6h3V2h4v4h3L8 11zM2 14v-2h12v2H2z" fill="currentColor" />
+                  </svg></a></li>
+            </ol>
+              {% endfor %}
+          </div>
+        </section>
       </div>
-
-      <!-- плавающий элемент с формами связи -->
-      {% include 'core/components/formsContainer.html' %}
-      <!-- плавающий элемент с формами связи -->
-      <!-- формы на странице -->
-    </div>
-  </main>
+    </main>
 {% endblock %}

@@ -1,29 +1,24 @@
 {% extends 'core/base.html' %}
+
 {% load static %}
+
+{% block title %}
+    <title> 404 </title>
+{% endblock %}
+
 {% block content %}
-
-<header style="height: 100px;">
-     <!-- летающая шапка -->
-     {% include "core/components/header.html" %}
-       
-     <!-- летающая шапка -->
-</header>
-<body class="body">
-    <div class="container1">
-        <div class="notFoundContent">
-         <div class="notFoundContentTitle">
-             <h1>404</h1>
-             <p>К сожалению, запрашиваемая
-                 страница не найдена</p>
-             <a href="{% url 'home' %}">
-                 <div class="btn" style="padding: 0 10px;">Вернуться на главную страницу</div>
-             </a>
-             
-         </div>
-         <div class="nonFoundContentImage" style="background-image: url({% static 'images/404/notFound.svg' %});"></div>
+<main class="error">
+    <div class="container">
+        <div class="error-wrapper">
+            <div class="error-content">
+                <h1 class="error-content_title">404</h1>
+                <p class="error-content_desc">
+                    К сожалению, запрашиваемая страница не найдена
+                </p>
+                <a href="{% url 'home' %}" class="error-content_link">Вернуться на главную страницу</a>
+            </div>
+            <div class="error-image"><img src="{% static 'img/404.png' %}" alt="404-background"></div>
         </div>
-        
-     </div>
-</body>
-
+    </div>
+</main>
 {% endblock %}

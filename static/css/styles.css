@@ -1164,17 +1164,16 @@ textarea {
   box-shadow: 0 0 40px 3px rgba(0, 0, 0, 0.15);
 }
 
-.hero-page_theme_green {
-  background: linear-gradient(135deg, #007c30 0%, #ffffff 100%);
-}
+/*.hero-page_theme_green {*/
+/*  background: linear-gradient(135deg, #007c30 0%, #ffffff 100%);*/
+/*}*/
 
 .hero-page_theme_blue {
   background: #e6f0f8;
 }
 
-.hero-page_theme_pink {
-  background: linear-gradient(135deg, #e51d8a 0%, #ffffff 100%);
-}
+.hero-page_theme_main {
+}  /* начальный цвет баннера в переменной brand.color или category.color прокидывается, поэтому такой костыль */
 
 .hero-page_theme_product {
   background: linear-gradient(135deg, #006ea9 0%, #ffffff 100%);
