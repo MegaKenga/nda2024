@@ -15,7 +15,7 @@ def delete_offers(request, product_id):
             product = get_object_or_404(Product, pk=int(product_id))
             return redirect('offer', product_slug=product.slug, brand_slug=product.brand.slug)
 
-    return render(request, 'core/components/delete_offers.html')
+    return render(request, 'core/components/excel_input.html')
 
 
 def import_from_excel(request, product_id):

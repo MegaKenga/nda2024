@@ -19,15 +19,17 @@
     </div>
     <div class="hero-page__content">
         {% if brand %}
-            <h1 class="hero-page__title t-70-101">{{ brand.name|safe|striptags }}</h1>
+            <p class="hero-page__title t-70-101">{{ brand.name|safe|striptags }}</p>
             {% if category %}
-                <p class="hero-page__subtitle t-30-43">{{ category.name|safe|striptags }}</p>
+                <h1 class="hero-page__subtitle t-30-43">{{ category.name|safe|striptags }}</h1>
+            {% elif product %}
+                <h2 class="hero-page__subtitle t-30-43">{{ product.name|safe|striptags }}</h2>
             {% elif brand %}
-                <p class="hero-page__subtitle t-30-43">{{ brand.description|safe|striptags }}</p>
+                <h1 class="hero-page__subtitle t-30-43">{{ brand.description|safe|striptags }}</h1>
             {% endif %}
         {% elif category %}
-            <h1 class="hero-page__title t-70-101">{{ category.name|safe|striptags }}</h1>
-            <p class="hero-page__subtitle t-30-43">{{ category.description|safe|striptags }}</p>
+            <p class="hero-page__title t-70-101">{{ category.name|safe|striptags }}</p>
+            <h1 class="hero-page__subtitle t-30-43">{{ category.description|safe|striptags }}</h1>
         {% endif %}
     </div>
 </section>

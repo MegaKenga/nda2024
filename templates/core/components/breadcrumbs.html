@@ -1,7 +1,7 @@
 {% load static %}
 
 <nav class="breadcrumbs" aria-label="Хлебные крошки">
-    <a class="breadcrumbs__link t-18" href="{% url 'home' %}">Главная</a>
+    <a class="breadcrumbs__link t-18" href="{% url 'home' %}">ГЛАВНАЯ</a>
     <span class="breadcrumbs__sep" aria-hidden="true">/</span>
     {% if category.brand %}
         <a href="{% url 'brand' brand_slug=category.brand.slug %}">
