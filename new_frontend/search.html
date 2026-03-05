@@ -341,55 +341,62 @@
       </div>
     </footer>
 
-    <div class="callback-popup" id="callbackPopup" role="dialog" aria-modal="true" aria-labelledby="callbackPopupTitle"
+    <div class="callback-popup" id="callbackPopup" role="dialog" aria-modal="true" aria-labelledby="callModalLabel"
       aria-hidden="true" hidden>
       <div class="callback-popup__backdrop" aria-label="Закрыть"></div>
       <div class="callback-popup-wrapper">
         <div class="callback-popup__modal">
-          <button type="button" class="callback-popup__close" data-callback-popup-close aria-label="Закрыть">
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M15 5L5 15M5 5l10 10" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
-                stroke-linejoin="round" />
-            </svg>
-          </button>
-          <h2 class="callback-popup__title t-50" id="callbackPopupTitle">Заказать звонок</h2>
-          <form class="order-popup__form callback-popup__form" id="callbackPopupForm" action="#" method="post" novalidate>
-            <div class="order-popup__form-panel order-popup__form-panel_physical">
-              <div class="order-popup__field order-popup__field_full">
-                <input type="text" class="order-popup__input" name="callback_fio" placeholder="Иванов Иван Иванович"
-                  autocomplete="name" aria-label="ФИО" required>
-              </div>
-              <div class="order-popup__row">
-                <div class="order-popup__field">
-                  <input type="tel" class="order-popup__input" name="callback_phone" placeholder="+7 (999) 999 - 99 - 99"
-                    autocomplete="tel" aria-label="Телефон" required>
-                </div>
-                <div class="order-popup__field">
-                  <input type="email" class="order-popup__input" name="callback_email" placeholder="E-mail"
-                    autocomplete="email" aria-label="E-mail">
-                </div>
-              </div>
-              <div class="order-popup__field order-popup__field_full">
-                <textarea class="order-popup__textarea" name="callback_message" rows="4" placeholder="Комментарий"
-                  aria-label="Комментарий"></textarea>
-              </div>
-              <div class="order-popup__captcha">
-                <input type="checkbox" class="order-popup__captcha-checkbox" name="callback_captcha" id="callbackPopupCaptcha"
-                  aria-label="Я не робот">
-                <label class="order-popup__captcha-label" for="callbackPopupCaptcha">Я не робот</label>
-                <div class="order-popup__captcha-placeholder" aria-hidden="true">
-                  <img src="img/capcha.png" alt="">
-                </div>
-              </div>
-              <button type="submit" class="order-popup__submit">Отправить запрос</button>
-              <div class="order-popup__checkbox-wrap order-popup__checkbox-wrap_cookie">
-                <input type="checkbox" class="order-popup__checkbox" name="callback_privacy" id="callbackPopupPrivacy"
-                  required>
-                <label class="order-popup__checkbox-label" for="callbackPopupPrivacy">Я прочел (прочла) Уведомление о
-                  <a href="politika.html" class="order-popup__privacy-link">политики конфиденциальности</a></label>
-              </div>
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="callModalLabel">Заказать звонок</h5>
+              <button type="button" class="btn-close" data-callback-popup-close aria-label="Закрыть"></button>
             </div>
-          </form>
+            <div class="modal-body">
+              <form id="call_form" action="{% url 'call_submit' %}" method="post" enctype="multipart/form-data"
+                novalidate>
+                {% csrf_token %}
+                <div id="call-form-container">
+                  <div class="form-floating mb-2">
+                    {{ call_form.name }}
+                    <label for="id_name">Ваше имя</label>
+                    {% if call_form.name.errors %}
+                    <div class="text-danger">{{ call_form.name.errors }}</div>
+                    {% endif %}
+                  </div>
+                  <div class="form-floating mb-2">
+                    {{ call_form.phone_number }}
+                    <label for="id_phone_number">Ваш телефон</label>
+                    {% if call_form.phone_number.errors %}
+                    <div class="text-danger">{{ call_form.phone_number.errors }}</div>
+                    {% endif %}
+                  </div>
+                  <div class="form-floating mb-2">
+                    {{ call_form.message }}
+                    <label for="id_message">Текст письма</label>
+                    {% if call_form.message.errors %}
+                    <div class="text-danger">{{ call_form.message.errors }}</div>
+                    {% endif %}
+                  </div>
+                  <div class="mb-2">
+                    <label class="input-file">
+                      {{ call_form.company_details }}
+                      <span>Прикрепить файл</span>
+                    </label>
+                    {% if call_form.company_details.errors %}
+                    <div class="text-danger">{{ call_form.company_details.errors }}</div>
+                    {% endif %}
+                  </div>
+                  <div id="captcha-container" class="smart-captcha" data-sitekey="ysc1_sxny6cNZmnvhyJKrojDDLNxj0nvkGnTleldHzqEo9d9475ca"></div>
+                  <div class="order-popup__checkbox-wrap order-popup__checkbox-wrap_cookie mt-3 mb-2">
+                    <input type="checkbox" class="order-popup__checkbox" name="callback_privacy" id="callbackPopupPrivacy" required>
+                    <label class="order-popup__checkbox-label" for="callbackPopupPrivacy">Я прочел (прочла) Уведомление о
+                      <a href="politika.html" class="order-popup__privacy-link">политики конфиденциальности</a></label>
+                  </div>
+                  <button type="submit" class="btn btn-success mt-3">Отправить</button>
+                </div>
+              </form>
+            </div>
+          </div>
         </div>
       </div>
     </div>

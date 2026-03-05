@@ -130,7 +130,8 @@
               fill="white" />
           </svg>
         </a>
-        <button type="button" class="contact-bar__item contact-bar__item_green" data-callback-popup-open aria-label="Заказать звонок">
+        <button type="button" class="contact-bar__item contact-bar__item_green" data-callback-popup-open
+          aria-label="Заказать звонок">
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path
               d="M18.3 14.4l-4.2-1.8a1.5 1.5 0 00-1.6.3l-1.5 1.5a11.5 11.5 0 01-5.2-5.2l1.5-1.5c.4-.4.5-1 .3-1.6L5.6 1.7A1.5 1.5 0 003.8 1L1.5 2.2a1.5 1.5 0 00-1 1.4c.7 8.6 7.4 15.3 16 16a1.5 1.5 0 001.4-1l1.2-2.3a1.5 1.5 0 00-.8-2z"
@@ -705,8 +706,21 @@
               </div>
             </section>
             <section class="product-panel" id="panel-video" data-product-panel="video" role="tabpanel" hidden>
-              <h3 class="product-panel__title">Видео</h3>
-              <p class="product-panel__text">Видеоматериалы по продукту.</p>
+              <div class="product-panel__video-block product-panel__video-block_youtube">
+                <div class="product-panel__video-embed">
+                  <iframe width="560" height="315" src="https://www.youtube.com/embed/m0Df5SUtnYY?si=yxUqGE10UYWLNg54"
+                    title="YouTube video player" frameborder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                </div>
+              </div>
+              <div class="product-panel__video-block product-panel__video-block_rutube">
+                <div class="product-panel__video-embed">
+                  <iframe width="560" height="315" src="https://rutube.ru/play/embed/58f06baa0957bd41a005792951044bdc/"
+                    style="border: none;" allow="clipboard-write; autoplay" webkitAllowFullScreen mozallowfullscreen
+                    allowFullScreen></iframe>
+                </div>
+              </div>
             </section>
           </div>
           <div class="product-order__total-panel" id="orderTotalPanel" role="status" aria-live="polite" hidden>
@@ -717,11 +731,16 @@
             </div>
           </div>
           <div class="product-order__actions product-order__desktop-only">
-            <button type="button" class="product-order__action-btn product-order__action-btn_file">Выбрать файл</button>
-            <button type="button" class="product-order__action-btn product-order__action-btn_upload">Загрузить
-              коды</button>
-            <button type="button" class="product-order__action-btn product-order__action-btn_delete">Удалить
-              все</button>
+            <form method="post" action="#" enctype="multipart/form-data" class="product-order__upload-form">
+              <input type="file" name="excel_file" id="product-order-file-input" accept=".xlsx,.xls,.csv"
+                class="product-order__action-btn product-order__action-btn_file">
+              <button type="submit" class="product-order__action-btn product-order__action-btn_upload"
+                data-upload-btn>Загрузить коды</button>
+            </form>
+            <form method="post" action="#" class="product-order__delete-form" onsubmit="return confirm('Вы уверены?');">
+              <button type="submit" class="product-order__action-btn product-order__action-btn_delete">Удалить
+                все</button>
+            </form>
           </div>
         </div>
       </div>
@@ -903,56 +922,62 @@
       </div>
     </div>
 
-    <div class="callback-popup" id="callbackPopup" role="dialog" aria-modal="true" aria-labelledby="callbackPopupTitle"
+    <div class="callback-popup" id="callbackPopup" role="dialog" aria-modal="true" aria-labelledby="callModalLabel"
       aria-hidden="true" hidden>
       <div class="callback-popup__backdrop" aria-label="Закрыть"></div>
       <div class="callback-popup-wrapper">
         <div class="callback-popup__modal">
-          <button type="button" class="callback-popup__close" data-callback-popup-close aria-label="Закрыть">
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M15 5L5 15M5 5l10 10" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
-                stroke-linejoin="round" />
-            </svg>
-          </button>
-          <h2 class="callback-popup__title t-50" id="callbackPopupTitle">Заказать звонок</h2>
-          <form class="callback-form callback-popup__form" id="callbackPopupForm" action="#" method="post" novalidate>
-            <div class="callback-form__panel">
-              <div class="callback-form__field callback-form__field_full">
-                <input type="text" class="callback-form__input" name="callback_fio" placeholder="Иванов Иван Иванович"
-                  autocomplete="name" aria-label="ФИО" required>
-              </div>
-              <div class="callback-form__row">
-                <div class="callback-form__field">
-                  <input type="tel" class="callback-form__input" name="callback_phone" placeholder="+7 (999) 999 - 99 - 99"
-                    autocomplete="tel" aria-label="Телефон" required>
-                </div>
-                <div class="callback-form__field">
-                  <input type="email" class="callback-form__input" name="callback_email" placeholder="E-mail"
-                    autocomplete="email" aria-label="E-mail">
-                </div>
-              </div>
-              <div class="callback-form__field callback-form__field_full">
-                <textarea class="callback-form__textarea" name="callback_message" rows="4" placeholder="Комментарий"
-                  aria-label="Комментарий"></textarea>
-              </div>
-              <div class="callback-form__captcha">
-                <input type="checkbox" class="callback-form__captcha-checkbox" name="callback_captcha" id="callbackPopupCaptcha"
-                  aria-label="Я не робот">
-                <label class="callback-form__captcha-label" for="callbackPopupCaptcha">Я не робот</label>
-                <div class="callback-form__captcha-placeholder" aria-hidden="true">
-                  <img src="img/capcha.png" alt="">
-                </div>
-              </div>
-              <button type="submit" class="callback-form__submit">Отправить запрос</button>
-              <div class="callback-form__checkbox-wrap callback-form__checkbox-wrap_cookie">
-                <input type="checkbox" class="callback-form__checkbox" name="callback_privacy" id="callbackPopupPrivacy"
-                  aria-describedby="callbackPopupPrivacyText" required>
-                <label class="callback-form__checkbox-label" for="callbackPopupPrivacy" id="callbackPopupPrivacyText">Я прочел
-                  (прочла) Уведомление о <a href="politika.html" class="callback-form__privacy-link">политики
-                    конфиденциальности</a></label>
-              </div>
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="callModalLabel">Заказать звонок</h5>
+              <button type="button" class="btn-close" data-callback-popup-close aria-label="Закрыть"></button>
             </div>
-          </form>
+            <div class="modal-body">
+              <form id="call_form" action="{% url 'call_submit' %}" method="post" enctype="multipart/form-data"
+                novalidate>
+                {% csrf_token %}
+                <div id="call-form-container">
+                  <div class="form-floating mb-2">
+                    {{ call_form.name }}
+                    <label for="id_name">Ваше имя</label>
+                    {% if call_form.name.errors %}
+                    <div class="text-danger">{{ call_form.name.errors }}</div>
+                    {% endif %}
+                  </div>
+                  <div class="form-floating mb-2">
+                    {{ call_form.phone_number }}
+                    <label for="id_phone_number">Ваш телефон</label>
+                    {% if call_form.phone_number.errors %}
+                    <div class="text-danger">{{ call_form.phone_number.errors }}</div>
+                    {% endif %}
+                  </div>
+                  <div class="form-floating mb-2">
+                    {{ call_form.message }}
+                    <label for="id_message">Текст письма</label>
+                    {% if call_form.message.errors %}
+                    <div class="text-danger">{{ call_form.message.errors }}</div>
+                    {% endif %}
+                  </div>
+                  <div class="mb-2">
+                    <label class="input-file">
+                      {{ call_form.company_details }}
+                      <span>Прикрепить файл</span>
+                    </label>
+                    {% if call_form.company_details.errors %}
+                    <div class="text-danger">{{ call_form.company_details.errors }}</div>
+                    {% endif %}
+                  </div>
+                  <div id="captcha-container" class="smart-captcha" data-sitekey="ysc1_sxny6cNZmnvhyJKrojDDLNxj0nvkGnTleldHzqEo9d9475ca"></div>
+                  <div class="order-popup__checkbox-wrap order-popup__checkbox-wrap_cookie mt-3 mb-2">
+                    <input type="checkbox" class="order-popup__checkbox" name="callback_privacy" id="callbackPopupPrivacy" required>
+                    <label class="order-popup__checkbox-label" for="callbackPopupPrivacy">Я прочел (прочла) Уведомление о
+                      <a href="politika.html" class="order-popup__privacy-link">политики конфиденциальности</a></label>
+                  </div>
+                  <button type="submit" class="btn btn-success mt-3">Отправить</button>
+                </div>
+              </form>
+            </div>
+          </div>
         </div>
       </div>
     </div>

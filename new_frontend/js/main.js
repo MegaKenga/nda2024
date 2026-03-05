@@ -205,6 +205,15 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
+  var fileInput = document.getElementById('product-order-file-input');
+  var uploadBtn = document.querySelector('[data-upload-btn]');
+  if (fileInput && uploadBtn) {
+    var uploadBtnDefaultText = uploadBtn.textContent;
+    fileInput.addEventListener('change', function () {
+      uploadBtn.textContent = this.files && this.files.length ? this.files[0].name : uploadBtnDefaultText;
+    });
+  }
+
   /* ========== Секция: Попап «Оформить заказ» ========== */
   var orderPopup = document.getElementById('orderPopup');
   var orderPopupCaption = document.querySelector('.product-order__total-caption');
@@ -511,9 +520,28 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!callbackModal.contains(e.target)) closeCallbackPopup();
       });
     }
-    var callbackForm = document.getElementById('callbackPopupForm');
+    var callbackForm = document.getElementById('call_form') || document.getElementById('callbackPopupForm');
     if (callbackForm) {
+      if (callbackForm.id === 'call_form') {
+        var callFormPhone = callbackForm.querySelector('input[name="phone_number"], input[type="tel"]');
+        if (callFormPhone) {
+          callFormPhone.addEventListener('input', function () {
+            var v = this.value.replace(/\D/g, '');
+            if (v.length > 0) {
+              if (v[0] === '8') v = '7' + v.slice(1);
+              else if (v[0] !== '7') v = '7' + v;
+            }
+            v = v.slice(0, 11);
+            if (v.length <= 1) this.value = v ? '+7' : '';
+            else this.value = '+7 (' + v.slice(1, 4) + ') ' + v.slice(4, 7) + '-' + v.slice(7, 9) + '-' + v.slice(9);
+          });
+          callFormPhone.addEventListener('focus', function () {
+            if (this.value.replace(/\D/g, '').length === 0) this.value = '+7 ';
+          });
+        }
+      }
       callbackForm.addEventListener('submit', function (e) {
+        if (this.id === 'call_form') return;
         e.preventDefault();
         var fio = callbackForm.querySelector('[name="callback_fio"]');
         var phone = callbackForm.querySelector('[name="callback_phone"]');
@@ -556,13 +584,17 @@ document.addEventListener('DOMContentLoaded', function () {
         1021: { slidesPerView: 3 },
         1441: { slidesPerView: 4 }
       },
-      freeMode: true,
+      freeMode: false,
       watchSlidesProgress: true,
       observer: true,
-      observeParents: true
+      observeParents: true,
+      loop: false
     });
+    var mainSlidesCount = productGalleryEl.querySelectorAll('.product-gallery-main .swiper-slide').length;
     new Swiper('.product-gallery-main', {
       spaceBetween: 0,
+      loop: true,
+      loopedSlides: mainSlidesCount,
       thumbs: { swiper: thumbsSwiper },
       navigation: {
         prevEl: '.product-gallery-main .swiper-button-prev',
@@ -667,10 +699,19 @@ document.addEventListener('DOMContentLoaded', function () {
   /* ========== Виджет куки ========== */
   var cookieBar = document.getElementById('cookie-bar');
   var cookieAcceptBtn = document.querySelector('[data-cookie-accept]');
+  var COOKIE_CONSENT_KEY = 'nda_cookie_consent';
 
-  if (cookieBar && cookieAcceptBtn) {
-    cookieAcceptBtn.addEventListener('click', function () {
+  if (cookieBar) {
+    if (localStorage.getItem(COOKIE_CONSENT_KEY) === 'accepted') {
       cookieBar.classList.add('cookie-bar_hidden');
-    });
+    }
+    if (cookieAcceptBtn) {
+      cookieAcceptBtn.addEventListener('click', function () {
+        try {
+          localStorage.setItem(COOKIE_CONSENT_KEY, 'accepted');
+        } catch (e) {}
+        cookieBar.classList.add('cookie-bar_hidden');
+      });
+    }
   }
 });
