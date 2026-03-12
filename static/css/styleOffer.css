@@ -65,30 +65,30 @@
     width: 50px;
     background-position: center;
     background-repeat: no-repeat;
-    
+
 }
 
-.instructionDownload{
+.instructionDownload {
     background-image: url('../images/offer/instructionDownload.svg');
 }
 
-.ruDownload{
+.ruDownload {
     background-image: url('../images/offer/ruDownload.svg');
 }
 
-.catalogDownload{
+.catalogDownload {
     background-image: url('../images/offer/catalogDownload.svg');
 }
 
-.catalogTutorialLink:hover .instructionDownload{
+.catalogTutorialLink:hover .instructionDownload {
     background-image: url('../images/offer/instructionDownloadWhite.svg');
 }
 
-.catalogTutorialLink:hover .ruDownload{
+.catalogTutorialLink:hover .ruDownload {
     background-image: url('../images/offer/ruDownloadWhite.svg');
 }
 
-.catalogTutorialLink:hover .catalogDownload{
+.catalogTutorialLink:hover .catalogDownload {
     background-image: url('../images/offer/catalogDownloadWhite.svg');
 }
 
@@ -199,7 +199,7 @@
     font-size: 20px;
     text-align: center;
     width: 60px;
-    
+
 }
 
 .dropDown {
@@ -331,7 +331,7 @@
     height: 600px;
 }
 
-.productDescription table{
+.productDescription table {
     width: 100% !important;
 }
 
@@ -538,7 +538,7 @@
 
     .catalogTutorialLink {
         width: calc(33%);
-    
+
     }
 
     .table td {
@@ -564,6 +564,7 @@
     .productTabContent {
         display: none;
     }
+
     .dropDown {
         display: flex;
         flex-direction: column;
@@ -596,9 +597,10 @@
         list-style-type: none;
         width: 100%;
     }
-    details > summary::-webkit-details-marker {
+
+    details>summary::-webkit-details-marker {
         display: none;
-      }
+    }
 
     details>summary::after {
         display: inline-block;
@@ -617,7 +619,7 @@
         margin-left: 10px;
         background-image: url("data:image/svg+xml,%3Csvg width='19' height='11' viewBox='0 0 19 11' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0.929504 9.62134L9.48285 1.06799L18.4853 10.0705' stroke='%231A1A18' stroke-linecap='round'/%3E%3C/svg%3E%0A");
     }
-    
+
 
     .catalogTutorialElText {
         font-size: 16px;
@@ -733,7 +735,7 @@
     }
 
 
-    .offersList{
+    .offersList {
         font-size: 20px;
     }
 
@@ -891,23 +893,23 @@
     flex: 7;
 }
 
-.order_list_less_800{
+.order_list_less_800 {
     display: none;
 }
 
-.order_list_over_800{
+.order_list_over_800 {
     display: block;
 }
 
 @media (max-width: 800px) {
 
 
-    .order_list_over_800{
+    .order_list_over_800 {
         display: none;
     }
 
-    .order_list_less_800{
+    .order_list_less_800 {
         display: block;
     }
-  
+
 }

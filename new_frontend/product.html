@@ -10,6 +10,7 @@
   <link rel="stylesheet" href="css/fonts.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
   <link rel="stylesheet" href="css/styles.css">
+  <script src="https://smartcaptcha.cloud.yandex.ru/captcha.js" defer></script>
 </head>
 
 <body>
@@ -123,13 +124,13 @@
             </svg>
           </span>
         </button>
-        <a class="contact-bar__item contact-bar__item_blue" href="mailto:info@nda.ru" aria-label="Email">
+        <button type="button" class="contact-bar__item contact-bar__item_blue" data-mail-popup-open aria-label="Написать письмо">
           <svg width="20" height="16" viewBox="0 0 20 16" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path
               d="M18 0H2C0.9 0 0 0.9 0 2v12c0 1.1 0.9 2 2 2h16c1.1 0 2-0.9 2-2V2c0-1.1-0.9-2-2-2zm0 4l-8 5-8-5V2l8 5 8-5v2z"
               fill="white" />
           </svg>
-        </a>
+        </button>
         <button type="button" class="contact-bar__item contact-bar__item_green" data-callback-popup-open
           aria-label="Заказать звонок">
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -471,14 +472,16 @@
                       <li class="ru-table__td ru-table__td_ru-num">36</li>
                       <li class="ru-table__th ru-table__th_ru">Кол-во</li>
                       <li class="ru-table__td ru-table__td_action">
-                        <form class="ru-table__qty-control" action="#" method="post">
+                        <form class="ru-table__qty-control" action="{% url 'cart_add' offer_id=offer.pk %}" method="post"
+                          hx-post="{% url 'cart_add' offer_id=offer.pk %}" hx-target="#cart" hx-swap="outerHTML">
+                          {% csrf_token %}
                           <div class="ru-table__qty-group">
-                            <button type="button" class="ru-table__qty-btn ru-table__qty-btn_minus"
-                              aria-label="Уменьшить">−</button>
-                            <input class="ru-table__qty-input" type="number" name="qty" value="0" min="0"
+                            <button type="button" class="ru-table__qty-btn ru-table__qty-btn_minus" aria-label="Уменьшить"
+                              onclick="changeQuantity(event, this, -1)">−</button>
+                            <input class="ru-table__qty-input form-control" type="number" name="quantity" id="id_quantity_{{ offer.pk }}" value="0" min="1" required
                               aria-label="Количество">
-                            <button type="button" class="ru-table__qty-btn ru-table__qty-btn_plus"
-                              aria-label="Увеличить">+</button>
+                            <button type="button" class="ru-table__qty-btn ru-table__qty-btn_plus" aria-label="Увеличить"
+                              onclick="changeQuantity(event, this, 1)">+</button>
                           </div>
                           <button type="submit" class="ru-table__qty-add">Добавить</button>
                         </form>
@@ -493,14 +496,16 @@
                       <li class="ru-table__td ru-table__td_ru-num">36</li>
                       <li class="ru-table__th ru-table__th_ru">Кол-во</li>
                       <li class="ru-table__td ru-table__td_action">
-                        <form class="ru-table__qty-control" action="#" method="post">
+                        <form class="ru-table__qty-control" action="{% url 'cart_add' offer_id=offer.pk %}" method="post"
+                          hx-post="{% url 'cart_add' offer_id=offer.pk %}" hx-target="#cart" hx-swap="outerHTML">
+                          {% csrf_token %}
                           <div class="ru-table__qty-group">
-                            <button type="button" class="ru-table__qty-btn ru-table__qty-btn_minus"
-                              aria-label="Уменьшить">−</button>
-                            <input class="ru-table__qty-input" type="number" name="qty" value="0" min="0"
+                            <button type="button" class="ru-table__qty-btn ru-table__qty-btn_minus" aria-label="Уменьшить"
+                              onclick="changeQuantity(event, this, -1)">−</button>
+                            <input class="ru-table__qty-input form-control" type="number" name="quantity" id="id_quantity_{{ offer.pk }}" value="0" min="1" required
                               aria-label="Количество">
-                            <button type="button" class="ru-table__qty-btn ru-table__qty-btn_plus"
-                              aria-label="Увеличить">+</button>
+                            <button type="button" class="ru-table__qty-btn ru-table__qty-btn_plus" aria-label="Увеличить"
+                              onclick="changeQuantity(event, this, 1)">+</button>
                           </div>
                           <button type="submit" class="ru-table__qty-add">Добавить</button>
                         </form>
@@ -515,14 +520,16 @@
                       <li class="ru-table__td ru-table__td_ru-num">36</li>
                       <li class="ru-table__th ru-table__th_ru">Кол-во</li>
                       <li class="ru-table__td ru-table__td_action">
-                        <form class="ru-table__qty-control" action="#" method="post">
+                        <form class="ru-table__qty-control" action="{% url 'cart_add' offer_id=offer.pk %}" method="post"
+                          hx-post="{% url 'cart_add' offer_id=offer.pk %}" hx-target="#cart" hx-swap="outerHTML">
+                          {% csrf_token %}
                           <div class="ru-table__qty-group">
-                            <button type="button" class="ru-table__qty-btn ru-table__qty-btn_minus"
-                              aria-label="Уменьшить">−</button>
-                            <input class="ru-table__qty-input" type="number" name="qty" value="0" min="0"
+                            <button type="button" class="ru-table__qty-btn ru-table__qty-btn_minus" aria-label="Уменьшить"
+                              onclick="changeQuantity(event, this, -1)">−</button>
+                            <input class="ru-table__qty-input form-control" type="number" name="quantity" id="id_quantity_{{ offer.pk }}" value="0" min="1" required
                               aria-label="Количество">
-                            <button type="button" class="ru-table__qty-btn ru-table__qty-btn_plus"
-                              aria-label="Увеличить">+</button>
+                            <button type="button" class="ru-table__qty-btn ru-table__qty-btn_plus" aria-label="Увеличить"
+                              onclick="changeQuantity(event, this, 1)">+</button>
                           </div>
                           <button type="submit" class="ru-table__qty-add">Добавить</button>
                         </form>
@@ -537,14 +544,16 @@
                       <li class="ru-table__td ru-table__td_ru-num">36</li>
                       <li class="ru-table__th ru-table__th_ru">Кол-во</li>
                       <li class="ru-table__td ru-table__td_action">
-                        <form class="ru-table__qty-control" action="#" method="post">
+                        <form class="ru-table__qty-control" action="{% url 'cart_add' offer_id=offer.pk %}" method="post"
+                          hx-post="{% url 'cart_add' offer_id=offer.pk %}" hx-target="#cart" hx-swap="outerHTML">
+                          {% csrf_token %}
                           <div class="ru-table__qty-group">
-                            <button type="button" class="ru-table__qty-btn ru-table__qty-btn_minus"
-                              aria-label="Уменьшить">−</button>
-                            <input class="ru-table__qty-input" type="number" name="qty" value="0" min="0"
+                            <button type="button" class="ru-table__qty-btn ru-table__qty-btn_minus" aria-label="Уменьшить"
+                              onclick="changeQuantity(event, this, -1)">−</button>
+                            <input class="ru-table__qty-input form-control" type="number" name="quantity" id="id_quantity_{{ offer.pk }}" value="0" min="1" required
                               aria-label="Количество">
-                            <button type="button" class="ru-table__qty-btn ru-table__qty-btn_plus"
-                              aria-label="Увеличить">+</button>
+                            <button type="button" class="ru-table__qty-btn ru-table__qty-btn_plus" aria-label="Увеличить"
+                              onclick="changeQuantity(event, this, 1)">+</button>
                           </div>
                           <button type="submit" class="ru-table__qty-add">Добавить</button>
                         </form>
@@ -559,14 +568,16 @@
                       <li class="ru-table__td ru-table__td_ru-num">36</li>
                       <li class="ru-table__th ru-table__th_ru">Кол-во</li>
                       <li class="ru-table__td ru-table__td_action">
-                        <form class="ru-table__qty-control" action="#" method="post">
+                        <form class="ru-table__qty-control" action="{% url 'cart_add' offer_id=offer.pk %}" method="post"
+                          hx-post="{% url 'cart_add' offer_id=offer.pk %}" hx-target="#cart" hx-swap="outerHTML">
+                          {% csrf_token %}
                           <div class="ru-table__qty-group">
-                            <button type="button" class="ru-table__qty-btn ru-table__qty-btn_minus"
-                              aria-label="Уменьшить">−</button>
-                            <input class="ru-table__qty-input" type="number" name="qty" value="0" min="0"
+                            <button type="button" class="ru-table__qty-btn ru-table__qty-btn_minus" aria-label="Уменьшить"
+                              onclick="changeQuantity(event, this, -1)">−</button>
+                            <input class="ru-table__qty-input form-control" type="number" name="quantity" id="id_quantity_{{ offer.pk }}" value="0" min="1" required
                               aria-label="Количество">
-                            <button type="button" class="ru-table__qty-btn ru-table__qty-btn_plus"
-                              aria-label="Увеличить">+</button>
+                            <button type="button" class="ru-table__qty-btn ru-table__qty-btn_plus" aria-label="Увеличить"
+                              onclick="changeQuantity(event, this, 1)">+</button>
                           </div>
                           <button type="submit" class="ru-table__qty-add">Добавить</button>
                         </form>
@@ -581,14 +592,16 @@
                       <li class="ru-table__td ru-table__td_ru-num">36</li>
                       <li class="ru-table__th ru-table__th_ru">Кол-во</li>
                       <li class="ru-table__td ru-table__td_action">
-                        <form class="ru-table__qty-control" action="#" method="post">
+                        <form class="ru-table__qty-control" action="{% url 'cart_add' offer_id=offer.pk %}" method="post"
+                          hx-post="{% url 'cart_add' offer_id=offer.pk %}" hx-target="#cart" hx-swap="outerHTML">
+                          {% csrf_token %}
                           <div class="ru-table__qty-group">
-                            <button type="button" class="ru-table__qty-btn ru-table__qty-btn_minus"
-                              aria-label="Уменьшить">−</button>
-                            <input class="ru-table__qty-input" type="number" name="qty" value="0" min="0"
+                            <button type="button" class="ru-table__qty-btn ru-table__qty-btn_minus" aria-label="Уменьшить"
+                              onclick="changeQuantity(event, this, -1)">−</button>
+                            <input class="ru-table__qty-input form-control" type="number" name="quantity" id="id_quantity_{{ offer.pk }}" value="0" min="1" required
                               aria-label="Количество">
-                            <button type="button" class="ru-table__qty-btn ru-table__qty-btn_plus"
-                              aria-label="Увеличить">+</button>
+                            <button type="button" class="ru-table__qty-btn ru-table__qty-btn_plus" aria-label="Увеличить"
+                              onclick="changeQuantity(event, this, 1)">+</button>
                           </div>
                           <button type="submit" class="ru-table__qty-add">Добавить</button>
                         </form>
@@ -603,14 +616,16 @@
                       <li class="ru-table__td ru-table__td_ru-num">36</li>
                       <li class="ru-table__th ru-table__th_ru">Кол-во</li>
                       <li class="ru-table__td ru-table__td_action">
-                        <form class="ru-table__qty-control" action="#" method="post">
+                        <form class="ru-table__qty-control" action="{% url 'cart_add' offer_id=offer.pk %}" method="post"
+                          hx-post="{% url 'cart_add' offer_id=offer.pk %}" hx-target="#cart" hx-swap="outerHTML">
+                          {% csrf_token %}
                           <div class="ru-table__qty-group">
-                            <button type="button" class="ru-table__qty-btn ru-table__qty-btn_minus"
-                              aria-label="Уменьшить">−</button>
-                            <input class="ru-table__qty-input" type="number" name="qty" value="0" min="0"
+                            <button type="button" class="ru-table__qty-btn ru-table__qty-btn_minus" aria-label="Уменьшить"
+                              onclick="changeQuantity(event, this, -1)">−</button>
+                            <input class="ru-table__qty-input form-control" type="number" name="quantity" id="id_quantity_{{ offer.pk }}" value="0" min="1" required
                               aria-label="Количество">
-                            <button type="button" class="ru-table__qty-btn ru-table__qty-btn_plus"
-                              aria-label="Увеличить">+</button>
+                            <button type="button" class="ru-table__qty-btn ru-table__qty-btn_plus" aria-label="Увеличить"
+                              onclick="changeQuantity(event, this, 1)">+</button>
                           </div>
                           <button type="submit" class="ru-table__qty-add">Добавить</button>
                         </form>
@@ -625,14 +640,16 @@
                       <li class="ru-table__td ru-table__td_ru-num">36</li>
                       <li class="ru-table__th ru-table__th_ru">Кол-во</li>
                       <li class="ru-table__td ru-table__td_action">
-                        <form class="ru-table__qty-control" action="#" method="post">
+                        <form class="ru-table__qty-control" action="{% url 'cart_add' offer_id=offer.pk %}" method="post"
+                          hx-post="{% url 'cart_add' offer_id=offer.pk %}" hx-target="#cart" hx-swap="outerHTML">
+                          {% csrf_token %}
                           <div class="ru-table__qty-group">
-                            <button type="button" class="ru-table__qty-btn ru-table__qty-btn_minus"
-                              aria-label="Уменьшить">−</button>
-                            <input class="ru-table__qty-input" type="number" name="qty" value="0" min="0"
+                            <button type="button" class="ru-table__qty-btn ru-table__qty-btn_minus" aria-label="Уменьшить"
+                              onclick="changeQuantity(event, this, -1)">−</button>
+                            <input class="ru-table__qty-input form-control" type="number" name="quantity" id="id_quantity_{{ offer.pk }}" value="0" min="1" required
                               aria-label="Количество">
-                            <button type="button" class="ru-table__qty-btn ru-table__qty-btn_plus"
-                              aria-label="Увеличить">+</button>
+                            <button type="button" class="ru-table__qty-btn ru-table__qty-btn_plus" aria-label="Увеличить"
+                              onclick="changeQuantity(event, this, 1)">+</button>
                           </div>
                           <button type="submit" class="ru-table__qty-add">Добавить</button>
                         </form>
@@ -811,108 +828,145 @@
             заявки. Без указания реквизитов мы не сможем выставить Вам коммерческое предложение.</p>
 
           <div class="order-popup__body">
-            <form class="order-popup__form" id="orderPopupForm" action="#" method="post" novalidate>
-              <div class="order-popup__form-panel order-popup__form-panel_physical" data-order-panel="physical"
-                role="tabpanel">
-                <div class="order-popup__field order-popup__field_full">
-                  <input type="text" class="order-popup__input" name="fio" placeholder="Иванов Иван Иванович"
-                    autocomplete="name" aria-label="ФИО" required>
-                </div>
-                <div class="order-popup__row">
-                  <div class="order-popup__field">
-                    <input type="tel" class="order-popup__input" name="phone" placeholder="+7 (999) 999 - 99 - 99"
-                      autocomplete="tel" aria-label="Телефон" required>
-                  </div>
-                  <div class="order-popup__field">
-                    <input type="email" class="order-popup__input" name="email" placeholder="E-mail"
-                      autocomplete="email" aria-label="E-mail" required>
-                  </div>
-                </div>
-                <div class="order-popup__field order-popup__field_full">
-                  <textarea class="order-popup__textarea" name="message" rows="5" placeholder="Текст письма"
-                    aria-label="Текст письма"></textarea>
-                </div>
-                <div class="order-popup__field order-popup__field_full">
-                  <label class="order-popup__file-label">
-                    <span class="order-popup__file-text">Прикрепить файл</span>
-                    <input type="file" class="order-popup__file" name="file" multiple hidden>
-                  </label>
-                </div>
-                <div class="order-popup__captcha">
-                  <input type="checkbox" class="order-popup__captcha-checkbox" name="captcha" id="orderPopupCaptcha"
-                    aria-label="Я не робот">
-                  <label class="order-popup__captcha-label" for="orderPopupCaptcha">Я не робот</label>
-                  <div class="order-popup__captcha-placeholder" aria-hidden="true">
-                    <img src="img/capcha.png" alt="">
-                  </div>
-                </div>
-                <button type="submit" class="order-popup__submit">Отправить запрос</button>
-                <div class="order-popup__checkbox-wrap order-popup__checkbox-wrap_cookie">
-                  <input type="checkbox" class="order-popup__checkbox" name="privacy" id="orderPopupPrivacy"
-                    aria-describedby="orderPopupPrivacyText" required>
-                  <label class="order-popup__checkbox-label" for="orderPopupPrivacy" id="orderPopupPrivacyText">Я прочел
-                    (прочла) Уведомление о <a href="politika.html" class="order-popup__privacy-link">политики
-                      конфиденциальности</a></label>
-                </div>
-              </div>
+            <div class="order-popup__forms">
+              <form class="order-popup__form" id="physical_modal_form" action="{% url 'physical_cart_submit' %}"
+                method="post" enctype="multipart/form-data"
+                hx-post="{% url 'physical_cart_submit' %}?random={{ timestamp }}%}" hx-target="#physical_modal_form_container"
+                hx-swap="none" novalidate>
+                {% csrf_token %}
+                <div id="physical_modal_form_container">
+                <div class="order-popup__form-panel order-popup__form-panel_physical" data-order-panel="physical"
+                  role="tabpanel">
+                  <div class="physicalForm">
+                    <div class="formEl">
+                      <div class="form-floating mb-3">
+                        {{ p_contact_form.name }}
+                        <label for="fullNameLegal">ФИО контактного лица</label>
+                      </div>
+                      <div class="oneLine">
+                        <div class="form-floating mb-3 w-50">
+                          {{ p_contact_form.phone_number }}
+                          {% if p_contact_form.phone_number.errors %}
+                          <div style="color: red">
+                            {{ p_contact_form.phone_number.errors }}
+                          </div>
+                          {% endif %}
+                        </div>
+                        <div class="form-floating mb-3 w-50">
+                          {{ p_contact_form.email }}
+                          {% if p_contact_form.email.errors %}
+                          <span class="invalid-feedback">
+                            {{ p_contact_form.email.errors }}
+                          </span>
+                          {% endif %}
+                          <label for="email">Email</label>
+                        </div>
+                      </div>
+                      <div class="form-floating mb-3">
+                        {{ p_contact_form.message }}
+                        <label for="message">Комментарий к заказу</label>
+                      </div>
+                      <div class="mb-3">
+                        <label class="input-file">
+                          {{p_contact_form.company_details}}
+                          <span class="filename1">Прикрепить файл</span>
+                        </label>
+                      </div>
 
-              <div class="order-popup__form-panel order-popup__form-panel_legal" data-order-panel="legal"
-                role="tabpanel" hidden>
-                <div class="order-popup__field order-popup__field_full">
-                  <input type="text" class="order-popup__input" name="fio_legal" placeholder="Иванов Иван Иванович"
-                    autocomplete="name" aria-label="ФИО">
-                </div>
-                <div class="order-popup__row">
-                  <div class="order-popup__field">
-                    <input type="tel" class="order-popup__input" name="phone_legal" placeholder="+7 (999) 999 - 99 - 99"
-                      autocomplete="tel" aria-label="Телефон">
+                      <div id="captcha-container-physical" class="smart-captcha mb-3"
+                        data-sitekey="ysc1_sxny6cNZmnvhyJKrojDDLNxj0nvkGnTleldHzqEo9d9475ca">
+                      </div>
+
+                      {% if captchaError %}
+                      <div class="text-danger mb-3">{{ captchaError }}</div>
+                      {% endif %}
+                      {% if emailError %}
+                      <div class="text-danger mb-3">{{ emailError }}</div>
+                      {% endif %}
+                      {% if emailSuccess %}
+                      <div class="text-success mb-3">{{ emailSuccess }}</div>
+                      {% endif %}
+
+                      <div class="modal-footer">
+                        <button type="submit" form="physical_modal_form" class="btn btn-primary">Отправить запрос</button>
+                      </div>
+                    </div>
                   </div>
-                  <div class="order-popup__field">
-                    <input type="email" class="order-popup__input" name="email_legal" placeholder="E-mail"
-                      autocomplete="email" aria-label="E-mail">
-                  </div>
-                </div>
-                <div class="order-popup__row">
-                  <div class="order-popup__field">
-                    <input type="text" class="order-popup__input" name="inn" placeholder="ИНН" aria-label="ИНН"
-                      inputmode="numeric" maxlength="12">
-                  </div>
-                  <div class="order-popup__field">
-                    <input type="text" class="order-popup__input" name="company_name" placeholder="Наименование"
-                      aria-label="Наименование организации">
-                  </div>
-                </div>
-                <div class="order-popup__field order-popup__field_full">
-                  <textarea class="order-popup__textarea" name="comment_legal" rows="5"
-                    placeholder="Комментарий к заказу" aria-label="Комментарий к заказу"></textarea>
-                </div>
-                <div class="order-popup__field order-popup__field_full">
-                  <label class="order-popup__file-label">
-                    <span class="order-popup__file-text">Прикрепить файл</span>
-                    <input type="file" class="order-popup__file" name="file_legal" multiple hidden>
-                  </label>
-                </div>
-                <div class="order-popup__captcha">
-                  <input type="checkbox" class="order-popup__captcha-checkbox" name="captcha_legal"
-                    id="orderPopupCaptchaLegal" aria-label="Я не робот">
-                  <label class="order-popup__captcha-label" for="orderPopupCaptchaLegal">Я не робот</label>
-                  <div class="order-popup__captcha-placeholder" aria-hidden="true">
-                    <img src="img/capcha.png" alt="">
-                  </div>
-                </div>
-                <button type="submit" class="order-popup__submit">Отправить запрос</button>
-                <div class="order-popup__checkbox-wrap order-popup__checkbox-wrap_cookie">
-                  <input type="checkbox" class="order-popup__checkbox" name="privacy_legal" id="orderPopupPrivacyLegal"
-                    aria-describedby="orderPopupPrivacyLegalText" required>
-                  <label class="order-popup__checkbox-label" for="orderPopupPrivacyLegal"
-                    id="orderPopupPrivacyLegalText">Я прочел (прочла) Уведомление о <a href="politika.html"
-                      class="order-popup__privacy-link">политики конфиденциальности</a></label>
                 </div>
               </div>
-            </form>
+              </form>
+
+              <form class="order-popup__form" id="cart_modal_form" action="{% url 'cart_submit' %}" method="post"
+                enctype="multipart/form-data" hx-post="{% url 'cart_submit' %}" hx-target="#modal_form_container"
+                hx-swap="none" novalidate hidden>
+                {% csrf_token %}
+                <div id="modal_form_container">
+                <div class="order-popup__form-panel order-popup__form-panel_legal" data-order-panel="legal"
+                  role="tabpanel" hidden>
+                  <div class="physicalForm">
+                    <div class="formEl">
+                      <div class="form-floating mb-3">
+                        {{ contact_form.name }}
+                        <label for="fullNameLegal">ФИО контактного лица</label>
+                      </div>
+                      <div class="oneLine">
+                        <div class="form-floating mb-3 w-50">
+                          {{ contact_form.phone_number }}
+                        </div>
+                        <div class="form-floating mb-3 w-50">
+                          {{ contact_form.email }}
+                          <label for="email">Email</label>
+                        </div>
+                      </div>
+                      <div class="oneLine">
+                        <div class="form-floating mb-3 w-50">
+                          {{ contact_form.company_name }}
+                          <label for="companyName">Наименование организации</label>
+                        </div>
+                        <div class="form-floating mb-3 w-50">
+                          {{ contact_form.inn }}
+                          <label for="inn">ИНН</label>
+                        </div>
+                      </div>
+                      <div class="form-floating mb-3">
+                        {{ contact_form.message }}
+                        <label for="message">Комментарий к заказу</label>
+                      </div>
+                      <div class="mb-3">
+                        <label class="input-file">
+                          {{ contact_form.company_details }}
+                          <span class="filename">Прикрепить файл</span>
+                        </label>
+                      </div>
+                      <div id="captcha-container-legal" class="smart-captcha mb-3"
+                        data-sitekey="ysc1_sxny6cNZmnvhyJKrojDDLNxj0nvkGnTleldHzqEo9d9475ca"></div>
+
+                      {% if emailError %}
+                      <div class="text-danger mb-3">{{ emailError }}</div>
+                      {% endif %}
+                      {% if emailSuccess %}
+                      <div class="text-success mb-3">{{ emailSuccess }}</div>
+                      {% endif %}
+                      {% if contact_form.email.errors %}
+                      <div class="error-message">
+                        {% for error in contact_form.email.errors %}
+                        {{ error }}
+                        {% endfor %}
+                      </div>
+                      {% endif %}
+
+                      <div class="modal-footer">
+                        <button type="submit" form="cart_modal_form" class="btn btn-primary">Отправить запрос</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              </form>
+            </div>
             <div class="order-popup__summary">
-              <p class="order-popup__summary-title order-popup__summary-title_legal" data-order-summary-title-legal
-                hidden>Ваш выбор:</p>
+              <p class="order-popup__summary-title order-popup__summary-title_legal" data-order-summary-title-legal>Ваш
+                выбор:</p>
               <ul class="order-popup__summary-list" id="orderPopupSummaryList">
                 <li class="order-popup__summary-empty" id="orderPopupSummaryEmpty">Добавьте товары в заказ</li>
               </ul>
@@ -982,6 +1036,79 @@
       </div>
     </div>
 
+    <div class="callback-popup" id="mailPopup" role="dialog" aria-modal="true" aria-labelledby="emailModalLabel"
+      aria-hidden="true" hidden>
+      <div class="callback-popup__backdrop" data-mail-popup-close aria-label="Закрыть"></div>
+      <div class="callback-popup-wrapper">
+        <div class="callback-popup__modal">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="emailModalLabel">Написать письмо</h5>
+              <button type="button" class="btn-close" data-mail-popup-close aria-label="Закрыть"></button>
+            </div>
+            <div class="modal-body">
+              <form id="mail_form" action="{% url 'mail_submit' %}" method="post" enctype="multipart/form-data"
+                novalidate>
+                {% csrf_token %}
+                <div id="form-messages"></div>
+                <div class="form-floating mb-2">
+                  {{ mail_form.name }}
+                  <label for="{{ mail_form.name.id_for_label }}">Ваше имя</label>
+                  <div class="invalid-feedback" id="name-errors"></div>
+                </div>
+                <div class="form-floating mb-2">
+                  {{ mail_form.phone_number }}
+                  <label for="{{ mail_form.phone_number.id_for_label }}">Ваш телефон</label>
+                  <div class="invalid-feedback" id="phone-errors"></div>
+                </div>
+                <div class="form-floating mb-2">
+                  {{ mail_form.email }}
+                  <label for="{{ mail_form.email.id_for_label }}">Ваш Email{% if mail_form.email.field.required %}*{% endif %}</label>
+                  {% if mail_form.email.errors %}
+                  <div class="text-danger">{{ mail_form.email.errors }}</div>
+                  {% endif %}
+                  <div class="invalid-feedback" id="email-errors"></div>
+                </div>
+                <div class="form-floating mb-2">
+                  {{ mail_form.company_name }}
+                  <label for="{{ mail_form.company_name.id_for_label }}">Название организации</label>
+                  <div class="invalid-feedback" id="company-errors"></div>
+                </div>
+                <div class="form-floating mb-2">
+                  {{ mail_form.inn }}
+                  <label for="{{ mail_form.inn.id_for_label }}">ИНН</label>
+                  <div class="invalid-feedback" id="inn-errors"></div>
+                </div>
+                <div class="form-floating mb-2">
+                  {{ mail_form.message }}
+                  <label for="{{ mail_form.message.id_for_label }}">Текст письма</label>
+                  <div class="invalid-feedback" id="message-errors"></div>
+                </div>
+                <div class="mb-2">
+                  <label class="input-file">
+                    {{ mail_form.company_details }}
+                    <span>Прикрепить файл</span>
+                  </label>
+                  <div class="invalid-feedback" id="file-errors"></div>
+                </div>
+                <div id="form-response"></div>
+                <div class="smart-captcha mb-3" data-sitekey="ysc1_sxny6cNZmnvhyJKrojDDLNxj0nvkGnTleldHzqEo9d9475ca"></div>
+                <div class="order-popup__checkbox-wrap order-popup__checkbox-wrap_cookie mt-3 mb-2">
+                  <input type="checkbox" class="order-popup__checkbox" name="mail_privacy" id="mailPopupPrivacy" required>
+                  <label class="order-popup__checkbox-label" for="mailPopupPrivacy">Я прочел (прочла) Уведомление о
+                    <a href="politika.html" class="order-popup__privacy-link">политики конфиденциальности</a></label>
+                </div>
+                <button type="submit" class="btn btn-success w-100">
+                  <span id="submit-text">Отправить</span>
+                  <span id="submit-indicator" class="spinner-border spinner-border-sm htmx-indicator" aria-hidden="true"></span>
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="success-popup" id="successPopup" role="dialog" aria-modal="true" aria-labelledby="successPopupTitle"
       aria-hidden="true" hidden>
       <div class="success-popup__backdrop" data-success-popup-close aria-label="Закрыть"></div>
@@ -996,12 +1123,13 @@
                 stroke="#65CCA5" stroke-width="10" />
             </svg>
           </div>
-          <p class="success-popup__text" id="successPopupTitle">Уважаемые коллеги! Мы благодарны Вам, что Вы обратились
-            в ООО «НДА Деловая медицинская компания». Ваш заказ получен и поступил в обработку. В течение одного
-            рабочего дня Вы получите от нас коммерческое предложение. Или наши сотрудники свяжутся с Вами для уточнения
-            деталей заказа. Обращаем Ваше внимание, что Коммерческое предложение не является официальным счетом!!! Счет
-            будет выставлен Вам отдельно после согласования скидок и условий оплаты. Отдел продаж ООО «НДА Деловая
-            медицинская компания».</p>
+          <p class="success-popup__text" id="successPopupTitle">Спасибо за обращение в ООО «НДА Деловая медицинская компания».
+            Ваш заказ поступил в обработку. В ближайшее время мы подготовим для Вас коммерческое предложение. Наш менеджер
+            может связаться с Вами для уточнения деталей.
+            Обращаем Ваше внимание: коммерческое предложение носит информационный характер и не является официальным документом.
+            Счет будет выставлен отдельно, после согласования скидок и условий оплаты.
+            С уважением,
+            ООО «НДА Деловая медицинская компания»</p>
           <button type="button" class="success-popup__btn" data-success-popup-close>Закрыть</button>
         </div>
       </div>
@@ -1025,8 +1153,7 @@
               <path d="M146.102 61L62.6016 143.798" stroke="#DB5B5D" stroke-width="10" />
             </svg>
           </div>
-          <p class="error-popup__text" id="errorPopupTitle">Ошибка при отправки!<br>Попробуйте снова, через пару минут
-          </p>
+          <p class="error-popup__text" id="errorPopupTitle">Ошибка при отправке! Пожалуйста, попробуйте повторить запрос через пару минут.</p>
         </div>
       </div>
     </div>
