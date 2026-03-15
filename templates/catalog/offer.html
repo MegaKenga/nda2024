@@ -101,8 +101,7 @@
                 </div>
             </section>
             <div class="product-tabs-accordion">
-                {% if product.full_description != "<p>&nbsp;</p>" and product.full_description != "<p> </p>" or product.characteristics != "<p>&nbsp;</p>"
-                and product.characteristics != "<p> </p>" or offers or instructions or certificates or catalogs or youtube_link or rutube_link %}
+                {% if product.full_description != "<p>&nbsp;</p>" and product.full_description != "<p> </p>" or product.characteristics != "<p>&nbsp;</p>" and product.characteristics != "<p> </p>" or offers or instructions or certificates or catalogs or youtube_link or rutube_link %}
                     <div class="product-tabs" role="tablist">
                         {% if product.full_description != "<p>&nbsp;</p>" and product.full_description != "<p> </p>" %}
                             <button type="button" class="product-tabs__btn product-tabs__btn_active t-25-36" role="tab"
