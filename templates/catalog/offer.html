@@ -28,7 +28,7 @@
                                 {% for image in images %}
                                     <div class="swiper-slide product-gallery__slide">
                                         <img src="{{ image.image.url }}" alt="Изображение {{ product.name }}"
-                                             width="285" height="504"></div>
+                                             width="480" height="480"></div>
                                 {% endfor %}
                             </div>
                             {% if images|length > 1 %}
@@ -200,14 +200,16 @@
                                                 <li class="ru-table__td ru-table__td_ru-num">{{ offer.shipping_pack | safe}}</li>
                                                 <li class="ru-table__th ru-table__th_ru">Кол-во</li>
                                                 <li class="ru-table__td ru-table__td_action">
-                                                    <form class="ru-table__qty-control" action="#" method="post">
+                                                    <form class="ru-table__qty-control" action="{% url 'cart_add' offer_id=offer.pk %}" method="post"
+                                                          hx-post="{% url 'cart_add' offer_id=offer.pk %}" hx-target="#cart" hx-swap="outerHTML">
+                                                        {% csrf_token %}
                                                         <div class="ru-table__qty-group">
-                                                            <button type="button" class="ru-table__qty-btn ru-table__qty-btn_minus"
-                                                                    aria-label="Уменьшить">−</button>
-                                                            <input class="ru-table__qty-input" type="number" name="qty" value="0" min="0"
+                                                            <button type="button" class="ru-table__qty-btn ru-table__qty-btn_minus" aria-label="Уменьшить"
+                                                                    onclick="changeQuantity(event, this, -1)">−</button>
+                                                            <input class="ru-table__qty-input form-control" type="number" name="quantity" id="id_quantity_{{ offer.pk }}" value="0" min="1" required
                                                                    aria-label="Количество">
-                                                            <button type="button" class="ru-table__qty-btn ru-table__qty-btn_plus"
-                                                                    aria-label="Увеличить">+</button>
+                                                            <button type="button" class="ru-table__qty-btn ru-table__qty-btn_plus" aria-label="Увеличить"
+                                                                    onclick="changeQuantity(event, this, 1)">+</button>
                                                         </div>
                                                         <button type="submit" class="ru-table__qty-add">Добавить</button>
                                                     </form>
@@ -292,14 +294,23 @@
                             </div>
                         </section>
                     {% endif %}
-                    {% if youtube_link or rutube_link %}
+                    {% if youtube_link or rutube_link or rutube_link and youtube_link %}
                         <section class="product-panel" id="panel-video" data-product-panel="video" role="tabpanel" hidden>
                             {% if rutube_link %}
                                 <!-- Видео с RuTube -->
-                                <iframe width="100%" height="100%" src="https://rutube.ru/play/embed/{{ rt_link|slice:'23:' }}" frameBorder="0" allow="clipboard-write; autoplay" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>
-                            {% elif youtube_link %}
+                                <div class="product-panel__video-block product-panel__video-block_rutube">
+                                    <div class="product-panel__video-embed">
+                                        {{ rutube_link | safe }}
+                                    </div>
+                                </div>
+                            {% endif %}
+                            {% if youtube_link %}
                                 <!-- Видео с Ютуб -->
-                                <iframe width="100%" height="100%" src="{{youtube_link}}" frameBorder="0" allow="clipboard-write; autoplay" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>
+                                <div class="product-panel__video-block product-panel__video-block_youtube">
+                                    <div class="product-panel__video-embed">
+                                        {{ youtube_link | safe }}
+                                    </div>
+                                </div>
                             {% endif %}
                         </section>
                     {% endif %}
@@ -318,249 +329,5 @@
                 {% endif %}
         </div>
     </main>
-
-
-
-
-
-    <div class="order-popup" id="orderPopup" role="dialog" aria-modal="true" aria-labelledby="orderPopupTitle"
-      aria-hidden="true" hidden>
-      <div class="order-popup__backdrop" data-order-popup-close aria-label="Закрыть"></div>
-      <div class="order-popup-wrapper">
-        <div class="order-popup__modal">
-          <button type="button" class="order-popup__close" data-order-popup-close aria-label="Закрыть">
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M15 5L5 15M5 5l10 10" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
-                stroke-linejoin="round" />
-            </svg>
-          </button>
-          <h2 class="order-popup__title t-50" id="orderPopupTitle">Оформить заказ</h2>
-
-          <div class="order-popup__tabs" role="tablist">
-            <button type="button" class="order-popup__tab order-popup__tab_active" role="tab" aria-selected="true"
-              data-order-tab="physical">Физическое лицо</button>
-            <button type="button" class="order-popup__tab" role="tab" aria-selected="false"
-              data-order-tab="legal">Юридическое лицо</button>
-          </div>
-
-          <p class="order-popup__legal-intro" id="orderPopupLegalIntro" hidden>Уважаемые коллеги! При оформлении заказа,
-            пожалуйста, укажите Ваш ИНН (для автоматического перенаправления Вашего запроса сотруднику, закрепленному за
-            Вашей организацией) и наименование организации или прикрепите карточку клиента. Это ускорит обработку Вашей
-            заявки. Без указания реквизитов мы не сможем выставить Вам коммерческое предложение.</p>
-
-          <div class="order-popup__body">
-            <form class="order-popup__form" id="orderPopupForm" action="#" method="post" novalidate>
-              <div class="order-popup__form-panel order-popup__form-panel_physical" data-order-panel="physical"
-                role="tabpanel">
-                <div class="order-popup__field order-popup__field_full">
-                  <input type="text" class="order-popup__input" name="fio" placeholder="Иванов Иван Иванович"
-                    autocomplete="name" aria-label="ФИО" required>
-                </div>
-                <div class="order-popup__row">
-                  <div class="order-popup__field">
-                    <input type="tel" class="order-popup__input" name="phone" placeholder="+7 (999) 999 - 99 - 99"
-                      autocomplete="tel" aria-label="Телефон" required>
-                  </div>
-                  <div class="order-popup__field">
-                    <input type="email" class="order-popup__input" name="email" placeholder="E-mail"
-                      autocomplete="email" aria-label="E-mail" required>
-                  </div>
-                </div>
-                <div class="order-popup__field order-popup__field_full">
-                  <textarea class="order-popup__textarea" name="message" rows="5" placeholder="Текст письма"
-                    aria-label="Текст письма"></textarea>
-                </div>
-                <div class="order-popup__field order-popup__field_full">
-                  <label class="order-popup__file-label">
-                    <span class="order-popup__file-text">Прикрепить файл</span>
-                    <input type="file" class="order-popup__file" name="file" multiple hidden>
-                  </label>
-                </div>
-                <div class="order-popup__captcha">
-                  <input type="checkbox" class="order-popup__captcha-checkbox" name="captcha" id="orderPopupCaptcha"
-                    aria-label="Я не робот">
-                  <label class="order-popup__captcha-label" for="orderPopupCaptcha">Я не робот</label>
-                  <div class="order-popup__captcha-placeholder" aria-hidden="true">
-                    <img src="img/capcha.png" alt="">
-                  </div>
-                </div>
-                <button type="submit" class="order-popup__submit">Отправить запрос</button>
-                <div class="order-popup__checkbox-wrap order-popup__checkbox-wrap_cookie">
-                  <input type="checkbox" class="order-popup__checkbox" name="privacy" id="orderPopupPrivacy"
-                    aria-describedby="orderPopupPrivacyText" required>
-                  <label class="order-popup__checkbox-label" for="orderPopupPrivacy" id="orderPopupPrivacyText">Я прочел
-                    (прочла) Уведомление о <a href="politika.html" class="order-popup__privacy-link">политики
-                      конфиденциальности</a></label>
-                </div>
-              </div>
-
-              <div class="order-popup__form-panel order-popup__form-panel_legal" data-order-panel="legal"
-                role="tabpanel" hidden>
-                <div class="order-popup__field order-popup__field_full">
-                  <input type="text" class="order-popup__input" name="fio_legal" placeholder="Иванов Иван Иванович"
-                    autocomplete="name" aria-label="ФИО">
-                </div>
-                <div class="order-popup__row">
-                  <div class="order-popup__field">
-                    <input type="tel" class="order-popup__input" name="phone_legal" placeholder="+7 (999) 999 - 99 - 99"
-                      autocomplete="tel" aria-label="Телефон">
-                  </div>
-                  <div class="order-popup__field">
-                    <input type="email" class="order-popup__input" name="email_legal" placeholder="E-mail"
-                      autocomplete="email" aria-label="E-mail">
-                  </div>
-                </div>
-                <div class="order-popup__row">
-                  <div class="order-popup__field">
-                    <input type="text" class="order-popup__input" name="inn" placeholder="ИНН" aria-label="ИНН"
-                      inputmode="numeric" maxlength="12">
-                  </div>
-                  <div class="order-popup__field">
-                    <input type="text" class="order-popup__input" name="company_name" placeholder="Наименование"
-                      aria-label="Наименование организации">
-                  </div>
-                </div>
-                <div class="order-popup__field order-popup__field_full">
-                  <textarea class="order-popup__textarea" name="comment_legal" rows="5"
-                    placeholder="Комментарий к заказу" aria-label="Комментарий к заказу"></textarea>
-                </div>
-                <div class="order-popup__field order-popup__field_full">
-                  <label class="order-popup__file-label">
-                    <span class="order-popup__file-text">Прикрепить файл</span>
-                    <input type="file" class="order-popup__file" name="file_legal" multiple hidden>
-                  </label>
-                </div>
-                <div class="order-popup__captcha">
-                  <input type="checkbox" class="order-popup__captcha-checkbox" name="captcha_legal"
-                    id="orderPopupCaptchaLegal" aria-label="Я не робот">
-                  <label class="order-popup__captcha-label" for="orderPopupCaptchaLegal">Я не робот</label>
-                  <div class="order-popup__captcha-placeholder" aria-hidden="true">
-                    <img src="img/capcha.png" alt="">
-                  </div>
-                </div>
-                <button type="submit" class="order-popup__submit">Отправить запрос</button>
-                <div class="order-popup__checkbox-wrap order-popup__checkbox-wrap_cookie">
-                  <input type="checkbox" class="order-popup__checkbox" name="privacy_legal" id="orderPopupPrivacyLegal"
-                    aria-describedby="orderPopupPrivacyLegalText" required>
-                  <label class="order-popup__checkbox-label" for="orderPopupPrivacyLegal"
-                    id="orderPopupPrivacyLegalText">Я прочел (прочла) Уведомление о <a href="politika.html"
-                      class="order-popup__privacy-link">политики конфиденциальности</a></label>
-                </div>
-              </div>
-            </form>
-            <div class="order-popup__summary">
-              <p class="order-popup__summary-title order-popup__summary-title_legal" data-order-summary-title-legal
-                hidden>Ваш выбор:</p>
-              <ul class="order-popup__summary-list" id="orderPopupSummaryList">
-                <li class="order-popup__summary-empty" id="orderPopupSummaryEmpty">Добавьте товары в заказ</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="callback-popup" id="callbackPopup" role="dialog" aria-modal="true" aria-labelledby="callbackPopupTitle"
-      aria-hidden="true" hidden>
-      <div class="callback-popup__backdrop" aria-label="Закрыть"></div>
-      <div class="callback-popup-wrapper">
-        <div class="callback-popup__modal">
-          <button type="button" class="callback-popup__close" data-callback-popup-close aria-label="Закрыть">
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M15 5L5 15M5 5l10 10" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
-                stroke-linejoin="round" />
-            </svg>
-          </button>
-          <h2 class="callback-popup__title t-50" id="callbackPopupTitle">Заказать звонок</h2>
-          <form class="callback-form callback-popup__form" id="callbackPopupForm" action="#" method="post" novalidate>
-            <div class="callback-form__panel">
-              <div class="callback-form__field callback-form__field_full">
-                <input type="text" class="callback-form__input" name="callback_fio" placeholder="Иванов Иван Иванович"
-                  autocomplete="name" aria-label="ФИО" required>
-              </div>
-              <div class="callback-form__row">
-                <div class="callback-form__field">
-                  <input type="tel" class="callback-form__input" name="callback_phone" placeholder="+7 (999) 999 - 99 - 99"
-                    autocomplete="tel" aria-label="Телефон" required>
-                </div>
-                <div class="callback-form__field">
-                  <input type="email" class="callback-form__input" name="callback_email" placeholder="E-mail"
-                    autocomplete="email" aria-label="E-mail">
-                </div>
-              </div>
-              <div class="callback-form__field callback-form__field_full">
-                <textarea class="callback-form__textarea" name="callback_message" rows="4" placeholder="Комментарий"
-                  aria-label="Комментарий"></textarea>
-              </div>
-              <div class="callback-form__captcha">
-                <input type="checkbox" class="callback-form__captcha-checkbox" name="callback_captcha" id="callbackPopupCaptcha"
-                  aria-label="Я не робот">
-                <label class="callback-form__captcha-label" for="callbackPopupCaptcha">Я не робот</label>
-                <div class="callback-form__captcha-placeholder" aria-hidden="true">
-                  <img src="img/capcha.png" alt="">
-                </div>
-              </div>
-              <button type="submit" class="callback-form__submit">Отправить запрос</button>
-              <div class="callback-form__checkbox-wrap callback-form__checkbox-wrap_cookie">
-                <input type="checkbox" class="callback-form__checkbox" name="callback_privacy" id="callbackPopupPrivacy"
-                  aria-describedby="callbackPopupPrivacyText" required>
-                <label class="callback-form__checkbox-label" for="callbackPopupPrivacy" id="callbackPopupPrivacyText">Я прочел
-                  (прочла) Уведомление о <a href="politika.html" class="callback-form__privacy-link">политики
-                    конфиденциальности</a></label>
-              </div>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
-
-    <div class="success-popup" id="successPopup" role="dialog" aria-modal="true" aria-labelledby="successPopupTitle"
-      aria-hidden="true" hidden>
-      <div class="success-popup__backdrop" data-success-popup-close aria-label="Закрыть"></div>
-      <div class="success-popup-wrapper">
-        <div class="success-popup__modal">
-
-          <div class="success-popup__icon" aria-hidden="true">
-            <svg width="213" height="213" viewBox="0 0 213 213" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M53.0078 101.375L101.201 146L208.008 20.0005" stroke="#65CCA5" stroke-width="10" />
-              <path
-                d="M194.44 55.7805C203.387 71.2588 208.358 89.2986 207.985 108.477C206.893 164.524 160.573 209.073 104.527 207.981C48.4809 206.89 3.93143 160.57 5.02319 104.524C6.11495 48.4774 52.4345 3.92802 108.481 5.01978C134.966 5.53571 158.884 16.1518 176.632 33.1216"
-                stroke="#65CCA5" stroke-width="10" />
-            </svg>
-          </div>
-          <p class="success-popup__text" id="successPopupTitle">Уважаемые коллеги! Мы благодарны Вам, что Вы обратились
-            в ООО «НДА Деловая медицинская компания». Ваш заказ получен и поступил в обработку. В течение одного
-            рабочего дня Вы получите от нас коммерческое предложение. Или наши сотрудники свяжутся с Вами для уточнения
-            деталей заказа. Обращаем Ваше внимание, что Коммерческое предложение не является официальным счетом!!! Счет
-            будет выставлен Вам отдельно после согласования скидок и условий оплаты. Отдел продаж ООО «НДА Деловая
-            медицинская компания».</p>
-          <button type="button" class="success-popup__btn" data-success-popup-close>Закрыть</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="error-popup" id="errorPopup" role="alertdialog" aria-modal="true" aria-labelledby="errorPopupTitle"
-      aria-hidden="true" hidden>
-      <div class="error-popup__backdrop" data-error-popup-close aria-label="Закрыть"></div>
-      <div class="error-popup-wrapper">
-        <div class="error-popup__modal">
-          <button type="button" class="error-popup__close" data-error-popup-close aria-label="Закрыть">
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M15 5L5 15M5 5l10 10" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
-                stroke-linejoin="round" />
-            </svg>
-          </button>
-          <div class="error-popup__icon" aria-hidden="true">
-            <svg width="207" height="207" viewBox="0 0 207 207" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="103.46" cy="103.46" r="98.46" stroke="#DB5B5D" stroke-width="10" />
-              <path d="M61.8984 61L145.398 144.5" stroke="#DB5B5D" stroke-width="10" />
-              <path d="M146.102 61L62.6016 143.798" stroke="#DB5B5D" stroke-width="10" />
-            </svg>
-          </div>
-          <p class="error-popup__text" id="errorPopupTitle">Ошибка при отправки!<br>Попробуйте снова, через пару минут
-          </p>
-        </div>
-      </div>
-    </div>
 
 {% endblock %}

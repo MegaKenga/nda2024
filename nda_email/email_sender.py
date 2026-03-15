@@ -131,7 +131,7 @@ class CallRequestFormEmailSender:  # Renamed class
         return name, customer_phone, customer_message, file
 
     @classmethod
-    def send_messages(cls, request): # offers не передается
+    def send_messages(cls, request, offers=None): # offers не передается
         name, customer_phone, customer_message, file = cls.get_message_data(request)
 
         context = {

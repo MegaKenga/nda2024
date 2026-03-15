@@ -232,13 +232,13 @@ class Product(BaseFields):
         verbose_name='Специалист, ответственный за категорию'
     )
     youtube_link = models.CharField(
-        max_length=255,
+        max_length=512,
         null=True,
         blank=True,
         verbose_name='Ссылка на YouTube'
     )
     rutube_link = models.CharField(
-        max_length=255,
+        max_length=512,
         null=True,
         blank=True,
         verbose_name='Ссылка Rutube'

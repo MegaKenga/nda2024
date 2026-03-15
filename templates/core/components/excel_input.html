@@ -1,11 +1,12 @@
 <div class="product-order__actions product-order__desktop-only">
-    <form method="post" action="{% url 'offers_add' product_id=product.id%}" enctype="multipart/form-data">
+    <form method="post" action="{% url 'offers_add' product_id=product.id%}" enctype="multipart/form-data" class="product-order__upload-form">
         {% csrf_token %}
-        <input type="file" name="excel_file" class="product-order__action-btn product-order__action-btn_file">
-        <button type="submit" class="product-order__action-btn product-order__action-btn_upload">Загрузить
+        <input type="file" name="excel_file" id="product-order-file-input" accept=".xlsx,.xls,.csv"
+                class="product-order__action-btn product-order__action-btn_file">
+        <button type="submit" class="product-order__action-btn product-order__action-btn_upload" data-upload-btn>Загрузить
             коды</button>
     </form>
-    <form method="post" action="{% url 'offers_delete' product_id=product.id%}" onsubmit="return confirm ('Вы уверены?')" enctype="multipart/form-data">
+    <form method="post" action="{% url 'offers_delete' product_id=product.id%}" class="product-order__delete-form" onsubmit="return confirm('Вы уверены?');" enctype="multipart/form-data">
         {% csrf_token %}
         <button type="submit" class="product-order__action-btn product-order__action-btn_delete">Удалить все</button>
     </form>

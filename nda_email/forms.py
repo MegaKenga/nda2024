@@ -1,7 +1,4 @@
-import re
-
 from django import forms
-from django.core.exceptions import ValidationError
 
 
 PHONE_PATTERN = r"^((\+?)(?:\d[^A-Z,a-z,@]{10,14}))$"
@@ -160,11 +157,11 @@ class PhysicalContactForm(forms.Form):
 
 class MailForm(forms.Form):
     name = forms.CharField(
-        required=False,
+        required=True,
         max_length=120,
         widget=forms.TextInput(
             attrs={
-                "placeholder": "Ваше ФИО",
+                "placeholder": "Ваше имя *",
                 "class": "form-control",
                 "id": "fullNameLegal",
             }
@@ -185,7 +182,7 @@ class MailForm(forms.Form):
         required=True,
         widget=forms.TextInput(
             attrs={
-                "placeholder": "example@example.ru",
+                "placeholder": "Ваш email *",
                 "class": "form-control",
                 "id": "email",
             }
@@ -193,7 +190,7 @@ class MailForm(forms.Form):
     )
 
     company_name = forms.CharField(
-        label="Наименование организации",
+        label="Название организации",
         max_length=100,
         required=False,
         widget=forms.TextInput(
@@ -220,7 +217,7 @@ class MailForm(forms.Form):
 
     message = forms.CharField(
         required=False,
-        widget=forms.Textarea(attrs={"id": "message", "class": "form-control", "placeholder": "Текст писма"}),
+        widget=forms.Textarea(attrs={"id": "message", "class": "form-control", "placeholder": "Текст письма *"}),
     )
 
     company_details = forms.FileField(
@@ -236,8 +233,6 @@ class MailForm(forms.Form):
             }
         ),
     )
-
-    
 
     def clean_phone_number(self):
         phone_number = self.cleaned_data["phone_number"]
@@ -255,7 +250,7 @@ class CallForm(forms.Form):
         max_length=120,
         widget=forms.TextInput(
             attrs={
-                "placeholder": "ФИО контактного лиц3а",
+                "placeholder": "Ваше имя",
                 "class": "form-control",
                 "id": "fullNameLegal",
             }
@@ -275,7 +270,7 @@ class CallForm(forms.Form):
     
     message = forms.CharField(
         required=False,
-        widget=forms.Textarea(attrs={"id": "message", "class": "form-control", "placeholder": "Текст писма",}),
+        widget=forms.Textarea(attrs={"id": "message", "class": "form-control", "placeholder": "Комментарии",}),
     )
 
     company_details = forms.FileField(
@@ -299,44 +294,3 @@ class CallForm(forms.Form):
     def clean_email(self):
         email = self.cleaned_data["email"]
         return email  # Просто возвращаем email без проверки
-
-    
-# class ApplicationForm(forms.Form):
-#     name = forms.CharField(
-#         required=True,
-#         max_length=120,
-#         widget=forms.TextInput(
-#             attrs={
-#                 "placeholder": "Ваше имя",
-#                 "class": "form-control",
-#                 "id": "fullNameLegal",
-#             }
-#         ),
-#     )
-
-#     email = forms.CharField(
-#         required=True,
-#         widget=forms.TextInput(
-#             attrs={
-#                 "placeholder": "example@example.ru",
-#                 "class": "form-control",
-#                 "id": "email",
-#             }
-#         ),
-#     )
-    
-#     def clean_phone_number(self):
-#         phone_number = self.cleaned_data["phone_number"]
-#         correct_phone_number = PHONE_PATTERN
-#         if not re.match(correct_phone_number, phone_number.strip()):
-#             raise ValidationError("Проверьте правильно ли введен номер")
-#         return phone_number
-
-#     def clean_email(self):
-#         email = self.cleaned_data["email"].strip()
-#         correct_email = EMAIL_PATTERN
-#         if not re.match(correct_email, email):
-#             raise ValidationError(
-#                 "Проверьте правильно ли указана почта для обратной связи"
-#             )
-#         return email
