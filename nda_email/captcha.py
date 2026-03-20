@@ -2,7 +2,7 @@ import json
 import sys
 import requests
 
-from django.conf import settings
+from nda.settings import YACAPTCHA_SERVER
 
 
 def get_client_ip(request):
@@ -21,7 +21,7 @@ def yandex_captcha_validation(token, client_ip):
     resp = requests.get(
         "https://captcha-api.yandex.ru/validate",
         {
-            "secret": settings.YACAPTCHA_SERVER,
+            "secret": YACAPTCHA_SERVER ,
             "token": token,
             "ip": client_ip
         },

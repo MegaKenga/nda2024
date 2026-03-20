@@ -252,7 +252,6 @@ class CallForm(forms.Form):
             attrs={
                 "placeholder": "Ваше имя",
                 "class": "form-control",
-                "id": "fullNameLegal",
             }
         ),
     )
@@ -261,30 +260,13 @@ class CallForm(forms.Form):
         widget=forms.TextInput(
             attrs={
                 "placeholder": "Номер телефона",
-                "class": "form-control phone-mask",
-                "id": "validationPhoneNumber",
-            
+                "class": "form-control",
             }
         ),
     )
-    
     message = forms.CharField(
         required=False,
         widget=forms.Textarea(attrs={"id": "message", "class": "form-control", "placeholder": "Комментарии",}),
-    )
-
-    company_details = forms.FileField(
-        required=False,
-        widget=forms.ClearableFileInput(
-            attrs={
-                "multiple": False,
-                "allow_empty_file": True,
-                "id": "call_form_company_details_input",
-                "form": "cart_modal_form",
-                "class": "form-control",
-                "type": "file",
-            }
-        ),
     )
 
     def clean_phone_number(self):

@@ -1,114 +1,16 @@
 from django.core.exceptions import ValidationError
+from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404
 from django.views.decorators.http import require_POST
-from django.http import HttpResponse
 
-import json
-import logging
 
 from catalog.models import Offer
 from cart.forms import CartAddProductForm
 from nda_email.forms import ContactForm, PhysicalContactForm, MailForm, CallForm
 from nda_email.email_sender import CompanyOrderEmailSender, PhysicalPersonOrderSender, CallRequestFormEmailSender, MailRequestFormEmailSender
-from nda_email.captcha import get_client_ip, yandex_captcha_validation
 
 
 CART_SESSION_ID = 'cart'
-
-
-logger = logging.getLogger(__name__)
-
-
-def validate_captcha(request):
- # Если капча уже пройдена в этой сессии — пропускаем проверку
-    if request.session.get('captcha_passed', False):
-        return True
-    else :
-        # Валидация капчи через Yandex
-        token = request.POST.get('smart-token')
-        client_ip = get_client_ip(request)
-        if not yandex_captcha_validation(token, client_ip):
-            response = HttpResponse(status=400)
-            response['HX-Trigger'] = json.dumps({"showError": "Докажите, что вы не робот", "reloadPage": True})
-            return response
-
-        # Капча пройдена — сохраняем в сессию и возвращаем True
-        request.session['captcha_passed'] = True
-        request.session.set_expiry(600)
-        return True
-
-
-def get_errors(form):
-    errors = dict(form.errors.items())
-    error_message = ""
-    for field, messages in errors.items():
-        error_message += f"{field}: {messages[0]}\n"
-
-    response = HttpResponse(status=400)
-    response['HX-Trigger'] = json.dumps({
-        "showError": error_message,
-    })
-    return response
-
-
-def form_send_message(request, form, sender_type, offers, captcha_valid):
-    if not captcha_valid:
-        response_data = {
-            "success": False,
-            "message": "Ошибка капчи",
-            "reloadPage": True,
-            "errors":{"Captcha":["Не пройдена"]}
-        }
-        return HttpResponse(
-            json.dumps(response_data),
-            content_type='application/json',
-            status=400
-        )
-    if form.is_valid():
-        try:
-            logger.info(f"📨 Запуск отправки email через {sender_type.__name__}")
-            sender_type.send_messages(request, offers)
-
-            cart_clear(request)
-
-            response_data = {
-                "success": True,
-                "message": "Запрос отправлен",
-                "reloadPage": True,
-                "captcha": True,
-            }
-            response = HttpResponse(
-                json.dumps(response_data),
-                content_type='application/json',
-                status=200
-            )
-
-            return response
-        except Exception as e:
-            logger.exception(f"❌ Ошибка при отправке email: {e}")
-            response_data = {
-                "success": False,
-                "message": "Ошибка при отправке письма",
-            }
-            return HttpResponse(
-                json.dumps(response_data),
-                content_type='application/json',
-                status=500
-            )
-    else:
-        errors = dict(form.errors.items())
-        error_message = "\n".join([f"{field}: {msg[0]}" for field, msg in errors.items()])
-        response_data = {
-            "success": False,
-            "message": "Ошибка валидации",
-            "errors": errors
-        }
-        return HttpResponse(
-            json.dumps(response_data),
-            content_type='application/json',
-            status=400
-        )
-
 
 def get_cart(request):
     # Создаем корзину для сессии
@@ -214,8 +116,16 @@ def mail_submit(request):
 
 @require_POST
 def call_submit(request):
-    captcha_response = validate_captcha(request)
-    captcha_valid = captcha_response is True
-
-    form = CallForm(request.POST, request.FILES)
-    return form_send_message(request, form, CallRequestFormEmailSender, offers=None, captcha_valid=captcha_valid)
+    form = CallForm(request.POST)
+    if form.is_valid():
+        try:
+            CallRequestFormEmailSender.send_messages(request)
+            # Возвращаем JSON для успешного ответа
+            return JsonResponse({'success': True, 'message': 'Форма успешно отправлена'})
+        except Exception as e:
+            print(e)
+            return JsonResponse({'success': False, 'errors': 'Ошибка при отправке'}, status=500)
+    else:
+        # Возвращаем ошибки валидации
+        errors = {field: error[0] for field, error in form.errors.items()}
+        return JsonResponse({'success': False, 'errors': errors}, status=400)

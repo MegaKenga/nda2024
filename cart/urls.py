@@ -11,4 +11,5 @@ urlpatterns = [
     path('remove/<offer_id>/', views.cart_remove, name='cart_remove'),
     path('mail_submit', views.mail_submit, name='mail_submit'),
     path('call_submit', views.call_submit, name='call_submit'),
+    path('success', views.success, name='success'),
 ]
