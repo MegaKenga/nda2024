@@ -1,63 +1,63 @@
 <script src="https://smartcaptcha.yandexcloud.net/captcha.js" defer></script>
 
-<div class="modal-custom 123">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h1 class="modal-title" id="cartModalLabel">Оформить заказ</h1>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
-                onclick="location.reload();"></button>
-        </div>
-        <div class="modal-body mainFormContainer">
-            <div class="mainForm">
-                <div class="mainFormHeader">
-                    <ul class="nav nav-tabs" id="myTab" role="tablist">
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link active" id="legal-tab" data-bs-toggle="tab" data-bs-target="#legal"
-                                type="button" role="tab" aria-controls="legal" aria-selected="true">Юридическое
-                                лицо</button>
-                        </li>
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="physical-tab" data-bs-toggle="tab" data-bs-target="#physical"
-                                type="button" role="tab" aria-controls="physical" aria-selected="false">Физическое
-                                лицо</button>
-                        </li>
-                    </ul>
-                </div>
-                <div class="tab-content" id="myTabContent">
-                    <!-- Форма для юридического лица -->
-                    <div class="tab-pane fade show active" id="legal" role="tabpanel" aria-labelledby="legal-tab">
-                        <p class="formDescr">
-                            Уважаемые коллеги!<br />
-                            При оформлении заказа, пожалуйста, укажите Ваш ИНН (для автоматического перенаправления
-                            Вашего запроса сотруднику, закрепленному за Вашей организацией) и наименование организации
-                            или прикрепите карточку клиента. Это ускорит обработку Вашей заявки.
-                            Без указания реквизитов мы не сможем выставить Вам коммерческое предложение.
-                        </p>
-                        <div class="physicalForm">
-                            <div class="formEl">
-                                {% include 'nda_email/contactform.html' %}
-                            </div>
-                        </div>
-                        <div class="mb-3">
-                            {% if contact_form.company_details.errors %}
-                            <span style="color: #FF4343">{{ contact_form.details.errors }}</span>
-                            {% endif %}
-                        </div>
-                    </div>
-                    <!-- Форма для физического лица -->
-                    <div class="tab-pane fade" id="physical" role="tabpanel" aria-labelledby="physical-tab">
-                        <div class="physicalForm">
-                            <div class="formEl">
-                                {% include 'nda_email/physical_contact_form.html' %}
-                            </div>
-                        </div>
-                    </div>
-                </div>
+<div class="order-popup" id="orderPopup" role="dialog" aria-modal="true" aria-labelledby="orderPopupTitle"
+      aria-hidden="true" hidden>
+      <div class="order-popup__backdrop" data-order-popup-close aria-label="Закрыть"></div>
+      <div class="order-popup-wrapper">
+        <div class="order-popup__modal">
+          <button type="button" class="order-popup__close" data-order-popup-close aria-label="Закрыть">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M15 5L5 15M5 5l10 10" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                stroke-linejoin="round" />
+            </svg>
+          </button>
+          <h2 class="order-popup__title t-50" id="orderPopupTitle">Оформить заказ</h2>
+
+          <div class="order-popup__tabs" role="tablist">
+            <button type="button" class="order-popup__tab order-popup__tab_active" role="tab" aria-selected="true"
+              data-order-tab="physical">Физическое лицо</button>
+            <button type="button" class="order-popup__tab" role="tab" aria-selected="false"
+              data-order-tab="legal">Юридическое лицо</button>
+          </div>
+
+          <p class="order-popup__legal-intro" id="orderPopupLegalIntro" hidden>Уважаемые коллеги! При оформлении заказа,
+            пожалуйста, укажите Ваш ИНН (для автоматического перенаправления Вашего запроса сотруднику, закрепленному за
+            Вашей организацией) и наименование организации или прикрепите карточку клиента. Это ускорит обработку Вашей
+            заявки. Без указания реквизитов мы не сможем выставить Вам коммерческое предложение.</p>
+
+          <div class="order-popup__body">
+            <div class="order-popup__forms">
+              {% include 'nda_email/physical_contact_form.html' %}
+                {% include 'nda_email/contactform.html' %}
+
             </div>
-            <div class="order_list">
-                <h3 class="offersList">Ваш выбор:</h3>
-                {% include 'cart/cart_popup.html' %}
+            <div class="order-popup__summary">
+              <p class="order-popup__summary-title order-popup__summary-title_legal" data-order-summary-title-legal>Ваш
+                выбор:</p>
+            {% if offers_in_cart %}
+                {% for offer in offers_in_cart %}
+                    <tr>
+                        <td>{{ offer.name }}</td>
+                        <td>{{ offer.quantity }}</td>
+                        <td>
+                            <button
+                        hx-confirm="Вы уверены?"
+                        hx-target="#offers-table"
+                        hx-delete="{% url 'cart_remove' offer_id=offer.id %}"
+                        class="btn btn-danger"
+                        hx-swap="innerHTML"
+                        id="remove-offer-button"
+                    ><img src="{% static 'images/offer/delOffer.svg' %}" alt="">
+                </button>
+                </td>
+            </tr>
+        {% endfor %}
+            {% endif %}
+              <ul class="order-popup__summary-list" id="orderPopupSummaryList">
+                <li class="order-popup__summary-empty" id="orderPopupSummaryEmpty">Добавьте товары в заказ</li>
+              </ul>
             </div>
+          </div>
         </div>
+      </div>
     </div>
-</div>

@@ -200,8 +200,7 @@
                                                 <li class="ru-table__td ru-table__td_ru-num">{{ offer.shipping_pack | safe}}</li>
                                                 <li class="ru-table__th ru-table__th_ru">Кол-во</li>
                                                 <li class="ru-table__td ru-table__td_action">
-                                                    <form class="ru-table__qty-control" action="{% url 'cart_add' offer_id=offer.pk %}" method="post"
-                                                          hx-post="{% url 'cart_add' offer_id=offer.pk %}" hx-target="#cart" hx-swap="outerHTML">
+                                                    <form class="ru-table__qty-control" action="{% url 'cart_add' offer_id=offer.pk %}" method="post">
                                                         {% csrf_token %}
                                                         <div class="ru-table__qty-group">
                                                             <button type="button" class="ru-table__qty-btn ru-table__qty-btn_minus" aria-label="Уменьшить"
@@ -219,6 +218,9 @@
                                     </div>
                                 </section>
                             </div>
+                        {% if user.is_authenticated %}
+                            {% include 'core/components/excel_input.html' %}
+                        {% endif %}
                         </section>
                     {% endif %}
                     {% if instructions or certificates or catalogs %}
@@ -315,19 +317,10 @@
                         </section>
                     {% endif %}
                     </div>
-                    <div class="product-order__total-panel" id="orderTotalPanel" role="status" aria-live="polite" hidden>
-                        <button class="product-order__total-caption">Оформить заказ</button>
-                        <div class="product-order__total-info">
-                            <span class="product-order__total-label">Всего изделий в заказе:</span>
-                            <span class="product-order__total-count" id="orderTotalCount">0</span>
-                        </div>
-                    </div>
-                    {% if user.is_authenticated %}
-                        {% include 'core/components/excel_input.html' %}
-                    {% endif %}
                     </div>
                 {% endif %}
         </div>
+    {% include 'cart/cart.html' %}
     </main>
 
 {% endblock %}

@@ -95,7 +95,7 @@ class MailRequestFormEmailSender:
         return data
 
     @classmethod
-    def send_messages(cls, request, offers=None):
+    def send_messages(cls, request):
         customer_email, customer_phone, company_name, inn, name, file, customer_message = cls.get_message_data(request)
 
         context = {

@@ -50,7 +50,6 @@ INSTALLED_APPS = [
     'django_cleanup',
     'django_celery_results',
     'core.apps.CoreConfig',
-    'scripts.apps.ScriptsConfig',
     'sorl.thumbnail',
     'phonenumber_field',
     'django.contrib.sitemaps',

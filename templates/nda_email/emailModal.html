@@ -1,311 +1,72 @@
-<!--<script src="https://smartcaptcha.yandexcloud.net/captcha.js" defer></script>-->
-
-<div class="modal fade" id="emailModal" tabindex="-1" aria-labelledby="emailModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="emailModalLabel">Написать письмо</h5>
-        {# data-bs-dismiss="modal" onclick="location.reload();" #}
-        <button type="button" class="btn-close" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <form id="mail_form"
-              hx-post="{% url 'mail_submit' %}"
-              hx-target="#form-messages"
-              hx-swap="innerHTML"
-              hx-encoding="multipart/form-data"
-              hx-indicator="#submit-indicator"
-              novalidate
-        >
-
-          {% csrf_token %}
-          <div id="form-messages"></div>
-
-          <div class="form-floating mb-2">
-            {{ mail_form.name }}
-            <label for="{{ mail_form.name.id_for_label }}">Ваше имя</label>
-            <div class="invalid-feedback" id="name-errors"></div>
+<div class="callback-popup" id="mailPopup" role="dialog" aria-modal="true" aria-labelledby="emailModalLabel"
+      aria-hidden="true" hidden>
+      <div class="callback-popup__backdrop" data-mail-popup-close aria-label="Закрыть"></div>
+      <div class="callback-popup-wrapper">
+        <div class="callback-popup__modal">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="emailModalLabel">Написать письмо</h5>
+              <button type="button" class="btn-close" data-mail-popup-close aria-label="Закрыть"></button>
+            </div>
+            <div class="modal-body">
+              <form id="mail_form" action="{% url 'mail_submit' %}" method="post" enctype="multipart/form-data"
+                novalidate>
+                {% csrf_token %}
+                <div id="form-messages"></div>
+                <div class="form-floating mb-2">
+                  {{ mail_form.name }}
+                  <label for="{{ mail_form.name.id_for_label }}"></label>
+                  <div class="invalid-feedback" id="name-errors"></div>
+                </div>
+                <div class="form-floating mb-2">
+                  {{ mail_form.phone_number }}
+                  <label for="{{ mail_form.phone_number.id_for_label }}"></label>
+                  <div class="invalid-feedback" id="phone-errors"></div>
+                </div>
+                <div class="form-floating mb-2">
+                  {{ mail_form.email }}
+                  <label for="{{ mail_form.email.id_for_label }}"></label>
+                  {% if mail_form.email.errors %}
+                  <div class="text-danger">{{ mail_form.email.errors }}</div>
+                  {% endif %}
+                  <div class="invalid-feedback" id="email-errors"></div>
+                </div>
+                <div class="form-floating mb-2">
+                  {{ mail_form.company_name }}
+                  <label for="{{ mail_form.company_name.id_for_label }}"></label>
+                  <div class="invalid-feedback" id="company-errors"></div>
+                </div>
+                <div class="form-floating mb-2">
+                  {{ mail_form.inn }}
+                  <label for="{{ mail_form.inn.id_for_label }}"></label>
+                  <div class="invalid-feedback" id="inn-errors"></div>
+                </div>
+                <div class="form-floating mb-2">
+                  {{ mail_form.message }}
+                  <label for="{{ mail_form.message.id_for_label }}"></label>
+                  <div class="invalid-feedback" id="message-errors"></div>
+                </div>
+                <div class="mb-2">
+                  <label class="input-file">
+                    {{ mail_form.company_details }}
+                    <span>Прикрепить файл</span>
+                  </label>
+                  <div class="invalid-feedback" id="file-errors"></div>
+                </div>
+                <div id="form-response"></div>
+                <div id="captcha-container" class="smart-captcha" data-sitekey="ysc1_sxny6cNZmnvhyJKrojDDLNxj0nvkGnTleldHzqEo9d9475ca"></div>
+                <div class="order-popup__checkbox-wrap order-popup__checkbox-wrap_cookie mt-3 mb-2">
+                  <input type="checkbox" class="order-popup__checkbox" name="mail_privacy" id="mailPopupPrivacy" required>
+                  <label class="order-popup__checkbox-label" for="mailPopupPrivacy">Я прочел (прочла) Уведомление о
+                    <a href="politika.html" class="order-popup__privacy-link">политики конфиденциальности</a></label>
+                </div>
+                <button type="submit" class="btn btn-success w-100">
+                  <span id="submit-text">Отправить</span>
+                  <span id="submit-indicator" class="spinner-border spinner-border-sm htmx-indicator" aria-hidden="true"></span>
+                </button>
+              </form>
+            </div>
           </div>
-
-          <div class="form-floating mb-2">
-            {{ mail_form.phone_number }}
-            <label for="{{ mail_form.phone_number.id_for_label }}">Ваш телефон</label>
-            <div class="invalid-feedback" id="phone-errors"></div>
-          </div>
-
-          <div class="form-floating mb-2">
-            {{ mail_form.email }}
-            <label for="{{ mail_form.email.id_for_label }}">Ваш Email{% if mail_form.email.required %}*{% endif %}</label>
-            {% if mail_form.email.errors %}
-            <div class="text-danger">{{ mail_form.email.errors }}</div>
-            {% endif %}
-<!--            <div class="invalid-feedback" id="email-errors"></div>-->
-          </div>
-
-          <div class="form-floating mb-2">
-            {{ mail_form.company_name }}
-            <label for="{{ mail_form.company_name.id_for_label }}">Название организации</label>
-            <div class="invalid-feedback" id="company-errors"></div>
-          </div>
-
-          <div class="form-floating mb-2">
-            {{ mail_form.inn }}
-            <label for="{{ mail_form.inn.id_for_label }}">ИНН</label>
-            <div class="invalid-feedback" id="inn-errors"></div>
-          </div>
-
-          <div class="form-floating mb-2">
-            {{ mail_form.message }}
-            <label for="{{ mail_form.message.id_for_label }}">Текст письма</label>
-            <div class="invalid-feedback" id="message-errors"></div>
-          </div>
-
-          <div class="mb-2">
-            <label class="input-file">
-              {{ mail_form.company_details }}
-              <span>Прикрепить файл</span>
-              <div class="invalid-feedback" id="file-errors"></div>
-            </label>
-          </div>
-          <div id="form-response"></div>
-          <div class="smart-captcha mb-3"
-               data-sitekey="ysc1_sxny6cNZmnvhyJKrojDDLNxj0nvkGnTleldHzqEo9d9475ca"></div>
-
-          <button type="submit" class="btn btn-success w-100">
-            <span id="submit-text">Отправить</span>
-            <span id="submit-indicator" class="spinner-border spinner-border-sm htmx-indicator" aria-hidden="true"></span>
-          </button>
-        </form>
+        </div>
       </div>
     </div>
-  </div>
-</div>
-
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-
-//     function addAsteriskToRequiredLabels() {
-//       // Находим все обязательные поля
-//       const requiredFields = document.querySelectorAll('input[required], select[required], textarea[required]');
-//
-//       requiredFields.forEach(field => {
-//         // Находим label, связанный с полем
-//         const label = findLabelForField(field);
-//
-//         if (label && !label.innerHTML.includes('*')) {
-//           label.innerHTML += '*';
-//         }
-//       });
-//     }
-//
-// // Функция для поиска label, связанного с полем
-//     function findLabelForField(field) {
-//       // Поиск по атрибуту for
-//       if (field.id) {
-//         const label = document.querySelector(`label[for="${field.id}"]`);
-//         if (label) return label;
-//       }
-//
-//       // Поиск по вложенности (если поле внутри label)
-//       return field.closest('label');
-//     }
-//     addAsteriskToRequiredLabels();
-
-    // Обработка всех HTMX ответов
-
-    document.body.addEventListener('htmx:afterRequest', function(evt) {
-      if (evt.detail.elt.id === 'mail_form') {
-        const responseContainer = document.getElementById('form-response');
-        responseContainer.innerHTML = '';
-
-        try {
-          // Пытаемся распарсить JSON
-          const response = JSON.parse(evt.detail.xhr.responseText);
-          const blockElement = document.querySelector('.container1 .toast-container')
-
-          if (response.success === true) {
-
-            const toastElement = document.getElementById("toast")
-            const toastBody = document.getElementById("toast-body")
-            let userName = document.getElementById('fullNameLegal').value
-            userName = userName ? userName : 'Уважаемый клиент';
-            // Устанавливаем текст сообщения
-            toastBody.innerHTML = '<h4>Мы получили Ваше письмо!</h4><p>Здравствуйте, ' + userName+ '!</p><p>Спасибо за обращение в ООО «НДА Деловая медицинская компания». Ваше письмо получено и передано специалисту, он обязательно ответит на все вопросы в течение одного рабочего дня.</p><p>С уважением,\n' +
-              'ООО «НДА Деловая медицинская компания»</p>';
-            // Показываем тост
-            toastElement.classList.add('show','modal')
-            blockElement.style.display = 'block';
-            responseContainer.innerHTML = `
-                        <div class="alert alert-success mt-3">
-                            ${response.message}
-                        </div>`;
-            const fileInput = document.getElementById('mail_form').querySelector('input[type="file"] + span');
-            if (fileInput) {
-              // Способ 1: Создание нового элемента (надежнее)
-              fileInput.innerHTML = 'Прикрепить файл';
-            }
-            // Сброс формы и капчи
-            document.getElementById('mail_form').reset();
-
-            // if (window.SmartCaptcha) {
-            //   SmartCaptcha.reset();
-            // }
-          // } else {
-          //   evt.stopPropagation()
-          //   // Обработка ошибок
-          //   let errorHtml = '<div class="alert alert-danger mt-3"><ul>';
-          //
-          //   for (const field in response.errors) {
-          //     const errors = response.errors[field];
-          //     errors.forEach(err => {
-          //       errorHtml += `<li>${err}</li>`;
-          //     });
-          //   }
-          //   errorHtml += '</ul></div>';
-          //   responseContainer.innerHTML = errorHtml;
-          // }
-          } else {
-
-              // Проверяем, есть ли ошибки валидации полей
-              if (response.errors) {
-                let errorFields = [];
-                let errorMessages = [];
-
-                for (const field in response.errors) {
-                  const errors = response.errors[field];
-                  errors.forEach(err => {
-                    errorFields.push(field);
-                    errorMessages.push(err);
-                  });
-                }
-
-                // Показываем модалку с предупреждением
-                const warningToast = document.getElementById("toast-warning");
-                const warningBody = document.getElementById("toast-warning-body");
-
-                if (warningToast && warningBody) {
-                  // Формируем HTML с перечнем ошибок
-                  let warningHtml = '<h4 style="margin-bottom: 10px">Ошибка заполнения формы</h4>';
-                  warningHtml += '<p style="text-align: left">Здравствуйте!<br>К сожалению, мы не можем обработать Ваш запрос, так как в нем отсутствует или некорректно указана необходимая информация.<br> Пожалуйста, проверьте и заполните следующие поля:</p>';
-                  warningHtml += '<ul style="list-style: none;padding: 0px;text-align: left;">';
-                  console.log(response.errors);
-                  errorMessages.forEach((msg, index) => {
-                    let name = '';
-                    switch (errorFields[index]) {
-                      case 'email':
-                        name = 'Ваш Email';
-                        break;
-                      case 'name':
-                        name = 'Ваше имя';
-                        break;
-                      case 'message':
-                        name = 'Текст письма';
-                        break;
-                      case 'phone_number':
-                        name = 'Номер телефона';
-                        break;
-                      default:
-                        name = errorFields[index]; // на случай других полей
-                    }
-
-                    // Добавляем пункт в список ошибок
-                    warningHtml += `<li><strong>${name}</strong></li>`;
-
-                    // Подсвечиваем поле с ошибкой
-                    const errorFieldElement = document.querySelector('#emailModal input[name=' + errorFields[index] + '], #emailModal textarea[name=' + errorFields[index] + ']');
-                    if (errorFieldElement) {
-                      errorFieldElement.style.border = '1px solid red';
-                    }
-                    // warningHtml += `<li><strong>${errorFields[index]}:</strong> ${msg}</li>`;
-                  });
-
-                  warningHtml += '</ul><p style="text-align: left">После заполнения этих данных отправьте запрос повторно.<br> С уважением,<br>ООО «НДА Деловая медицинская компания»</p>';
-                  blockElement.style.display = 'block';
-                  warningBody.innerHTML = warningHtml;
-                  warningToast.classList.add('show', 'modal');
-
-                  // Показываем блок с тостом
-                  const warningBlock = document.querySelector('.container1 .toast-warning-container');
-                  if (warningBlock) {
-                    warningBlock.style.display = 'block';
-                  }
-                }
-
-                // Также выводим ошибки под формой
-                let errorHtml = '<div class="alert alert-danger mt-3"><ul>';
-                errorMessages.forEach((msg, index) => {
-                  errorHtml += `<li><strong>${errorFields[index]}:</strong> ${msg}</li>`;
-                });
-                errorHtml += '</ul></div>';
-
-                responseContainer.innerHTML = errorHtml;
-              } else {
-                // Если нет ошибок полей, но success=false
-                responseContainer.innerHTML = `
-                <div class="alert alert-danger mt-3">
-                  ${response.message || 'Произошла ошибка при обработке формы'}
-                </div>`;
-              }
-            }
-        } catch (e) {
-          // Если не JSON, показываем raw response
-          responseContainer.innerHTML = `
-                    <div class="alert alert-danger mt-3">
-                        Ошибка сервера: ${evt.detail.xhr.responseText.substring(0, 100)}
-                    </div>`;
-          console.error('Error:', e);
-        }
-      }
-    });
-    document.getElementById('mail_form')?.addEventListener('submit', function(e) {
-      const requiredFields = this.querySelectorAll('[required]');
-      let emptyFields = [];
-
-      requiredFields.forEach(field => {
-        if (!field.value.trim()) {
-          emptyFields.push({
-            name: field.name || field.id || field.placeholder || 'Неизвестное поле',
-            element: field
-          });
-        }
-      });
-
-      if (emptyFields.length > 0) {
-        e.preventDefault();
-
-        // Показываем модалку с предупреждением
-        const warningToast = document.getElementById("toast-warning");
-        const warningBody = document.getElementById("toast-warning-body");
-
-        if (warningToast && warningBody) {
-          let warningHtml = '<h4>Не заполнены обязательные поля</h4><ul>';
-
-          emptyFields.forEach(field => {
-            warningHtml += `<li><strong>${field.name}</strong></li>`;
-            // Добавляем подсветку незаполненного поля
-            field.element.classList.add('is-invalid');
-          });
-
-          warningHtml += '</ul><p>Пожалуйста, заполните все обязательные поля.</p>';
-
-          warningBody.innerHTML = warningHtml;
-          warningToast.classList.add('show', 'modal');
-
-          const warningBlock = document.querySelector('.container1 .toast-warning-container');
-          if (warningBlock) {
-            warningBlock.style.display = 'block';
-          }
-        }
-      }
-    });
-
-    // Убираем подсветку при начале ввода
-    document.querySelectorAll('#mail_form [required]').forEach(field => {
-      field.addEventListener('input', function() {
-        if (this.value.trim()) {
-          this.classList.remove('is-invalid');
-        }
-      });
-    });
-  });
-</script>

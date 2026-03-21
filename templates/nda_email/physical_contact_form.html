@@ -1,89 +1,56 @@
-<!--<script src="https://smartcaptcha.yandexcloud.net/captcha.js" defer></script> -->
-<!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.13/css/intlTelInput.css">-->
-<!--    <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.13/js/intlTelInput.min.js"></script>-->
-
-<form
-    id="physical_modal_form"
-    action="{% url 'physical_cart_submit' %}"
-    method="post"
-    enctype="multipart/form-data"
-    hx-post="{% url 'physical_cart_submit' %}?random={{ timestamp }}%}"
-    hx-target="#physical_modal_form_container"  
-    hx-swap="none"  
-    novalidate
->
-    {% csrf_token %}
-   <div id="physical_modal_form_container"> 
-    <div class="physicalForm">
-        <div class="formEl">
-            <div class="form-floating mb-3">
-                {{ p_contact_form.name }}
-                <label for="fullNameLegal">ФИО контактного лица</label>
-            </div>
-            <div class="oneLine">
-                <div class="form-floating mb-3 w-50">
-                    {{ p_contact_form.phone_number }}
-                    {% comment %} <label for="validationPhoneNumber">Номер телефона</label> {% endcomment %}
-                    {% if p_contact_form.phone_number.errors %}
-                        <div style="color: red">
+<form class="order-popup__form" id="physical_modal_form" action="{% url 'physical_cart_submit' %}"
+                method="post" enctype="multipart/form-data"
+                hx-post="{% url 'physical_cart_submit' %}?random={{ timestamp }}%}" hx-target="#physical_modal_form_container"
+                hx-swap="none" novalidate>
+                {% csrf_token %}
+                <div id="physical_modal_form_container">
+                <div class="order-popup__form-panel order-popup__form-panel_physical" data-order-panel="physical"
+                  role="tabpanel">
+                  <div class="physicalForm">
+                    <div class="formEl">
+                      <div class="form-floating mb-3">
+                        {{ p_contact_form.name }}
+                        <label for="fullNameLegal">ФИО контактного лица</label>
+                      </div>
+                      <div class="oneLine">
+                        <div class="form-floating mb-3 w-50">
+                          {{ p_contact_form.phone_number }}
+                          {% if p_contact_form.phone_number.errors %}
+                          <div style="color: red">
                             {{ p_contact_form.phone_number.errors }}
+                          </div>
+                          {% endif %}
                         </div>
-                    {% endif %}
-                </div>
-                <div class="form-floating mb-3 w-50">
-                    {{ p_contact_form.email }}
-                     {% if p_contact_form.email.errors %}
-                        <span class="invalid-feedback">
+                        <div class="form-floating mb-3 w-50">
+                          {{ p_contact_form.email }}
+                          {% if p_contact_form.email.errors %}
+                          <span class="invalid-feedback">
                             {{ p_contact_form.email.errors }}
-                        </span>
-                    {% endif %}
-                    <label for="email">Email</label>
+                          </span>
+                          {% endif %}
+                          <label for="email">Email</label>
+                        </div>
+                      </div>
+                      <div class="form-floating mb-3">
+                        {{ p_contact_form.message }}
+                        <label for="message">Комментарий к заказу</label>
+                      </div>
+                      <div class="mb-3">
+                        <label class="input-file">
+                          {{p_contact_form.company_details}}
+                          <span class="filename1">Прикрепить файл</span>
+                        </label>
+                      </div>
+
+                      <div id="captcha-container-physical" class="smart-captcha mb-3"
+                        data-sitekey="ysc1_sxny6cNZmnvhyJKrojDDLNxj0nvkGnTleldHzqEo9d9475ca">
+                      </div>
+
+                      <div class="modal-footer">
+                        <button type="submit" form="physical_modal_form" class="btn btn-primary">Отправить запрос</button>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-            </div>
-            <div class="form-floating mb-3">
-                {{ p_contact_form.message }}
-                <label for="message">Комментарий к заказу</label>
-            </div>
-             <div class="mb-3">
-                <label class="input-file">
-                    {{p_contact_form.company_details}}
-                    <span class="filename1">Прикрепить файл</span>
-                </label>
-            </div>
-             
-           <div
-                id="captcha-container"
-                class="smart-captcha mb-3"
-                data-sitekey="ysc1_sxny6cNZmnvhyJKrojDDLNxj0nvkGnTleldHzqEo9d9475ca"
-            >
-            </div> 
-
-          {% comment %} <div 
-                id="captcha-container"
-                class="smart-captcha"
-                data-sitekey="ysc1_VyMk6kFwNVLym6k3ga8J4WyDeBNRooy4hPhYe2tr9d2736aa"
-            ></div>   {% endcomment %}
-            {% if captchaError %}
-                <div class="text-danger mb-3">{{ captchaError }}</div>
-            {% endif %}
-        
-            
-            {% comment %} <div class="form-check mb-3">
-                <input class="form-check-input" type="checkbox" id="policyCheckLegal" required />
-                <label class="form-check-label" for="policyCheckLegal">Я прочитал(а) уведомление о <a href='{% url "privacy" %}'>политике конфиденциальности</a></label>
-            </div> {% endcomment %}
-            {% if emailError %}
-                <div class="text-danger mb-3">{{ emailError }}</div>
-            {% endif %}
-             {% if emailSuccess %}
-                <div class="text-success mb-3">{{ emailSuccess }}</div>
-            {% endif %}
-            <div class="modal-footer">
-                <button type="submit" form="physical_modal_form" class="btn btn-primary">Отправить запрос</button>
-            </div>
-        </div>
-    </div>
-   </div>
-</form>
-
-
+              </div>
+              </form>

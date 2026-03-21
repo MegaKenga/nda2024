@@ -8,6 +8,7 @@ from catalog.models import Offer
 from cart.forms import CartAddProductForm
 from nda_email.forms import ContactForm, PhysicalContactForm, MailForm, CallForm
 from nda_email.email_sender import CompanyOrderEmailSender, PhysicalPersonOrderSender, CallRequestFormEmailSender, MailRequestFormEmailSender
+from nda_email.captcha import get_client_ip, verify_yandex_captcha
 
 
 CART_SESSION_ID = 'cart'
@@ -105,27 +106,61 @@ def physical_cart_submit(request):
 
 @require_POST
 def mail_submit(request):
-    captcha_response = validate_captcha(request)
-    # Если captcha_response == True → капча пройдена
-    # Если captcha_response == HttpResponse → капча не пройдена
-    captcha_valid = captcha_response is True
-
     form = MailForm(request.POST, request.FILES)
-    return form_send_message(request, form, MailRequestFormEmailSender, offers=None, captcha_valid=captcha_valid)
+    captcha_token = request.POST.get('smart-token')
+    client_ip = get_client_ip(request)
+
+    if form.is_valid():
+        # Проверка капчи
+        if not verify_yandex_captcha(captcha_token, client_ip):
+            return JsonResponse({
+                'success': False,
+                'errors': {'captcha': 'Проверка не пройдена'}
+            })
+        try:
+            MailRequestFormEmailSender.send_messages(request)
+            return JsonResponse({'success': True})
+        except Exception as e:
+            return JsonResponse({
+                'success': False,
+                'errors': {'__all__': str(e)}
+            })
+    else:
+        errors = {}
+        for field, error_list in form.errors.items():
+            errors[field] = error_list[0]
+        return JsonResponse({
+            'success': False,
+            'errors': errors
+        })
 
 
 @require_POST
 def call_submit(request):
     form = CallForm(request.POST)
+    captcha_token = request.POST.get('smart-token')
+    client_ip = get_client_ip(request)
+
     if form.is_valid():
+        # Проверка капчи
+        if not verify_yandex_captcha(captcha_token, client_ip):
+            return JsonResponse({
+                'success': False,
+                'errors': {'captcha': 'Проверка не пройдена'}
+            })
         try:
             CallRequestFormEmailSender.send_messages(request)
-            # Возвращаем JSON для успешного ответа
-            return JsonResponse({'success': True, 'message': 'Форма успешно отправлена'})
+            return JsonResponse({'success': True})
         except Exception as e:
-            print(e)
-            return JsonResponse({'success': False, 'errors': 'Ошибка при отправке'}, status=500)
+            return JsonResponse({
+                'success': False,
+                'errors': {'__all__': str(e)}
+            })
     else:
-        # Возвращаем ошибки валидации
-        errors = {field: error[0] for field, error in form.errors.items()}
-        return JsonResponse({'success': False, 'errors': errors}, status=400)
+        errors = {}
+        for field, error_list in form.errors.items():
+            errors[field] = error_list[0]
+        return JsonResponse({
+            'success': False,
+            'errors': errors
+        })

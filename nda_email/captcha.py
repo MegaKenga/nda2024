@@ -1,5 +1,6 @@
 import json
 import sys
+
 import requests
 
 from nda.settings import YACAPTCHA_SERVER
@@ -15,22 +16,18 @@ def get_client_ip(request):
     return ip
 
 
-def yandex_captcha_validation(token, client_ip):
-    if not token or len(token) == 0:
-        return False
-    resp = requests.get(
-        "https://captcha-api.yandex.ru/validate",
-        {
-            "secret": YACAPTCHA_SERVER ,
-            "token": token,
-            "ip": client_ip
-        },
-        timeout=1
+def verify_yandex_captcha(token, client_ip):
+    resp = requests.post(
+       "https://smartcaptcha.cloud.yandex.ru/validate",
+       data={
+          "secret": YACAPTCHA_SERVER,
+          "token": token,
+          "ip": client_ip
+       },
+       timeout=1
     )
-    
     server_output = resp.content.decode()
-    print(server_output)
     if resp.status_code != 200:
-        print(f"Allow access due to an error: code={resp.status_code}; message={server_output}", file=sys.stderr)
-        return True
+       print(f"Allow access due to an error: code={resp.status_code}; message={server_output}", file=sys.stderr)
+       return True
     return json.loads(server_output)["status"] == "ok"

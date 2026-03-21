@@ -2145,7 +2145,7 @@ textarea {
 }
 
 .product-order__action-btn_delete {
-  width: 533px;
+  width: 450px;
   height: 70px;
   background-color: #e60000;
   color: var(--color-white);

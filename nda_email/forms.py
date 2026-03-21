@@ -188,7 +188,6 @@ class MailForm(forms.Form):
             }
         ),
     )
-
     company_name = forms.CharField(
         label="Название организации",
         max_length=100,
@@ -201,7 +200,6 @@ class MailForm(forms.Form):
             }
         ),
     )
-
     inn = forms.CharField(
         label="ИНН",
         max_length=12,
@@ -214,12 +212,10 @@ class MailForm(forms.Form):
             }
         ),
     )
-
     message = forms.CharField(
         required=False,
         widget=forms.Textarea(attrs={"id": "message", "class": "form-control", "placeholder": "Текст письма *"}),
     )
-
     company_details = forms.FileField(
         required=False,
         widget=forms.ClearableFileInput(
@@ -242,7 +238,6 @@ class MailForm(forms.Form):
         email = self.cleaned_data["email"]
         return email  # Просто возвращаем email без проверки
 
-    
 
 class CallForm(forms.Form):
     name = forms.CharField(
@@ -272,7 +267,3 @@ class CallForm(forms.Form):
     def clean_phone_number(self):
         phone_number = self.cleaned_data["phone_number"]
         return phone_number  # Просто возвращаем номер телефона без проверки
-
-    def clean_email(self):
-        email = self.cleaned_data["email"]
-        return email  # Просто возвращаем email без проверки
