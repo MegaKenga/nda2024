@@ -68,8 +68,8 @@
                 <div class="product-info">
                     <div class="product-info_content">
                         {% if user.is_authenticated %}
-                            <a href="https://nda.ru/admin/catalog/product/{{ product.id }}/change/">
-                                <h1 class="product-info__title" style="color: #2a7aa8">{{ product.name }}</h1>
+                            <a href="https://nda.ru/admin/catalog/product/{{ product.id }}/change/" target="_blank">
+                                <h1 class="product-info__title" style="color: #db1212" >{{ product.name }}</h1>
                             </a>
                         {% else %}
                             <h1 class="product-info__title">{{ product.name }}</h1>
@@ -200,7 +200,9 @@
                                                 <li class="ru-table__td ru-table__td_ru-num">{{ offer.shipping_pack | safe}}</li>
                                                 <li class="ru-table__th ru-table__th_ru">Кол-во</li>
                                                 <li class="ru-table__td ru-table__td_action">
-                                                    <form class="ru-table__qty-control" action="{% url 'cart_add' offer_id=offer.pk %}" method="post">
+                                                    <form class="ru-table__qty-control"
+                                                          action="{% url 'cart_add' offer_id=offer.pk %}"
+                                                          method="post">
                                                         {% csrf_token %}
                                                         <div class="ru-table__qty-group">
                                                             <button type="button" class="ru-table__qty-btn ru-table__qty-btn_minus" aria-label="Уменьшить"

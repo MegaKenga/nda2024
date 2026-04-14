@@ -21,7 +21,7 @@
                               {% else %}
                                   <img src="{% static 'img/noImage.jpg' %}" alt="No Image" />
                               {% endif %}
-                              <h3 class="catalog__card-title t-20-29">{{ brand.name }}</h3>
+                              <p class="catalog__card-title t-20-29">{{ brand.name }}</p>
                               <p class="catalog__card-desc t-16">{{ brand.description|safe|striptags }}</p>
                           </li>
                       </a>
@@ -39,7 +39,7 @@
                                   {% else %}
                                       <img src="{% static 'img/noImage.jpg' %}" alt="No Image" />
                                   {% endif %}
-                                  <h3 class="catalog__card-title t-20-29">{{ category.name }}</h3>
+                                  <p class="catalog__card-title t-20-29">{{ category.name }}</p>
                                   <p class="catalog__card-desc t-16">{{ category.description|safe|striptags }}</p>
                               </li>
                           </a>

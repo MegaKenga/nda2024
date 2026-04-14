@@ -14,50 +14,28 @@
           <h2 class="order-popup__title t-50" id="orderPopupTitle">Оформить заказ</h2>
 
           <div class="order-popup__tabs" role="tablist">
-            <button type="button" class="order-popup__tab order-popup__tab_active" role="tab" aria-selected="true"
+            <button type="button" class="order-popup__tab " role="tab" aria-selected="false"
               data-order-tab="physical">Физическое лицо</button>
-            <button type="button" class="order-popup__tab" role="tab" aria-selected="false"
+            <button type="button" class="order-popup__tab order-popup__tab_active" role="tab" aria-selected="true"
               data-order-tab="legal">Юридическое лицо</button>
           </div>
 
-          <p class="order-popup__legal-intro" id="orderPopupLegalIntro" hidden>Уважаемые коллеги! При оформлении заказа,
-            пожалуйста, укажите Ваш ИНН (для автоматического перенаправления Вашего запроса сотруднику, закрепленному за
-            Вашей организацией) и наименование организации или прикрепите карточку клиента. Это ускорит обработку Вашей
-            заявки. Без указания реквизитов мы не сможем выставить Вам коммерческое предложение.</p>
+          <p class="order-popup__legal-intro" id="orderPopupLegalIntro">При оформлении заказа,
+            пожалуйста, укажите Ваш ИНН и наименование организации или прикрепите карточку клиента. Это ускорит обработку Вашей
+            заявки.</p>
 
           <div class="order-popup__body">
             <div class="order-popup__forms">
               {% include 'nda_email/physical_contact_form.html' %}
-                {% include 'nda_email/contactform.html' %}
-
+              {% include 'nda_email/contactform.html' %}
             </div>
             <div class="order-popup__summary">
               <p class="order-popup__summary-title order-popup__summary-title_legal" data-order-summary-title-legal>Ваш
                 выбор:</p>
-            {% if offers_in_cart %}
-                {% for offer in offers_in_cart %}
-                    <tr>
-                        <td>{{ offer.name }}</td>
-                        <td>{{ offer.quantity }}</td>
-                        <td>
-                            <button
-                        hx-confirm="Вы уверены?"
-                        hx-target="#offers-table"
-                        hx-delete="{% url 'cart_remove' offer_id=offer.id %}"
-                        class="btn btn-danger"
-                        hx-swap="innerHTML"
-                        id="remove-offer-button"
-                    ><img src="{% static 'images/offer/delOffer.svg' %}" alt="">
-                </button>
-                </td>
-            </tr>
-        {% endfor %}
-            {% endif %}
-              <ul class="order-popup__summary-list" id="orderPopupSummaryList">
-                <li class="order-popup__summary-empty" id="orderPopupSummaryEmpty">Добавьте товары в заказ</li>
-              </ul>
+              {% include 'cart/cart_popup.html' %}
             </div>
           </div>
         </div>
       </div>
     </div>
+    {% include 'nda_email/success.html' %}

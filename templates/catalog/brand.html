@@ -37,7 +37,7 @@
                                 <img class="catalog-card__img" src="{% static '/img/noImage.jpg' %}" alt="Нет логотипа" width="150" height="150">
                             {% endif %}
                         </div>
-                        <h2 class="catalog-card__title t-20-29">{{ category.name }}</h2>
+                        <p class="catalog-card__title t-20-29">{{ category.name }}</p>
                     </a>
                 {% endfor %}
                 {% for product in products %}
@@ -49,7 +49,7 @@
                                 <img class="catalog-card__img" src="{% static '/img/noImage.jpg' %}" alt="Нет логотипа" width="150" height="150">
                             {% endif %}
                         </div>
-                        <h2 class="catalog-card__title t-20-29">{{ product.name }}</h2>
+                        <p class="catalog-card__title t-20-29">{{ product.name }}</p>
                     </a>
                 {% endfor %}
             </section>

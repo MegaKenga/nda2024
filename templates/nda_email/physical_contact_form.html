@@ -1,11 +1,9 @@
 <form class="order-popup__form" id="physical_modal_form" action="{% url 'physical_cart_submit' %}"
-                method="post" enctype="multipart/form-data"
-                hx-post="{% url 'physical_cart_submit' %}?random={{ timestamp }}%}" hx-target="#physical_modal_form_container"
-                hx-swap="none" novalidate>
+                method="post" enctype="multipart/form-data" novalidate hidden>
                 {% csrf_token %}
                 <div id="physical_modal_form_container">
                 <div class="order-popup__form-panel order-popup__form-panel_physical" data-order-panel="physical"
-                  role="tabpanel">
+                  role="tabpanel" hidden>
                   <div class="physicalForm">
                     <div class="formEl">
                       <div class="form-floating mb-3">
@@ -45,9 +43,26 @@
                       <div id="captcha-container-physical" class="smart-captcha mb-3"
                         data-sitekey="ysc1_sxny6cNZmnvhyJKrojDDLNxj0nvkGnTleldHzqEo9d9475ca">
                       </div>
+                      {% if captchaError %}
+                      <div class="text-danger mb-3">{{ captchaError }}</div>
+                      {% endif %}
+                      {% if emailError %}
+                      <div class="text-danger mb-3">{{ emailError }}</div>
+                      {% endif %}
+                      {% if emailSuccess %}
+                      <div class="text-success mb-3">{{ emailSuccess }}</div>
+                      {% endif %}
+
+                      <div class="order-popup__checkbox-wrap order-popup__checkbox-wrap_cookie mt-3 mb-2">
+                        <input type="checkbox" class="order-popup__checkbox" name="privacy" id="orderPopupPrivacy" required>
+                        <label class="order-popup__checkbox-label" for="orderPopupPrivacy">Я прочел (прочла) Уведомление о
+                          <a href="{% url 'privacy' %}" class="order-popup__privacy-link">политике конфиденциальности</a></label>
+                      </div>
 
                       <div class="modal-footer">
-                        <button type="submit" form="physical_modal_form" class="btn btn-primary">Отправить запрос</button>
+                        <button type="submit" form="physical_modal_form" class="btn btn-primary">
+                          <span class="js-order-submit-label">Отправить запрос</span>
+                        </button>
                       </div>
                     </div>
                   </div>

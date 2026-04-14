@@ -4,7 +4,6 @@ window.changeQuantity = function (event, btn, delta) {
   if (!form) return;
   var input = form.querySelector('input[name="quantity"]');
   if (!input) return;
-  // UI может показывать 0, даже если min="1" для серверной валидации.
   var uiMin = 0;
   var min = parseInt(input.getAttribute('min'), 10) || 1;
   var max = parseInt(input.getAttribute('max'), 10) || 99999;
@@ -15,7 +14,298 @@ window.changeQuantity = function (event, btn, delta) {
   input.value = val;
 };
 
+/* ========== Виджет куки ========== */
+(function initCookieConsent() {
+  try {
+    var COOKIE_CONSENT_KEY = 'nda_cookie_consent';
+    var accepted = false;
+    try { accepted = localStorage.getItem(COOKIE_CONSENT_KEY) === 'accepted'; } catch (e) { }
+
+    if (accepted) return;
+
+    setTimeout(function () {
+      var bar = document.getElementById('cookie-bar');
+      if (!bar) return;
+      try { if (localStorage.getItem(COOKIE_CONSENT_KEY) === 'accepted') return; } catch (e) { }
+      bar.removeAttribute('hidden');
+      bar.setAttribute('aria-hidden', 'false');
+
+      var btn = bar.querySelector('[data-cookie-accept]');
+      if (btn && !btn.dataset.cookieBound) {
+        btn.dataset.cookieBound = '1';
+        btn.addEventListener('click', function () {
+          try { localStorage.setItem(COOKIE_CONSENT_KEY, 'accepted'); } catch (e) { }
+          bar.setAttribute('hidden', '');
+          bar.setAttribute('aria-hidden', 'true');
+        });
+      }
+    }, 4000);
+  } catch (e) { }
+})();
+
 document.addEventListener('DOMContentLoaded', function () {
+
+  /* ========== Секция: Очистка корзины при переходе на другую страницу ========== */
+  (function initCartPageClearing() {
+    var CART_PAGE_KEY = 'nda_cart_page_url';
+    var CART_IDS_KEY = 'nda_cart_offer_ids';
+    var currentPath = window.location.pathname;
+
+    var storedPath = null;
+    var storedIds = '';
+    try {
+      storedPath = sessionStorage.getItem(CART_PAGE_KEY);
+      storedIds = sessionStorage.getItem(CART_IDS_KEY) || '';
+    } catch (e) { }
+
+    var currentPanel = document.getElementById('orderTotalPanel');
+    var serverIds = currentPanel ? (currentPanel.getAttribute('data-offer-ids') || '') : '';
+
+    if (storedPath && storedPath !== currentPath) {
+      var allIdsSet = {};
+      storedIds.split(',').concat(serverIds.split(',')).forEach(function (id) {
+        id = id.trim();
+        if (id) allIdsSet[id] = true;
+      });
+      var allIds = Object.keys(allIdsSet);
+      if (currentPanel) currentPanel.setAttribute('hidden', '');
+      try {
+        sessionStorage.setItem(CART_PAGE_KEY, currentPath);
+        sessionStorage.setItem(CART_IDS_KEY, '');
+      } catch (e) { }
+      if (allIds.length) {
+        var csrf = (document.cookie.match(/csrftoken=([^;]+)/) || [])[1] || '';
+        function deleteSequential(ids, index) {
+          if (index >= ids.length) {
+            document.documentElement.classList.remove('_cart-clearing');
+            return;
+          }
+          fetch('/cart/remove/' + ids[index] + '/', {
+            method: 'DELETE',
+            headers: { 'X-Requested-With': 'XMLHttpRequest', 'X-CSRFToken': csrf }
+          })
+            .catch(function () { })
+            .then(function () { deleteSequential(ids, index + 1); });
+        }
+        deleteSequential(allIds, 0);
+      } else {
+        document.documentElement.classList.remove('_cart-clearing');
+      }
+    } else {
+      document.documentElement.classList.remove('_cart-clearing');
+      try {
+        sessionStorage.setItem(CART_PAGE_KEY, currentPath);
+        sessionStorage.setItem(CART_IDS_KEY, '');
+      } catch (e) { }
+    }
+  })();
+
+  /* ========== Секция: Floating labels для form-floating ========== */
+  (function initFloatingLabelsPlaceholders() {
+    var roots = document.querySelectorAll(
+      '#modal_form_container, ' +
+      '#physical_modal_form_container, ' +
+      '#call-form-container, ' +
+      '#call_form, ' +
+      '#mail_form'
+    );
+    if (!roots.length) return;
+    roots.forEach(function (root) {
+      var fields = root.querySelectorAll('.form-floating input.form-control, .form-floating textarea.form-control');
+      fields.forEach(function (el) {
+        if (!el.hasAttribute('placeholder')) el.setAttribute('placeholder', ' ');
+      });
+    });
+  })();
+
+  function bindFloatingLabelStateInRoot(root) {
+    if (!root || !root.querySelectorAll) return;
+    var wraps = root.querySelectorAll('.form-floating');
+    wraps.forEach(function (wrap) {
+      if (wrap.dataset.ndaFloatingBound === '1') return;
+      wrap.dataset.ndaFloatingBound = '1';
+      var field = wrap.querySelector('input, textarea, select');
+      if (!field) return;
+
+      function update() {
+        var filled = !!String(field.value || '').trim();
+        wrap.classList.toggle('form-floating_is-filled', filled);
+      }
+
+      field.addEventListener('input', update);
+      field.addEventListener('change', update);
+      field.addEventListener('blur', update);
+      update();
+    });
+  }
+
+  var labelStateRoots = document.querySelectorAll(
+    '#modal_form_container, ' +
+    '#physical_modal_form_container, ' +
+    '#call-form-container, ' +
+    '#call_form, ' +
+    '#mail_form'
+  );
+  labelStateRoots.forEach(function (r) { bindFloatingLabelStateInRoot(r); });
+
+  /* ========== Маска телефона (intl-tel-input) ========== */
+  window.ndaIntlTelInputs = window.ndaIntlTelInputs || new Map();
+
+  function buildInputmaskFromExample(example) {
+    if (!example) return '';
+    return String(example).replace(/\d/g, '9');
+  }
+
+  function applyPhoneMaskForInput(input, iti, attempt) {
+    attempt = attempt || 0;
+    if (!input) return;
+    var InputmaskCtor = window.Inputmask || window.inputmask;
+    if (!InputmaskCtor) {
+      if (attempt < 10) setTimeout(function () { applyPhoneMaskForInput(input, iti, attempt + 1); }, 200);
+      return;
+    }
+    var hasUtils = !!window.intlTelInputUtils;
+
+    try {
+      var countryData = iti && iti.getSelectedCountryData ? iti.getSelectedCountryData() : null;
+      var iso2 = countryData && countryData.iso2 ? countryData.iso2 : 'ru';
+      var dialCode = countryData && countryData.dialCode ? String(countryData.dialCode).replace(/\D/g, '') : '';
+
+      if (dialCode) {
+        var digits = String(input.value || '').replace(/\D/g, '');
+        if (digits && digits.indexOf(dialCode) === 0 && digits.length >= dialCode.length) {
+          input.value = digits.slice(dialCode.length);
+        }
+      }
+
+      var maskByCountry = {
+        ru: '(999) 999-99-99',
+        kz: '(999) 999-99-99',
+        by: '(999) 999-99-99',
+        kg: '(999) 999-99-99',
+        am: '(999) 999-99-99'
+      };
+
+      var mask = maskByCountry[iso2] || '';
+
+      if (!mask) {
+        var ex = '';
+        if (hasUtils) {
+          try {
+            ex = window.intlTelInputUtils.getExampleNumber(
+              iso2,
+              true,
+              window.intlTelInputUtils.numberType.MOBILE
+            );
+          } catch (e) { }
+        }
+
+        if (ex) {
+          var exStr = String(ex).trim();
+          if (dialCode) {
+            exStr = exStr.replace(new RegExp('^\\+?' + dialCode), '').trim();
+          }
+          mask = buildInputmaskFromExample(exStr);
+        }
+      }
+
+      if (!mask) mask = '(999) 999-99-99';
+
+      try { if (input.inputmask) input.inputmask.remove(); } catch (e) { }
+
+      InputmaskCtor({
+        mask: mask,
+        showMaskOnHover: false,
+        showMaskOnFocus: true,
+        clearIncomplete: true,
+        definitions: { '9': { validator: '[0-9]', cardinality: 1 } }
+      }).mask(input);
+    } catch (e) { }
+  }
+
+  function initIntlTelInputsInRoot(root, attempt) {
+    attempt = attempt || 0;
+    var itiCtor = window.intlTelInput;
+    if (!itiCtor) {
+      if (attempt < 10) setTimeout(function () { initIntlTelInputsInRoot(root, attempt + 1); }, 300);
+      return;
+    }
+
+    if (!root || !root.querySelectorAll) return;
+    var inputs = root.querySelectorAll(
+      '#modal_form_container .phone-mask, ' +
+      '#physical_modal_form_container .phone-mask, ' +
+      '#call-form-container .phone-mask, ' +
+      '#call_form .phone-mask, ' +
+      '#mail_form .phone-mask, ' +
+      '#modal_form_container input[id^="validationPhoneNumber"], ' +
+      '#physical_modal_form_container input[id^="validationPhoneNumber"], ' +
+      '#call_form input[id^="validationPhoneNumber"], ' +
+      '#mail_form input[id^="validationPhoneNumber"]'
+    );
+    inputs.forEach(function (input) {
+      if (!input || input.dataset.ndaItiInit === '1') return;
+
+      try {
+        var isCallOrMail = !!(input.closest('#call_form') || input.closest('#call-form-container') || input.closest('#mail_form'));
+        if (!input.hasAttribute('placeholder')) input.setAttribute('placeholder', ' ');
+
+        var iti = itiCtor(input, {
+          initialCountry: 'ru',
+          nationalMode: true,
+          separateDialCode: true,
+          preferredCountries: ['ru', 'kz', 'am', 'by', 'kg'],
+          autoPlaceholder: 'polite',
+          placeholderNumberType: 'MOBILE',
+          utilsScript: 'https://cdn.jsdelivr.net/npm/intl-tel-input@18.2.1/build/js/utils.js'
+        });
+        window.ndaIntlTelInputs.set(input, iti);
+        input.dataset.ndaItiInit = '1';
+
+        var shouldApplyPhoneMask = !!(
+          input.closest('#modal_form_container') ||
+          input.closest('#physical_modal_form_container') ||
+          input.closest('#call_form') ||
+          input.closest('#call-form-container') ||
+          input.closest('#mail_form')
+        );
+        if (shouldApplyPhoneMask) {
+          setTimeout(function () { applyPhoneMaskForInput(input, iti, 0); }, 0);
+        }
+
+        input.addEventListener('countrychange', function () {
+          if (shouldApplyPhoneMask) setTimeout(function () { applyPhoneMaskForInput(input, iti, 0); }, 50);
+        });
+      } catch (e) { }
+    });
+
+    bindFloatingLabelStateInRoot(root);
+  }
+
+  function normalizeIntlPhoneInForm(form) {
+    if (!form) return;
+    form.querySelectorAll('.phone-mask').forEach(function (input) {
+      var iti = window.ndaIntlTelInputs.get(input);
+      if (!iti) return;
+      try {
+        var num = iti.getNumber && iti.getNumber();
+        if (num) {
+          input.value = num;
+          return;
+        }
+        var countryData = iti.getSelectedCountryData && iti.getSelectedCountryData();
+        var dial = countryData && countryData.dialCode ? String(countryData.dialCode).replace(/\D/g, '') : '';
+        var digits = String(input.value || '').replace(/\D/g, '');
+        if (!dial || !digits.length) return;
+        if (digits.indexOf(dial) === 0 && digits.length > dial.length) {
+          digits = digits.slice(dial.length);
+        }
+        input.value = '+' + dial + digits;
+      } catch (e) { }
+    });
+  }
+
+  initIntlTelInputsInRoot(document, 0);
 
   /* ========== Секция: Мобильное меню ========== */
   var mobileMenu = document.getElementById('mobile-menu');
@@ -162,8 +452,6 @@ document.addEventListener('DOMContentLoaded', function () {
     var btnPlus = control.querySelector('.ru-table__qty-btn_plus');
     var btnAdd = control.querySelector('.ru-table__qty-add');
     if (input && btnMinus && btnPlus) {
-      // Если в разметке есть inline onclick="changeQuantity(...)" — не дублируем шаг обработчиками.
-      // Оставляем только старое поведение там, где нет changeQuantity.
       if (!btnMinus.getAttribute('onclick') && !btnPlus.getAttribute('onclick')) {
         btnMinus.addEventListener('click', function () {
           var val = parseInt(input.value, 10) || 0;
@@ -176,8 +464,7 @@ document.addEventListener('DOMContentLoaded', function () {
       }
     }
     if (btnAdd) {
-      btnAdd.addEventListener('click', function (e) {
-        e.preventDefault();
+      btnAdd.addEventListener('click', function () {
         var row = control.closest('ol.ru-table__ru-blue, ol.ru-table__ru-gray');
         var qty = parseInt(control.querySelector('.ru-table__qty-input').value, 10) || 0;
         if (row && qty > 0) {
@@ -188,7 +475,6 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 
-  /* Плашка «Всего изделий в заказе» — показывается только когда count > 0 */
   var orderTotalPanel = document.getElementById('orderTotalPanel');
   var orderTotalCount = document.getElementById('orderTotalCount');
 
@@ -206,11 +492,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
   window.updateOrderTotalCount = updateOrderTotalCount;
 
-  if (orderTotalPanel) {
-    orderTotalPanel.setAttribute('hidden', '');
-  }
   if (orderTotalPanel && orderTotalCount) {
-    updateOrderTotalCount();
+    if (orderTotalPanel.hasAttribute('hidden')) {
+      updateOrderTotalCount();
+    }
   }
 
   var btnDeleteAll = document.querySelector('.product-order__action-btn_delete');
@@ -228,17 +513,16 @@ document.addEventListener('DOMContentLoaded', function () {
 
   var fileInput = document.getElementById('product-order-file-input');
   var uploadBtn = document.querySelector('[data-upload-btn]');
-if (fileInput && uploadBtn) {
-  var uploadBtnDefaultBgColor = uploadBtn.style.backgroundColor; // Сохраняем исходный цвет фона
-  fileInput.addEventListener('change', function () {
-    // Меняем цвет фона кнопки при смене имени файла
-    if (this.files && this.files.length) {
-      uploadBtn.style.backgroundColor = '#0BDA51'; // Устанавливаем новый цвет фона
-    } else {
-      uploadBtn.style.backgroundColor = uploadBtnDefaultBgColor; // Возвращаем исходный цвет фона
-    }
-  });
-}
+  if (fileInput && uploadBtn) {
+    var uploadBtnDefaultBgColor = uploadBtn.style.backgroundColor;
+    fileInput.addEventListener('change', function () {
+      if (this.files && this.files.length) {
+        uploadBtn.style.backgroundColor = '#0BDA51';
+      } else {
+        uploadBtn.style.backgroundColor = uploadBtnDefaultBgColor;
+      }
+    });
+  }
 
   /* ========== Секция: Попап «Оформить заказ» ========== */
   var orderPopup = document.getElementById('orderPopup');
@@ -248,11 +532,42 @@ if (fileInput && uploadBtn) {
   var orderPopupSummaryList = document.getElementById('orderPopupSummaryList');
   var orderPopupSummaryEmpty = document.getElementById('orderPopupSummaryEmpty');
 
+  var _scrollLockDepth = 0;
+
+  function lockBodyScroll() {
+    if (_scrollLockDepth === 0) {
+      var scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+      if (scrollbarWidth > 0) document.body.style.paddingRight = scrollbarWidth + 'px';
+      document.body.style.overflow = 'hidden';
+    }
+    _scrollLockDepth++;
+  }
+
+  function unlockBodyScroll() {
+    _scrollLockDepth = Math.max(0, _scrollLockDepth - 1);
+    if (_scrollLockDepth === 0) {
+      document.body.style.overflow = '';
+      document.body.style.paddingRight = '';
+    }
+  }
+
+  function forceUnlockBodyScroll() {
+    _scrollLockDepth = 0;
+    document.body.style.overflow = '';
+    document.body.style.paddingRight = '';
+  }
+
+  window.ndaScroll = {
+    lock: lockBodyScroll,
+    unlock: unlockBodyScroll,
+    forceUnlock: forceUnlockBodyScroll
+  };
+
   function openOrderPopup() {
     if (!orderPopup) return;
     orderPopup.removeAttribute('hidden');
     orderPopup.setAttribute('aria-hidden', 'false');
-    document.body.style.overflow = 'hidden';
+    lockBodyScroll();
     document.body.classList.add('body_order-popup-open');
     fillOrderPopupSummary();
     requestAnimationFrame(function () {
@@ -264,15 +579,22 @@ if (fileInput && uploadBtn) {
 
   function closeOrderPopup() {
     if (!orderPopup) return;
+    var closed = false;
+    function finish() {
+      if (closed) return;
+      closed = true;
+      orderPopup.setAttribute('hidden', '');
+      orderPopup.setAttribute('aria-hidden', 'true');
+      unlockBodyScroll();
+      document.body.classList.remove('body_order-popup-open');
+    }
     orderPopup.classList.remove('order-popup_is-open');
     orderPopup.addEventListener('transitionend', function onCloseEnd(e) {
       if (e.target !== orderPopup || e.propertyName !== 'opacity') return;
       orderPopup.removeEventListener('transitionend', onCloseEnd);
-      orderPopup.setAttribute('hidden', '');
-      orderPopup.setAttribute('aria-hidden', 'true');
-      document.body.style.overflow = '';
-      document.body.classList.remove('body_order-popup-open');
+      finish();
     });
+    setTimeout(finish, 400);
   }
 
   function fillOrderPopupSummary() {
@@ -330,6 +652,32 @@ if (fileInput && uploadBtn) {
       fillOrderPopupSummary();
     });
   }
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key !== 'Escape') return;
+    var anyOpen = false;
+    var orderP = document.getElementById('orderPopup');
+    if (orderP && orderP.classList.contains('order-popup_is-open')) {
+      closeOrderPopupDynamic();
+      anyOpen = true;
+    }
+    var cb = document.getElementById('callbackPopup');
+    if (cb && cb.classList.contains('callback-popup_is-open')) {
+      if (typeof window.ndaCloseCallbackPopup === 'function') window.ndaCloseCallbackPopup();
+      anyOpen = true;
+    }
+    var mail = document.getElementById('mailPopup');
+    if (mail && mail.classList.contains('callback-popup_is-open')) {
+      if (typeof window.ndaCloseMailPopup === 'function') window.ndaCloseMailPopup();
+      anyOpen = true;
+    }
+    var succ = document.getElementById('successPopup');
+    if (succ && succ.classList.contains('success-popup_is-open')) {
+      if (typeof window.ndaCloseSuccessPopup === 'function') window.ndaCloseSuccessPopup();
+      anyOpen = true;
+    }
+    if (!anyOpen) forceUnlockBodyScroll();
+  });
 
   if (orderPopupCaption) {
     orderPopupCaption.addEventListener('click', function () {
@@ -396,91 +744,258 @@ if (fileInput && uploadBtn) {
     });
   }
 
-  var orderPopupForms = document.querySelectorAll('#cart_modal_form, #physical_modal_form');
-  if (orderPopupForms.length) {
-    var orderPopupPrivacyCheckbox = document.getElementById('orderPopupPrivacy');
-    var orderPopupPrivacyCheckboxLegal = document.getElementById('orderPopupPrivacyLegal');
-
-    orderPopupForms.forEach(function (orderPopupForm) {
-      var orderPopupInputs = orderPopupForm.querySelectorAll('.order-popup__input, .order-popup__textarea');
-      var orderPopupPrivacyWraps = orderPopupForm.querySelectorAll('.order-popup__checkbox-wrap_cookie');
-      function removeError(el) {
-        if (!el) return;
-        el.classList.remove('order-popup__input_error');
-        orderPopupPrivacyWraps.forEach(function (wrap) {
-          wrap.classList.remove('order-popup__input_error');
-        });
-      }
-      orderPopupInputs.forEach(function (input) {
-        input.addEventListener('input', function () { removeError(this); });
-        input.addEventListener('change', function () { removeError(this); });
-      });
-    });
-    if (orderPopupPrivacyCheckbox) {
-      orderPopupPrivacyCheckbox.addEventListener('change', function () {
-        var w = this.closest('.order-popup__checkbox-wrap_cookie');
-        if (w) w.classList.remove('order-popup__input_error');
-      });
-    }
-    if (orderPopupPrivacyCheckboxLegal) {
-      orderPopupPrivacyCheckboxLegal.addEventListener('change', function () {
-        var w = this.closest('.order-popup__checkbox-wrap_cookie');
-        if (w) w.classList.remove('order-popup__input_error');
-      });
-    }
-
-    // cart_modal_form / physical_modal_form: отправка/валидация на сервере (Django + HTMX). На фронте submit не перехватываем.
+  function isOrderForm(form) {
+    return !!form && (form.id === 'cart_modal_form' || form.id === 'physical_modal_form');
   }
 
-  // HTMX: показываем успех/ошибку по реальному статусу ответа.
-  document.body.addEventListener('htmx:afterRequest', function (e) {
-    var elt = e && e.detail && e.detail.elt ? e.detail.elt : null;
-    if (!elt) return;
-    if (elt.id !== 'cart_modal_form' && elt.id !== 'physical_modal_form') return;
-    var xhr = e.detail.xhr;
-    var status = xhr && typeof xhr.status === 'number' ? xhr.status : 0;
-    if (status >= 200 && status < 300) {
-      closeOrderPopup();
-      var successPopup = document.getElementById('successPopup');
-      if (successPopup) {
-        successPopup.removeAttribute('hidden');
-        successPopup.setAttribute('aria-hidden', 'false');
-        requestAnimationFrame(function () {
-          successPopup.classList.add('success-popup_is-open');
-        });
+  function clearOrderFormErrors(form) {
+    form.querySelectorAll('.order-popup__input_error').forEach(function (el) {
+      el.classList.remove('order-popup__input_error');
+    });
+    form.querySelectorAll('.js-form-error').forEach(function (el) { el.remove(); });
+  }
+
+  function appendErrorNearField(fieldEl, message) {
+    if (!fieldEl || !message) return;
+    var container = fieldEl.closest('.form-floating, .mb-3, .order-popup__checkbox-wrap_cookie') || fieldEl.parentElement;
+    if (!container) return;
+    var error = document.createElement('div');
+    error.className = 'text-danger js-form-error';
+    error.textContent = message;
+    container.appendChild(error);
+  }
+
+  function markOrderFieldError(form, fieldName, message) {
+    if (fieldName === '__all__') {
+      appendErrorNearField(form.querySelector('.modal-footer') || form, message || 'Ошибка формы.');
+      return;
+    }
+    if (fieldName === 'captcha') {
+      var captchaWrap = form.querySelector('.smart-captcha');
+      if (captchaWrap) captchaWrap.classList.add('order-popup__input_error');
+      appendErrorNearField(captchaWrap, message);
+      return;
+    }
+    if (fieldName === 'privacy') {
+      var privacyWrap = form.querySelector('.order-popup__checkbox-wrap_cookie');
+      if (privacyWrap) privacyWrap.classList.add('order-popup__input_error');
+      appendErrorNearField(privacyWrap, message);
+      return;
+    }
+    var field = form.querySelector('[name="' + fieldName + '"]');
+    if (field) {
+      field.classList.add('order-popup__input_error');
+      appendErrorNearField(field, message);
+    }
+  }
+
+  function validateOrderFormClient(form) {
+    var valid = true;
+    clearOrderFormErrors(form);
+    var requiredFields = form.querySelectorAll('input[required], textarea[required], select[required]');
+    requiredFields.forEach(function (field) {
+      var isCheckbox = field.type === 'checkbox';
+      var empty = isCheckbox ? !field.checked : !String(field.value || '').trim();
+      if (!empty) return;
+      valid = false;
+      if (isCheckbox) markOrderFieldError(form, 'privacy', 'Обязательное поле.');
+      else field.classList.add('order-popup__input_error');
+    });
+    return valid;
+  }
+
+  function getOrderCaptchaToken(form) {
+    var tokenEl = form.querySelector('input[name="smart-token"]');
+    if (tokenEl && String(tokenEl.value || '').trim()) {
+      return String(tokenEl.value || '').trim();
+    }
+    var captchaWrap = form.querySelector('.smart-captcha');
+    if (captchaWrap) {
+      var nestedToken = captchaWrap.querySelector('input[name="smart-token"]');
+      if (nestedToken && String(nestedToken.value || '').trim()) {
+        return String(nestedToken.value || '').trim();
       }
-    } else {
-      var errPop = document.getElementById('errorPopup');
-      if (errPop) {
-        errPop.removeAttribute('hidden');
-        errPop.setAttribute('aria-hidden', 'false');
-        requestAnimationFrame(function () { errPop.classList.add('error-popup_is-open'); });
+      var nearbyToken = captchaWrap.parentElement && captchaWrap.parentElement.querySelector('input[name="smart-token"]');
+      if (nearbyToken && String(nearbyToken.value || '').trim()) {
+        return String(nearbyToken.value || '').trim();
       }
+    }
+    return '';
+  }
+
+  document.addEventListener('input', function (e) {
+    var form = e.target && e.target.form;
+    if (!isOrderForm(form)) return;
+    e.target.classList.remove('order-popup__input_error');
+    if (e.target.name === 'smart-token') {
+      var c = form.querySelector('.smart-captcha');
+      if (c) c.classList.remove('order-popup__input_error');
     }
   });
 
-  /* Окно об успехе отправки */
+  document.addEventListener('change', function (e) {
+    var form = e.target && e.target.form;
+    if (!isOrderForm(form)) return;
+    if (e.target.type === 'checkbox') {
+      var wrap = e.target.closest('.order-popup__checkbox-wrap_cookie');
+      if (wrap) wrap.classList.remove('order-popup__input_error');
+    }
+  });
+
+  setInterval(function () {
+    var forms = document.querySelectorAll('#cart_modal_form, #physical_modal_form');
+    forms.forEach(function (form) {
+      var token = getOrderCaptchaToken(form);
+      if (!token) return;
+      var captchaWrap = form.querySelector('.smart-captcha');
+      if (captchaWrap) captchaWrap.classList.remove('order-popup__input_error');
+      form.querySelectorAll('.js-form-error').forEach(function (err) {
+        if (err.textContent && err.textContent.indexOf('капч') !== -1) err.remove();
+      });
+    });
+  }, 500);
+
+  document.addEventListener('submit', function (e) {
+    var form = e.target;
+    if (!isOrderForm(form)) return;
+    e.preventDefault();
+    if (form.dataset.submitting === '1') return;
+    normalizeIntlPhoneInForm(form);
+    if (!validateOrderFormClient(form)) return;
+
+    form.dataset.submitting = '1';
+    var submitBtn = form.querySelector('button[type="submit"]');
+    var orderSubmitLabel = submitBtn ? submitBtn.querySelector('.js-order-submit-label') : null;
+    var orderSubmitDefaultText = orderSubmitLabel
+      ? orderSubmitLabel.textContent.trim()
+      : (submitBtn ? submitBtn.textContent.trim() : '');
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.setAttribute('aria-busy', 'true');
+    }
+    if (orderSubmitLabel) orderSubmitLabel.textContent = 'Отправляем...';
+    else if (submitBtn) submitBtn.textContent = 'Отправляем...';
+
+    var formData = new FormData(form);
+    var maxAttempts = 10;
+    var attempt = 0;
+
+    function sendWithCaptchaRetry() {
+      attempt++;
+      var smartToken = getOrderCaptchaToken(form);
+      if (smartToken) formData.set('smart-token', smartToken);
+
+      if (!smartToken && attempt < maxAttempts) {
+        setTimeout(sendWithCaptchaRetry, 150);
+        return;
+      }
+
+      fetch(form.getAttribute('action'), {
+        method: 'POST',
+        body: formData,
+        headers: {
+          'X-Requested-With': 'XMLHttpRequest',
+          'X-CSRFToken': getCsrfToken()
+        }
+      })
+        .then(function (r) {
+          return r.json().then(function (data) {
+            return { ok: r.ok, data: data };
+          });
+        })
+        .then(function (res) {
+          clearOrderFormErrors(form);
+          if (res.ok && res.data && res.data.success) {
+            closeOrderPopupDynamic();
+
+            var panelEl = document.getElementById('orderTotalPanel');
+            var countEl = document.getElementById('orderTotalCount');
+            if (panelEl && countEl) {
+              countEl.textContent = '0';
+              panelEl.setAttribute('hidden', '');
+            }
+
+            var orderRows = document.querySelectorAll(
+              '.ru-table-wrap_order .ru-table__ru-blue[data-order-added], ' +
+              '.ru-table-wrap_order .ru-table__ru-gray[data-order-added]'
+            );
+            orderRows.forEach(function (row) { row.removeAttribute('data-order-added'); });
+            document.querySelectorAll('.ru-table-wrap_order .ru-table__qty-input').forEach(function (input) {
+              input.value = '0';
+            });
+            if (window.updateOrderTotalCount) window.updateOrderTotalCount();
+
+            var successPopup = document.getElementById('successPopup');
+            if (successPopup) {
+              successPopup.style.removeProperty('display');
+              successPopup.removeAttribute('hidden');
+              successPopup.setAttribute('aria-hidden', 'false');
+              lockBodyScroll();
+              requestAnimationFrame(function () {
+                successPopup.classList.add('success-popup_is-open');
+              });
+            }
+            return;
+          }
+          var errors = (res.data && res.data.errors) ? res.data.errors : {};
+          Object.keys(errors).forEach(function (name) {
+            markOrderFieldError(form, name, errors[name]);
+          });
+        })
+        .catch(function () {
+          markOrderFieldError(form, '__all__', 'Ошибка отправки формы. Попробуйте позже.');
+        })
+        .finally(function () {
+          form.dataset.submitting = '0';
+          if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.removeAttribute('aria-busy');
+          }
+          if (orderSubmitLabel) orderSubmitLabel.textContent = orderSubmitDefaultText;
+          else if (submitBtn) submitBtn.textContent = orderSubmitDefaultText;
+        });
+    }
+
+    sendWithCaptchaRetry();
+  });
+
   var successPopup = document.getElementById('successPopup');
   var successPopupCloseBtns = document.querySelectorAll('[data-success-popup-close]');
   if (successPopup && successPopupCloseBtns.length) {
     function closeSuccessPopup() {
+      var done = false;
+      function finish() {
+        if (done) return;
+        done = true;
+        successPopup.setAttribute('hidden', '');
+        successPopup.setAttribute('aria-hidden', 'true');
+        unlockBodyScroll();
+      }
       successPopup.classList.remove('success-popup_is-open');
       successPopup.addEventListener('transitionend', function onEnd(e) {
         if (e.target !== successPopup || e.propertyName !== 'opacity') return;
         successPopup.removeEventListener('transitionend', onEnd);
-        successPopup.setAttribute('hidden', '');
-        successPopup.setAttribute('aria-hidden', 'true');
+        finish();
       }, { once: true });
+      setTimeout(finish, 400);
     }
+    window.ndaCloseSuccessPopup = closeSuccessPopup;
     successPopupCloseBtns.forEach(function (btn) {
       btn.addEventListener('click', closeSuccessPopup);
     });
+    var successBackdropEl = successPopup.querySelector('.success-popup__backdrop');
+    if (successBackdropEl) {
+      successBackdropEl.addEventListener('click', closeSuccessPopup);
+    }
   }
 
-  /* Попап ошибки */
   var errorPopup = document.getElementById('errorPopup');
   var errorPopupCloseBtns = document.querySelectorAll('[data-error-popup-close]');
   if (errorPopup && errorPopupCloseBtns.length) {
+    var errorPopupDefaultText = (function () {
+      var t = document.getElementById('errorPopupTitle');
+      return t ? t.textContent : '';
+    })();
     function closeErrorPopup() {
       errorPopup.classList.remove('error-popup_is-open');
       errorPopup.addEventListener('transitionend', function onEnd(e) {
@@ -488,22 +1003,447 @@ if (fileInput && uploadBtn) {
         errorPopup.removeEventListener('transitionend', onEnd);
         errorPopup.setAttribute('hidden', '');
         errorPopup.setAttribute('aria-hidden', 'true');
+        var tReset = document.getElementById('errorPopupTitle');
+        if (tReset && errorPopupDefaultText) tReset.textContent = errorPopupDefaultText;
       }, { once: true });
     }
     errorPopupCloseBtns.forEach(function (btn) {
       btn.addEventListener('click', closeErrorPopup);
     });
+    var errorBackdropEl = errorPopup.querySelector('.error-popup__backdrop');
+    if (errorBackdropEl) {
+      errorBackdropEl.addEventListener('click', closeErrorPopup);
+    }
   }
 
-  /* Попап «Запросить звонок» (ogyokhhw) */
+  function ndaSyncInputFileLabel(fileInput) {
+    if (!fileInput || fileInput.type !== 'file') return;
+    var label = fileInput.closest('.input-file');
+    if (!label) return;
+    var span = label.querySelector('span');
+    var def = label.getAttribute('data-input-file-default') || 'Прикрепить файл';
+    if (fileInput.files && fileInput.files.length) {
+      label.classList.add('input-file_has-file');
+      if (span) span.textContent = fileInput.files[0].name;
+    } else {
+      label.classList.remove('input-file_has-file');
+      if (span) span.textContent = def;
+    }
+  }
+
+  document.addEventListener('change', function (e) {
+    var t = e.target;
+    if (!t || t.type !== 'file' || t.name !== 'company_details') return;
+    ndaSyncInputFileLabel(t);
+  });
+
+  document.addEventListener('submit', function (e) {
+    var form = e.target;
+    if (!form || form.id !== 'mail_form') return;
+
+    e.preventDefault();
+    if (form.dataset.submitting === '1') return;
+
+    var cb = form.querySelector('input[name="mail_privacy"]') || document.getElementById('mailPopupPrivacy');
+    var privacyWrap = cb ? cb.closest('.order-popup__checkbox-wrap_cookie') : form.querySelector('.order-popup__checkbox-wrap_cookie');
+    if (!cb || !cb.checked) {
+      if (privacyWrap) {
+        privacyWrap.classList.add('order-popup__input_error');
+        if (!privacyWrap.querySelector('.js-form-error')) {
+          var errEl = document.createElement('div');
+          errEl.className = 'text-danger js-form-error';
+          errEl.textContent = 'Обязательное поле.';
+          privacyWrap.appendChild(errEl);
+        }
+      }
+      return;
+    }
+    if (privacyWrap) {
+      privacyWrap.classList.remove('order-popup__input_error');
+      var prevErr = privacyWrap.querySelector('.js-form-error');
+      if (prevErr) prevErr.remove();
+    }
+
+    var emailInput = form.querySelector('[name="email"]');
+    var nameInput = form.querySelector('[name="name"]');
+    var phoneInput = form.querySelector('[name="phone_number"]');
+    var captchaBox = form.querySelector('.smart-captcha');
+    var submitBtn = form.querySelector('button[type="submit"]');
+    var submitLabel = submitBtn ? submitBtn.querySelector('.js-mail-submit-label') : null;
+    var mailSubmitDefaultText = submitLabel ? submitLabel.textContent.trim() : 'Отправить';
+
+    function markMailFieldError(el, hasError) {
+      if (!el) return;
+      if (hasError) el.classList.add('order-popup__input_error');
+      else el.classList.remove('order-popup__input_error');
+    }
+
+    var emailEmpty = !emailInput || !String(emailInput.value || '').trim();
+    markMailFieldError(emailInput, emailEmpty);
+
+    var hasCaptchaToken = !!getOrderCaptchaToken(form);
+    if (captchaBox) {
+      if (hasCaptchaToken) captchaBox.classList.remove('order-popup__input_error');
+      else captchaBox.classList.add('order-popup__input_error');
+    }
+
+    if (emailEmpty || !hasCaptchaToken) return;
+
+    form.dataset.submitting = '1';
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.setAttribute('aria-busy', 'true');
+    }
+    if (submitLabel) submitLabel.textContent = 'Отправляем...';
+
+    var maxAttempts = 10;
+    var attempt = 0;
+
+    function sendMailWithCaptchaRetry() {
+      attempt++;
+      normalizeIntlPhoneInForm(form);
+      var formData = new FormData(form);
+      var smartToken = getOrderCaptchaToken(form);
+      if (smartToken) formData.set('smart-token', smartToken);
+
+      if (!smartToken && attempt < maxAttempts) {
+        setTimeout(sendMailWithCaptchaRetry, 150);
+        return;
+      }
+
+      fetch(form.getAttribute('action'), {
+        method: 'POST',
+        body: formData,
+        headers: {
+          'X-Requested-With': 'XMLHttpRequest',
+          'X-CSRFToken': getCsrfToken()
+        }
+      })
+        .then(function (response) {
+          return response.json().then(function (data) {
+            return { ok: response.ok, data: data || {} };
+          }).catch(function () {
+            return { ok: response.ok, data: {} };
+          });
+        })
+        .then(function (payload) {
+          var data = payload.data || {};
+          var success = payload.ok && data.success === true;
+
+          markMailFieldError(emailInput, false);
+          markMailFieldError(nameInput, false);
+          markMailFieldError(phoneInput, false);
+          if (captchaBox) captchaBox.classList.remove('order-popup__input_error');
+
+          if (success) {
+            form.reset();
+            var fileIn = form.querySelector('input[type="file"][name="company_details"]');
+            if (fileIn) ndaSyncInputFileLabel(fileIn);
+            if (window.ndaCloseMailPopup) window.ndaCloseMailPopup();
+            var sp = document.getElementById('successPopup');
+            if (sp) {
+              sp.style.removeProperty('display');
+              sp.removeAttribute('hidden');
+              sp.setAttribute('aria-hidden', 'false');
+              lockBodyScroll();
+              requestAnimationFrame(function () {
+                sp.classList.add('success-popup_is-open');
+              });
+            }
+            return;
+          }
+
+          var errors = data.errors || {};
+          if (errors.email) markMailFieldError(emailInput, true);
+          if (errors.name) markMailFieldError(nameInput, true);
+          if (errors.phone_number) markMailFieldError(phoneInput, true);
+          if (errors.captcha && captchaBox) captchaBox.classList.add('order-popup__input_error');
+
+          var ep = document.getElementById('errorPopup');
+          if (ep) {
+            var titleEl = document.getElementById('errorPopupTitle');
+            if (titleEl && errors.__all__) titleEl.textContent = String(errors.__all__);
+            else if (titleEl) {
+              titleEl.textContent = 'Ошибка при отправке! Пожалуйста, попробуйте повторить запрос через пару минут.';
+            }
+            ep.style.removeProperty('display');
+            ep.removeAttribute('hidden');
+            ep.setAttribute('aria-hidden', 'false');
+            requestAnimationFrame(function () {
+              ep.classList.add('error-popup_is-open');
+            });
+          }
+        })
+        .catch(function () {
+          var ep = document.getElementById('errorPopup');
+          if (ep) {
+            var t = document.getElementById('errorPopupTitle');
+            if (t) t.textContent = 'Ошибка при отправке! Пожалуйста, попробуйте повторить запрос через пару минут.';
+            ep.style.removeProperty('display');
+            ep.removeAttribute('hidden');
+            ep.setAttribute('aria-hidden', 'false');
+            requestAnimationFrame(function () {
+              ep.classList.add('error-popup_is-open');
+            });
+          }
+        })
+        .finally(function () {
+          form.dataset.submitting = '0';
+          if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.removeAttribute('aria-busy');
+          }
+          if (submitLabel) submitLabel.textContent = mailSubmitDefaultText;
+        });
+    }
+
+    sendMailWithCaptchaRetry();
+  });
+
+  function openOrderPopupDynamic() {
+    var popup = document.getElementById('orderPopup');
+    if (!popup) return;
+    popup.removeAttribute('hidden');
+    popup.setAttribute('aria-hidden', 'false');
+    lockBodyScroll();
+    document.body.classList.add('body_order-popup-open');
+    requestAnimationFrame(function () {
+      popup.classList.add('order-popup_is-open');
+    });
+  }
+
+  function closeOrderPopupDynamic() {
+    var popup = document.getElementById('orderPopup');
+    if (!popup) return;
+    var closed = false;
+    function finish() {
+      if (closed) return;
+      closed = true;
+      popup.setAttribute('hidden', '');
+      popup.setAttribute('aria-hidden', 'true');
+      unlockBodyScroll();
+      document.body.classList.remove('body_order-popup-open');
+    }
+    popup.classList.remove('order-popup_is-open');
+    popup.addEventListener('transitionend', function onEnd(e) {
+      if (e.target !== popup || e.propertyName !== 'opacity') return;
+      popup.removeEventListener('transitionend', onEnd);
+      finish();
+    }, { once: true });
+    setTimeout(finish, 400);
+  }
+
+  function switchOrderPopupTab(target) {
+    var popup = document.getElementById('orderPopup');
+    if (!popup) return;
+    var tabs = popup.querySelectorAll('.order-popup__tab');
+    var panels = popup.querySelectorAll('.order-popup__form-panel');
+    var physicalFormEl = document.getElementById('physical_modal_form');
+    var legalFormEl = document.getElementById('cart_modal_form');
+    var orderPopupTitlePhysical = popup.querySelector('[data-order-summary-title-physical]');
+    var orderPopupTitleLegal = popup.querySelector('[data-order-summary-title-legal]');
+    var orderPopupLegalIntro = document.getElementById('orderPopupLegalIntro');
+
+    tabs.forEach(function (t) {
+      var tTarget = t.getAttribute('data-order-tab');
+      var isActive = tTarget === target;
+      t.classList.toggle('order-popup__tab_active', isActive);
+      t.setAttribute('aria-selected', isActive ? 'true' : 'false');
+    });
+
+    if (physicalFormEl && legalFormEl) {
+      if (target === 'legal') {
+        physicalFormEl.setAttribute('hidden', '');
+        legalFormEl.removeAttribute('hidden');
+      } else {
+        legalFormEl.setAttribute('hidden', '');
+        physicalFormEl.removeAttribute('hidden');
+      }
+    }
+
+    panels.forEach(function (panel) {
+      if (panel.getAttribute('data-order-panel') === target) {
+        panel.removeAttribute('hidden');
+      } else {
+        panel.setAttribute('hidden', '');
+      }
+    });
+
+    if (orderPopupTitlePhysical && orderPopupTitleLegal) {
+      if (target === 'legal') {
+        orderPopupTitlePhysical.setAttribute('hidden', '');
+        orderPopupTitleLegal.removeAttribute('hidden');
+      } else {
+        orderPopupTitlePhysical.removeAttribute('hidden');
+        orderPopupTitleLegal.setAttribute('hidden', '');
+      }
+    }
+
+    if (orderPopupLegalIntro) {
+      if (target === 'legal') {
+        orderPopupLegalIntro.removeAttribute('hidden');
+      } else {
+        orderPopupLegalIntro.setAttribute('hidden', '');
+      }
+    }
+  }
+
+  function syncCartIdsToSession() {
+    var panel = document.getElementById('orderTotalPanel');
+    var ids = panel ? (panel.getAttribute('data-offer-ids') || '') : '';
+    try { sessionStorage.setItem('nda_cart_offer_ids', ids); } catch (e) { }
+  }
+
+  function getCsrfToken() {
+    var hxHeaders = document.body && document.body.getAttribute('hx-headers');
+    if (hxHeaders) {
+      try { return JSON.parse(hxHeaders)['X-CSRFToken'] || ''; } catch (e) { }
+    }
+    var inp = document.querySelector('input[name="csrfmiddlewaretoken"]');
+    return inp ? inp.value : '';
+  }
+
+  document.addEventListener('submit', function (e) {
+    var form = e.target && e.target.closest ? e.target.closest('.ru-table__qty-control') : null;
+    if (!form) return;
+    e.preventDefault();
+    var url = form.getAttribute('action');
+    if (!url) return;
+    var formData = new FormData(form);
+    fetch(url, {
+      method: 'POST',
+      body: formData,
+      headers: { 'X-Requested-With': 'XMLHttpRequest', 'X-CSRFToken': getCsrfToken() }
+    })
+      .then(function (r) { return r.text(); })
+      .then(function (html) {
+        var panel = document.getElementById('orderTotalPanel');
+        if (!panel) return;
+        var tmp = document.createElement('div');
+        tmp.innerHTML = html.trim();
+        var newPanel = tmp.firstElementChild;
+        if (newPanel) {
+          panel.parentNode.replaceChild(newPanel, panel);
+          syncCartIdsToSession();
+        }
+      })
+      .catch(function (err) { console.error('cart_add error:', err); });
+  });
+
+  function initCaptchaInElement(container, attempt) {
+    if (!window.smartCaptcha) {
+      if ((attempt || 0) < 10) {
+        setTimeout(function () { initCaptchaInElement(container, (attempt || 0) + 1); }, 500);
+      }
+      return;
+    }
+    var divs = container.querySelectorAll('.smart-captcha');
+    divs.forEach(function (div) {
+      if (div.querySelector('iframe')) return;
+      var sitekey = div.getAttribute('data-sitekey');
+      if (sitekey) {
+        window.smartCaptcha.render(div, { sitekey: sitekey });
+      }
+    });
+  }
+
+  function loadAndOpenOrderPopup(url) {
+    var existing = document.getElementById('orderPopup');
+    if (existing) {
+      fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+        .then(function (r) { return r.text(); })
+        .then(function (html) {
+          var tmp = document.createElement('div');
+          tmp.innerHTML = html;
+          var newTable = tmp.querySelector('#offers-table');
+          var curTable = existing.querySelector('#offers-table');
+          if (newTable && curTable) curTable.parentNode.replaceChild(newTable, curTable);
+          openOrderPopupDynamic();
+          initIntlTelInputsInRoot(existing, 0);
+        })
+        .catch(function () { openOrderPopupDynamic(); });
+      return;
+    }
+    fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+      .then(function (r) { return r.text(); })
+      .then(function (html) {
+        var tmp = document.createElement('div');
+        tmp.innerHTML = html;
+        while (tmp.firstChild) {
+          document.body.appendChild(tmp.firstChild);
+        }
+        var popup = document.getElementById('orderPopup');
+        if (popup) initCaptchaInElement(popup);
+        if (popup) initIntlTelInputsInRoot(popup, 0);
+        openOrderPopupDynamic();
+      })
+      .catch(function (err) { console.error('cart_modal load error:', err); });
+  }
+
+  document.addEventListener('click', function (e) {
+    var orderBtn = e.target && e.target.closest ? e.target.closest('.product-order__total-caption') : null;
+    if (orderBtn) {
+      var url = orderBtn.getAttribute('hx-get') || orderBtn.getAttribute('action');
+      if (url) {
+        e.preventDefault();
+        loadAndOpenOrderPopup(url);
+      }
+      return;
+    }
+
+    var closeBtn = e.target && e.target.closest ? e.target.closest('[data-order-popup-close]') : null;
+    if (closeBtn) {
+      closeOrderPopupDynamic();
+      return;
+    }
+
+    var tabBtn = e.target && e.target.closest ? e.target.closest('.order-popup__tab') : null;
+    if (tabBtn) {
+      var tabTarget = tabBtn.getAttribute('data-order-tab');
+      if (tabTarget) switchOrderPopupTab(tabTarget);
+      return;
+    }
+
+    var removeBtn = e.target && e.target.closest ? e.target.closest('.offers-table__remove-btn') : null;
+    if (removeBtn) {
+      if (!window.confirm('Вы уверены?')) return;
+      var delUrl = removeBtn.getAttribute('hx-delete');
+      if (!delUrl) return;
+      fetch(delUrl, {
+        method: 'DELETE',
+        headers: { 'X-Requested-With': 'XMLHttpRequest', 'X-CSRFToken': getCsrfToken() }
+      })
+        .then(function (r) { return r.text(); })
+        .then(function (html) {
+          var table = document.getElementById('offers-table');
+          if (table) {
+            table.innerHTML = html;
+            var remainingIds = Array.from(table.querySelectorAll('[hx-delete]')).map(function (btn) {
+              var m = btn.getAttribute('hx-delete').match(/\/cart\/remove\/(\d+)\//);
+              return m ? m[1] : null;
+            }).filter(Boolean).join(',');
+            var panel = document.getElementById('orderTotalPanel');
+            if (panel) {
+              panel.setAttribute('data-offer-ids', remainingIds);
+              if (!remainingIds) panel.setAttribute('hidden', '');
+            }
+            try { sessionStorage.setItem('nda_cart_offer_ids', remainingIds); } catch (e) { }
+          }
+        })
+        .catch(function (err) { console.error('cart_remove error:', err); });
+    }
+  });
+
   var callbackPopup = document.getElementById('callbackPopup');
   var callbackPopupCloseBtns = document.querySelectorAll('[data-callback-popup-close]');
   var callbackPopupOpenBtns = document.querySelectorAll('[data-callback-popup-open]');
   if (callbackPopup) {
     function openCallbackPopup() {
+      callbackPopup.style.removeProperty('display');
       callbackPopup.removeAttribute('hidden');
       callbackPopup.setAttribute('aria-hidden', 'false');
-      document.body.style.overflow = 'hidden';
+      initIntlTelInputsInRoot(callbackPopup, 0);
+      lockBodyScroll();
       requestAnimationFrame(function () {
         requestAnimationFrame(function () {
           callbackPopup.classList.add('callback-popup_is-open');
@@ -511,15 +1451,25 @@ if (fileInput && uploadBtn) {
       });
     }
     function closeCallbackPopup() {
-      document.body.style.overflow = '';
+      unlockBodyScroll();
       callbackPopup.classList.remove('callback-popup_is-open');
+      var finished = false;
+      function onFinish() {
+        if (finished) return;
+        finished = true;
+        callbackPopup.setAttribute('hidden', '');
+        callbackPopup.setAttribute('aria-hidden', 'true');
+      }
       callbackPopup.addEventListener('transitionend', function onEnd(e) {
         if (e.target !== callbackPopup || e.propertyName !== 'opacity') return;
         callbackPopup.removeEventListener('transitionend', onEnd);
-        callbackPopup.setAttribute('hidden', '');
-        callbackPopup.setAttribute('aria-hidden', 'true');
+        onFinish();
       }, { once: true });
+      setTimeout(onFinish, 400);
+      var callFormEl = document.getElementById('call_form');
+      if (callFormEl) callFormEl.reset();
     }
+    window.ndaCloseCallbackPopup = closeCallbackPopup;
     if (callbackPopupCloseBtns.length) {
       callbackPopupCloseBtns.forEach(function (btn) {
         btn.addEventListener('click', closeCallbackPopup);
@@ -536,43 +1486,24 @@ if (fileInput && uploadBtn) {
         if (!callbackModal.contains(e.target)) closeCallbackPopup();
       });
     }
-    var callbackForm = document.getElementById('call_form') || document.getElementById('callbackPopupForm');
-    if (callbackForm) {
-      if (callbackForm.id === 'call_form') {
-        var callFormPhone = callbackForm.querySelector('input[name="phone_number"], input[type="tel"]');
-        if (callFormPhone) {
-          callFormPhone.addEventListener('input', function () {
-            var v = this.value.replace(/\D/g, '');
-            if (v.length > 0) {
-              if (v[0] === '8') v = '7' + v.slice(1);
-              else if (v[0] !== '7') v = '7' + v;
-            }
-            v = v.slice(0, 11);
-            if (v.length <= 1) this.value = v ? '+7' : '';
-            else this.value = '+7 (' + v.slice(1, 4) + ') ' + v.slice(4, 7) + '-' + v.slice(7, 9) + '-' + v.slice(9);
-          });
-          callFormPhone.addEventListener('focus', function () {
-            if (this.value.replace(/\D/g, '').length === 0) this.value = '+7 ';
-          });
-        }
-      }
-      callbackForm.addEventListener('submit', function (e) {
-        if (this.id === 'call_form') return;
+    var callbackPopupFormEl = document.getElementById('callbackPopupForm');
+    if (callbackPopupFormEl) {
+      callbackPopupFormEl.addEventListener('submit', function (e) {
         e.preventDefault();
-        var fio = callbackForm.querySelector('[name="callback_fio"]');
-        var phone = callbackForm.querySelector('[name="callback_phone"]');
-        var captcha = callbackForm.querySelector('[name="callback_captcha"]');
-        var privacy = callbackForm.querySelector('[name="callback_privacy"]');
-        var privacyWrap = callbackForm.querySelector('.order-popup__checkbox-wrap_cookie, .callback-form__checkbox-wrap_cookie');
-        callbackForm.querySelectorAll('.order-popup__input, .order-popup__textarea, .callback-form__input, .callback-form__textarea').forEach(function (el) {
+        var fio = callbackPopupFormEl.querySelector('[name="callback_fio"]');
+        var phone = callbackPopupFormEl.querySelector('[name="callback_phone"]');
+        var captcha = callbackPopupFormEl.querySelector('[name="callback_captcha"]');
+        var privacy = callbackPopupFormEl.querySelector('[name="callback_privacy"]');
+        var privacyWrapLegacy = callbackPopupFormEl.querySelector('.order-popup__checkbox-wrap_cookie, .callback-form__checkbox-wrap_cookie');
+        callbackPopupFormEl.querySelectorAll('.order-popup__input, .order-popup__textarea, .callback-form__input, .callback-form__textarea').forEach(function (el) {
           el.classList.remove('order-popup__input_error', 'callback-form__input_error');
         });
-        if (privacyWrap) privacyWrap.classList.remove('order-popup__input_error', 'callback-form__input_error');
+        if (privacyWrapLegacy) privacyWrapLegacy.classList.remove('order-popup__input_error', 'callback-form__input_error');
         var valid = true;
         if (!fio || !fio.value.trim()) { valid = false; if (fio) fio.classList.add('order-popup__input_error', 'callback-form__input_error'); }
         if (!phone || !phone.value.trim()) { valid = false; if (phone) phone.classList.add('order-popup__input_error', 'callback-form__input_error'); }
         if (captcha && !captcha.checked) { valid = false; }
-        if (privacy && !privacy.checked && privacyWrap) { valid = false; privacyWrap.classList.add('order-popup__input_error', 'callback-form__input_error'); }
+        if (privacy && !privacy.checked && privacyWrapLegacy) { valid = false; privacyWrapLegacy.classList.add('order-popup__input_error', 'callback-form__input_error'); }
         if (valid) {
           closeCallbackPopup();
           var successPopup = document.getElementById('successPopup');
@@ -588,15 +1519,156 @@ if (fileInput && uploadBtn) {
     }
   }
 
-  /* Попап «Написать письмо» */
+  document.addEventListener('submit', function (e) {
+    var form = e.target;
+    if (!form || form.id !== 'call_form') return;
+    e.preventDefault();
+    e.stopImmediatePropagation();
+
+    var nameInput = form.querySelector('[name="name"]');
+    var phoneInput = form.querySelector('[name="phone_number"], input[type="tel"]');
+    var requiredFields = form.querySelectorAll('[required]');
+    var privacyCb = form.querySelector('input[name="callback_privacy"]');
+    var privacyWrap = privacyCb ? privacyCb.closest('.order-popup__checkbox-wrap_cookie') : null;
+    var captchaBox = form.querySelector('.smart-captcha');
+    var tokenInput = form.querySelector('input[name="smart-token"]');
+    var validCall = true;
+
+    function markError(el, hasError) {
+      if (!el) return;
+      if (hasError) el.classList.add('order-popup__input_error');
+      else el.classList.remove('order-popup__input_error');
+    }
+
+    if (privacyWrap) {
+      privacyWrap.classList.remove('order-popup__input_error');
+      privacyWrap.querySelectorAll('.js-form-error').forEach(function (el) { el.remove(); });
+    }
+
+    requiredFields.forEach(function (field) {
+      if (field.type === 'checkbox') return;
+      var empty = !field.value || !String(field.value).trim();
+      markError(field, empty);
+      if (empty) validCall = false;
+    });
+
+    if (!privacyCb || !privacyCb.checked) {
+      if (privacyWrap) {
+        privacyWrap.classList.add('order-popup__input_error');
+        if (!privacyWrap.querySelector('.js-form-error')) {
+          var privacyErr = document.createElement('div');
+          privacyErr.className = 'text-danger js-form-error';
+          privacyErr.textContent = 'Обязательное поле.';
+          privacyWrap.appendChild(privacyErr);
+        }
+      }
+      validCall = false;
+    }
+
+    var phoneEmpty = !phoneInput || !phoneInput.value || !phoneInput.value.trim();
+    markError(phoneInput, phoneEmpty);
+    if (phoneEmpty) validCall = false;
+
+    var nameEmpty = !nameInput || !nameInput.value || !nameInput.value.trim();
+    markError(nameInput, nameEmpty);
+    if (nameEmpty) validCall = false;
+
+    var hasCaptchaToken = !!(tokenInput && tokenInput.value && tokenInput.value.trim());
+    if (captchaBox) {
+      if (hasCaptchaToken) captchaBox.classList.remove('order-popup__input_error');
+      else captchaBox.classList.add('order-popup__input_error');
+    }
+    if (!hasCaptchaToken) validCall = false;
+
+    if (!validCall) return;
+
+    var callSubmitBtn = form.querySelector('button[type="submit"]');
+    var callSubmitLabel = callSubmitBtn ? callSubmitBtn.querySelector('.js-call-submit-label') : null;
+    var callSubmitDefaultText = callSubmitLabel
+      ? callSubmitLabel.textContent.trim()
+      : (callSubmitBtn ? callSubmitBtn.textContent.trim() : 'Отправить');
+    if (callSubmitBtn) {
+      callSubmitBtn.disabled = true;
+      callSubmitBtn.setAttribute('aria-busy', 'true');
+    }
+    if (callSubmitLabel) callSubmitLabel.textContent = 'Отправляем...';
+    else if (callSubmitBtn) callSubmitBtn.textContent = 'Отправляем...';
+
+    normalizeIntlPhoneInForm(form);
+    fetch(form.getAttribute('action') || form.action, {
+      method: 'POST',
+      body: new FormData(form),
+      headers: {
+        'X-Requested-With': 'XMLHttpRequest',
+        'X-CSRFToken': getCsrfToken()
+      }
+    }).then(function (response) {
+      return response.json().then(function (data) {
+        return { ok: response.ok, data: data || {} };
+      }).catch(function () {
+        return { ok: response.ok, data: {} };
+      });
+    }).then(function (payload) {
+      var data = payload.data || {};
+      var success = payload.ok && data.success === true;
+
+      markError(nameInput, false);
+      markError(phoneInput, false);
+      if (captchaBox) captchaBox.classList.remove('order-popup__input_error');
+
+      if (success) {
+        if (window.ndaCloseCallbackPopup) window.ndaCloseCallbackPopup();
+        var successPopupCall = document.getElementById('successPopup');
+        if (successPopupCall) {
+          successPopupCall.removeAttribute('hidden');
+          successPopupCall.setAttribute('aria-hidden', 'false');
+          requestAnimationFrame(function () {
+            successPopupCall.classList.add('success-popup_is-open');
+          });
+        }
+        return;
+      }
+
+      var errors = data.errors || {};
+      if (errors.name) markError(nameInput, true);
+      if (errors.phone_number) markError(phoneInput, true);
+      if (errors.captcha && captchaBox) captchaBox.classList.add('order-popup__input_error');
+
+      if (errorPopup) {
+        errorPopup.removeAttribute('hidden');
+        errorPopup.setAttribute('aria-hidden', 'false');
+        requestAnimationFrame(function () {
+          errorPopup.classList.add('error-popup_is-open');
+        });
+      }
+    }).catch(function () {
+      if (errorPopup) {
+        errorPopup.removeAttribute('hidden');
+        errorPopup.setAttribute('aria-hidden', 'false');
+        requestAnimationFrame(function () {
+          errorPopup.classList.add('error-popup_is-open');
+        });
+      }
+    }).finally(function () {
+      if (callSubmitBtn) {
+        callSubmitBtn.disabled = false;
+        callSubmitBtn.removeAttribute('aria-busy');
+      }
+      if (callSubmitLabel) callSubmitLabel.textContent = callSubmitDefaultText;
+      else if (callSubmitBtn) callSubmitBtn.textContent = callSubmitDefaultText;
+    });
+  }, true);
+
   var mailPopup = document.getElementById('mailPopup');
   var mailPopupCloseBtns = document.querySelectorAll('[data-mail-popup-close]');
   var mailPopupOpenBtns = document.querySelectorAll('[data-mail-popup-open]');
   if (mailPopup) {
     function openMailPopup() {
+      mailPopup.style.removeProperty('display');
       mailPopup.removeAttribute('hidden');
       mailPopup.setAttribute('aria-hidden', 'false');
-      document.body.style.overflow = 'hidden';
+      initIntlTelInputsInRoot(mailPopup, 0);
+      lockBodyScroll();
       requestAnimationFrame(function () {
         requestAnimationFrame(function () {
           mailPopup.classList.add('callback-popup_is-open');
@@ -604,15 +1676,23 @@ if (fileInput && uploadBtn) {
       });
     }
     function closeMailPopup() {
-      document.body.style.overflow = '';
+      unlockBodyScroll();
       mailPopup.classList.remove('callback-popup_is-open');
+      var finished = false;
+      function onFinish() {
+        if (finished) return;
+        finished = true;
+        mailPopup.setAttribute('hidden', '');
+        mailPopup.setAttribute('aria-hidden', 'true');
+      }
       mailPopup.addEventListener('transitionend', function onEnd(e) {
         if (e.target !== mailPopup || e.propertyName !== 'opacity') return;
         mailPopup.removeEventListener('transitionend', onEnd);
-        mailPopup.setAttribute('hidden', '');
-        mailPopup.setAttribute('aria-hidden', 'true');
+        onFinish();
       }, { once: true });
+      setTimeout(onFinish, 400);
     }
+    window.ndaCloseMailPopup = closeMailPopup;
     if (mailPopupCloseBtns.length) {
       mailPopupCloseBtns.forEach(function (btn) {
         btn.addEventListener('click', closeMailPopup);
@@ -649,6 +1729,25 @@ if (fileInput && uploadBtn) {
       observeParents: true,
       loop: false
     });
+
+    try {
+      var thumbsProgressTrack = document.createElement('div');
+      thumbsProgressTrack.className = 'product-gallery-thumbs-progress-track';
+      var thumbsProgressBar = document.createElement('div');
+      thumbsProgressBar.className = 'product-gallery-thumbs-progress-bar';
+      thumbsProgressTrack.appendChild(thumbsProgressBar);
+      var thumbsParent = thumbsSwiper.el && thumbsSwiper.el.parentElement ? thumbsSwiper.el.parentElement : null;
+      if (thumbsParent) thumbsParent.insertBefore(thumbsProgressTrack, thumbsSwiper.el.nextSibling);
+      else thumbsSwiper.el.appendChild(thumbsProgressTrack);
+      var updateThumbsProgress = function () {
+        var p = typeof thumbsSwiper.progress === 'number' ? thumbsSwiper.progress : 0;
+        p = Math.max(0, Math.min(1, p));
+        thumbsProgressBar.style.transform = 'scaleX(' + p + ')';
+      };
+      thumbsSwiper.on('progress', function () { updateThumbsProgress(); });
+      updateThumbsProgress();
+    } catch (e) { }
+
     var mainSlidesCount = productGalleryEl.querySelectorAll('.product-gallery-main .swiper-slide').length;
     new Swiper('.product-gallery-main', {
       spaceBetween: 0,
@@ -754,23 +1853,4 @@ if (fileInput && uploadBtn) {
       else window.location.href = '?page=' + target;
     });
   });
-
-  /* ========== Виджет куки ========== */
-  var cookieBar = document.getElementById('cookie-bar');
-  var cookieAcceptBtn = document.querySelector('[data-cookie-accept]');
-  var COOKIE_CONSENT_KEY = 'nda_cookie_consent';
-
-  if (cookieBar) {
-    if (localStorage.getItem(COOKIE_CONSENT_KEY) === 'accepted') {
-      cookieBar.classList.add('cookie-bar_hidden');
-    }
-    if (cookieAcceptBtn) {
-      cookieAcceptBtn.addEventListener('click', function () {
-        try {
-          localStorage.setItem(COOKIE_CONSENT_KEY, 'accepted');
-        } catch (e) {}
-        cookieBar.classList.add('cookie-bar_hidden');
-      });
-    }
-  }
 });

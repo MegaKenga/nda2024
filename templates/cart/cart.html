@@ -1,5 +1,8 @@
-<div class="product-order__total-panel" id="orderTotalPanel" role="status" aria-live="polite" hidden>
-    <button type="button" class="product-order__total-caption" action="{% url 'cart_modal' %}">Оформить заказ</button>
+<div class="product-order__total-panel" id="orderTotalPanel" role="status" aria-live="polite"{% if not offers_in_cart %} hidden{% endif %} data-offer-ids="{% for offer in offers_in_cart %}{{ offer.id }}{% if not forloop.last %},{% endif %}{% endfor %}">
+    <button type="button" class="product-order__total-caption"
+            hx-get="{% url 'cart_modal' %}"
+            hx-target="body"
+            hx-swap="beforeend">Оформить заказ</button>
     <div class="product-order__total-info">
         <span class="product-order__total-label">Всего изделий в заказе:</span>
         <span class="product-order__total-count" id="orderTotalCount">{{ offers_in_cart|length }}</span>

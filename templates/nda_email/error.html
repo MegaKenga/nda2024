@@ -1,0 +1,23 @@
+<div class="error-popup" id="errorPopup" role="alertdialog" aria-modal="true" aria-labelledby="errorPopupTitle"
+     aria-hidden="true" hidden>
+  <div class="error-popup__backdrop" data-error-popup-close aria-label="Закрыть"></div>
+  <div class="error-popup-wrapper">
+    <div class="error-popup__modal">
+      <button type="button" class="error-popup__close" data-error-popup-close aria-label="Закрыть">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M15 5L5 15M5 5l10 10" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <div class="error-popup__icon" aria-hidden="true">
+        <svg width="207" height="207" viewBox="0 0 207 207" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="103.46" cy="103.46" r="98.46" stroke="#DB5B5D" stroke-width="10"/>
+          <path d="M61.8984 61L145.398 144.5" stroke="#DB5B5D" stroke-width="10"/>
+          <path d="M146.102 61L62.6016 143.798" stroke="#DB5B5D" stroke-width="10"/>
+        </svg>
+      </div>
+      <p class="error-popup__text" id="errorPopupTitle">Ошибка при отправке! Пожалуйста, попробуйте повторить запрос
+        через пару минут.</p>
+    </div>
+  </div>
+</div>

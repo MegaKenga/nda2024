@@ -1,3 +1,5 @@
+import logging
+
 from django.core.exceptions import ValidationError
 from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404
@@ -12,6 +14,45 @@ from nda_email.captcha import get_client_ip, verify_yandex_captcha
 
 
 CART_SESSION_ID = 'cart'
+logger = logging.getLogger(__name__)
+
+
+def validate_captcha(request):
+    captcha_token = request.POST.get('smart-token')
+    client_ip = get_client_ip(request)
+    if not captcha_token:
+        return 'Проверка не пройдена'
+    if verify_yandex_captcha(captcha_token, client_ip):
+        return True
+    return 'Проверка не пройдена'
+
+
+def form_send_message(request, form, sender_cls, captcha_valid=False, **kwargs):
+    if not form.is_valid():
+        errors = {}
+        for field, error_list in form.errors.items():
+            errors[field] = error_list[0]
+        return JsonResponse({'success': False, 'errors': errors}, status=400)
+
+    if not captcha_valid:
+        return JsonResponse({
+            'success': False,
+            'errors': {'captcha': 'Проверка не пройдена'}
+        }, status=400)
+
+    try:
+        offers = kwargs.get('offers')
+        # CompanyOrderEmailSender требует offers позиционно, PhysicalPersonOrderSender принимает offers=None.
+        print(sender_cls)
+        sender_cls.send_messages(request, offers)
+        cart_clear(request)
+        return JsonResponse({'success': True})
+    except Exception as e:
+        logger.exception("Order form email send failed: %s", e)
+        return JsonResponse({
+            'success': False,
+            'errors': {'__all__': 'Почтовый сервер временно недоступен. Попробуйте отправить запрос чуть позже.'}
+        }, status=500)
 
 def get_cart(request):
     # Создаем корзину для сессии
@@ -107,60 +148,16 @@ def physical_cart_submit(request):
 @require_POST
 def mail_submit(request):
     form = MailForm(request.POST, request.FILES)
-    captcha_token = request.POST.get('smart-token')
-    client_ip = get_client_ip(request)
+    captcha_response = validate_captcha(request)
+    captcha_valid = captcha_response is True
 
-    if form.is_valid():
-        # Проверка капчи
-        if not verify_yandex_captcha(captcha_token, client_ip):
-            return JsonResponse({
-                'success': False,
-                'errors': {'captcha': 'Проверка не пройдена'}
-            })
-        try:
-            MailRequestFormEmailSender.send_messages(request)
-            return JsonResponse({'success': True})
-        except Exception as e:
-            return JsonResponse({
-                'success': False,
-                'errors': {'__all__': str(e)}
-            })
-    else:
-        errors = {}
-        for field, error_list in form.errors.items():
-            errors[field] = error_list[0]
-        return JsonResponse({
-            'success': False,
-            'errors': errors
-        })
+    return form_send_message(request, form, MailRequestFormEmailSender, captcha_valid=captcha_valid)
 
 
 @require_POST
 def call_submit(request):
-    form = CallForm(request.POST)
-    captcha_token = request.POST.get('smart-token')
-    client_ip = get_client_ip(request)
+    form = CallForm(request.POST, request.FILES)
+    captcha_response = validate_captcha(request)
+    captcha_valid = captcha_response is True
 
-    if form.is_valid():
-        # Проверка капчи
-        if not verify_yandex_captcha(captcha_token, client_ip):
-            return JsonResponse({
-                'success': False,
-                'errors': {'captcha': 'Проверка не пройдена'}
-            })
-        try:
-            CallRequestFormEmailSender.send_messages(request)
-            return JsonResponse({'success': True})
-        except Exception as e:
-            return JsonResponse({
-                'success': False,
-                'errors': {'__all__': str(e)}
-            })
-    else:
-        errors = {}
-        for field, error_list in form.errors.items():
-            errors[field] = error_list[0]
-        return JsonResponse({
-            'success': False,
-            'errors': errors
-        })
+    return form_send_message(request, form, CallRequestFormEmailSender, captcha_valid=captcha_valid)

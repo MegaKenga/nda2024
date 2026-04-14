@@ -12,6 +12,7 @@
     <link rel="icon" href="{% static 'img/favicon.svg' %}" type="image/svg+xml">
     <link rel="stylesheet" href="{% static 'css/reset.css' %}">
     <link rel="stylesheet" href="{% static 'css/fonts.css' %}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intl-tel-input@18.2.1/build/css/intlTelInput.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
     <link rel="shortcut icon" href="{% static 'img/favicon.svg' %}" type="image/x-icon">
@@ -21,6 +22,15 @@
 
 {% block links %}
 {% endblock  %}
+
+    <script>
+      try {
+        if (sessionStorage.getItem('nda_cart_page_url') &&
+            sessionStorage.getItem('nda_cart_page_url') !== window.location.pathname) {
+          document.documentElement.classList.add('_cart-clearing');
+        }
+      } catch(e) {}
+    </script>
 </head>
 
 <body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
@@ -41,168 +51,9 @@
 {% include "core/components/cookie_bar.html" %}
 
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/intl-tel-input@18.2.1/build/js/intlTelInput.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/inputmask@5.0.8/dist/inputmask.min.js"></script>
     <script src="{% static 'js/main.js' %}"></script>
     <script src="https://smartcaptcha.cloud.yandex.ru/captcha.js" defer></script>
 </body>
 </html>
-
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const form = document.getElementById('call_form');
-    const callbackPopup = document.getElementById('callbackPopup');
-    const successPopup = document.getElementById('successPopup');
-
-    // Функция для очистки ошибок
-    function clearErrors() {
-        const errorDivs = document.querySelectorAll('.text-danger');
-        errorDivs.forEach(div => {
-            if (div.classList.contains('error-name') ||
-                div.classList.contains('error-phone_number') ||
-                div.classList.contains('error-message') ||
-                div.classList.contains('error-company_details')) {
-                div.textContent = '';
-            }
-        });
-    }
-
-    // Функция для показа ошибок
-    function showErrors(errors) {
-        clearErrors();
-        for (const [field, error] of Object.entries(errors)) {
-            const errorDiv = document.querySelector(`.error-${field}`);
-            if (errorDiv) {
-                errorDiv.textContent = error;
-            }
-        }
-    }
-
-    // Функция для показа модального окна
-    function showModal(modal) {
-        if (modal) {
-            modal.style.display = 'block';
-            modal.setAttribute('aria-hidden', 'false');
-            document.body.style.overflow = 'hidden'; // Блокируем скролл body
-        }
-    }
-
-    // Функция для скрытия модального окна
-    function hideModal(modal) {
-        if (modal) {
-            modal.style.display = 'none';
-            modal.setAttribute('aria-hidden', 'true');
-            document.body.style.overflow = ''; // Возвращаем скролл
-        }
-    }
-
-    // Обработчик отправки формы
-    if (form) {
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-
-            // Очищаем ошибки перед отправкой
-            clearErrors();
-
-            const formData = new FormData(form);
-
-            // Показываем индикатор загрузки (опционально)
-            const submitBtn = form.querySelector('button[type="submit"]');
-            const originalBtnText = submitBtn.textContent;
-            submitBtn.textContent = 'Отправка...';
-            submitBtn.disabled = true;
-
-            fetch(form.action, {
-                method: 'POST',
-                body: formData,
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest'
-                }
-            })
-            .then(response => {
-                if (!response.ok) {
-                    return response.json().then(data => {
-                        throw data;
-                    });
-                }
-                return response.json();
-            })
-            .then(data => {
-                if (data.success) {
-                    // Закрываем форму обратного звонка
-                    hideModal(callbackPopup);
-                    // Показываем модальное окно успеха
-                    showModal(successPopup);
-                    // Очищаем форму
-                    form.reset();
-                } else {
-                    // Показываем ошибки валидации
-                    if (data.errors) {
-                        showErrors(data.errors);
-                    }
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                if (error.errors) {
-                    showErrors(error.errors);
-                } else {
-                    alert('Произошла ошибка при отправке формы. Пожалуйста, попробуйте позже.');
-                }
-            })
-            .finally(() => {
-                // Возвращаем кнопку в исходное состояние
-                submitBtn.textContent = originalBtnText;
-                submitBtn.disabled = false;
-            });
-        });
-    }
-
-    // Закрытие формы обратного звонка
-    const callbackCloseButtons = document.querySelectorAll('[data-callback-popup-close]');
-    callbackCloseButtons.forEach(btn => {
-        btn.addEventListener('click', function() {
-            hideModal(callbackPopup);
-            clearErrors();
-            form.reset();
-        });
-    });
-
-    // Закрытие окна успеха
-    const successCloseButtons = document.querySelectorAll('[data-success-popup-close]');
-    successCloseButtons.forEach(btn => {
-        btn.addEventListener('click', function() {
-            hideModal(successPopup);
-        });
-    });
-
-    // Закрытие по клику на backdrop
-    const successBackdrop = document.querySelector('.success-popup__backdrop');
-    if (successBackdrop) {
-        successBackdrop.addEventListener('click', function() {
-            hideModal(successPopup);
-        });
-    }
-
-    const callbackBackdrop = document.querySelector('.callback-popup__backdrop');
-    if (callbackBackdrop) {
-        callbackBackdrop.addEventListener('click', function() {
-            hideModal(callbackPopup);
-            clearErrors();
-            form.reset();
-        });
-    }
-
-    // Обработка клавиши Escape
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') {
-            if (successPopup && successPopup.style.display === 'block') {
-                hideModal(successPopup);
-            } else if (callbackPopup && callbackPopup.style.display === 'block') {
-                hideModal(callbackPopup);
-                clearErrors();
-                if (form) form.reset();
-            }
-        }
-    });
-});
-</script>

@@ -5,7 +5,7 @@
         <div class="callback-popup__modal">
           <div class="modal-content">
             <div class="modal-header">
-              <h5 class="modal-title" id="emailModalLabel">Написать письмо</h5>
+              <h3 class="modal-title" id="emailModalLabel">Написать письмо</h3>
               <button type="button" class="btn-close" data-mail-popup-close aria-label="Закрыть"></button>
             </div>
             <div class="modal-body">
@@ -15,17 +15,16 @@
                 <div id="form-messages"></div>
                 <div class="form-floating mb-2">
                   {{ mail_form.name }}
-                  <label for="{{ mail_form.name.id_for_label }}"></label>
+                  <label for="{{ mail_form.name.id_for_label }}">Ваше имя</label>
                   <div class="invalid-feedback" id="name-errors"></div>
                 </div>
                 <div class="form-floating mb-2">
                   {{ mail_form.phone_number }}
-                  <label for="{{ mail_form.phone_number.id_for_label }}"></label>
                   <div class="invalid-feedback" id="phone-errors"></div>
                 </div>
                 <div class="form-floating mb-2">
                   {{ mail_form.email }}
-                  <label for="{{ mail_form.email.id_for_label }}"></label>
+                  <label for="{{ mail_form.email.id_for_label }}">Email</label>
                   {% if mail_form.email.errors %}
                   <div class="text-danger">{{ mail_form.email.errors }}</div>
                   {% endif %}
@@ -33,21 +32,21 @@
                 </div>
                 <div class="form-floating mb-2">
                   {{ mail_form.company_name }}
-                  <label for="{{ mail_form.company_name.id_for_label }}"></label>
+                  <label for="{{ mail_form.company_name.id_for_label }}">Наименование организации</label>
                   <div class="invalid-feedback" id="company-errors"></div>
                 </div>
                 <div class="form-floating mb-2">
                   {{ mail_form.inn }}
-                  <label for="{{ mail_form.inn.id_for_label }}"></label>
+                  <label for="{{ mail_form.inn.id_for_label }}">ИНН</label>
                   <div class="invalid-feedback" id="inn-errors"></div>
                 </div>
                 <div class="form-floating mb-2">
                   {{ mail_form.message }}
-                  <label for="{{ mail_form.message.id_for_label }}"></label>
+                  <label for="{{ mail_form.message.id_for_label }}">Комментарий</label>
                   <div class="invalid-feedback" id="message-errors"></div>
                 </div>
                 <div class="mb-2">
-                  <label class="input-file">
+                  <label class="input-file" data-input-file-default="Прикрепить файл">
                     {{ mail_form.company_details }}
                     <span>Прикрепить файл</span>
                   </label>
@@ -58,11 +57,10 @@
                 <div class="order-popup__checkbox-wrap order-popup__checkbox-wrap_cookie mt-3 mb-2">
                   <input type="checkbox" class="order-popup__checkbox" name="mail_privacy" id="mailPopupPrivacy" required>
                   <label class="order-popup__checkbox-label" for="mailPopupPrivacy">Я прочел (прочла) Уведомление о
-                    <a href="politika.html" class="order-popup__privacy-link">политики конфиденциальности</a></label>
+                    <a href="{% url 'privacy' %}" class="order-popup__privacy-link">политике конфиденциальности</a></label>
                 </div>
                 <button type="submit" class="btn btn-success w-100">
-                  <span id="submit-text">Отправить</span>
-                  <span id="submit-indicator" class="spinner-border spinner-border-sm htmx-indicator" aria-hidden="true"></span>
+                  <span class="js-mail-submit-label">Отправить</span>
                 </button>
               </form>
             </div>

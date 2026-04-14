@@ -1,432 +1,62 @@
 <div class="callback-popup" id="callbackPopup" role="dialog" aria-modal="true" aria-labelledby="callModalLabel"
-      aria-hidden="true" hidden>
-      <div class="callback-popup__backdrop" aria-label="Закрыть"></div>
-      <div class="callback-popup-wrapper">
-        <div class="callback-popup__modal">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="callModalLabel">Заказать звонок</h5>
-              <button type="button" class="btn-close" data-callback-popup-close aria-label="Закрыть"></button>
+     aria-hidden="true" hidden>
+  <div class="callback-popup__backdrop" data-callback-popup-close aria-label="Закрыть"></div>
+  <div class="callback-popup-wrapper">
+    <div class="callback-popup__modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 class="modal-title" id="callModalLabel">Заказать звонок</h3>
+          <button type="button" class="btn-close" data-callback-popup-close aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="call_form" action="{% url 'call_submit' %}" method="post" enctype="multipart/form-data"
+                novalidate>
+            {% csrf_token %}
+            <div id="call-form-container">
+              <div class="form-floating mb-2">
+                {{ call_form.name }}
+                <label for="{{ call_form.name.id_for_label }}">Ваше имя</label>
+                {% if call_form.name.errors %}
+                <div class="text-danger">{{ call_form.name.errors }}</div>
+                {% endif %}
+              </div>
+              <div class="form-floating mb-2">
+                {{ call_form.phone_number }}
+                {% if call_form.phone_number.errors %}
+                <div class="text-danger">{{ call_form.phone_number.errors }}</div>
+                {% endif %}
+              </div>
+              <div class="form-floating mb-2">
+                {{ call_form.message }}
+                <label for="{{ call_form.message.id_for_label }}">Текст письма</label>
+                {% if call_form.message.errors %}
+                <div class="text-danger">{{ call_form.message.errors }}</div>
+                {% endif %}
+              </div>
+              <div class="mb-2">
+                <label class="input-file" data-input-file-default="Прикрепить файл">
+                  {{ call_form.company_details }}
+                  <span>Прикрепить файл</span>
+                </label>
+                {% if call_form.company_details.errors %}
+                <div class="text-danger">{{ call_form.company_details.errors }}</div>
+                {% endif %}
+              </div>
+              <div id="captcha-container" class="smart-captcha"
+                   data-sitekey="ysc1_sxny6cNZmnvhyJKrojDDLNxj0nvkGnTleldHzqEo9d9475ca"></div>
+              <div class="order-popup__checkbox-wrap order-popup__checkbox-wrap_cookie mt-3 mb-2">
+                <input type="checkbox" class="order-popup__checkbox" name="callback_privacy" id="callbackPopupPrivacy"
+                       required>
+                <label class="order-popup__checkbox-label" for="callbackPopupPrivacy">Я прочел (прочла) Уведомление о
+                  <a href="{% url 'privacy' %}" class="order-popup__privacy-link">политике конфиденциальности</a></label>
+              </div>
+              <button type="submit" class="btn btn-success mt-3">
+                <span class="js-call-submit-label">Отправить</span>
+              </button>
             </div>
-            <div class="modal-body">
-              <form id="call_form" action="{% url 'call_submit' %}" method="post" enctype="multipart/form-data">
-                {% csrf_token %}
-                <div id="call-form-container">
-                  <div class="form-floating mb-2">
-                    {{ call_form.name }}
-                    <label for="id_name" required></label>
-                    {% if call_form.name.errors %}
-                    <div class="text-danger">{{ call_form.name.errors }}</div>
-                    {% endif %}
-                  </div>
-                  <div class="form-floating mb-2" >
-                    {{ call_form.phone_number }}
-                    <label for="id_phone_number" required></label>
-                    {% if call_form.phone_number.errors %}
-                    <div class="text-danger">{{ call_form.phone_number.errors }}</div>
-                    {% endif %}
-                  </div>
-                  <div class="form-floating mb-2">
-                    {{ call_form.message }}
-                    <label for="id_message"></label>
-                    {% if call_form.message.errors %}
-                    <div class="text-danger">{{ call_form.message.errors }}</div>
-                    {% endif %}
-                  </div>
-
-                  <div id="captcha-container" class="smart-captcha" data-sitekey="ysc1_sxny6cNZmnvhyJKrojDDLNxj0nvkGnTleldHzqEo9d9475ca"></div>
-                  <div class="order-popup__checkbox-wrap order-popup__checkbox-wrap_cookie mt-3 mb-2">
-                    <input type="checkbox" class="order-popup__checkbox" name="callback_privacy" id="callbackPopupPrivacy" required>
-                    <label class="order-popup__checkbox-label" for="callbackPopupPrivacy">Я прочел (прочла) Уведомление о
-                      <a href="politika.html" class="order-popup__privacy-link">политики конфиденциальности</a></label>
-                  </div>
-                  <button type="submit" class="btn btn-success mt-3">Отправить</button>
-                </div>
-              </form>
-            </div>
-          </div>
+          </form>
         </div>
       </div>
     </div>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const form = document.getElementById('call_form');
-    const callbackPopup = document.getElementById('callbackPopup');
-    const successPopup = document.getElementById('successPopup');
-    let captchaWidget = null;
-
-    // Функция для показа ошибок
-    function showErrors(errors) {
-        // Очищаем старые ошибки
-        document.querySelectorAll('.error-message').forEach(el => el.remove());
-
-        for (const [field, error] of Object.entries(errors)) {
-            let fieldElement = null;
-
-            if (field === 'captcha') {
-                fieldElement = document.querySelector('#captcha-container');
-            } else if (field === '__all__') {
-                fieldElement = document.querySelector('#call-form-container');
-            } else {
-                fieldElement = document.querySelector(`[name="${field}"]`);
-            }
-
-            if (fieldElement) {
-                const errorDiv = document.createElement('div');
-                errorDiv.className = 'error-message text-danger mt-1';
-                errorDiv.textContent = error;
-                fieldElement.parentNode.insertBefore(errorDiv, fieldElement.nextSibling);
-            }
-        }
-    }
-
-    // Функция для очистки ошибок
-    function clearErrors() {
-        document.querySelectorAll('.error-message').forEach(el => el.remove());
-    }
-
-    // Функция для показа модального окна
-    function showModal(modal) {
-        if (modal) {
-            modal.style.display = 'block';
-            document.body.style.overflow = 'hidden';
-        }
-    }
-
-    // Функция для скрытия модального окна
-    function hideModal(modal) {
-        if (modal) {
-            modal.style.display = 'none';
-            document.body.style.overflow = '';
-        }
-    }
-
-    // Инициализация капчи
-    if (typeof window.smartCaptcha !== 'undefined') {
-        const container = document.getElementById('captcha-container');
-        if (container) {
-            const siteKey = container.getAttribute('data-sitekey');
-            captchaWidget = new window.smartCaptcha({
-                sitekey: siteKey,
-                container: container,
-                callback: function(token) {
-                    document.getElementById('smart-token').value = token;
-                }
-            });
-        }
-    }
-
-    // Отправка формы
-    if (form) {
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-
-            // Проверка капчи
-            const captchaToken = document.getElementById('smart-token').value;
-            if (!captchaToken) {
-                showErrors({captcha: 'Пожалуйста, подтвердите, что вы не робот'});
-                return;
-            }
-
-            // Проверка согласия
-            const privacyCheckbox = document.getElementById('callbackPopupPrivacy');
-            if (!privacyCheckbox.checked) {
-                alert('Пожалуйста, примите условия политики конфиденциальности');
-                return;
-            }
-
-            clearErrors();
-
-            const submitBtn = form.querySelector('button[type="submit"]');
-            const originalText = submitBtn.textContent;
-            submitBtn.textContent = 'Отправка...';
-            submitBtn.disabled = true;
-
-            const formData = new FormData(form);
-
-            fetch(form.action, {
-                method: 'POST',
-                body: formData,
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest'
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    // Успех
-                    hideModal(callbackPopup);
-                    showModal(successPopup);
-                    form.reset();
-
-                    // Сброс капчи
-                    if (captchaWidget && captchaWidget.reset) {
-                        captchaWidget.reset();
-                    }
-                    document.getElementById('smart-token').value = '';
-                } else {
-                    // Ошибки
-                    if (data.errors) {
-                        showErrors(data.errors);
-                    }
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Произошла ошибка. Попробуйте позже.');
-            })
-            .finally(() => {
-                submitBtn.textContent = originalText;
-                submitBtn.disabled = false;
-            });
-        });
-    }
-
-    // Закрытие модальных окон
-    const closeButtons = document.querySelectorAll('[data-callback-popup-close], [data-success-popup-close]');
-    closeButtons.forEach(btn => {
-        btn.addEventListener('click', function() {
-            hideModal(callbackPopup);
-            hideModal(successPopup);
-            if (captchaWidget && captchaWidget.reset) {
-                captchaWidget.reset();
-            }
-            document.getElementById('smart-token').value = '';
-            clearErrors();
-        });
-    });
-
-    // Закрытие по клику на backdrop
-    document.querySelectorAll('.callback-popup__backdrop, .success-popup__backdrop').forEach(backdrop => {
-        backdrop.addEventListener('click', function() {
-            hideModal(callbackPopup);
-            hideModal(successPopup);
-            if (captchaWidget && captchaWidget.reset) {
-                captchaWidget.reset();
-            }
-            document.getElementById('smart-token').value = '';
-            clearErrors();
-        });
-    });
-});
-</script><script src="https://smartcaptcha.yandexcloud.net/captcha.js" defer></script>
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const form = document.getElementById('call_form');
-    const callbackPopup = document.getElementById('callbackPopup');
-    const successPopup = document.getElementById('successPopup');
-    let captchaWidget = null;
-
-    // Функция для показа ошибок
-    function showErrors(errors) {
-        // Очищаем старые ошибки
-        document.querySelectorAll('.error-message').forEach(el => el.remove());
-
-        for (const [field, error] of Object.entries(errors)) {
-            let fieldElement = null;
-
-            if (field === 'captcha') {
-                fieldElement = document.querySelector('#captcha-container');
-            } else if (field === '__all__') {
-                fieldElement = document.querySelector('#call-form-container');
-            } else {
-                fieldElement = document.querySelector(`[name="${field}"]`);
-            }
-
-            if (fieldElement) {
-                const errorDiv = document.createElement('div');
-                errorDiv.className = 'error-message text-danger mt-1';
-                errorDiv.textContent = error;
-                fieldElement.parentNode.insertBefore(errorDiv, fieldElement.nextSibling);
-            }
-        }
-    }
-
-    // Функция для очистки ошибок
-    function clearErrors() {
-        document.querySelectorAll('.error-message').forEach(el => el.remove());
-    }
-
-    // Функция для показа модального окна
-    function showModal(modal) {
-        if (modal) {
-            modal.style.display = 'block';
-            document.body.style.overflow = 'hidden';
-        }
-    }
-
-    // Функция для скрытия модального окна
-    function hideModal(modal) {
-        if (modal) {
-            modal.style.display = 'none';
-            document.body.style.overflow = '';
-        }
-    }
-
-    // Функция для сброса капчи
-    function resetCaptcha() {
-        if (captchaWidget && captchaWidget.reset) {
-            captchaWidget.reset();
-        }
-        const tokenInput = document.getElementById('smart-token');
-        if (tokenInput) {
-            tokenInput.value = '';
-        }
-    }
-
-    // Инициализация капчи
-    function initCaptcha() {
-        const container = document.getElementById('captcha-container');
-        if (!container) {
-            console.error('Captcha container not found');
-            return;
-        }
-
-        // Ждем загрузки скрипта капчи
-        if (typeof window.smartCaptcha === 'undefined') {
-            setTimeout(initCaptcha, 500);
-            return;
-        }
-
-        const siteKey = container.getAttribute('data-sitekey');
-
-        try {
-            captchaWidget = new window.smartCaptcha({
-                sitekey: siteKey,
-                container: container,
-                callback: function(token) {
-                    console.log('Captcha callback received token:', token);
-                    const tokenInput = document.getElementById('smart-token');
-                    if (tokenInput) {
-                        tokenInput.value = token;
-                    }
-                    // Убираем ошибку капчи если была
-                    const captchaError = document.querySelector('.error-message');
-                    if (captchaError && captchaError.textContent.includes('робот')) {
-                        captchaError.remove();
-                    }
-                },
-                'expired-callback': function() {
-                    console.log('Captcha expired');
-                    const tokenInput = document.getElementById('smart-token');
-                    if (tokenInput) {
-                        tokenInput.value = '';
-                    }
-                },
-                'error-callback': function() {
-                    console.log('Captcha error');
-                    const tokenInput = document.getElementById('smart-token');
-                    if (tokenInput) {
-                        tokenInput.value = '';
-                    }
-                }
-            });
-            console.log('Captcha initialized successfully');
-        } catch (error) {
-            console.error('Error initializing captcha:', error);
-        }
-    }
-
-    // Запускаем инициализацию капчи
-    initCaptcha();
-
-    // Отправка формы
-    if (form) {
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-
-            // Проверка капчи
-            const captchaToken = document.getElementById('smart-token').value;
-            console.log('Smart token before submit:', captchaToken);
-
-            if (!captchaToken) {
-                showErrors({captcha: 'Пожалуйста, подтвердите, что вы не робот'});
-                return;
-            }
-
-            // Проверка согласия
-            const privacyCheckbox = document.getElementById('callbackPopupPrivacy');
-            if (!privacyCheckbox.checked) {
-                alert('Пожалуйста, примите условия политики конфиденциальности');
-                return;
-            }
-
-            clearErrors();
-
-            const submitBtn = form.querySelector('button[type="submit"]');
-            const originalText = submitBtn.textContent;
-            submitBtn.textContent = 'Отправка...';
-            submitBtn.disabled = true;
-
-            const formData = new FormData(form);
-
-            // Добавляем для отладки
-            console.log('Form data entries:');
-            for (let pair of formData.entries()) {
-                console.log(pair[0] + ': ' + pair[1]);
-            }
-
-            fetch(form.action, {
-                method: 'POST',
-                body: formData,
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest'
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log('Response:', data);
-
-                if (data.success) {
-                    // Успех
-                    hideModal(callbackPopup);
-                    showModal(successPopup);
-                    form.reset();
-                    resetCaptcha();
-                } else {
-                    // Ошибки
-                    if (data.errors) {
-                        showErrors(data.errors);
-                        // Если ошибка капчи, сбрасываем её
-                        if (data.errors.captcha) {
-                            resetCaptcha();
-                        }
-                    }
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Произошла ошибка. Попробуйте позже.');
-            })
-            .finally(() => {
-                submitBtn.textContent = originalText;
-                submitBtn.disabled = false;
-            });
-        });
-    }
-
-    // Закрытие модальных окон
-    const closeButtons = document.querySelectorAll('[data-callback-popup-close], [data-success-popup-close]');
-    closeButtons.forEach(btn => {
-        btn.addEventListener('click', function() {
-            hideModal(callbackPopup);
-            hideModal(successPopup);
-            resetCaptcha();
-            clearErrors();
-            if (form) form.reset();
-        });
-    });
-
-    // Закрытие по клику на backdrop
-    document.querySelectorAll('.callback-popup__backdrop, .success-popup__backdrop').forEach(backdrop => {
-        backdrop.addEventListener('click', function() {
-            hideModal(callbackPopup);
-            hideModal(successPopup);
-            resetCaptcha();
-            clearErrors();
-            if (form) form.reset();
-        });
-    });
-});
-</script>
+  </div>
+</div>
