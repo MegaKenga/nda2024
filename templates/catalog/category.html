@@ -5,6 +5,10 @@
   <title>{{ category.title }}</title>
 {% endblock %}
 
+{% block canonical_link %}
+     <link rel="canonical" href="https://nda.ru{% url 'category' category_slug=category.slug %}">
+{% endblock %}
+
 {% block metatag %}
   <meta name="keywords" content="{{ category.keywords }}" />
   <meta property="og:url" content="https://nda.ru{% url 'category' category_slug=category.slug %}" />

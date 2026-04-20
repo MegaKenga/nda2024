@@ -5,6 +5,10 @@
 <title> Условия работы</title>
 {% endblock%}
 
+{% block canonical_link %}
+     <link rel="canonical" href="https://nda.ru{{ request.path }}">
+{% endblock %}
+
 {% block metatag %}
     <meta name="keywords" content="Контакты с компанией">
     <meta name="description" content="Указаны условия работы с  ООО &quot;НДА Деловая медицинская компания&quot;">
@@ -29,14 +33,14 @@
         <p class="usloviya-hero__company t-18">ООО НДА<br>Деловая медицинская компания</p>
       </div>
       <div class="usloviya-hero__content">
-        <h1 class="usloviya-hero__title">Уважаемые коллеги</h1>
+        <p class="usloviya-hero__title">Уважаемые коллеги</p>
         <p class="usloviya-hero__subtitle">В данном разделе мы попытаемся ответить на самые часто задаваемые вопросы
           относительно сотрудничества с нами.</p>
       </div>
     </section>
 
     <section class="usloviya-section usloviya-section_order">
-      <h2 class="usloviya-section__title usloviya-section__title_center">Как заказать товар?</h2>
+      <h1 class="usloviya-section__title usloviya-section__title_center">Как заказать товар?</h1>
       <div class="usloviya-cards usloviya-cards_row1">
         <article class="usloviya-card usloviya-card_w33">
           <div class="usloviya-card__num">1</div>

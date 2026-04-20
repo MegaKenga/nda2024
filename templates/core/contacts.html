@@ -5,6 +5,10 @@
     <title> Контакты</title>
 {% endblock%}
 
+{% block canonical_link %}
+     <link rel="canonical" href="https://nda.ru{{ request.path }}">
+{% endblock %}
+
 {% block metatag %}
   <meta name="keywords" content="Контакты ООО НДА Деловая медицинская компания">
   <meta name="description" content="Контакты ООО НДА Деловая медицинская компания">

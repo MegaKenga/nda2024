@@ -874,7 +874,7 @@ textarea {
 }
 
 .catalog {
-  padding: 70px 0 60px;
+  padding: 50px 0 60px;
 }
 
 
@@ -998,8 +998,8 @@ textarea {
 
 .about {
   min-height: 700px;
-  margin-top: 60px;
-  margin-bottom: 50px;
+  margin-top: 40px;
+  margin-bottom: 25px;
   position: relative;
   color: var(--color-white);
 }
@@ -1110,11 +1110,11 @@ textarea {
 }
 
 .office {
-  padding: 50px 0 0;
+  padding: 20px 0 0;
 }
 
 .office__title {
-  margin: 0 0 50px 0;
+  margin: 40px 0 50px 0;
 }
 
 .office__map-wrap {
@@ -1139,6 +1139,7 @@ textarea {
   gap: 8px 12px;
   flex-wrap: wrap;
   margin-bottom: 40px;
+  text-transform: uppercase;
 }
 
 .breadcrumbs__link {
@@ -1488,6 +1489,7 @@ textarea {
   font-size: 35px;
   line-height: 1.57;
   color: #1a1a18;
+  text-transform: uppercase !important;
 }
 
 .product-info__short {
@@ -1540,6 +1542,7 @@ textarea {
   background: #f2f2f2;
   border-radius: 10px;
   box-sizing: border-box;
+  margin-top: 20px;
 }
 
 .product-contact__title {
@@ -1700,16 +1703,12 @@ textarea {
   box-sizing: border-box;
   box-shadow: 0 0 40px 3px rgba(0, 0, 0, 0.15);
   border-radius: 0 0 15px 15px;
-  min-height: 350px;
 }
 
 .product-panel {
   display: none;
 }
 
-.product-panel[data-product-panel="description"] {
-  min-height: 350px;
-}
 
 .product-panel_active {
   display: block;
@@ -2077,7 +2076,7 @@ textarea {
 }
 
 .product-order__actions {
-  display: none;
+  display: block;
   gap: 20px;
   align-items: center;
   flex-direction: row;
@@ -5075,7 +5074,7 @@ textarea {
   }
 
   .catalog {
-    padding: 60px 0 50px;
+    padding: 50px 0 50px;
   }
 
   .catalog__tabs {
@@ -5335,22 +5334,19 @@ textarea {
   }
 
 
-
   .header__search {
-    width: 40px;
+    width: 180px;
     height: 40px;
-    min-width: 40px;
-    padding-right: 0;
-    justify-content: center;
-  }
-
-  .header__search-input {
-    display: none;
   }
 
   .header__search-btn {
-    width: 32px;
-    height: 32px;
+    width: 30px;
+    height: 30px;
+  }
+
+  .header__search-input::placeholder {
+    font-size: 14px;
+    line-height: 20.23px;
   }
 
   .hero-contact .contact-bar {
@@ -5492,7 +5488,7 @@ textarea {
   }
 
   .catalog {
-    padding: 40px 0 50px;
+    padding: 40px 0 20px;
   }
 
   .catalog__tabs {
@@ -6309,7 +6305,7 @@ textarea {
   }
 
   .catalog {
-    padding: 40px 0 40px;
+    padding: 20px 0 20px;
   }
 
 
@@ -7234,7 +7230,7 @@ textarea {
   }
 
   .catalog {
-    padding: 25px 0 20px;
+    padding: 20px 0 20px;
   }
 
   .catalog__title.t-section-title {

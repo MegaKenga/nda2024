@@ -2,7 +2,6 @@ from django.contrib import admin
 from django.contrib.admin import AdminSite
 from django.contrib.auth.models import Group, User
 from django.contrib.auth.admin import GroupAdmin, UserAdmin
-from django.db.models.fields.files import FieldFile
 from django.db import models
 from django.forms import Textarea
 
@@ -169,6 +168,7 @@ class ProductAdmin(admin.ModelAdmin):
     ]
     fields = [
         "name",
+        "h1_name",
         "brand",
         "short_description",
         "full_description",
@@ -198,21 +198,6 @@ class ProductAdmin(admin.ModelAdmin):
 
     def get_queryset(self, request):
         return super().get_queryset(request).select_related('brand')
-
-    def save_model(self, request, obj, form, change):
-        # Django always sends this when "Save as new is clicked"
-        if '_saveasnew' in request.POST:
-            # Get the ID from the admin URL
-            original_pk = request.resolver_match.kwargs['object_id']
-            # Get the original object
-            original_obj = obj._meta.concrete_model.objects.get(id=original_pk)
-
-            # Iterate through all it's properties
-            for prop, value in vars(original_obj).items():
-                # if the property is an Image (don't forget to import ImageFieldFile!)
-                if isinstance(getattr(original_obj, prop), FieldFile):
-                    setattr(obj,prop,getattr(original_obj, prop)) # Copy it!
-        obj.save()
 
 
 class OfferAdmin(admin.ModelAdmin):

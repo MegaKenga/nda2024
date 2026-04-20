@@ -5,6 +5,10 @@
     <title> Регистрационные удостоверения {{brand}}</title>
 {% endblock %}
 
+{% block canonical_link %}
+     <link rel="canonical" href="https://nda.ru{{ request.path }}">
+{% endblock %}
+
 {% block metatag %}
   <meta name="keywords" content="РУ Минздрава">
   <meta property="og:url" content="https://nda.ru{{ request.path }}">

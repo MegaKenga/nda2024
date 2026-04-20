@@ -5,6 +5,10 @@
 <title>Политика конфиденциальности</title>
 {% endblock%}
 
+{% block canonical_link %}
+     <link rel="canonical" href="https://nda.ru{{ request.path }}">
+{% endblock %}
+
 {% block content%}
     <main class="politika">
       <div class="container">
@@ -16,12 +20,12 @@
 
         <section class="usloviya-hero politika-hero">
           <div class="usloviya-hero__content">
-            <h1 class="usloviya-hero__title">Политика конфиденциальности</h1>
+            <p class="usloviya-hero__title">Политика конфиденциальности</p>
           </div>
         </section>
 
         <section class="politika__content" aria-label="Текст политики конфиденциальности">
-          <h2>Политика в отношении обработки персональных данных</h2>
+          <h1>Политика в отношении обработки персональных данных</h1>
 
           <h3>1. Общие положения</h3>
           <p>Настоящая политика обработки персональных данных составлена в соответствии с требованиями Федерального

@@ -182,6 +182,12 @@ class Product(BaseFields):
         blank=True,
         verbose_name='Название товара'
     )
+    h1_name = models.TextField(
+        default='',
+        null=True,
+        blank=True,
+        verbose_name='H1 товара'
+    )
     brand = models.ForeignKey(
         Brand,
         on_delete=models.SET_NULL,

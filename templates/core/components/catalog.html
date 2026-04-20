@@ -1,210 +1,52 @@
 {% load static %}
 
 <section class="catalog">
-      <div class="container">
-          <h2 class="catalog__title t-section-title" id="catalog">Каталог</h2>
-          <div class="catalog__tabs-wrap">
-              <div class="catalog__tabs">
-                  <button class="catalog__tab catalog__tab_active t-25" type="button" data-tab="manufacturer">Выбор по
-                  производителю</button>
-                  <button class="catalog__tab t-25" type="button" data-tab="category">Выбор по категориям</button>
-              </div>
-          </div>
-          <div class="catalog__panel catalog__panel_active" data-panel="manufacturer">
-              <ul class="catalog__grid">
-                  {% for brand in brands|dictsort:'place' %}
-                      <a href="{% url 'brand' brand_slug=brand.slug %}">
-                          <li class="catalog__card">
-                              {% if brand.logo %}
-                                  <div class="catalog__card-image"><img src="{{ brand.logo.url }}" alt="{{ brand.name }}" width="262"
+    <div class="container">
+        <h1 style="display: none">НДА Деловая медицинская компания - продажа медицинских изделий, оборудования и расходных материалов</h1>
+        <h2 class="catalog__title t-section-title" id="catalog">Каталог</h2>
+        <div class="catalog__tabs-wrap">
+            <div class="catalog__tabs">
+                <button class="catalog__tab catalog__tab_active t-25" type="button" data-tab="manufacturer">Выбор по
+                    производителю</button>
+                <button class="catalog__tab t-25" type="button" data-tab="category">Выбор по категориям</button>
+            </div>
+        </div>
+        <div class="catalog__panel catalog__panel_active" data-panel="manufacturer">
+            <ul class="catalog__grid">
+                {% for brand in brands|dictsort:'place' %}
+                    <a href="{% url 'brand' brand_slug=brand.slug %}">
+                        <div class="catalog__card">
+                            {% if brand.logo %}
+                                <div class="catalog__card-image"><img src="{{ brand.logo.url }}" alt="{{ brand.name }}" width="262"
                                                                       height="140"></div>
-                              {% else %}
-                                  <img src="{% static 'img/noImage.jpg' %}" alt="No Image" />
-                              {% endif %}
-                              <p class="catalog__card-title t-20-29">{{ brand.name }}</p>
-                              <p class="catalog__card-desc t-16">{{ brand.description|safe|striptags }}</p>
-                          </li>
-                      </a>
-                  {% endfor %}
-              </ul>
-          </div>
-          <div class="catalog__panel" data-panel="category">
-              <ul class="catalog__grid">
-                  {% for category in categories|dictsort:'place' %}
-                      {% if not category.brand %}
-                          <a href="{% url 'category' category_slug=category.slug %}">
-                              <li class="catalog__card">
-                                  {% if category.logo %}
-                                      <div class="catalog__card-image"><img src="{{ category.logo.url }}" alt="{{ category.name }}" width="262" height="140"></div>
-                                  {% else %}
-                                      <img src="{% static 'img/noImage.jpg' %}" alt="No Image" />
-                                  {% endif %}
-                                  <p class="catalog__card-title t-20-29">{{ category.name }}</p>
-                                  <p class="catalog__card-desc t-16">{{ category.description|safe|striptags }}</p>
-                              </li>
-                          </a>
-                      {% endif %}
-                  {% endfor %}
-              </ul>
-          </div>
-      </div>
-</section>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<!--
-<div class="container1">
-  <div id="catalog"></div>
-  <div class="catalog">
-    <h2>Каталог</h2>
-    <div class="choice">
-      <ul class="nav" id="pills-tab" role="tablist">
-        <li class="nav-item" role="presentation">
-          <button class="active" id="pills-home-tab" data-bs-toggle="pill" data-bs-target="#pills-home" type="button" role="tab" aria-controls="pills-home" aria-selected="true">Выбор по производителю</button>
-        </li>
-        <li class="nav-item" role="presentation">
-          <button class="" id="pills-profile-tab" data-bs-toggle="pill" data-bs-target="#pills-profile" type="button" role="tab" aria-controls="pills-profile" aria-selected="false">Выбор по категориям</button>
-        </li>
-      </ul>
-    </div>
-    <div class="tab-content" id="pills-tabContent">
-      <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
-        <#!-- Выбор по производителям --#>
-        <#!-- каталог --#>
-        <div class="catalogItems">
-          {% for brand in brands|dictsort:'place' %}
-              <a href="{% url 'brand' brand_slug=brand.slug %}">
-                <div class="catalogItem">
-                  <div class="catalogItemImg">
-                    {% if brand.logo %}
-                      <img src="data:image/jpg;base64, {{ brand.logo.url }}" data-src="{{ brand.logo.url }}" alt="{{ brand.name }}" class="lazyload blur-up"/>
-                    {% else %}
-                      <img src="{% static 'images/noImage.jpg' %}" />
+                            {% else %}
+                                <img src="{% static 'img/noImage.jpg' %}" alt="No Image" />
+                            {% endif %}
+                            <p class="catalog__card-title t-20-29">{{ brand.name }}</p>
+                            <p class="catalog__card-desc t-16">{{ brand.description|safe|striptags }}</p>
+                        </div>
+                    </a>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="catalog__panel" data-panel="category">
+            <ul class="catalog__grid">
+                {% for category in categories|dictsort:'place' %}
+                    {% if not category.brand %}
+                        <a href="{% url 'category' category_slug=category.slug %}">
+                            <div class="catalog__card">
+                                {% if category.logo %}
+                                    <div class="catalog__card-image"><img src="{{ category.logo.url }}" alt="{{ category.name }}" width="262" height="140"></div>
+                                {% else %}
+                                    <img src="{% static 'img/noImage.jpg' %}" alt="No Image" />
+                                {% endif %}
+                                <p class="catalog__card-title t-20-29">{{ category.name }}</p>
+                                <p class="catalog__card-desc t-16">{{ category.description|safe|striptags }}</p>
+                            </div>
+                        </a>
                     {% endif %}
-                  </div>
-                  <h3>{{ brand.name }}</h3>
-                  <p>{{ brand.description|safe|striptags }}</p>
-                </div>
-              </a>
-          {% endfor %}
-
-          <#!-- 3 пустых дива - для ровной сетки flex --#>
-          <div class="emptyEl"></div>
-          <div class="emptyEl"></div>
-          <div class="emptyEl"></div>
-          <#!-- 3 пустых дива - для ровной сетки flex --#>
+                {% endfor %}
+            </ul>
         </div>
-        <#!-- конец каталога --#>
-      </div>
-      <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
-        <#!-- Выбор по категориям --#>
-        <div class="catalogItems">
-          {% for category in categories|dictsort:'place' %}
-              {% if not category.brand %}
-                <a href="{% url 'category' category_slug=category.slug %}">
-                  <div class="catalogItem">
-                    <div class="catalogItemImg">
-                      {% if category.logo %}
-                        <img src="data:image/jpg;base64, {{ category.logo.url }}" data-src="{{ category.logo.url }}" alt="{{ category.name }}" class="lazyload blur-up"/>
-                      {% else %}
-                        <img src="{% static 'images/noImage.jpg' %}" alt="No Image" />
-                      {% endif %}
-                    </div>
-                    <h3>{{ category.name }}</h3>
-                    <p>{{ category.description|safe|striptags }}</p>
-                  </div>
-                </a>
-              {% endif %}
-          {% endfor %}
-
-          <#!-- 3 пустых дива - для ровной сетки flex --#>
-          <div class="emptyEl"></div>
-          <div class="emptyEl"></div>
-          <div class="emptyEl"></div>
-          <#!-- 3 пустых дива - для ровной сетки flex --#>
-        </div>
-      </div>
     </div>
-  </div>
-  <div class="infoMain">
-    <div class="infoImg">
-      <div class="slider-container sliderInfo">
-        <div class="slider sliderInfo">
-          <div class="sliderImg">
-            <img src="data:image/webp;base64, {% static 'images/Sklad_NDA.webp' %}" data-src="{% static 'images/Sklad_NDA.webp' %}" alt="" class="lazyload blur-up"/>
-          </div>
-          <div class="sliderImg">
-            <img src="data:image/webp;base64, {% static 'images/Sklad_NDA_2.webp' %}" data-src="{% static 'images/Sklad_NDA_2.webp' %}" alt="" class="lazyload blur-up" />
-          </div>
-          <div class="sliderImg">
-            <img src="data:image/webp;base64, {% static 'images/Sklad_NDA_5.webp' %}" data-src="{% static 'images/Sklad_NDA_5.webp' %}" alt=""  class="lazyload blur-up"/>
-          </div>
-        </div>
-        <div class="slick-dots"></div>
-      </div>
-    </div>
-    <div class="infoText">
-      <h3>Работаем для <br /> вас с 1992 года</h3>
-      <p>Компания "НДА Деловая медицинская компания" уже более 30 лет является Вашим партнером и поставщиком оборудования и расходных материалов для хирургии, анестезиологии и реанимации, рентгенхирургии и других направлений.</p>
-      <p>Наш новый складской комплекс, расположенный на площади более 6000 квадратных метров позволяет компании имеет большие складские запасы самых популярных товаров, поэтому может поставить их в короткие сроки. Мы гарантируем Вам качество продукции, представленной на сайте. На все товары нашего каталога есть Регистрационные удостоверения МЗ РФ.</p>
-      <p>Нашими поставщиками являются мировые лидеры в производстве оборудования и расходных медицинских материалов. С их продукцией Вы можете ознакомиться на нашем сайте.</p>
-      <p>В настоящее время у нашей компании более 7500 клиентов. Таких успехов мы добились благодаря слаженной работе всего нашего дружного коллектива и конечно благодаря Вам - нашим клиентам.</p>
-
-    </div>
-  </div>
-  <div class="place">
-    <h2>Наш офис и склад</h2>
-    <div class="map">
-      <$!-- <iframe loading="lazy" src="https://yandex.ru/map-widget/v1/?um=constructor%3A483b0761fd50f52fa933af3311c796503d73aaca44becb79b973a587356fa263&amp;source=constructor&theme=dark&scroll=false" width="100%" height="100%" frameborder="0" ></iframe> --$>
-      <div class="yandex-map" style="width:100%; height:100%;" data-src="https://yandex.ru/map-widget/v1/?um=constructor%3A483b0761fd50f52fa933af3311c796503d73aaca44becb79b973a587356fa263&source=constructor&theme=dark&scroll=false"></div>
-
-<script>
-document.addEventListener("DOMContentLoaded", function() {
-    const mapDiv = document.querySelector(".yandex-map");
-    function loadMap() {
-        if (!mapDiv.dataset.loaded) {
-            const iframe = document.createElement("iframe");
-            iframe.src = mapDiv.dataset.src;
-            iframe.width = "100%";
-            iframe.height = "100%";
-            iframe.frameBorder = "0";
-            mapDiv.appendChild(iframe);
-            mapDiv.dataset.loaded = "true";
-        }
-    }
-
-    // Определяем, когда элемент виден
-    if ('IntersectionObserver' in window) {
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    loadMap();
-                    observer.unobserve(entry.target);
-                }
-            });
-        });
-        observer.observe(mapDiv);
-    } else {
-        // fallback — просто загрузим после 2 секунд
-        setTimeout(loadMap, 2000);
-    }
-});
-</script>
-
-    </div>
-  </div>
--->
+</section>

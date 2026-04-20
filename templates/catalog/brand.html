@@ -2,7 +2,11 @@
 {% load static %}
 
 {% block title %}
-  <title>{{ brand.name }}</title>
+  <title>{{ brand.name }} — купить оптом и в розницу в Санкт-Петербурге | Официальный представитель НДА</title>
+{% endblock %}
+
+{% block canonical_link %}
+     <link rel="canonical" href="https://nda.ru{% url 'brand' brand_slug=brand.slug %}">
 {% endblock %}
 
 {% block metatag %}

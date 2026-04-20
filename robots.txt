@@ -1,0 +1,25 @@
+User-agent: *
+Disallow: /catalog/duplicates/
+Disallow: /admin
+Disallow: /tmp
+Disallow: /search
+Allow: /
+Sitemap: https://nda.ru/sitemap.xml
+
+
+User-agent: Yandex
+Disallow: /catalog/duplicates/
+Disallow: /admin
+Disallow: /tmp
+Disallow: /search
+Allow: /
+Sitemap: https://nda.ru/sitemap.xml
+
+
+User-agent: Googlebot
+Disallow: /catalog/duplicates/
+Disallow: /admin
+Disallow: /tmp
+Disallow: /search
+Allow: /
+Sitemap: https://nda.ru/sitemap.xml
