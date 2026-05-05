@@ -1,25 +1,27 @@
+  GNU nano 7.2                                                                                     robots.txt *                                                                                            
 User-agent: *
 Disallow: /catalog/duplicates/
 Disallow: /admin
 Disallow: /tmp
-Disallow: /search
+Disallow: /?q=
 Allow: /
-Sitemap: https://nda.ru/sitemap.xml
 
 
 User-agent: Yandex
 Disallow: /catalog/duplicates/
 Disallow: /admin
 Disallow: /tmp
-Disallow: /search
-Allow: /
-Sitemap: https://nda.ru/sitemap.xml
+Disallow: /?q=
 
 
 User-agent: Googlebot
 Disallow: /catalog/duplicates/
 Disallow: /admin
 Disallow: /tmp
-Disallow: /search
-Allow: /
+Disallow: /?q=
+
+
+
+
+
 Sitemap: https://nda.ru/sitemap.xml
