@@ -19,7 +19,7 @@ from django.contrib import admin
 from django.urls import path, include
 from django.contrib.sitemaps.views import sitemap
 
-from nda.sitemaps import sitemaps
+from nda.sitemap import sitemaps
 from nda import settings
 from nda.views import custom_404, custom_500
 import catalog.views, core.views

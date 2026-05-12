@@ -15,4 +15,3 @@ app.conf.enable_utc = False
 app.conf.update(timezone=os.getenv('TIMEZONE'))
 
 app.autodiscover_tasks()
-

@@ -17,6 +17,9 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+
+SITE_ID = 1
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -52,6 +55,7 @@ INSTALLED_APPS = [
     'core.apps.CoreConfig',
     'sorl.thumbnail',
     'phonenumber_field',
+    'django.contrib.sites',
     'django.contrib.sitemaps',
     'django_ckeditor_5',
 ]
