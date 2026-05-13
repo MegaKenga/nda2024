@@ -1,4 +1,3 @@
-  GNU nano 7.2                                                                                     robots.txt *                                                                                            
 User-agent: *
 Disallow: /catalog/duplicates/
 Disallow: /admin
@@ -19,9 +18,6 @@ Disallow: /catalog/duplicates/
 Disallow: /admin
 Disallow: /tmp
 Disallow: /?q=
-
-
-
 
 
 Sitemap: https://nda.ru/sitemap.xml

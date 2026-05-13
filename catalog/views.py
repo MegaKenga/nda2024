@@ -106,11 +106,12 @@ class OfferView(TemplateView):
         context = super().get_context_data(**kwargs)
 
         product = get_object_or_404(Product.visible.select_related('brand', 'specialist'), slug=self.kwargs['product_slug'])
+        brand=get_object_or_404(Brand.visible.filter(pk=product.brand.id), slug=self.kwargs['brand_slug'])
         uploaded_file = None
         if self.request.method == 'POST':
             uploaded_file = import_from_excel(self.request, product_id=product.id)
         context['product'] = product
-        context['brand'] = product.brand
+        context['brand'] = brand
         context['offers'] = Offer.visible.filter(product=product).order_by('place')
         context['images'] = ModelImage.objects.filter(product=product)
         context['certificates'] = ModelFile.objects.filter(product=product)
