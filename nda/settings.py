@@ -329,4 +329,4 @@ CKEDITOR_5_CONFIGS = {
 
 # Custom CSS for Dark Mode Fix
 
-#ADMINS = [("Ivan", "terryjj0@gmail.com")]
+ADMINS = [("Ivan", "terryjj0@gmail.com")]

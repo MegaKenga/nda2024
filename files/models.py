@@ -3,6 +3,7 @@ from django.utils.safestring import mark_safe
 import os
 from catalog.models import Product
 
+
 class ModelImage(models.Model):
     product = models.ForeignKey(Product, null=True, blank=True, on_delete=models.SET_NULL, verbose_name='Товар')
     image = models.ImageField(upload_to='product/images', null=True, blank=True, verbose_name='Изображение')
@@ -24,6 +25,7 @@ class ModelImage(models.Model):
     
     def get_filename(self):
         return os.path.basename(self.file.name)
+
 
 class ModelFile(models.Model):
     product = models.ForeignKey(Product, null=True, blank=True, on_delete=models.SET_NULL, verbose_name='Товар')
@@ -57,7 +59,8 @@ class InstructionsFile(models.Model):
     
     def get_filename(self):
            return os.path.basename(self.file.name)
-    
+
+
 class CatalogFile(models.Model):
     product = models.ForeignKey(Product, null=True, blank=True, on_delete=models.SET_NULL, verbose_name='Товар')
     file = models.FileField(upload_to='product/catalog', null=True, blank=True, verbose_name='Файл')
@@ -73,4 +76,3 @@ class CatalogFile(models.Model):
     
     def get_filename(self):
         return os.path.basename(self.file.name)
-
