@@ -276,7 +276,7 @@ class Offer(models.Model):
     )
     status = models.CharField(
         choices=Status.choices,
-        default=Status.DRAFT,
+        default=Status.PUBLISHED,
         verbose_name='Статус показа на страницах'
     )
     name = models.CharField(
