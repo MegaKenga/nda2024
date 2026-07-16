@@ -21,7 +21,7 @@
     </nav>
 
     <section class="hero-page hero-page_theme_blue">
-      <div class="hero-page__card"><img class="hero-page__logo" src="{% static 'img/card/Vector.png' %}" alt="РУ и сертификаты"
+      <div class="hero-page__card"><img class="hero-page__logo" src="{% static 'img/card/Vector.webp' %}" alt="РУ и сертификаты"
           width="183" height="122"></div>
       <div class="hero-page__content">
         <h1 class="hero-page__title t-70-101">РУ И СЕРТИФИКАТЫ</h1>
@@ -36,7 +36,7 @@
                     {% if brand.logo %}
                         <img class="brand-card__img" src="{{ brand.logo.url }}" alt="РУ {{ brand.name }}" width="280" height="160">
                     {% else %}
-                        <img src="{% static 'img/noImage.jpg' %}" alt="РУ {{ brand.name }}" />
+                        <img src="{% static 'img/noImage.webp' %}" alt="РУ {{ brand.name }}" />
                     {% endif %}
                 </div>
                 <span class="brand-card__title t-20-29">{{ brand.name }}</span>

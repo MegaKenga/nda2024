@@ -38,7 +38,7 @@
                             {% if category.logo %}
                                 <img class="catalog-card__img" src="{{ category.logo.url }}" alt="{{category.name}}" width="150" height="150">
                             {% else %}
-                                <img class="catalog-card__img" src="{% static '/img/noImage.jpg' %}" alt="Нет логотипа" width="150" height="150">
+                                <img class="catalog-card__img" src="{% static '/img/noImage.webp' %}" alt="Нет логотипа" width="150" height="150">
                             {% endif %}
                         </div>
                         <p class="catalog-card__title t-20-29">{{ category.name }}</p>
@@ -50,7 +50,7 @@
                             {% if product.logo %}
                                 <img class="catalog-card__img" src="{{ product.logo.url }}" alt="{{product.name}}" width="150" height="150">
                             {% else %}
-                                <img class="catalog-card__img" src="{% static '/img/noImage.jpg' %}" alt="Нет логотипа" width="150" height="150">
+                                <img class="catalog-card__img" src="{% static '/img/noImage.webp' %}" alt="Нет логотипа" width="150" height="150">
                             {% endif %}
                         </div>
                         <p class="catalog-card__title t-20-29">{{ product.name }}</p>
