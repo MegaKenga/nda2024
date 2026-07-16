@@ -8,31 +8,65 @@
                      {{ category.banner_color }}
                  {% endif %} 0%,
                  #ffffff 100%);">
-    <div class="hero-page__card">
-        {% if brand.logo %}
-            <img class="hero-page__logo" src="{{ brand.logo.url }}" alt="Логотип {{ brand.name }}" width="183" height="122">
-        {% elif category.logo %}
-            <img class="hero-page__logo" src="{{ category.logo.url }}" alt="Логотип {{ category.name }}" width="183" height="122">
-        {% else %}
-            <img class="hero-page__logo" src="{% static 'img/noImage.webp' %}" alt="Нет изображения логотипа" width="183" height="122">
-        {% endif %}
-    </div>
-    <div class="hero-page__content">
-        {% if request.resolver_match.url_name == 'brand_certificates' %}
+    {% if request.resolver_match.url_name == 'brand_certificates' %}
+        <div class="hero-page__card">
+            {% if brand.logo %}
+                <img class="hero-page__logo" src="{{ brand.logo.url }}" alt="Логотип {{ brand.name }}" width="183" height="122">
+            {% else %}
+                <img class="hero-page__logo" src="{% static 'img/noImage.webp' %}" alt="Нет изображения логотипа" width="183" height="122">
+            {% endif %}
+        </div>
+        <div class="hero-page__content">
             <h1 class="hero-page__title t-70-101">РУ {{ brand.name|safe|striptags }}</h1>
-        {% elif request.resolver_match.url_name == 'brand' %}
+        </div>
+    {% elif request.resolver_match.url_name == 'brand' %}
+        <div class="hero-page__card">
+            {% if brand.logo %}
+                <img class="hero-page__logo" src="{{ brand.logo.url }}" alt="Логотип {{ brand.name }}" width="183" height="122">
+            {% else %}
+                <img class="hero-page__logo" src="{% static 'img/noImage.webp' %}" alt="Нет изображения логотипа" width="183" height="122">
+            {% endif %}
+        </div>
+        <div class="hero-page__content">
             <h1 class="hero-page__title t-70-101">{{ brand.name|safe|striptags }}</h1>
             <p class="hero-page__subtitle t-30-43">{{ brand.description|safe|striptags }}</p>
-        {% elif request.resolver_match.url_name == 'category' %}
-            {% if brand %}
+        </div>
+    {% elif request.resolver_match.url_name == 'category' %}
+        {% if brand %}
+            <div class="hero-page__card">
+                {% if brand.logo %}
+                    <img class="hero-page__logo" src="{{ brand.logo.url }}" alt="Логотип {{ brand.name }}" width="183" height="122">
+                {% else %}
+                    <img class="hero-page__logo" src="{% static 'img/noImage.webp' %}" alt="Нет изображения логотипа" width="183" height="122">
+                {% endif %}
+            </div>
+            <div class="hero-page__content">
                 <h1 class="hero-page__title t-70-101">{{ brand.name|safe|striptags }}</h1>
                 <p class="hero-page__subtitle t-30-43">{{ category.name|safe|striptags }}</p>
-            {% elif category %}
+            </div>
+        {% elif category %}
+            <div class="hero-page__card">
+                {% if category.logo %}
+                    <img class="hero-page__logo" src="{{ category.logo.url }}" alt="Логотип {{ category.name }}" width="183" height="122">
+                {% else %}
+                    <img class="hero-page__logo" src="{% static 'img/noImage.webp' %}" alt="Нет изображения логотипа" width="183" height="122">
+                {% endif %}
+            </div>
+            <div class="hero-page__content">
                 <h1 class="hero-page__title t-70-101">{{ category.name|safe|striptags }}</h1>
+            </div>
+        {% endif %}
+    {% elif request.resolver_match.url_name == 'offer'  %}
+        <div class="hero-page__card">
+            {% if brand.logo %}
+                <img class="hero-page__logo" src="{{ brand.logo.url }}" alt="Логотип {{ brand.name }}" width="183" height="122">
+            {% else %}
+                <img class="hero-page__logo" src="{% static 'img/noImage.webp' %}" alt="Нет изображения логотипа" width="183" height="122">
             {% endif %}
-        {% elif request.resolver_match.url_name == 'offer'  %}
+        </div>
+        <div class="hero-page__content">
             <p class="hero-page__title t-70-101">{{ brand.name|safe|striptags }}</p>
             <h1 class="hero-page__subtitle t-30-43">{{ product.name|safe|striptags }}</h1>
-        {% endif %}
-    </div>
+        </div>
+    {% endif %}
 </section>
