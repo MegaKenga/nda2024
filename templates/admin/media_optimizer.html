@@ -1,0 +1,26 @@
+{% extends "admin/base_site.html" %}
+{% load i18n %}
+
+{% block title %}Оптимизация изображений{% endblock %}
+
+{% block extrastyle %}
+{{ block.super }}
+{% include "core/media_optimizer_styles.html" %}
+{% endblock %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href="{% url 'admin:index' %}">{% translate 'Home' %}</a>
+    &rsaquo; Оптимизация изображений
+</div>
+{% endblock %}
+
+{% block content %}
+<div id="media-optimizer">
+    <h1>Оптимизация изображений</h1>
+    <p class="mo-hint" style="margin-bottom: 20px;">
+        Конвертация media в WebP и обновление путей в PostgreSQL.
+    </p>
+    {% include "core/media_optimizer_panel.html" %}
+</div>
+{% endblock %}

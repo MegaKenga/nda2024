@@ -1,0 +1,64 @@
+/* Подмножество fonts.css — только начертания, используемые в styles.css */
+
+@font-face {
+    font-family: 'Roboto';
+    src: url('../fonts/Roboto-Bold.woff2') format('woff2'),
+        url('../fonts/Roboto-Bold.woff') format('woff');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Roboto';
+    src: url('../fonts/Roboto-ExtraBold.woff2') format('woff2'),
+        url('../fonts/Roboto-ExtraBold.woff') format('woff');
+    font-weight: 800;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Jost';
+    src: url('../fonts/Jost-Light.woff2') format('woff2'),
+        url('../fonts/Jost-Light.woff') format('woff');
+    font-weight: 300;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Jost';
+    src: url('../fonts/Jost-Regular.woff2') format('woff2'),
+        url('../fonts/Jost-Regular.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Jost';
+    src: url('../fonts/Jost-Medium.woff2') format('woff2'),
+        url('../fonts/Jost-Medium.woff') format('woff');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Jost';
+    src: url('../fonts/Jost-SemiBold.woff2') format('woff2'),
+        url('../fonts/Jost-SemiBold.woff') format('woff');
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Jost';
+    src: url('../fonts/Jost-Bold.woff2') format('woff2'),
+        url('../fonts/Jost-Bold.woff') format('woff');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}

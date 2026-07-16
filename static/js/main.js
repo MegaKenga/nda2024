@@ -305,7 +305,20 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
-  initIntlTelInputsInRoot(document, 0);
+  function bootPhoneInputs() {
+    initIntlTelInputsInRoot(document, 0);
+  }
+
+  if (window.ndaDeferred) {
+    window.ndaDeferred.on('phone', bootPhoneInputs);
+    document.addEventListener('nda:heavy-ready', function () {
+      if (!window.ndaDeferred.needs.phone && document.querySelector('.phone-mask')) {
+        window.ndaLoadHeavyAssets().then(bootPhoneInputs);
+      }
+    });
+  } else {
+    bootPhoneInputs();
+  }
 
   /* ========== Секция: Мобильное меню ========== */
   var mobileMenu = document.getElementById('mobile-menu');
@@ -361,6 +374,30 @@ document.addEventListener('DOMContentLoaded', function () {
       var open = heroContact.classList.contains('hero-contact_is-open');
       heroContact.setAttribute('aria-expanded', open);
       contactTrigger.setAttribute('aria-label', open ? 'Закрыть' : 'Способы связи');
+    });
+  }
+
+  /* ========== Секция: Прокрутка вверх ========== */
+  var scrollTopBtn = document.getElementById('scroll-top');
+
+  if (scrollTopBtn) {
+    var scrollTopShowAfter = 400;
+
+    function updateScrollTopVisibility() {
+      var visible = window.scrollY > scrollTopShowAfter;
+      scrollTopBtn.classList.toggle('scroll-top_is-visible', visible);
+      if (visible) {
+        scrollTopBtn.removeAttribute('hidden');
+      } else {
+        scrollTopBtn.setAttribute('hidden', '');
+      }
+    }
+
+    window.addEventListener('scroll', updateScrollTopVisibility, { passive: true });
+    updateScrollTopVisibility();
+
+    scrollTopBtn.addEventListener('click', function () {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     });
   }
 
@@ -1711,9 +1748,14 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   }
 
-  /* ========== Секция: Галерея товара (Swiper) ========== */
+  /* ========== Секция: Swiper (после отложенной загрузки) ========== */
+  function initNdaSwipers() {
+  if (typeof Swiper === 'undefined') {
+    return;
+  }
+
   var productGalleryEl = document.querySelector('[data-product-gallery]');
-  if (productGalleryEl && typeof Swiper !== 'undefined') {
+  if (productGalleryEl) {
     var thumbsSwiper = new Swiper('.product-gallery-thumbs', {
       spaceBetween: 10,
       slidesPerView: 4,
@@ -1765,7 +1807,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   /* ========== Секция: Hero-слайдер ========== */
   var heroSwiperEl = document.querySelector('.hero-swiper');
-  if (heroSwiperEl && typeof Swiper !== 'undefined') {
+  if (heroSwiperEl && !heroSwiperEl.classList.contains('swiper-initialized')) {
     new Swiper('.hero-swiper', {
       slidesPerView: 1,
       spaceBetween: 0,
@@ -1779,21 +1821,53 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   /* ========== Секция: Слайдер «О компании» ========== */
+  function centerAboutGalleryPagination(swiper) {
+    if (!swiper || !swiper.pagination || !swiper.pagination.el) {
+      return;
+    }
+    var pag = swiper.pagination.el;
+    pag.style.setProperty('display', 'flex', 'important');
+    pag.style.setProperty('justify-content', 'center', 'important');
+    pag.style.setProperty('align-items', 'center', 'important');
+    pag.style.setProperty('width', '100%', 'important');
+    pag.style.setProperty('left', '0', 'important');
+    pag.style.setProperty('right', '0', 'important');
+    pag.style.setProperty('transform', 'none', 'important');
+    (swiper.pagination.bullets || []).forEach(function (bullet) {
+      bullet.style.setProperty('position', 'static', 'important');
+      bullet.style.setProperty('left', 'auto', 'important');
+      bullet.style.setProperty('transform', 'none', 'important');
+      bullet.style.setProperty('margin', '0', 'important');
+    });
+  }
+
   var aboutGallery = document.querySelector('.about__gallery');
-  if (aboutGallery) {
+  if (aboutGallery && !aboutGallery.classList.contains('swiper-initialized')) {
     new Swiper('.about__gallery', {
       slidesPerView: 1,
       spaceBetween: 0,
       loop: true,
       pagination: {
-        el: '.about__pagination',
+        el: aboutGallery.querySelector('.about__pagination'),
         clickable: true
       },
       autoplay: {
         delay: 5000,
         disableOnInteraction: false
+      },
+      on: {
+        init: function () { centerAboutGalleryPagination(this); },
+        paginationUpdate: function () { centerAboutGalleryPagination(this); },
+        resize: function () { centerAboutGalleryPagination(this); }
       }
     });
+  }
+  }
+
+  if (window.ndaDeferred && window.ndaDeferred.needs.swiper) {
+    window.ndaDeferred.on('swiper', initNdaSwipers);
+  } else if (typeof Swiper !== 'undefined') {
+    initNdaSwipers();
   }
 
   /* ========== Секция: Пагинация поиска — переключение по кнопкам prev/next ========== */

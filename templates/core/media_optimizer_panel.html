@@ -1,0 +1,299 @@
+{% if report_missing %}
+<div class="mo-alert">Отчёт ещё не создан. Запустите оптимизацию.</div>
+{% endif %}
+
+<div class="mo-panel">
+    <form id="optimizer-form">
+        {% csrf_token %}
+        {% if access_token %}
+        <input type="hidden" name="token" value="{{ access_token }}">
+        {% endif %}
+        <div class="mo-grid">
+            <div>
+                <label for="media_root">Путь к изображениям</label>
+                <input type="text" id="media_root" name="media_root" value="{{ media_root }}">
+            </div>
+            <div>
+                <label for="quality">Качество WebP</label>
+                <input type="number" id="quality" name="quality" value="82" min="50" max="100">
+            </div>
+            <div>
+                <label for="max_width">Макс. ширина (px)</label>
+                <input type="number" id="max_width" name="max_width" value="2560" min="800" max="6000">
+            </div>
+        </div>
+
+        <div class="mo-grid" style="margin-top: 16px;">
+            <label class="mo-checkbox"><input type="checkbox" name="dry_run" value="1"> Пробный прогон (dry-run)</label>
+            <label class="mo-checkbox"><input type="checkbox" name="keep_originals" value="1"> Не удалять jpg/png</label>
+            <label class="mo-checkbox"><input type="checkbox" name="skip_db" value="1"> Только файлы, без БД</label>
+            <label class="mo-checkbox"><input type="checkbox" name="skip_files" value="1"> Только БД (webp уже есть)</label>
+        </div>
+
+        <div class="mo-actions">
+            <button type="submit" class="mo-btn mo-btn-primary" id="btn-start">Оптимизировать</button>
+            <button type="button" class="mo-btn mo-btn-danger" id="btn-stop" hidden>Остановить</button>
+            <button type="button" class="mo-btn mo-btn-warning" id="btn-reset">Сбросить статус</button>
+        </div>
+    </form>
+</div>
+
+<div class="mo-panel">
+    <div class="mo-status-bar">
+        <span class="mo-badge" id="status-badge">Статус: idle</span>
+        <span class="mo-badge" id="progress-badge">Строк лога: 0</span>
+    </div>
+
+    <div class="mo-stats">
+        <div class="mo-stat"><strong id="stat-scanned">0</strong><span>Просмотрено</span></div>
+        <div class="mo-stat"><strong id="stat-converted">0</strong><span>Конвертировано</span></div>
+        <div class="mo-stat"><strong id="stat-skipped">0</strong><span>Пропущено</span></div>
+        <div class="mo-stat"><strong id="stat-failed">0</strong><span>Ошибок</span></div>
+        <div class="mo-stat"><strong id="stat-db-image">0</strong><span>ImageField в БД</span></div>
+        <div class="mo-stat"><strong id="stat-db-text">0</strong><span>CKEditor полей</span></div>
+    </div>
+
+    <div class="mo-log" id="log-box"></div>
+</div>
+
+<script>
+(function () {
+    var accessToken = '{{ access_token|escapejs }}';
+    var apiUrls = {
+        start: '{{ urls.start|escapejs }}',
+        stop: '{{ urls.stop|escapejs }}',
+        reset: '{{ urls.reset|escapejs }}',
+        status: '{{ urls.status|escapejs }}'
+    };
+    var form = document.getElementById('optimizer-form');
+    var logBox = document.getElementById('log-box');
+    var statusBadge = document.getElementById('status-badge');
+    var progressBadge = document.getElementById('progress-badge');
+    var btnStart = document.getElementById('btn-start');
+    var btnStop = document.getElementById('btn-stop');
+    var btnReset = document.getElementById('btn-reset');
+    var pollTimer = null;
+    var nextLine = 0;
+
+    var statFields = {
+        scanned: document.getElementById('stat-scanned'),
+        converted: document.getElementById('stat-converted'),
+        skipped: document.getElementById('stat-skipped'),
+        failed: document.getElementById('stat-failed'),
+        db_image_fields: document.getElementById('stat-db-image'),
+        db_text_fields: document.getElementById('stat-db-text')
+    };
+
+    function getCookie(name) {
+        var match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+        return match ? decodeURIComponent(match[2]) : '';
+    }
+
+    function getCsrfToken() {
+        var input = form.querySelector('[name=csrfmiddlewaretoken]');
+        if (input && input.value) {
+            return input.value;
+        }
+        return getCookie('csrftoken');
+    }
+
+    function parseJsonResponse(response) {
+        return response.text().then(function (text) {
+            var data = {};
+            if (text) {
+                try {
+                    data = JSON.parse(text);
+                } catch (err) {
+                    data = {
+                        error: 'Сервер вернул не JSON (HTTP ' + response.status + '). '
+                            + text.replace(/\s+/g, ' ').slice(0, 180)
+                    };
+                }
+            }
+            return { ok: response.ok, status: response.status, data: data };
+        });
+    }
+
+    function appendLocalLog(text, level) {
+        appendLogEntries([{ text: text, level: level || 'info' }]);
+    }
+
+    function showError(message) {
+        appendLocalLog(message, 'error');
+        alert(message);
+    }
+
+    function withToken(url) {
+        if (!accessToken) return url;
+        return url + (url.indexOf('?') >= 0 ? '&' : '?') + 'token=' + encodeURIComponent(accessToken);
+    }
+
+    function fetchHeaders() {
+        return {
+            'X-CSRFToken': getCsrfToken(),
+            'X-Requested-With': 'XMLHttpRequest'
+        };
+    }
+
+    function setRunning(isRunning) {
+        btnStart.disabled = isRunning;
+        btnStop.hidden = !isRunning;
+        form.querySelectorAll('input').forEach(function (input) {
+            input.disabled = isRunning;
+        });
+    }
+
+    function postAction(url) {
+        var formData = new FormData();
+        var csrfInput = form.querySelector('[name=csrfmiddlewaretoken]');
+        if (csrfInput && csrfInput.value) {
+            formData.append('csrfmiddlewaretoken', csrfInput.value);
+        }
+        if (accessToken) {
+            formData.append('token', accessToken);
+        }
+        return fetch(withToken(url), {
+            method: 'POST',
+            credentials: 'same-origin',
+            headers: fetchHeaders(),
+            body: formData
+        }).then(parseJsonResponse);
+    }
+
+    function appendLogEntries(entries) {
+        entries.forEach(function (entry) {
+            var line = document.createElement('div');
+            line.className = 'mo-log-line ' + (entry.level || 'info');
+            line.textContent = entry.text;
+            logBox.appendChild(line);
+        });
+        if (entries.length) {
+            logBox.scrollTop = logBox.scrollHeight;
+        }
+    }
+
+    function updateStats(state) {
+        var stats = (state && state.stats) || {};
+        Object.keys(statFields).forEach(function (key) {
+            statFields[key].textContent = stats[key] != null ? stats[key] : 0;
+        });
+    }
+
+    function updateStatus(status) {
+        statusBadge.textContent = 'Статус: ' + status;
+        statusBadge.className = 'mo-badge';
+        if (status === 'running') statusBadge.classList.add('running');
+        if (status === 'starting') statusBadge.classList.add('running');
+        if (status === 'done') statusBadge.classList.add('done');
+        if (status === 'error') statusBadge.classList.add('error');
+        if (status === 'cancelled' || status === 'stopped') statusBadge.classList.add('cancelled');
+    }
+
+    function pollStatus() {
+        fetch(withToken(apiUrls.status + '?from_line=' + nextLine), { credentials: 'same-origin' })
+            .then(function (response) { return response.json(); })
+            .then(function (data) {
+                if (!data.ok) return;
+
+                appendLogEntries(data.entries || []);
+                nextLine = data.total_lines || nextLine;
+                progressBadge.textContent = 'Строк лога: ' + nextLine;
+                updateStatus(data.status);
+                updateStats(data.state);
+
+                if (data.status === 'running') {
+                    setRunning(true);
+                    pollTimer = setTimeout(pollStatus, 1500);
+                } else {
+                    setRunning(false);
+                }
+            })
+            .catch(function () {
+                pollTimer = setTimeout(pollStatus, 3000);
+            });
+    }
+
+    function startJob() {
+        var formData = new FormData(form);
+        if (!formData.get('dry_run')) {
+            formData.delete('dry_run');
+        }
+
+        logBox.innerHTML = '';
+        nextLine = 0;
+        updateStatus('starting');
+        appendLocalLog('Отправка запроса на запуск...', 'info');
+        setRunning(true);
+
+        fetch(withToken(apiUrls.start), {
+            method: 'POST',
+            credentials: 'same-origin',
+            headers: fetchHeaders(),
+            body: formData
+        })
+            .then(parseJsonResponse)
+            .then(function (result) {
+                if (!result.ok) {
+                    showError(result.data.error || ('Не удалось запустить (HTTP ' + result.status + ')'));
+                    setRunning(false);
+                    updateStatus('idle');
+                    return;
+                }
+                appendLocalLog('Запрос принят, ожидаем лог процесса...', 'success');
+                updateStatus('running');
+                pollStatus();
+            })
+            .catch(function (err) {
+                showError('Ошибка сети при запуске: ' + (err && err.message ? err.message : err));
+                setRunning(false);
+                updateStatus('idle');
+            });
+    }
+
+    form.addEventListener('submit', function (event) {
+        event.preventDefault();
+        var isDryRun = form.querySelector('[name="dry_run"]').checked;
+        var msg = isDryRun
+            ? 'Запустить пробный прогон (dry-run, без изменений)?'
+            : 'Запустить оптимизацию изображений?';
+        if (!confirm(msg)) return;
+        startJob();
+    });
+
+    btnStop.addEventListener('click', function () {
+        if (!confirm('Остановить оптимизацию?')) return;
+        postAction(apiUrls.stop).then(function (result) {
+            if (!result.ok) {
+                showError(result.data.error || 'Не удалось остановить');
+                pollStatus();
+                return;
+            }
+            pollStatus();
+        }).catch(function (err) {
+            showError('Ошибка сети при остановке: ' + (err && err.message ? err.message : err));
+        });
+    });
+
+    btnReset.addEventListener('click', function () {
+        if (!confirm('Сбросить статус и очистить лог?')) return;
+        if (pollTimer) {
+            clearTimeout(pollTimer);
+            pollTimer = null;
+        }
+        postAction(apiUrls.reset).then(function (result) {
+            if (!result.ok) {
+                alert('Не удалось сбросить статус');
+                return;
+            }
+            setRunning(false);
+            logBox.innerHTML = '';
+            nextLine = 0;
+            progressBadge.textContent = 'Строк лога: 0';
+            updateStatus('idle');
+            updateStats({ stats: {} });
+        });
+    });
+
+    pollStatus();
+})();
+</script>

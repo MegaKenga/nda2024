@@ -79,3 +79,7 @@ class PrivacyView(WorkView):
 
 class ContactsView(WorkView):
     template_name = 'core/contacts.html'
+
+
+class SitemapView(WorkView):
+    template_name = 'core/sitemap.html'
