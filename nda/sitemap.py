@@ -40,7 +40,7 @@ class CategorySitemap(Sitemap):
     priority = 0.9
 
     def items(self):
-        return Category.visible.all()
+        return Category.visible.all().distinct()
 
 
 class ProductSitemap(Sitemap):

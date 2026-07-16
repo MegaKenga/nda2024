@@ -18,22 +18,21 @@
         {% endif %}
     </div>
     <div class="hero-page__content">
-        {% if brand %}
-            {% if not product %}
+        {% if request.resolver_match.url_name == 'brand_certificates' %}
+            <h1 class="hero-page__title t-70-101">РУ {{ brand.name|safe|striptags }}</h1>
+        {% elif request.resolver_match.url_name == 'brand' %}
+            <h1 class="hero-page__title t-70-101">{{ brand.name|safe|striptags }}</h1>
+            <p class="hero-page__subtitle t-30-43">{{ brand.description|safe|striptags }}</p>
+        {% elif request.resolver_match.url_name == 'category' %}
+            {% if brand %}
                 <h1 class="hero-page__title t-70-101">{{ brand.name|safe|striptags }}</h1>
-            {% elif product %}
-                <p class="hero-page__title t-70-101">{{ brand.name|safe|striptags }}</p>
-            {% endif %}
-            {% if category %}
                 <p class="hero-page__subtitle t-30-43">{{ category.name|safe|striptags }}</p>
-            {% elif product %}
-                <p class="hero-page__subtitle t-30-43">{{ product.name|safe|striptags }}</p>
-            {% elif brand %}
-                <p class="hero-page__subtitle t-30-43">{{ brand.description|safe|striptags }}</p>
+            {% elif category %}
+                <h1 class="hero-page__title t-70-101">{{ category.name|safe|striptags }}</h1>
             {% endif %}
-        {% elif category %}
-            <h1 class="hero-page__title t-70-101">{{ category.name|safe|striptags }}</h1>
-            <p class="hero-page__subtitle t-30-43">{{ category.description|safe|striptags }}</p>
+        {% elif request.resolver_match.url_name == 'offer'  %}
+            <p class="hero-page__title t-70-101">{{ brand.name|safe|striptags }}</p>
+            <h1 class="hero-page__subtitle t-30-43">{{ product.name|safe|striptags }}</h1>
         {% endif %}
     </div>
 </section>
