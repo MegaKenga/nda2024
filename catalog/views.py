@@ -156,7 +156,6 @@ class SiteSearchView(ListView):
         return qs.filter(status='PUBLISHED')
 
 
-
 class DuplicatesView(LoginRequiredMixin, TemplateView):
     template_name = 'core/duplicates.html'
     def get_context_data(self, **kwargs):

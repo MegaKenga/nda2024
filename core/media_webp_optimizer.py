@@ -53,7 +53,6 @@ StatsCallback = Callable[[ConversionStats], None]
 class OptimizerOptions:
     media_root: str = ''
     quality: int = 82
-    max_width: int = 2560
     dry_run: bool = False
     keep_originals: bool = False
     skip_db: bool = False
@@ -185,8 +184,8 @@ class MediaWebpOptimizer:
         self._log(f'Режим: {"DRY-RUN" if self.options.dry_run else "ЗАПИСЬ"}')
         self._log(
             f'Параметры: quality={self.options.quality}, '
-            f'max_width={self.options.max_width}, '
-            f'keep_originals={self.options.keep_originals}'
+            f'keep_originals={self.options.keep_originals} '
+            f'(размеры изображений сохраняются без изменений)'
         )
 
         mapping: dict[str, str] = {}
@@ -307,11 +306,6 @@ class MediaWebpOptimizer:
 
         with Image.open(src_path) as image:
             image.load()
-
-            if self.options.max_width and image.width > self.options.max_width:
-                ratio = self.options.max_width / float(image.width)
-                new_size = (self.options.max_width, max(1, int(image.height * ratio)))
-                image = image.resize(new_size, Image.Resampling.LANCZOS)
 
             if image.mode in ('RGBA', 'LA') or (
                 image.mode == 'P' and 'transparency' in image.info
@@ -734,7 +728,6 @@ class MediaOptimizerJobManager:
             '-u',
             launcher_py,
             '--quality', str(options.quality),
-            '--max-width', str(options.max_width),
         ]
         if options.media_root:
             cmd.extend(['--media-root', options.media_root])

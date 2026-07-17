@@ -1,5 +1,8 @@
 from __future__ import annotations
 
+from dataclasses import asdict
+
+from django.conf import settings
 from django.core.management.base import BaseCommand
 
 from core.media_webp_optimizer import (
@@ -19,7 +22,6 @@ class Command(BaseCommand):
             help='Путь к media (по умолчанию settings.MEDIA_ROOT).',
         )
         parser.add_argument('--quality', type=int, default=82)
-        parser.add_argument('--max-width', type=int, default=2560)
         parser.add_argument('--dry-run', action='store_true')
         parser.add_argument('--keep-originals', action='store_true')
         parser.add_argument('--skip-db', action='store_true')
@@ -34,7 +36,6 @@ class Command(BaseCommand):
         optimizer_options = OptimizerOptions(
             media_root=options['media_root'],
             quality=options['quality'],
-            max_width=options['max_width'],
             dry_run=options['dry_run'],
             keep_originals=options['keep_originals'],
             skip_db=options['skip_db'],

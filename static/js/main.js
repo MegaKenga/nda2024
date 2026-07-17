@@ -1749,60 +1749,271 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   /* ========== Секция: Swiper (после отложенной загрузки) ========== */
+  function ensureProductGalleryArrowStyles() {
+    if (document.getElementById('nda-product-gallery-arrow-fix')) {
+      return;
+    }
+    var style = document.createElement('style');
+    style.id = 'nda-product-gallery-arrow-fix';
+    style.textContent = [
+      '.product-gallery-main .product-gallery__arrow.swiper-button-prev,',
+      '.product-gallery-main .product-gallery__arrow.swiper-button-next {',
+      '  --swiper-navigation-size: 80px;',
+      '  display: flex !important;',
+      '  align-items: center !important;',
+      '  justify-content: center !important;',
+      '  width: 50px !important;',
+      '  height: 80px !important;',
+      '  min-width: 50px !important;',
+      '  min-height: 80px !important;',
+      '  margin-top: 0 !important;',
+      '  padding: 0 !important;',
+      '  overflow: visible !important;',
+      '  transform: translateY(-50%) !important;',
+      '  color: #000 !important;',
+      '}',
+      '.product-gallery-main .product-gallery__arrow svg {',
+      '  display: block !important;',
+      '  width: 13px !important;',
+      '  height: 21px !important;',
+      '  flex-shrink: 0 !important;',
+      '  overflow: visible !important;',
+      '  pointer-events: none;',
+      '}',
+      '.product-gallery-main .product-gallery__arrow svg path {',
+      '  stroke: #000 !important;',
+      '}',
+      '.product-gallery-main .product-gallery__arrow::after {',
+      '  content: none !important;',
+      '  display: none !important;',
+      '}',
+      '@media (max-width: 1440px) {',
+      '  .product-gallery-main .product-gallery__arrow.swiper-button-prev,',
+      '  .product-gallery-main .product-gallery__arrow.swiper-button-next {',
+      '    width: 40px !important;',
+      '    height: 60px !important;',
+      '    min-width: 40px !important;',
+      '    min-height: 60px !important;',
+      '    --swiper-navigation-size: 60px;',
+      '  }',
+      '  .product-gallery-main .product-gallery__arrow svg {',
+      '    width: 11px !important;',
+      '    height: 18px !important;',
+      '  }',
+      '}',
+      '@media (max-width: 1020px) {',
+      '  .product-gallery-main .product-gallery__arrow.swiper-button-prev,',
+      '  .product-gallery-main .product-gallery__arrow.swiper-button-next {',
+      '    width: 30px !important;',
+      '    height: 48px !important;',
+      '    min-width: 30px !important;',
+      '    min-height: 48px !important;',
+      '    --swiper-navigation-size: 48px;',
+      '  }',
+      '  .product-gallery-main .product-gallery__arrow svg {',
+      '    width: 10px !important;',
+      '    height: 17px !important;',
+      '  }',
+      '}'
+    ].join('\n');
+    document.head.appendChild(style);
+  }
+
   function initNdaSwipers() {
   if (typeof Swiper === 'undefined') {
     return;
   }
 
+  ensureProductGalleryArrowStyles();
+
   var productGalleryEl = document.querySelector('[data-product-gallery]');
   if (productGalleryEl) {
-    var thumbsSwiper = new Swiper('.product-gallery-thumbs', {
-      spaceBetween: 10,
-      slidesPerView: 4,
-      breakpoints: {
-        0: { slidesPerView: 3 },
-        640: { slidesPerView: 4 },
-        1021: { slidesPerView: 3 },
-        1441: { slidesPerView: 4 }
-      },
-      freeMode: false,
-      watchSlidesProgress: true,
-      observer: true,
-      observeParents: true,
-      loop: false
-    });
+    var thumbsEl = productGalleryEl.querySelector('.product-gallery-thumbs');
+    var mainEl = productGalleryEl.querySelector('.product-gallery-main');
+    var thumbsSwiper = null;
+    var thumbsProgressTrack = null;
+    var thumbsProgressBar = null;
 
-    try {
-      var thumbsProgressTrack = document.createElement('div');
-      thumbsProgressTrack.className = 'product-gallery-thumbs-progress-track';
-      var thumbsProgressBar = document.createElement('div');
-      thumbsProgressBar.className = 'product-gallery-thumbs-progress-bar';
-      thumbsProgressTrack.appendChild(thumbsProgressBar);
-      var thumbsParent = thumbsSwiper.el && thumbsSwiper.el.parentElement ? thumbsSwiper.el.parentElement : null;
-      if (thumbsParent) thumbsParent.insertBefore(thumbsProgressTrack, thumbsSwiper.el.nextSibling);
-      else thumbsSwiper.el.appendChild(thumbsProgressTrack);
-      var updateThumbsProgress = function () {
-        var p = typeof thumbsSwiper.progress === 'number' ? thumbsSwiper.progress : 0;
-        p = Math.max(0, Math.min(1, p));
-        thumbsProgressBar.style.transform = 'scaleX(' + p + ')';
+    function thumbsNeedScroll(swiper) {
+      if (!swiper || !swiper.el) {
+        return false;
+      }
+      if (swiper.isLocked) {
+        return false;
+      }
+      if (swiper.snapGrid && swiper.snapGrid.length > 1) {
+        return true;
+      }
+      var slidesPerView = swiper.params.slidesPerView;
+      if (typeof slidesPerView !== 'number') {
+        slidesPerView = parseFloat(slidesPerView) || 1;
+      }
+      return swiper.slides.length > slidesPerView;
+    }
+
+    function updateThumbsProgressVisibility() {
+      if (!thumbsProgressTrack || !thumbsSwiper) {
+        return;
+      }
+      var needsScroll = thumbsNeedScroll(thumbsSwiper);
+      thumbsProgressTrack.classList.toggle('is-hidden', !needsScroll);
+      thumbsProgressTrack.hidden = !needsScroll;
+      if (!needsScroll && thumbsProgressBar) {
+        thumbsProgressBar.style.transform = 'scaleX(0)';
+      }
+    }
+
+    function updateThumbsProgress() {
+      if (!thumbsProgressBar || !thumbsProgressTrack || thumbsProgressTrack.hidden) {
+        return;
+      }
+      var p = typeof thumbsSwiper.progress === 'number' ? thumbsSwiper.progress : 0;
+      p = Math.max(0, Math.min(1, p));
+      thumbsProgressBar.style.transform = 'scaleX(' + p + ')';
+    }
+
+    function cleanupSwiperEl(el) {
+      if (!el) return;
+      if (!el.swiper && !el.classList.contains('swiper-initialized')) {
+        return;
+      }
+      if (el.swiper) {
+        el.swiper.destroy(true, true);
+      }
+      el.classList.remove('swiper-initialized');
+      el.querySelectorAll('.swiper-slide-duplicate').forEach(function (slide) {
+        slide.remove();
+      });
+    }
+
+    cleanupSwiperEl(thumbsEl);
+    cleanupSwiperEl(mainEl);
+
+    if (thumbsEl && !thumbsEl.classList.contains('swiper-initialized')) {
+      var thumbsParent = thumbsEl.parentElement;
+      thumbsProgressTrack = thumbsParent
+        ? thumbsParent.querySelector('.product-gallery-thumbs-progress-track')
+        : null;
+      if (!thumbsProgressTrack) {
+        thumbsProgressTrack = document.createElement('div');
+        thumbsProgressTrack.className = 'product-gallery-thumbs-progress-track is-hidden';
+        thumbsProgressTrack.hidden = true;
+        thumbsProgressBar = document.createElement('div');
+        thumbsProgressBar.className = 'product-gallery-thumbs-progress-bar';
+        thumbsProgressTrack.appendChild(thumbsProgressBar);
+        if (thumbsParent) {
+          thumbsParent.appendChild(thumbsProgressTrack);
+        } else {
+          thumbsEl.appendChild(thumbsProgressTrack);
+        }
+      } else {
+        thumbsProgressBar = thumbsProgressTrack.querySelector('.product-gallery-thumbs-progress-bar');
+        thumbsProgressTrack.classList.add('is-hidden');
+        thumbsProgressTrack.hidden = true;
+      }
+
+      thumbsSwiper = new Swiper(thumbsEl, {
+        spaceBetween: 10,
+        slidesPerView: 4,
+        slideToClickedSlide: true,
+        breakpoints: {
+          0: { slidesPerView: 3 },
+          640: { slidesPerView: 4 },
+          1021: { slidesPerView: 3 },
+          1441: { slidesPerView: 4 }
+        },
+        freeMode: false,
+        watchSlidesProgress: true,
+        watchOverflow: true,
+        observer: true,
+        observeParents: true,
+        loop: false,
+        on: {
+          init: function () {
+            requestAnimationFrame(function () {
+              updateThumbsProgressVisibility();
+              updateThumbsProgress();
+            });
+          },
+          resize: function () {
+            updateThumbsProgressVisibility();
+            updateThumbsProgress();
+          },
+          update: function () {
+            updateThumbsProgressVisibility();
+          },
+          breakpoint: function () {
+            updateThumbsProgressVisibility();
+            updateThumbsProgress();
+          },
+          imagesReady: function () {
+            updateThumbsProgressVisibility();
+            updateThumbsProgress();
+          },
+          slideChange: function () {
+            updateThumbsProgress();
+          }
+        }
+      });
+
+      thumbsSwiper.on('progress', function () {
+        updateThumbsProgress();
+      });
+      requestAnimationFrame(function () {
+        updateThumbsProgressVisibility();
+        updateThumbsProgress();
+      });
+    }
+
+    if (mainEl && !mainEl.classList.contains('swiper-initialized')) {
+      var mainSlidesCount = mainEl.querySelectorAll('.swiper-slide:not(.swiper-slide-duplicate)').length;
+      if (!mainSlidesCount) {
+        mainSlidesCount = mainEl.querySelectorAll('.swiper-slide').length;
+      }
+      var prevArrow = mainEl.querySelector('.swiper-button-prev');
+      var nextArrow = mainEl.querySelector('.swiper-button-next');
+
+      function keepGalleryArrowsVisible() {
+        [prevArrow, nextArrow].forEach(function (btn) {
+          if (!btn) return;
+          btn.classList.remove('swiper-button-lock');
+          btn.style.removeProperty('display');
+        });
+      }
+
+      var mainSwiperConfig = {
+        slidesPerView: 1,
+        spaceBetween: 0,
+        loop: false,
+        rewind: mainSlidesCount > 1,
+        speed: 300,
+        observer: true,
+        observeParents: true,
+        navigation: {
+          prevEl: prevArrow,
+          nextEl: nextArrow,
+          lockClass: 'product-gallery__arrow_locked',
+          disabledClass: 'product-gallery__arrow_disabled'
+        },
+        on: {
+          init: keepGalleryArrowsVisible,
+          resize: keepGalleryArrowsVisible,
+          update: keepGalleryArrowsVisible,
+          slideChange: keepGalleryArrowsVisible
+        }
       };
-      thumbsSwiper.on('progress', function () { updateThumbsProgress(); });
-      updateThumbsProgress();
-    } catch (e) { }
 
-    var mainSlidesCount = productGalleryEl.querySelectorAll('.product-gallery-main .swiper-slide').length;
-    new Swiper('.product-gallery-main', {
-      spaceBetween: 0,
-      loop: true,
-      loopedSlides: mainSlidesCount,
-      thumbs: { swiper: thumbsSwiper },
-      navigation: {
-        prevEl: '.product-gallery-main .swiper-button-prev',
-        nextEl: '.product-gallery-main .swiper-button-next'
-      },
-      observer: true,
-      observeParents: true
-    });
+      if (thumbsSwiper) {
+        mainSwiperConfig.thumbs = {
+          swiper: thumbsSwiper,
+          slideThumbActiveClass: 'swiper-slide-thumb-active',
+          multipleActiveThumbs: false,
+          autoScrollOffset: 1
+        };
+      }
+
+      new Swiper(mainEl, mainSwiperConfig);
+    }
   }
 
   /* ========== Секция: Hero-слайдер ========== */
@@ -1869,6 +2080,59 @@ document.addEventListener('DOMContentLoaded', function () {
   } else if (typeof Swiper !== 'undefined') {
     initNdaSwipers();
   }
+
+  /* ========== Секция: Карта сайта — сворачивание веток ========== */
+  (function initSitemapTree() {
+    var tree = document.querySelector('.sitemap-tree');
+    if (!tree) return;
+
+    var lines = Array.from(tree.querySelectorAll('.sitemap-tree__line'));
+    if (!lines.length) return;
+
+    var depths = lines.map(function (line) {
+      return parseInt(line.getAttribute('data-depth') || '0', 10);
+    });
+
+    function getAncestorIndices(index) {
+      var ancestors = [];
+      var targetDepth = depths[index] - 1;
+      for (var i = index - 1; i >= 0 && targetDepth >= 0; i--) {
+        if (depths[i] === targetDepth) {
+          ancestors.push(i);
+          targetDepth--;
+        }
+      }
+      return ancestors;
+    }
+
+    function areAncestorsExpanded(index) {
+      return getAncestorIndices(index).every(function (ancestorIndex) {
+        return !lines[ancestorIndex].classList.contains('is-collapsed');
+      });
+    }
+
+    function updateVisibility() {
+      lines.forEach(function (line, index) {
+        if (index === 0) {
+          line.hidden = false;
+          return;
+        }
+        line.hidden = !areAncestorsExpanded(index);
+      });
+    }
+
+    tree.querySelectorAll('.sitemap-tree__prefix_toggle').forEach(function (button) {
+      button.addEventListener('click', function () {
+        var line = button.closest('.sitemap-tree__line');
+        if (!line) return;
+
+        var collapsed = line.classList.toggle('is-collapsed');
+        button.setAttribute('aria-expanded', collapsed ? 'false' : 'true');
+        button.setAttribute('aria-label', collapsed ? 'Развернуть раздел' : 'Свернуть раздел');
+        updateVisibility();
+      });
+    });
+  })();
 
   /* ========== Секция: Пагинация поиска — переключение по кнопкам prev/next ========== */
   var searchPaginations = document.querySelectorAll('.search-pagination');

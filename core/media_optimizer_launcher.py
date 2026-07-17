@@ -25,7 +25,6 @@ def main() -> int:
     parser = argparse.ArgumentParser(description='Media WebP optimizer worker')
     parser.add_argument('--media-root', default='')
     parser.add_argument('--quality', type=int, default=82)
-    parser.add_argument('--max-width', type=int, default=2560)
     parser.add_argument('--dry-run', action='store_true')
     parser.add_argument('--keep-originals', action='store_true')
     parser.add_argument('--skip-db', action='store_true')
@@ -52,7 +51,6 @@ def main() -> int:
     options = OptimizerOptions(
         media_root=args.media_root,
         quality=args.quality,
-        max_width=args.max_width,
         dry_run=args.dry_run,
         keep_originals=args.keep_originals,
         skip_db=args.skip_db,

@@ -84,7 +84,6 @@ def media_optimizer_start(request):
     options = OptimizerOptions(
         media_root=request.POST.get('media_root', '').strip(),
         quality=_post_int(request, 'quality', 82),
-        max_width=_post_int(request, 'max_width', 2560),
         dry_run=request.POST.get('dry_run') == '1',
         keep_originals=request.POST.get('keep_originals') == '1',
         skip_db=request.POST.get('skip_db') == '1',

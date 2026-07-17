@@ -1,4 +1,4 @@
-"""catalog/medtronic/medtronic-oxygen-masks
+"""
 URL configuration for nda project.
 
 The `urlpatterns` list routes URLs to views. For more information please see:
@@ -37,6 +37,7 @@ urlpatterns = [
     path('privacy/', core.views.PrivacyView.as_view(), name='privacy'),
     path('contacts/', core.views.ContactsView.as_view(), name='contacts'),
     path('work/', core.views.WorkView.as_view(), name='work'),
+    path('karta-saita/', core.views.SiteMapView.as_view(), name='site_map'),
     path('certificates/', core.views.BrandsWithCertificatesView.as_view(), name='brands_with_certificates'),
     path('brand/<int:pk>/certificates/', core.views.BrandCertificatesDetailView.as_view(),name='brand_certificates'),
     path('files/', include('files.urls')),

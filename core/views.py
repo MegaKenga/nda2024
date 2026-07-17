@@ -81,5 +81,12 @@ class ContactsView(WorkView):
     template_name = 'core/contacts.html'
 
 
-class SitemapView(WorkView):
+class SiteMapView(WorkView):
     template_name = 'core/sitemap.html'
+
+    def get_context_data(self, **kwargs):
+        from core.sitemap_tree import build_sitemap_nodes
+
+        context = super().get_context_data(**kwargs)
+        context['sitemap_nodes'] = build_sitemap_nodes()
+        return context

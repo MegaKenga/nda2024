@@ -1,0 +1,72 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}
+  <title>{{ product.title|default:product.name|striptags }}</title>
+{% endblock %}
+
+{% block metatag %}
+  <meta name="keywords" content="{{ product.keywords }}">
+  <meta property="og:url" content="https://nda.ru{{ request.path }}">
+  <meta property="og:title" content="{{ product.title|default:product.name|striptags }}">
+  <meta property="og:type" content="website">
+  <meta property="og:description" content="{{ product.ceo_description|striptags }}">
+  <meta name="description" content="{{ product.ceo_description|striptags }}">
+{% endblock %}
+
+{% block content %}
+<main class="catalog-material-page">
+  <div class="container">
+    {% include 'core/components/breadcrumbs.html' %}
+
+    <section class="catalog-material-hero">
+      <div class="catalog-material-hero__logo-card">
+        {% if brand.logo %}
+          <img class="catalog-material-hero__logo" src="{{ brand.logo.url }}" alt="{{ brand.name|striptags }}" width="232" height="121">
+        {% else %}
+          <img class="catalog-material-hero__logo" src="{% static 'img/noImage.jpg' %}" alt="" width="232" height="121">
+        {% endif %}
+      </div>
+      <div class="catalog-material-hero__content">
+        <p class="catalog-material-hero__brand">{{ brand.name|striptags }}</p>
+        <h1 class="catalog-material-hero__title">{{ product.name|striptags }}</h1>
+      </div>
+    </section>
+
+    <div class="catalog-material-layout">
+      <section class="catalog-material-cover" aria-label="Обложка каталога">
+        {% if cover_image %}
+          <img class="catalog-material-cover__image" src="{{ cover_image.image.url }}" alt="{{ product.name|striptags }}" width="638" height="638">
+        {% elif product.logo %}
+          <img class="catalog-material-cover__image" src="{{ product.logo.url }}" alt="{{ product.name|striptags }}" width="638" height="638">
+        {% else %}
+          <img class="catalog-material-cover__image" src="{% static 'img/noImage.jpg' %}" alt="" width="638" height="638">
+        {% endif %}
+      </section>
+
+      <section class="catalog-material-info" aria-label="Описание каталога">
+        <h2 class="catalog-material-info__title">{{ product.name|striptags }}</h2>
+        <div class="catalog-material-info__scroll">
+          <div class="catalog-material-info__text">
+            {% if product.full_description and product.full_description != '<p>&nbsp;</p>' and product.full_description != '<p> </p>' %}
+              {{ product.full_description|safe }}
+            {% elif product.short_description %}
+              {{ product.short_description|safe }}
+            {% endif %}
+          </div>
+        </div>
+        <a class="catalog-material-info__download" href="{{ catalog.file.url }}" download>
+          <span class="catalog-material-info__download-text">Скачать каталог</span>
+          <span class="catalog-material-info__download-icon" aria-hidden="true">
+            <svg width="24" height="28" viewBox="0 0 24 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M15.2395 20.8694L17.5415 23.1303L22.4996 18.2607L23.7392 19.4781L17.5415 25.5651L14 22.0868L15.2395 20.8694Z" fill="currentColor" />
+              <path fill-rule="evenodd" clip-rule="evenodd" d="M14.8319 28.0001C12.8636 26.6915 11.5664 24.4538 11.5663 21.9131H3.65286C1.97199 21.9131 0.609375 23.2757 0.609375 24.9566C0.609375 26.6374 1.97199 28.0001 3.65287 28.0001H14.8319Z" fill="currentColor" />
+              <path fill-rule="evenodd" clip-rule="evenodd" d="M0 2C0 0.895431 0.895431 0 2 0H3.04371V8.52176L5.4785 6.08697L7.91329 8.52176V0H22.5218V15.5857C21.4474 14.9642 20.2001 14.6085 18.8697 14.6085C15.2503 14.6085 12.2458 17.241 11.6663 20.6957H3.0715C1.93518 20.6957 0.896391 21.3377 0.388215 22.3541L0 23.1305V2Z" fill="currentColor" />
+            </svg>
+          </span>
+        </a>
+      </section>
+    </div>
+  </div>
+</main>
+{% endblock %}

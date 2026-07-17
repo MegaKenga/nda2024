@@ -1,0 +1,49 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}
+<title>Карта сайта</title>
+{% endblock %}
+
+{% block metatag %}
+  <meta name="description" content="Карта сайта ООО «НДА Деловая медицинская компания».">
+{% endblock %}
+
+{% block content %}
+<main class="sitemap-page">
+  <div class="container">
+    <nav class="breadcrumbs" aria-label="Хлебные крошки">
+      <a class="breadcrumbs__link t-18" href="{% url 'home' %}">ГЛАВНАЯ</a>
+      <span class="breadcrumbs__sep" aria-hidden="true">/</span>
+      <span class="breadcrumbs__current t-18 breadcrumbs__current_weight_medium">КАРТА САЙТА</span>
+    </nav>
+
+    <section class="usloviya-hero sitemap-hero">
+      <div class="usloviya-hero__brand">
+        <div class="usloviya-hero__logo-wrap">
+          <img class="usloviya-hero__logo" src="{% static 'img/logo-header.webp' %}" alt="НДА" width="62" height="62">
+        </div>
+        <p class="usloviya-hero__company t-18">ООО НДА<br>Деловая медицинская компания</p>
+      </div>
+      <div class="usloviya-hero__content">
+        <h1 class="usloviya-hero__title">Карта сайта</h1>
+      </div>
+    </section>
+
+    <section class="sitemap-tree" aria-label="Структура сайта">
+      {% for node in sitemap_nodes %}
+        <p class="sitemap-tree__line" data-depth="{{ node.depth }}" style="--sitemap-depth: {{ node.depth }}">
+          {% if node.depth > 0 %}
+            {% if node.has_children %}
+              <button type="button" class="sitemap-tree__prefix sitemap-tree__prefix_toggle" aria-expanded="true" aria-label="Свернуть раздел">── </button>
+            {% else %}
+              <span class="sitemap-tree__prefix" aria-hidden="true">── </span>
+            {% endif %}
+          {% endif %}
+          <a class="sitemap-tree__link" href="{{ node.url }}">{{ node.title|striptags }}</a>
+        </p>
+      {% endfor %}
+    </section>
+  </div>
+</main>
+{% endblock %}
