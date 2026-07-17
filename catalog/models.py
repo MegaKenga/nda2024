@@ -1,6 +1,8 @@
 from django.db import models
 from django.urls import reverse
+
 from django_ckeditor_5.fields import CKEditor5Field
+from django_resized import ResizedImageField
 
 
 """Общие классы и миксины"""
@@ -92,8 +94,10 @@ class Brand(BaseFields):
         blank=True,
         verbose_name='Описание бренда'
     )
-    logo = models.ImageField(
+    logo = ResizedImageField(
         upload_to='brand/logo',
+        force_format="WEBP",
+        quality=100,
         default='',
         null=True,
         blank=True,
@@ -139,8 +143,10 @@ class Category(BaseFields):
         related_name='children',
         symmetrical=False
     )
-    logo = models.ImageField(
+    logo = ResizedImageField(
         upload_to='category/logo',
+        force_format="WEBP",
+        quality=100,
         default='',
         null=True,
         blank=True,
@@ -195,8 +201,10 @@ class Product(BaseFields):
         blank=True,
         verbose_name='Бренд, к которому относится товар'
     )
-    logo = models.ImageField(
+    logo = ResizedImageField(
         upload_to='product/logo',
+        force_format="WEBP",
+        quality=100,
         default='',
         null=True,
         blank=True,

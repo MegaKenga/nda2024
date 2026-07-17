@@ -4,11 +4,11 @@ from django.urls import resolve
 from django.db.models import Q, Prefetch, Count
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
-from files.views import import_from_excel
 
+from files.views import import_from_excel
+from files.models import ModelFile, ModelImage, InstructionsFile, CatalogFile
 from core.models import MainPageInfoBlock
 from catalog.models import Category, Brand, Offer, Product
-from files.models import ModelFile, ModelImage, InstructionsFile, CatalogFile
 from cart.forms import CartAddProductForm
 
 import datetime

@@ -1,12 +1,22 @@
 from django.db import models
 from django.utils.safestring import mark_safe
+
 import os
+
 from catalog.models import Product
+
+from django_resized import ResizedImageField
 
 
 class ModelImage(models.Model):
     product = models.ForeignKey(Product, null=True, blank=True, on_delete=models.SET_NULL, verbose_name='Товар')
-    image = models.ImageField(upload_to='product/images', null=True, blank=True, verbose_name='Изображение')
+    image = ResizedImageField(
+        upload_to='product/images',
+        force_format="WEBP",
+        quality=100,
+        null=True,
+        blank=True,
+        verbose_name='Изображение')
 
     class Meta:
         verbose_name_plural = 'Изображения'
