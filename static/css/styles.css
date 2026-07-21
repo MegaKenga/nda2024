@@ -2784,7 +2784,7 @@ textarea {
     right: 30px;
     width: 80px;
     height: 80px;
-    background: url("../img/uslovia/covuch-uslov.png") no-repeat center;
+    background: url("../img/uslovia/covuch-uslov.webp") no-repeat center;
     background-size: contain;
     pointer-events: none
 }
@@ -2796,7 +2796,7 @@ textarea {
     right: 0;
     width: 200px;
     height: 200px;
-    background: url("../img/uslovia/doc-uslov.png") no-repeat right bottom;
+    background: url("../img/uslovia/doc-uslov.webp") no-repeat right bottom;
     background-size: contain;
     pointer-events: none;
     z-index: 2
@@ -2809,7 +2809,7 @@ textarea {
     right: 0;
     width: 270px;
     height: 270px;
-    background: url("../img/uslovia/group-uslov.png") no-repeat right bottom;
+    background: url("../img/uslovia/group-uslov.webp") no-repeat right bottom;
     background-size: contain;
     pointer-events: none;
     z-index: 2
@@ -3207,7 +3207,7 @@ textarea {
 
 .footer__inner {
     padding: 60px;
-    background-image: url("../img/bg-footer.png"), linear-gradient(135deg, #3e609a 0, #00304e 100%);
+    background-image: url("../img/bg-footer.webp"), linear-gradient(135deg, #3e609a 0, #00304e 100%);
     background-position: left 200%, 0 0;
     background-repeat: no-repeat, no-repeat;
     background-size: auto, cover;
@@ -8177,10 +8177,7 @@ textarea {
 }
 
 .sitemap-tree__line[hidden] {
-    display: none
-}
-
-!important
+    display: none !important;
 }
 
 .sitemap-tree__link {
