@@ -66,16 +66,29 @@
                     {% endif %}
                 </div>
                 <div class="product-info">
-                    <div class="product-info_content">
-                        {% if user.is_authenticated %}
-                            <a href="https://nda.ru/admin/catalog/product/{{ product.id }}/change/">
-                                <h1 class="product-info__title" style="color: #2a7aa8">{{ product.name }}</h1>
-                            </a>
-                        {% else %}
-                            <h1 class="product-info__title">{{ product.name }}</h1>
-                        {% endif %}
-                        <p class="product-info__features-title"><span class="desc-bold">{{ product.short_description|safe }}</span> </p>
-                    </div>
+                    {% if product.h1_name %}
+                        <div class="product-info_content">
+                            {% if user.is_authenticated %}
+                                <a href="https://nda.ru/admin/catalog/product/{{ product.id }}/change/" target="_blank">
+                                    <h1 class="product-info__title" style="color: #2a7aa8">{{ product.h1_name }}</h1>
+                                </a>
+                            {% else %}
+                                <h1 class="product-info__title">{{ product.h1_name }}</h1>
+                            {% endif %}
+                            <p class="product-info__features-title"><span class="desc-bold">{{ product.short_description|safe }}</span> </p>
+                        </div>
+                    {% else %}
+                        <div class="product-info_content">
+                            {% if user.is_authenticated %}
+                                <a href="https://nda.ru/admin/catalog/product/{{ product.id }}/change/" target="_blank">
+                                    <h1 class="product-info__title" style="color: #2a7aa8">{{ product.name }}</h1>
+                                </a>
+                            {% else %}
+                                <h1 class="product-info__title">{{ product.name }}</h1>
+                            {% endif %}
+                            <p class="product-info__features-title"><span class="desc-bold">{{ product.short_description|safe }}</span> </p>
+                        </div>
+                    {% endif %}
                     <div class="product-contact">
                         <p class="product-contact__title">Связаться со специалистом по продукции {{brand}} {{specialist.name}}:</p>
                         <div class="product-contact__row">
