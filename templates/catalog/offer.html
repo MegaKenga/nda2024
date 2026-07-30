@@ -5,6 +5,10 @@
     <title>{{ product.title }}</title>
 {% endblock %}
 
+{% block canonical_link %}
+     <link rel="canonical" href="https://nda.ru{% url 'offer' brand_slug=product.brand.slug product_slug=product.slug %}">
+{% endblock %}
+
 {% block metatag %}
   <meta name="keywords" content="{{product.keywords}}">
   <meta property="og:url" content="https://nda.ru{{ request.path }}">
@@ -15,7 +19,6 @@
 {% endblock %}
 
 {% block content %}
-
     <main class="product-page">
         <div class="container">
             {% include 'core/components/breadcrumbs.html' %}
@@ -337,5 +340,4 @@
         </div>
     {% include 'cart/cart.html' %}
     </main>
-
 {% endblock %}

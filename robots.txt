@@ -2,8 +2,7 @@ User-agent: *
 Disallow: /catalog/duplicates/
 Disallow: /admin
 Disallow: /tmp
-Disallow: /?q=
-Allow: /
+# Disallow: /?q=
 
 
 User-agent: Yandex

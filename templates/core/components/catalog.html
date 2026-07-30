@@ -17,8 +17,9 @@
                     <a href="{% url 'brand' brand_slug=brand.slug %}">
                         <div class="catalog__card">
                             {% if brand.logo %}
-                                <div class="catalog__card-image"><img src="{{ brand.logo.url }}" alt="{{ brand.name }}" width="262"
-                                                                      height="140"></div>
+                                <div class="catalog__card-image">
+                                    <img src="{{ brand.logo.url }}" alt="{{ brand.name }}" width="262" height="140">
+                                </div>
                             {% else %}
                                 <img src="{% static 'img/noImage.webp' %}" alt="No Image" />
                             {% endif %}
@@ -36,7 +37,9 @@
                         <a href="{% url 'category' category_slug=category.slug %}">
                             <div class="catalog__card">
                                 {% if category.logo %}
-                                    <div class="catalog__card-image"><img src="{{ category.logo.url }}" alt="{{ category.name }}" width="262" height="140"></div>
+                                    <div class="catalog__card-image">
+                                        <img src="{{ category.logo.url }}" alt="{{ category.name }}" width="262" height="140">
+                                    </div>
                                 {% else %}
                                     <img src="{% static 'img/noImage.webp' %}" alt="No Image" />
                                 {% endif %}

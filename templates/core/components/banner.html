@@ -29,7 +29,13 @@
         </div>
         <div class="hero-page__content">
             <h1 class="hero-page__title t-70-101">{{ brand.name|safe|striptags }}</h1>
-            <p class="hero-page__subtitle t-30-43">{{ brand.description|safe|striptags }}</p>
+            {% if user.is_authenticated %}
+                <a href="https://nda.ru/admin/catalog/brand/{{ brand.id }}/change/" style="color: white" target="_blank">
+                    <p class="hero-page__subtitle t-30-43">{{ brand.description|safe|striptags }}</p>
+                </a>
+            {% else %}
+                <p class="hero-page__subtitle t-30-43">{{ brand.description|safe|striptags }}</p>
+            {% endif %}
         </div>
     {% elif request.resolver_match.url_name == 'category' %}
         {% if brand %}
@@ -42,7 +48,13 @@
             </div>
             <div class="hero-page__content">
                 <h1 class="hero-page__title t-70-101">{{ brand.name|safe|striptags }}</h1>
-                <p class="hero-page__subtitle t-30-43">{{ category.name|safe|striptags }}</p>
+                {% if user.is_authenticated %}
+                     <a href="https://nda.ru/admin/catalog/category/{{ category.id }}/change/" style="color: white" target="_blank">
+                        <p class="hero-page__subtitle t-30-43">{{ category.name|safe|striptags }}</p>
+                     </a>
+                {% else %}
+                    <p class="hero-page__subtitle t-30-43">{{ category.name|safe|striptags }}</p>
+                {% endif %}
             </div>
         {% elif category %}
             <div class="hero-page__card">
@@ -53,7 +65,13 @@
                 {% endif %}
             </div>
             <div class="hero-page__content">
-                <h1 class="hero-page__title t-70-101">{{ category.name|safe|striptags }}</h1>
+                {% if user.is_authenticated %}
+                     <a href="https://nda.ru/admin/catalog/category/{{ category.id }}/change/" style="color: white" target="_blank">
+                         <h1 class="hero-page__title t-70-101">{{ category.name|safe|striptags }}</h1>
+                     </a>
+                {% else %}
+                     <h1 class="hero-page__title t-70-101">{{ category.name|safe|striptags }}</h1>
+                {% endif %}
             </div>
         {% endif %}
     {% elif request.resolver_match.url_name == 'offer'  %}
@@ -66,7 +84,7 @@
         </div>
         <div class="hero-page__content">
             <p class="hero-page__title t-70-101">{{ brand.name|safe|striptags }}</p>
-            <h1 class="hero-page__subtitle t-30-43">{{ product.name|safe|striptags }}</h1>
+            <p class="hero-page__subtitle t-30-43">{{ product.name|safe|striptags }}</p>
         </div>
     {% endif %}
 </section>

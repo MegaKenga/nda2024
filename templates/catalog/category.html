@@ -21,10 +21,8 @@
 {% block content %}
     <main class="catalog-inner">
         <div class="container">
-
             {% include 'core/components/breadcrumbs.html' %}
             {% include 'core/components/banner.html' %}
-
             <section class="catalog-grid">
                 {% for category in categories %}
                     <a href="{% url 'category' category_slug=category.slug %}" class="catalog-card">
