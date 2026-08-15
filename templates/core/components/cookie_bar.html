@@ -1,8 +1,10 @@
 <div class="cookie-bar" id="cookie-bar" role="dialog" aria-label="Уведомление об использовании файлов cookie" hidden>
     <div class="cookie-bar__inner container">
         <p class="cookie-bar__text">
-            Наш сайт использует куки. Продолжая им пользоваться, вы соглашаетесь с нашей <a class="cookie-bar__link" href="{% url 'privacy' %}">политикой конфиденциальности</a>.
+            Наш сайт использует куки. Продолжая им пользоваться, вы даете <a class="cookie-bar__link"
+                href="{% url 'privacy' %}">согласие на обработку персональных данных</a> и соглашаетесь с нашей
+            <a class="cookie-bar__link" href="{% url 'accept_policy' %}">политикой обработки персональных данных</a>.
         </p>
-        <button type="button" class="cookie-bar__btn" data-cookie-accept aria-label="Принять">Согласен!</button>
+        <button type="button" class="cookie-bar__btn" data-cookie-accept aria-label="Принять">Понятно!</button>
     </div>
 </div>

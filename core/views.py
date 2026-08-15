@@ -77,6 +77,10 @@ class PrivacyView(WorkView):
     template_name = 'core/privacy.html'
 
 
+class AcceptPolicyView(WorkView):
+    template_name = 'core/accept_policy.html'
+
+
 class ContactsView(WorkView):
     template_name = 'core/contacts.html'
 

@@ -35,6 +35,7 @@ urlpatterns = [
     path('debug/', include('debug_toolbar.urls')),
     path('ckeditor5/', include('django_ckeditor_5.urls')),
     path('privacy/', core.views.PrivacyView.as_view(), name='privacy'),
+    path('soglasie-obrabotka-dannyh/', core.views.AcceptPolicyView.as_view(), name='accept_policy'),
     path('contacts/', core.views.ContactsView.as_view(), name='contacts'),
     path('work/', core.views.WorkView.as_view(), name='work'),
     path('karta-saita/', core.views.SiteMapView.as_view(), name='site_map'),
