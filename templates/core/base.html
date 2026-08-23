@@ -66,6 +66,14 @@
 
 {% include "core/components/formsContainer.html" %}
 
+{% if alert_header %}
+    {% include "core/components/alert_widget.html" %}
+{% endif %}
+
+{% if advert_header %}
+    {% include "core/components/advert_widget.html" %}
+{% endif %}
+
 {% include "core/components/scroll_top.html" %}
 
 {% include "core/components/cookie_bar.html" %}

@@ -94,6 +94,9 @@ TEMPLATES = [
                 'django.template.context_processors.media',
                 'cart.context_processors.cart',
                 'catalog.context_processors.brands_processor',
+                'core.context_processors.current_year_processor',
+                'core.context_processors.alerts_processor',
+                'core.context_processors.advertisement_processor'
             ],
         },
     },

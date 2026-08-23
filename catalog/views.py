@@ -11,8 +11,6 @@ from core.models import MainPageInfoBlock
 from catalog.models import Category, Brand, Offer, Product
 from cart.forms import CartAddProductForm
 
-import datetime
-
 
 SEARCH_QUERY_PARAM = 'q'
 
@@ -45,9 +43,6 @@ class IndexView(TemplateView):
         context['brands'] = Brand.visible.all().order_by('name')
         context['categories'] = Category.visible.filter(brand=None)
         context['ads'] = MainPageInfoBlock.visible.all()
-
-        current_year = datetime.datetime.now().year
-        context['current_year'] = current_year
         return context
 
 
@@ -69,10 +64,6 @@ class CategoryView(TemplateView):
         context['categories'] = Category.visible.filter(parents=category).select_related('brand').order_by('place')
         context['products'] = Product.visible.filter(parents=category).select_related('brand').order_by('place')
         context['breadcrumbs'] = breadcrumbs_path(category)
-        context['brands'] = Brand.visible.all().order_by('name')
-
-        current_year = datetime.datetime.now().year
-        context['current_year'] = current_year
         return context
 
 
@@ -92,10 +83,6 @@ class BrandView(TemplateView):
         context['categories'] = Category.visible.filter(parents=None, brand=brand).select_related('brand').order_by('place')
         context['products'] = Product.visible.filter(brand=brand).exclude(parents__brand=brand).select_related('brand').order_by('place')
         context['brand'] = brand
-        context['brands'] = Brand.visible.all().order_by('name')
-
-        current_year = datetime.datetime.now().year
-        context['current_year'] = current_year
         return context
 
 
@@ -117,7 +104,6 @@ class OfferView(TemplateView):
         context['certificates'] = ModelFile.objects.filter(product=product)
         context['breadcrumbs'] = breadcrumbs_path(product)
         context['cart_product_form'] = CartAddProductForm()
-        context['brands'] = Brand.visible.all().order_by('name') # no need to filter, already in the view
         context['specialist'] = product.specialist
         context['youtube_link'] = product.youtube_link
         context['rutube_link'] = product.rutube_link

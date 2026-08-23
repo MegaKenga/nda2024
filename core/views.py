@@ -1,11 +1,8 @@
 from django.views.generic import TemplateView, ListView, DetailView
 from django.urls import resolve
 
-
 from catalog.models import Brand, Product
 from files.models import ModelFile
-
-import datetime
 
 
 class BrandsWithCertificatesView(ListView):
@@ -24,8 +21,6 @@ class BrandsWithCertificatesView(ListView):
         match = resolve(current_path)
         current_url_name = match.url_name
         context['current_url_name'] = current_url_name
-        current_year = datetime.datetime.now().year
-        context['current_year'] = current_year
         return context
 
 
@@ -48,10 +43,6 @@ class BrandCertificatesDetailView(DetailView):
 
         context['products'] = products
         context['certificates'] = certificates
-        context['brands'] = Brand.visible.all().order_by('name')
-
-        current_year = datetime.datetime.now().year
-        context['current_year'] = current_year
         return context
 
 
@@ -65,11 +56,6 @@ class WorkView(TemplateView):
         match = resolve(current_path)
         current_url_name = match.url_name
         context['current_url_name'] = current_url_name
-
-        context['brands'] = Brand.visible.all().order_by('name')
-
-        current_year = datetime.datetime.now().year
-        context['current_year'] = current_year
         return context
 
 
