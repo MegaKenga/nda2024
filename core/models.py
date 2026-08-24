@@ -124,7 +124,7 @@ class WidgetAdvertisement(models.Model):
         verbose_name='Заголовок рекламного блока | Отображается на странице',
         default='',
     )
-    category = models.ForeignKey(
+    product = models.ForeignKey(
         Product,
         on_delete=models.SET_NULL,
         null=True,
