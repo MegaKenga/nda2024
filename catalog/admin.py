@@ -16,8 +16,6 @@ from catalog.admin_filters import (
 
 
 """Общие методы админки"""
-
-
 class MyAdminSite(AdminSite):
     def get_app_list(self, request, app_label=None):
         """Возвращает отсортированный список зарегистрированных приложений"""
@@ -79,8 +77,6 @@ class CatalogFileInline(admin.TabularInline):
 
 
 """"Классы админки"""
-
-
 class BrandAdmin(admin.ModelAdmin):
     prepopulated_fields = {"slug": ("name",)}
     list_display = ("name", "slug", "place", "status", "banner_color")

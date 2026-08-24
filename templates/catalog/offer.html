@@ -18,6 +18,84 @@
   <meta name="description" content="{{product.ceo_description|striptags}}">
 {% endblock %}
 
+{% block schema %}
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://nda.ru/",
+      "name": "НДА Деловая медицинская компания",
+      "legalName": "ООО «НДА Деловая медицинская компания»",
+      "url": "https://nda.ru",
+      "logo": "https://nda.ru/static/img/logo-header.webp",
+      "description": "ООО «НДА Деловая медицинская компания». Поставки медицинского оборудования, изделий и расходных материалов для клиник и медицинских учреждений. Опт и розница, доставка по России, консультации специалистов и подбор решений для медицины.",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "ул.Перевозная, д.6",
+        "addressLocality": "Санкт-Петербург",
+        "postalCode": "190121",
+        "addressCountry": "RU"
+      },
+      "contactPoint": [
+        {
+          "@type": "ContactPoint",
+          "telephone": "+7 (812) 714-06-14",
+          "contactType": "sales",
+          "availableLanguage": "Russian"
+        }
+      ]
+    },
+    {
+      "@type": "Product",
+      "@id": "https://nda.ru{% url 'offer' brand_slug=product.brand.slug product_slug=product.slug %}",
+      "name": "{{ product.name}}",
+      "description": "{{ product.description}}",
+      "image": "https://nda.ru{{ product.logo.url }}",
+      "category": "{{ product.category }}",
+      "brand": {
+        "@type": "Brand",
+        "name": "{{ product.brand }}"
+      }
+    }
+  ]
+}
+</script>
+
+    {% if offers %}
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  "name": "Ассортимент ПОЛИСОРБ (POLYSORB)",
+  "description": "Список доступных артикулов ПОЛИСОРБ (POLYSORB)",
+  "numberOfItems": {{ offers|length }},
+  "itemListElement": [
+    {% for offer in offers|slice:":10" %}
+    {
+      "@type": "ListItem",
+      "position": {{ forloop.counter }},
+      "item": {
+        "@type": "Product",
+        "name": "ПОЛИСОРБ (POLYSORB)",
+        "sku": "{{ offer.name|escapejs }}",
+        "description": "{{ offer.text_description|escapejs }}",
+        "offers": {
+          "@type": "Offer",
+          "availability": "https://schema.org/InStock"
+        }
+      }
+    }{% if not forloop.last %},{% endif %}
+    {% endfor %}
+  ]
+}
+</script>
+    {% endif %}
+
+
+{% endblock %}
+
 {% block content %}
     <main class="product-page">
         <div class="container">
