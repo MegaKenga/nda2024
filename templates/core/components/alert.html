@@ -1,2 +1,23 @@
-{{ alert.header }}
-{{ alert.text }}
+<dialog class="widget-dialog widget-alert-popup" id="alertPopup" aria-labelledby="alertPopupTitle" data-widget-popup="alert">
+    <div class="site-widget-popup__modal">
+        <button type="button" class="site-widget-popup__close" data-widget-popup-close aria-label="Закрыть">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <rect x="-0.632" y="1.526" width="3.052" height="21.363" rx="1.5" transform="rotate(-45 -0.632 1.526)" fill="currentColor"/>
+                <rect x="1.526" y="16.632" width="3.052" height="21.363" rx="1.5" transform="rotate(-135 1.526 16.632)" fill="currentColor"/>
+            </svg>
+        </button>
+        <div class="widget-alert">
+            <div class="widget-alert__media" aria-hidden="true">
+                <svg class="widget-alert__bang" width="20" height="94" viewBox="0 0 20 94" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M19.6552 0L17.4713 64.0068H2.70115L0.517241 0H19.6552ZM0 83.8534C0 81.0029 0.91954 78.5992 2.75862 76.6422C4.5977 74.6852 7.03065 73.7067 10.0575 73.7067C13.046 73.7067 15.4406 74.6852 17.2414 76.6422C19.0805 78.5992 20 81.0029 20 83.8534C20 86.7463 19.0805 89.1713 17.2414 91.1283C15.4406 93.0428 13.046 94 10.0575 94C7.03065 94 4.5977 93.0428 2.75862 91.1283C0.91954 89.1713 0 86.7463 0 83.8534Z" fill="#E10707"/>
+                </svg>
+            </div>
+            <div class="widget-alert__body">
+                <h2 class="widget-alert__title" id="alertPopupTitle">{{ alert.header }}</h2>
+                {% if alert.text %}
+                    <div class="widget-alert__text">{{ alert.text|safe }}</div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</dialog>

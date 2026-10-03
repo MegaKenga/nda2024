@@ -7,15 +7,12 @@ def current_year_processor(request):
 
 
 def alerts_processor(request):
-    alert = WidgetAlert.visible.all()
     return {
-        'alert': alert
+        'alert': WidgetAlert.visible.order_by('-id').first()
     }
 
 
 def advertisement_processor(request):
-    advert = WidgetAdvertisement.visible.all()
     return {
-        'advert': advert
+        'advert': WidgetAdvertisement.visible.select_related('product', 'product__brand').order_by('-id').first()
     }
-

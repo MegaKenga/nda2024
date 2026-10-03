@@ -1,5 +1,33 @@
-{{ advert.header }}
-{{ advert_text  }}
-{{ advert_category }}
-{{ advert_notes }}
-{{ advert_image  }}
+{% load static %}
+<dialog class="widget-dialog widget-offer-popup" id="advertPopup" aria-labelledby="advertPopupTitle" data-widget-popup="advert">
+    <div class="site-widget-popup__modal">
+        <button type="button" class="site-widget-popup__close" data-widget-popup-close aria-label="Закрыть">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <rect x="-0.632" y="1.526" width="3.052" height="21.363" rx="1.5" transform="rotate(-45 -0.632 1.526)" fill="currentColor"/>
+                <rect x="1.526" y="16.632" width="3.052" height="21.363" rx="1.5" transform="rotate(-135 1.526 16.632)" fill="currentColor"/>
+            </svg>
+        </button>
+        <div class="widget-offer">
+            <div class="widget-offer__media">
+                <img class="widget-offer__image" src="{% if advert.image %}{{ advert.image.url }}{% else %}{% static 'img/widgets/offer-stub.png' %}{% endif %}" alt="{{ advert.header }}" {% if advert.image %}onerror="this.onerror=null;this.src='{% static 'img/widgets/offer-stub.png' %}'"{% endif %}>
+            </div>
+            <div class="widget-offer__body">
+                <h2 class="widget-offer__title" id="advertPopupTitle">{{ advert.header }}</h2>
+                {% if advert.text %}
+                    <div class="widget-offer__text">{{ advert.text|safe }}</div>
+                {% endif %}
+                {% if advert.notes %}
+                    <div class="widget-offer__notes">{{ advert.notes|safe }}</div>
+                {% endif %}
+                {% if advert.product %}
+                    <a class="widget-offer__link" href="{{ advert.product.get_absolute_url }}">
+                        <span>Подробнее</span>
+                        <svg class="widget-offer__arrow" width="14" height="14" viewBox="0 0 10 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                            <path d="M1.379 1.022L8.179 7.821L1.022 14.978" stroke="currentColor" stroke-width="2.044" stroke-linecap="round"/>
+                        </svg>
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</dialog>

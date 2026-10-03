@@ -1,5 +1,14 @@
-<div>
-ЗДЕСЬ ДОЛЖНА БЫТЬ РЕКЛАМА
+<div class="site-widget site-widget_advert" data-site-widget="advert" data-widget-id="{{ advert.pk }}">
+    <button type="button" class="site-widget__dismiss" data-widget-dismiss aria-label="Скрыть объявление">
+        <svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M9 1L1 9M1 1l8 8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+        </svg>
+    </button>
+    <button type="button" class="site-widget__trigger" data-widget-open aria-label="{{ advert.header }}" aria-expanded="false">
+        <span class="site-widget__icon" aria-hidden="true">
+            <svg width="24" height="20" viewBox="71 73 24 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M77.8571 91.2893C77.8571 91.743 77.6765 92.1781 77.355 92.4989C77.0335 92.8198 76.5975 93 76.1429 93C75.6882 93 75.2522 92.8198 74.9307 92.4989C74.6092 92.1781 74.4286 91.743 74.4286 91.2893V87.8678C73.5193 87.8678 72.6472 87.5074 72.0042 86.8657C71.3612 86.2241 71 85.3538 71 84.4464V81.025C71 80.1175 71.3612 79.2473 72.0042 78.6056C72.6472 77.964 73.5193 77.6035 74.4286 77.6035H77.8571V91.2893ZM88.616 73.0906C88.7467 73.0253 88.8919 72.9944 89.038 73.0008C89.184 73.0073 89.3259 73.0509 89.4503 73.1275C89.5747 73.2042 89.6773 73.3113 89.7485 73.4386C89.8198 73.566 89.8571 73.7095 89.8571 73.8553V91.616C89.8571 91.7619 89.8198 91.9053 89.7485 92.0327C89.6773 92.1601 89.5747 92.2672 89.4503 92.3438C89.3259 92.4204 89.184 92.4641 89.038 92.4705C88.8919 92.477 88.7467 92.4461 88.616 92.3807L79.5714 87.8678V77.6035L88.616 73.0906ZM94.052 80.5528C94.3367 80.6948 94.5762 80.913 94.7436 81.1832C94.9111 81.4533 94.9998 81.7646 95 82.0822V83.3892C95.0001 83.7071 94.9115 84.0187 94.7441 84.2892C94.5766 84.5596 94.337 84.7782 94.052 84.9203L91.5714 86.1571V79.3142L94.052 80.5528Z" fill="white"/>
+            </svg>
+        </span>
+    </button>
 </div>
-
-{% include "core/components/advert.html" %}

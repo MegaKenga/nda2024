@@ -1,5 +1,10 @@
-<div>
-ЗДЕСЬ ДОЛЖНЫ БЫТЬ АЛЕРТЫ
+<div class="site-widget site-widget_alert" data-site-widget="alert" data-widget-id="{{ alert.pk }}" data-widget-auto-open="true">
+    <button type="button" class="site-widget__dismiss" data-widget-dismiss aria-label="Скрыть уведомление">
+        <svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M9 1L1 9M1 1l8 8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+        </svg>
+    </button>
+    <button type="button" class="site-widget__trigger" data-widget-open aria-label="{{ alert.header }}" aria-expanded="false">
+        <span class="site-widget__bang" aria-hidden="true">!</span>
+    </button>
 </div>
-
-{% include "core/components/alert.html" %}

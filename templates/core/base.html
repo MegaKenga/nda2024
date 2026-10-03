@@ -6,6 +6,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex, nofollow">
     {% block title %}
     {% endblock%}
 
@@ -17,7 +18,7 @@
     <link rel="preload" href="{% static 'fonts/Roboto-Bold.woff2' %}" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="{% static 'css/reset.css' %}">
     <link rel="stylesheet" href="{% static 'css/fonts-min.css' %}">
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}?v=widgets-28">
 {% block canonical_link %}
 {% endblock %}
 
@@ -54,7 +55,7 @@
 <!-- /Yandex.Metrika counter -->
 </head>
 
-<body>
+<body class="{% block body_class %}{% endblock %}">
 <div class="page">
     {% include 'core/components/header.html' %}
 
@@ -69,12 +70,21 @@
 
 {% include "core/components/formsContainer.html" %}
 
-{% if alert %}
-    {% include "core/components/alert_widget.html" %}
+{% if alert or advert %}
+<div class="site-widgets">
+    {% if advert %}
+        {% include "core/components/advert_widget.html" %}
+    {% endif %}
+    {% if alert %}
+        {% include "core/components/alert_widget.html" %}
+    {% endif %}
+</div>
 {% endif %}
-
 {% if advert %}
-    {% include "core/components/advert_widget.html" %}
+    {% include "core/components/advert.html" %}
+{% endif %}
+{% if alert %}
+    {% include "core/components/alert.html" %}
 {% endif %}
 
 {% include "core/components/scroll_top.html" %}
@@ -82,7 +92,7 @@
 {% include "core/components/cookie_bar.html" %}
 
     <script src="{% static 'js/nda-deferred.js' %}"></script>
-    <script src="{% static 'js/main.js' %}"></script>
+    <script src="{% static 'js/main.js' %}?v=widgets-28"></script>
     <script src="https://smartcaptcha.cloud.yandex.ru/captcha.js" defer></script>
 </body>
 </html>
