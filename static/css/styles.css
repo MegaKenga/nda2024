@@ -9853,3 +9853,7 @@ body.sale-page .widget-alert-popup {
     object-fit: cover;
     pointer-events: none
 }
+
+table {
+  border-bottom: 2.5px solid rgba(0, 0, 0, 0.5); /* Жирная линия */
+}
