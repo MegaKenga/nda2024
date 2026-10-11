@@ -2,21 +2,18 @@ User-agent: *
 Disallow: /catalog/duplicates/
 Disallow: /admin
 Disallow: /tmp
-# Disallow: /?q=
 
 
 User-agent: Yandex
 Disallow: /catalog/duplicates/
 Disallow: /admin
 Disallow: /tmp
-Disallow: /?q=
 
 
 User-agent: Googlebot
 Disallow: /catalog/duplicates/
 Disallow: /admin
 Disallow: /tmp
-Disallow: /?q=
 
 
 Sitemap: https://nda.ru/sitemap.xml
