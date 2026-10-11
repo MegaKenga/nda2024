@@ -13,6 +13,8 @@ MEDIA_FIELDS = [
     ('files.ModelFile', 'file'),
     ('files.InstructionsFile', 'file'),
     ('files.CatalogFile', 'file'),
+    ('core.MainPageInfoBlock', 'block_image'),
+    ('core.WidgetAdvertisement', 'image'),
 ]
 
 

@@ -55,8 +55,11 @@
 
                       <div class="order-popup__checkbox-wrap order-popup__checkbox-wrap_cookie mt-3 mb-2">
                         <input type="checkbox" class="order-popup__checkbox" name="privacy" id="orderPopupPrivacy" required>
-                        <label class="order-popup__checkbox-label" for="orderPopupPrivacy">Я прочел (прочла) Уведомление о
-                          <a href="{% url 'privacy' %}" class="order-popup__privacy-link">политике конфиденциальности</a></label>
+                        <label class="order-popup__checkbox-label" for="orderPopupPrivacy">Я ознакомлен с
+                            <a href="{% url 'privacy' %}" class="order-popup__privacy-link">политикой обработки
+                                персональных данных</a> и <a class="cookie-bar__link" href="{% url 'accept_policy' %}">
+                                даю согласие на обработку моих персональных данных</a>
+                        </label>
                       </div>
 
                       <div class="modal-footer">

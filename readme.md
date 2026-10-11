@@ -38,8 +38,18 @@ pip install -r requirements.txt
    ```shell
    redis-cli flushall
    ```
+   
+## Запустить Celery:
+```shell
+celery -A nda worker -l info
+```
 
 ## Запустить приложение:
 ```shell
 python3 manage.py runserver
+```
+
+## Удалить медиа файлы, не ассоциированные с записями в базе:
+```shell
+python3 manage.py clear_media
 ```

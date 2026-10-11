@@ -9,6 +9,7 @@ from nda_email.models import OrderNumber
 
 
 ORDERS_COUNTER = OrderNumber.objects.filter(id=1).first()
+# ORDERS_COUNTER = 1 #нужен для запуска с пустой бд
 
 def form_email_and_send(subject_for_nda, subject_for_customer, html_message_for_nda, html_message_for_customer, customer_email, file_name):
     email_for_nda = EmailMessage(

@@ -4691,16 +4691,15 @@ textarea {
     }
 
     .header__search {
-        width: 180px;
+        width: 40px;
         height: 40px;
         min-width: 40px;
-        justify-content: center;
-        margin-right: 10px;
-}
+        padding-right: 0;
+        justify-content: center
     }
 
     .header__search-input {
-        display: block;
+        display: none
     }
 
     .header__search-btn {
@@ -5381,7 +5380,7 @@ textarea {
         min-width: 180px;
         font-size: 20px
     }
-
+}
 
 @media (max-width:1020px) {
     .container {
@@ -8178,7 +8177,7 @@ textarea {
 }
 
 .sitemap-tree__line[hidden] {
-    display: none !important;
+    display: none !important
 }
 
 .sitemap-tree__link {
@@ -9684,7 +9683,7 @@ body.sale-page .widget-alert-popup {
     height: 2480px;
     background: #f5f5f5;
     transform-origin: top left;
-    transform: scale(calc(tan(atan(100cqw)) / 1748));
+    transform: scale(calc(100cqw / 1748px))
 }
 
 .sale-sheet__brand {
