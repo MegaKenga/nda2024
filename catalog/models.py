@@ -257,6 +257,10 @@ class Product(BaseFields):
         blank=True,
         verbose_name='Ссылка Rutube'
     )
+    discontinued = models.BooleanField(
+        default=False,
+        verbose_name='Снят с производства'
+    )
 
     class Meta:
         ordering = ['place']

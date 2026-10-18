@@ -9,7 +9,6 @@ from catalog.models import Brand, Category, Offer, Specialist, Product
 from files.models import ModelImage, ModelFile, InstructionsFile, CatalogFile
 from catalog.admin_filters import (
     DropdownFilter,
-    CategoryRelatedOnlyDropdownFilter,
     RelatedOnlyDropdownFilter,
     ProductRelatedOnlyDropdownFilter
 )
@@ -79,8 +78,8 @@ class CatalogFileInline(admin.TabularInline):
 """"Классы админки"""
 class BrandAdmin(admin.ModelAdmin):
     prepopulated_fields = {"slug": ("name",)}
-    list_display = ("name", "slug", "place", "status", "banner_color")
-    list_editable = ("place", "slug", "status", "banner_color")
+    list_display = ("name", "slug", "status", "banner_color")
+    list_editable = ("slug", "status", "banner_color")
     list_filter = (("name", DropdownFilter), "status")
     fields = [
         "name",
@@ -108,8 +107,8 @@ class BrandAdmin(admin.ModelAdmin):
 class CategoryAdmin(admin.ModelAdmin):
     prepopulated_fields = {"slug": ("name",)}
     list_select_related = ["brand"]
-    list_display = ("name", "brand", "slug", "place", "status",)
-    list_editable = ("place", "slug", "status")
+    list_display = ("name", "brand", "slug", "status",)
+    list_editable = ("slug", "status")
     list_filter = (
         ("brand", RelatedOnlyDropdownFilter),
         "status",
@@ -149,10 +148,12 @@ class CategoryAdmin(admin.ModelAdmin):
 class ProductAdmin(admin.ModelAdmin):
     list_select_related = True
     prepopulated_fields = {"slug": ("name",)}
-    list_display = ["name", "brand"]
+    list_display = ["name", "brand", "slug", "status", "discontinued"]
+    list_editable = ("slug", "status", "discontinued",)
     list_filter = [
         ("brand", RelatedOnlyDropdownFilter),
         "status",
+        "discontinued",
     ]
     search_fields = ["name"]
     inlines = [
@@ -180,6 +181,7 @@ class ProductAdmin(admin.ModelAdmin):
         "place",
         "slug",
         "status",
+        "discontinued"
     ]
     formfield_overrides = {
         models.TextField: {'widget': Textarea(attrs={'rows': 3, 'cols': 80})},
