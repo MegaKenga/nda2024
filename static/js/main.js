@@ -172,8 +172,9 @@ document.addEventListener('DOMContentLoaded', function () {
       var dialCode = countryData && countryData.dialCode ? String(countryData.dialCode).replace(/\D/g, '') : '';
 
       if (dialCode) {
-        var digits = String(input.value || '').replace(/\D/g, '');
-        if (digits && digits.indexOf(dialCode) === 0 && digits.length >= dialCode.length) {
+        var rawValue = String(input.value || '').trim();
+        var digits = rawValue.replace(/\D/g, '');
+        if (rawValue.charAt(0) === '+' && digits.indexOf(dialCode) === 0) {
           input.value = digits.slice(dialCode.length);
         }
       }
@@ -282,25 +283,26 @@ document.addEventListener('DOMContentLoaded', function () {
     bindFloatingLabelStateInRoot(root);
   }
 
-  function normalizeIntlPhoneInForm(form) {
-    if (!form) return;
+  function setIntlPhoneInFormData(form, formData) {
+    if (!form || !formData) return;
     form.querySelectorAll('.phone-mask').forEach(function (input) {
       var iti = window.ndaIntlTelInputs.get(input);
       if (!iti) return;
       try {
         var num = iti.getNumber && iti.getNumber();
         if (num) {
-          input.value = num;
+          formData.set(input.name, num);
           return;
         }
         var countryData = iti.getSelectedCountryData && iti.getSelectedCountryData();
         var dial = countryData && countryData.dialCode ? String(countryData.dialCode).replace(/\D/g, '') : '';
-        var digits = String(input.value || '').replace(/\D/g, '');
+        var rawValue = String(input.value || '').trim();
+        var digits = input.inputmask ? input.inputmask.unmaskedvalue() : rawValue.replace(/\D/g, '');
         if (!dial || !digits.length) return;
-        if (digits.indexOf(dial) === 0 && digits.length > dial.length) {
+        if (rawValue.charAt(0) === '+' && digits.indexOf(dial) === 0) {
           digits = digits.slice(dial.length);
         }
-        input.value = '+' + dial + digits;
+        formData.set(input.name, '+' + dial + digits);
       } catch (e) { }
     });
   }
@@ -899,7 +901,6 @@ document.addEventListener('DOMContentLoaded', function () {
     if (!isOrderForm(form)) return;
     e.preventDefault();
     if (form.dataset.submitting === '1') return;
-    normalizeIntlPhoneInForm(form);
     if (!validateOrderFormClient(form)) return;
 
     form.dataset.submitting = '1';
@@ -916,6 +917,7 @@ document.addEventListener('DOMContentLoaded', function () {
     else if (submitBtn) submitBtn.textContent = 'Отправляем...';
 
     var formData = new FormData(form);
+    setIntlPhoneInFormData(form, formData);
     var maxAttempts = 10;
     var attempt = 0;
 
@@ -1140,8 +1142,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function sendMailWithCaptchaRetry() {
       attempt++;
-      normalizeIntlPhoneInForm(form);
       var formData = new FormData(form);
+      setIntlPhoneInFormData(form, formData);
       var smartToken = getOrderCaptchaToken(form);
       if (smartToken) formData.set('smart-token', smartToken);
 
@@ -1633,10 +1635,11 @@ document.addEventListener('DOMContentLoaded', function () {
     if (callSubmitLabel) callSubmitLabel.textContent = 'Отправляем...';
     else if (callSubmitBtn) callSubmitBtn.textContent = 'Отправляем...';
 
-    normalizeIntlPhoneInForm(form);
+    var callFormData = new FormData(form);
+    setIntlPhoneInFormData(form, callFormData);
     fetch(form.getAttribute('action') || form.action, {
       method: 'POST',
-      body: new FormData(form),
+      body: callFormData,
       headers: {
         'X-Requested-With': 'XMLHttpRequest',
         'X-CSRFToken': getCsrfToken()

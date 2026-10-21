@@ -1012,7 +1012,8 @@ textarea {
 
 .about__img {
     width: 100%;
-    min-height: 100%;
+    height: 100%;
+    min-height: 0;
     object-fit: cover;
     border-radius: 15px;
     box-shadow: 0 4px 24px rgba(0, 0, 0, .15)
@@ -4691,15 +4692,16 @@ textarea {
     }
 
     .header__search {
-        width: 40px;
+        width: clamp(120px, 13vw, 180px);
         height: 40px;
-        min-width: 40px;
-        padding-right: 0;
-        justify-content: center
+        min-width: 120px;
+        padding-right: 5px
     }
 
     .header__search-input {
-        display: none
+        display: block;
+        min-width: 0;
+        width: 0
     }
 
     .header__search-btn {
@@ -9851,6 +9853,111 @@ body.sale-page .widget-alert-popup {
     pointer-events: none
 }
 
+.product-gallery__slide,
+.catalog-card__img-wrap,
+.catalog-material-cover {
+    position: relative
+}
+
+.product-revoked-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    padding: 12px;
+    border-radius: inherit;
+    background: rgba(20, 27, 35, .38);
+    color: #fff;
+    font-family: Jost, sans-serif;
+    font-size: clamp(16px, 2vw, 24px);
+    font-weight: 700;
+    line-height: 1.25;
+    text-align: center;
+    overflow-wrap: anywhere;
+    pointer-events: none
+}
+
+.product-gallery__arrow {
+    z-index: 3
+}
+
+.product-gallery__thumb .product-revoked-overlay,
+.catalog-card__img-wrap .product-revoked-overlay {
+    padding: 6px;
+    font-size: 12px
+}
+
 table {
   border-bottom: 2.5px solid rgba(0, 0, 0, 0.5); /* Жирная линия */
+}
+@media (max-width: 1020px) {
+    .about__gallery,
+    .about__gallery .swiper-slide,
+    .about__img {
+        min-height: 0
+    }
+
+    .about__gallery .swiper-slide,
+    .about__img {
+        height: 100%
+    }
+}
+
+@media (max-width: 1020px) {
+    .about__gallery .swiper-wrapper {
+        height: 100%
+    }
+}
+
+.product-revoked-overlay {
+    color: #ff4343;
+    font-size: 0
+}
+
+.product-revoked-overlay::after {
+    content: "Снято с производства";
+    display: block;
+    font-size: clamp(18px, 3.5vw, 50px);
+    line-height: 1.25;
+    white-space: nowrap;
+    transform: rotate(-25deg)
+}
+
+.catalog-card__img-wrap .product-revoked-overlay::after {
+    font-size: 10px
+}
+
+.product-gallery__thumb .product-revoked-overlay::after {
+    font-size: 8px
+}
+
+
+@media (max-width: 640px) {
+    .product-gallery__slide .product-revoked-overlay::after {
+        font-size: clamp(32px, 5vw, 34px)
+    }
+}
+
+
+@media (max-width: 1020px) {
+    .product-page .productDescription.characteristics_table table td {
+        width: auto !important;
+        overflow-wrap: anywhere
+    }
+
+    .product-page .productDescription.characteristics_table table tr > td:first-child {
+        width: 30% !important
+    }
+
+    .product-page .productDescription.characteristics_table table tr > td:nth-child(3) {
+        width: 16% !important
+    }
+
+    .product-page .productDescription.characteristics_table table img {
+        max-width: 100%;
+        height: auto
+    }
 }
